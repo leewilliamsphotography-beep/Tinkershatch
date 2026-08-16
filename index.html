@@ -1,267 +1,1060 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;900&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tinkers Hatch Community Hub — A Warm Welcome</title>
+<meta name="description" content="Tinkers Hatch Community Hub — a caring home for adults with learning disabilities. A place to grow, belong, and thrive." />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    /* Warm, earthy palette — designed for comfort and high contrast */
+    --cream: #FBF4E6;
+    --cream-deep: #F2E6CC;
+    --bark: #2A1F1A;        /* main text — ~14:1 contrast on cream */
+    --bark-soft: #4A3A30;
+    --teal: #0F5A56;        /* primary — calm, ~7:1 on cream */
+    --teal-deep: #083C39;
+    --terracotta: #C24A1F;  /* accent — warm, ~5.5:1 on cream */
+    --honey: #E8A33D;       /* highlight */
+    --rose: #D2776A;        /* soft accent */
+    --sage: #8FAE7A;        /* nature accent */
+    --card: #FFF8EA;
+    --border: #E5D8BE;
+  }
+
+  /* High contrast mode */
+  body.contrast-high {
+    --cream: #000000;
+    --cream-deep: #0a0a0a;
+    --bark: #FFFFFF;
+    --bark-soft: #FFE08A;
+    --teal: #66E0D9;
+    --teal-deep: #B5FFF7;
+    --terracotta: #FF9E5C;
+    --honey: #FFD700;
+    --rose: #FFA9A0;
+    --sage: #C2E0A8;
+    --card: #111111;
+    --border: #555555;
+  }
+
+  /* Larger text mode */
+  body.text-lg { font-size: 20px; }
+  body.text-xl { font-size: 24px; }
+
+  html { scroll-behavior: smooth; }
 
   body {
-    min-height: 100vh;
-    font-family: 'Space Grotesk', sans-serif;
-    background: #0a0a1f;
-    overflow: hidden;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-family: 'Atkinson Hyperlegible', system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--bark);
+    font-size: 18px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    transition: background-color 0.4s ease, color 0.4s ease;
   }
 
-  /* Animated gradient background */
-  .bg-gradient {
+  .display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+  }
+
+  /* Focus styles — clearly visible */
+  a, button, input, [tabindex]:focus-visible {
+    outline: 3px solid var(--terracotta);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Skip link */
+  .skip-link {
     position: absolute;
+    left: -9999px;
+    top: 0;
+    background: var(--bark);
+    color: var(--cream);
+    padding: 12px 20px;
+    z-index: 1000;
+    font-weight: 700;
+  }
+  .skip-link:focus {
+    left: 16px;
+    top: 16px;
+  }
+
+  /* Ambient background — very gentle floating shapes */
+  .ambient {
+    position: fixed;
     inset: 0;
-    background: linear-gradient(-45deg, #ff006e, #fb5607, #ffbe0b, #8338ec, #3a86ff, #06d6a0);
-    background-size: 400% 400%;
-    animation: gradientFlow 18s ease infinite;
     z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
   }
-
-  @keyframes gradientFlow {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-
-  /* Floating colorful orbs */
-  .orb {
+  .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(40px);
-    opacity: 0.7;
-    z-index: 1;
-    animation: float 12s ease-in-out infinite;
+    filter: blur(60px);
+    opacity: 0.35;
+    animation: drift 22s ease-in-out infinite;
   }
-  .orb-1 { width: 280px; height: 280px; background: #ff006e; top: 10%;  left: 8%;  animation-delay: 0s; }
-  .orb-2 { width: 220px; height: 220px; background: #ffbe0b; bottom: 15%; right: 10%; animation-delay: -3s; }
-  .orb-3 { width: 180px; height: 180px; background: #06d6a0; top: 60%; left: 20%; animation-delay: -6s; }
-  .orb-4 { width: 200px; height: 200px; background: #3a86ff; top: 15%; right: 25%; animation-delay: -9s; }
+  .blob-1 { width: 380px; height: 380px; background: var(--honey); top: -80px; left: -80px; }
+  .blob-2 { width: 460px; height: 460px; background: var(--sage); bottom: -120px; right: -100px; animation-delay: -8s; }
+  .blob-3 { width: 300px; height: 300px; background: var(--rose); top: 40%; left: 60%; animation-delay: -14s; opacity: 0.25; }
 
-  @keyframes float {
-    0%, 100% { transform: translate(0,0) scale(1); }
-    33%      { transform: translate(40px,-30px) scale(1.1); }
-    66%      { transform: translate(-30px,40px) scale(0.95); }
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(40px, -30px) scale(1.08); }
+    66% { transform: translate(-30px, 40px) scale(0.95); }
   }
 
-  /* Dark overlay for text readability */
-  .overlay {
+  /* Sun rays in hero — slow, calming */
+  .sun-rays {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    right: -150px;
+    top: -150px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .sun-rays::before {
+    content: '';
     position: absolute;
     inset: 0;
-    background: rgba(10, 10, 31, 0.55);
-    z-index: 2;
+    background: conic-gradient(from 0deg, transparent 0deg, var(--honey) 8deg, transparent 16deg, transparent 30deg, var(--honey) 38deg, transparent 46deg, transparent 60deg, var(--honey) 68deg, transparent 76deg, transparent 90deg, var(--honey) 98deg, transparent 106deg);
+    border-radius: 50%;
+    mask: radial-gradient(circle, transparent 100px, black 102px, black 290px, transparent 295px);
+    -webkit-mask: radial-gradient(circle, transparent 100px, black 102px, black 290px, transparent 295px);
+    animation: spin 90s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Card hover — gentle lift */
+  .card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 24px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--teal);
+    box-shadow: 0 12px 32px -12px rgba(15, 90, 86, 0.25);
   }
 
-  /* Main content */
-  .content {
-    position: relative;
-    z-index: 3;
-    text-align: center;
-    color: #fff;
-    padding: 2rem;
-    max-width: 720px;
-  }
-
-  .badge {
-    display: inline-block;
-    padding: 0.4rem 1rem;
-    border: 1.5px solid rgba(255,255,255,0.5);
-    border-radius: 999px;
-    font-size: 0.75rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    margin-bottom: 1.8rem;
-    backdrop-filter: blur(10px);
-    background: rgba(255,255,255,0.08);
-    animation: fadeUp 0.8s ease both;
-  }
-
-  h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 900;
-    font-size: clamp(3.5rem, 12vw, 8rem);
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.2rem;
-    animation: fadeUp 0.8s ease 0.15s both;
-  }
-
-  h1 .accent {
-    font-style: italic;
-    font-weight: 300;
-    background: linear-gradient(90deg, #ffbe0b, #ff006e, #8338ec);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shine 4s linear infinite;
-  }
-
-  @keyframes shine {
-    to { background-position: 200% center; }
-  }
-
-  .subtitle {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    font-weight: 400;
-    color: rgba(255,255,255,0.85);
-    max-width: 540px;
-    margin: 0 auto 2.5rem;
-    line-height: 1.6;
-    animation: fadeUp 0.8s ease 0.3s both;
-  }
-
-  .actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    animation: fadeUp 0.8s ease 0.45s both;
-  }
-
+  /* Buttons — large, clear, friendly */
   .btn {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 0.95rem 2.2rem;
-    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 28px;
     border-radius: 999px;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    letter-spacing: 0.02em;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    min-height: 60px;
   }
-
   .btn-primary {
-    background: #fff;
-    color: #0a0a1f;
-    box-shadow: 0 10px 30px rgba(255,255,255,0.25);
+    background: var(--teal);
+    color: var(--cream);
+    box-shadow: 0 4px 0 var(--teal-deep);
   }
   .btn-primary:hover {
-    transform: translateY(-3px) scale(1.04);
-    box-shadow: 0 15px 40px rgba(255,255,255,0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 var(--teal-deep);
   }
-
+  .btn-primary:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 var(--teal-deep);
+  }
   .btn-secondary {
     background: transparent;
-    color: #fff;
-    border: 1.5px solid rgba(255,255,255,0.6);
+    color: var(--bark);
+    border: 3px solid var(--bark);
   }
   .btn-secondary:hover {
-    background: rgba(255,255,255,0.12);
-    transform: translateY(-3px);
+    background: var(--bark);
+    color: var(--cream);
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
+  /* Section reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
   }
 
-  /* Bottom hint */
-  .hint {
+  /* Mood board interactive */
+  .mood-btn {
+    background: var(--card);
+    border: 3px solid var(--border);
+    border-radius: 24px;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    transition: all 0.25s ease;
+    min-height: 140px;
+  }
+  .mood-btn:hover {
+    border-color: var(--teal);
+    transform: translateY(-4px) scale(1.02);
+    background: var(--cream-deep);
+  }
+  .mood-btn.active {
+    background: var(--teal);
+    color: var(--cream);
+    border-color: var(--teal-deep);
+  }
+  .mood-emoji {
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+
+  /* Timeline */
+  .timeline-item {
+    position: relative;
+    padding-left: 60px;
+  }
+  .timeline-item::before {
+    content: '';
     position: absolute;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    color: rgba(255,255,255,0.6);
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    animation: fadeUp 0.8s ease 0.6s both;
+    left: 20px;
+    top: 50px;
+    bottom: -20px;
+    width: 3px;
+    background: var(--border);
+  }
+  .timeline-item:last-child::before { display: none; }
+  .timeline-dot {
+    position: absolute;
+    left: 8px;
+    top: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--honey);
+    border: 4px solid var(--cream);
+    box-shadow: 0 0 0 2px var(--border);
   }
 
+  /* Decorative leaf SVG */
+  .leaf-deco {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.6;
+    animation: sway 8s ease-in-out infinite;
+  }
+  @keyframes sway {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+  }
+
+  /* Header */
+  header {
+    backdrop-filter: blur(12px);
+    background: rgba(251, 244, 230, 0.85);
+    border-bottom: 1px solid var(--border);
+  }
+  body.contrast-high header {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  /* Accessibility controls */
+  .a11y-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--bark);
+    transition: all 0.2s ease;
+  }
+  .a11y-btn:hover { border-color: var(--teal); color: var(--teal); }
+  .a11y-btn[aria-pressed="true"] {
+    background: var(--teal);
+    color: var(--cream);
+    border-color: var(--teal-deep);
+  }
+
+  /* Image styling */
+  .photo-frame {
+    border-radius: 32px;
+    overflow: hidden;
+    border: 6px solid var(--card);
+    box-shadow: 0 20px 50px -20px rgba(42, 31, 26, 0.3);
+  }
+
+  /* Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
+    .blob, .sun-rays::before, .leaf-deco { animation: none !important; }
+  }
+
+  /* Nav links */
+  .nav-link {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: background 0.2s ease;
+  }
+  .nav-link:hover { background: var(--cream-deep); }
+
+  /* Tag */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: var(--cream-deep);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--bark-soft);
+  }
+
+  /* Decorative wave divider */
+  .wave-divider {
+    display: block;
+    width: 100%;
+    height: 60px;
+  }
+
+  /* Mobile menu */
+  .mobile-menu { display: none; }
+  .mobile-menu.open { display: block; }
+
+  /* Larger touch targets on mobile */
+  @media (max-width: 768px) {
+    .btn { width: 100%; justify-content: center; }
+    body { font-size: 17px; }
   }
 </style>
 </head>
 <body>
-  <div class="bg-gradient"></div>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <div class="orb orb-4"></div>
-  <div class="overlay"></div>
 
-  <main class="content">
-    <span class="badge">Hello there</span>
-    <h1>Welcome<br><span class="accent">aboard</span></h1>
-    <p class="subtitle">Step into a world bursting with color and curiosity. Your vibrant journey starts right here, right now.</p>
-    <div class="actions">
-      <button class="btn btn-primary" id="exploreBtn">Get Started</button>
-      <button class="btn btn-secondary" id="learnBtn">Learn More</button>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- Ambient background -->
+<div class="ambient" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<!-- Header -->
+<header class="fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+    <a href="#" class="flex items-center gap-3" aria-label="Tinkers Hatch Community Hub — home">
+      <!-- Logo: stylised house + leaf -->
+      <svg width="44" height="44" viewBox="0 0 44 44" aria-hidden="true">
+        <circle cx="22" cy="22" r="21" fill="var(--honey)"/>
+        <path d="M22 10 L34 20 L34 32 L26 32 L26 25 L18 25 L18 32 L10 32 L10 20 Z" fill="var(--teal)"/>
+        <path d="M22 8 Q26 4 30 8 Q28 12 22 12 Q16 12 14 8 Q18 4 22 8" fill="var(--sage)"/>
+      </svg>
+      <div class="leading-tight">
+        <div class="display font-extrabold text-lg sm:text-xl" style="color:var(--bark)">Tinkers Hatch</div>
+        <div class="text-xs font-bold tracking-wide" style="color:var(--bark-soft)">Community Hub</div>
+      </div>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+      <a href="#about" class="nav-link">About Us</a>
+      <a href="#values" class="nav-link">Our Values</a>
+      <a href="#activities" class="nav-link">Activities</a>
+      <a href="#day" class="nav-link">A Day With Us</a>
+      <a href="#visit" class="nav-link">Visit</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <!-- Accessibility controls -->
+      <div class="hidden sm:flex items-center gap-1" role="group" aria-label="Accessibility settings">
+        <button class="a11y-btn" id="fontToggle" aria-label="Increase text size" aria-pressed="false" title="Larger text">
+          <span class="text-sm font-bold">A+</span>
+        </button>
+        <button class="a11y-btn" id="contrastToggle" aria-label="Toggle high contrast" aria-pressed="false" title="High contrast">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18V4c4.41 0 8 3.59 8 8s-3.59 8-8 8z"/><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="0"/></svg>
+        </button>
+      </div>
+      <a href="#visit" class="hidden md:inline-flex btn btn-primary" style="padding:10px 20px; min-height:auto; font-size:1rem;">
+        Get in Touch
+      </a>
+      <button class="a11y-btn lg:hidden" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
     </div>
-  </main>
+  </div>
 
-  <div class="hint">Scroll · Click · Explore</div>
+  <!-- Mobile menu -->
+  <div class="mobile-menu lg:hidden border-t" style="border-color:var(--border); background:var(--cream)">
+    <nav class="px-4 py-4 flex flex-col gap-2" aria-label="Mobile navigation">
+      <a href="#about" class="nav-link">About Us</a>
+      <a href="#values" class="nav-link">Our Values</a>
+      <a href="#activities" class="nav-link">Activities</a>
+      <a href="#day" class="nav-link">A Day With Us</a>
+      <a href="#visit" class="nav-link">Visit</a>
+      <div class="flex gap-2 mt-2">
+        <button class="a11y-btn flex-1" id="fontToggleMobile" aria-label="Increase text size">A+</button>
+        <button class="a11y-btn flex-1" id="contrastToggleMobile" aria-label="Toggle high contrast">Contrast</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="relative pt-32 pb-20 sm:pt-40 sm:pb-28 overflow-hidden">
+    <div class="sun-rays" aria-hidden="true"></div>
+    <svg class="leaf-deco" style="top:120px; left:5%; width:80px;" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M50 5 Q90 25 50 95 Q10 25 50 5 Z" fill="var(--sage)"/>
+      <path d="M50 15 L50 85" stroke="var(--teal-deep)" stroke-width="2" fill="none"/>
+    </svg>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <span class="tag mb-6 inline-flex">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6.2 4.5 2.4 7.5L12 17l-6.2 4.5 2.4-7.5L2 9.5h7.5z"/></svg>
+            A place to grow, belong, and thrive
+          </span>
+
+          <h1 class="display font-extrabold leading-[0.95] mb-6" style="font-size: clamp(2.75rem, 7vw, 5rem); color:var(--bark)">
+            Welcome to<br>
+            <span style="color:var(--teal)">Tinkers Hatch</span><br>
+            <span style="color:var(--terracotta); font-style: italic;">Community Hub</span>
+          </h1>
+
+          <p class="text-xl sm:text-2xl mb-8 max-w-xl" style="color:var(--bark-soft); line-height:1.5">
+            A warm and caring home for adults with learning disabilities. Where every person is known by name, supported with dignity, and celebrated for who they are.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#visit" class="btn btn-primary">
+              <span>Plan a Visit</span>
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#about" class="btn btn-secondary">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              <span>Learn About Us</span>
+            </a>
+          </div>
+
+          <!-- Quick info -->
+          <div class="grid grid-cols-3 gap-4 mt-12 max-w-lg">
+            <div>
+              <div class="display text-3xl font-extrabold" style="color:var(--teal)">24</div>
+              <div class="text-sm font-bold" style="color:var(--bark-soft)">Residents</div>
+            </div>
+            <div>
+              <div class="display text-3xl font-extrabold" style="color:var(--terracotta)">7</div>
+              <div class="text-sm font-bold" style="color:var(--bark-soft)">Days a week</div>
+            </div>
+            <div>
+              <div class="display text-3xl font-extrabold" style="color:var(--bark-soft)">1:1</div>
+              <div class="text-sm font-bold" style="color:var(--bark-soft)">Person-centred</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="relative">
+          <div class="photo-frame">
+            <img src="https://picsum.photos/seed/garden-community-hands/800/900.jpg" 
+                 alt="Hands tending to a community garden together, with sunlight filtering through green leaves" 
+                 class="w-full h-[500px] sm:h-[600px] object-cover"
+                 loading="eager">
+          </div>
+          <!-- Floating badge -->
+          <div class="absolute -bottom-6 -left-6 sm:-left-10 card p-5 max-w-xs" style="border-radius:20px">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background:var(--honey)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--bark)"><path d="M12 2L4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold display text-lg leading-tight" style="color:var(--bark)">CQC Rated Good</div>
+                <div class="text-sm" style="color:var(--bark-soft)">Independently assessed care</div>
+              </div>
+            </div>
+          </div>
+          <!-- Floating leaf -->
+          <svg class="absolute -top-4 -right-4 leaf-deco" style="width:90px; animation-delay:-3s" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M50 5 Q90 25 50 95 Q10 25 50 5 Z" fill="var(--honey)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-20 sm:py-28 relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="grid lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-5 reveal">
+          <div class="photo-frame">
+            <img src="https://picsum.photos/seed/care-home-warm-interior/700/800.jpg" 
+                 alt="A bright, homely lounge area with comfortable seating and natural light" 
+                 class="w-full h-[450px] sm:h-[550px] object-cover"
+                 loading="lazy">
+          </div>
+        </div>
+        <div class="lg:col-span-7 reveal">
+          <span class="tag mb-4 inline-flex">About Our Home</span>
+          <h2 class="display font-extrabold mb-6" style="font-size: clamp(2rem, 4vw, 3.25rem); color:var(--bark)">
+            A home where everyone is <span style="color:var(--terracotta); font-style:italic;">known</span>, not just cared for.
+          </h2>
+          <p class="text-lg mb-5" style="color:var(--bark-soft)">
+            Tinkers Hatch is more than a care home — it's a community. Set in aconverted farmhouse surrounded by gardens, orchards, and quiet walking paths, we support adults with learning disabilities to live full, meaningful, and connected lives.
+          </p>
+          <p class="text-lg mb-8" style="color:var(--bark-soft)">
+            Our approach is built on relationships. We take time to learn each person's rhythm, preferences, and dreams. Whether that means tending the vegetable patch, joining a local art class, or simply enjoying a cup of tea in the conservatory — every day is shaped by the people who live here.
+          </p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:var(--cream-deep)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              </div>
+              <div>
+                <div class="font-bold" style="color:var(--bark)">A real home</div>
+                <div class="text-sm" style="color:var(--bark-soft)">Private rooms, personalised spaces, shared kitchens.</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:var(--cream-deep)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold" style="color:var(--bark)">Small community</div>
+                <div class="text-sm" style="color:var(--bark-soft)">24 residents, dedicated keyworkers, real friendships.</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:var(--cream-deep)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              </div>
+              <div>
+                <div class="font-bold" style="color:var(--bark)">Active days</div>
+                <div class="text-sm" style="color:var(--bark-soft)">Gardening, art, cooking, music, and local outings.</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:var(--cream-deep)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold" style="color:var(--bark)">Family included</div>
+                <div class="text-sm" style="color:var(--bark-soft)">Open visiting, regular updates, welcome events.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section id="values" class="py-20 sm:py-28" style="background:var(--cream-deep)">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mb-14 reveal">
+        <span class="tag mb-4 inline-flex">What We Believe</span>
+        <h2 class="display font-extrabold mb-4" style="font-size: clamp(2rem, 4vw, 3.25rem); color:var(--bark)">
+          Four simple values, lived every day.
+        </h2>
+        <p class="text-lg" style="color:var(--bark-soft)">
+          These aren't words on a poster. They shape how we greet each other in the morning, how we plan our weeks, and how we make decisions — large and small.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <article class="card p-7 reveal">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:var(--honey)">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--bark)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+          <h3 class="display font-extrabold text-2xl mb-3" style="color:var(--bark)">Kindness First</h3>
+          <p style="color:var(--bark-soft)">Every interaction begins with patience and warmth. We assume good intent, listen carefully, and respond with care.</p>
+        </article>
+
+        <article class="card p-7 reveal">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:var(--terracotta)">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--cream)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+          </div>
+          <h3 class="display font-extrabold text-2xl mb-3" style="color:var(--bark)">Belonging</h3>
+          <p style="color:var(--bark-soft)">Everyone has a place here. We celebrate differences, share meals, and build a community where no one is on the outside.</p>
+        </article>
+
+        <article class="card p-7 reveal">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:var(--sage)">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--bark)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+          </div>
+          <h3 class="display font-extrabold text-2xl mb-3" style="color:var(--bark)">Choice & Voice</h3>
+          <p style="color:var(--bark-soft)">Residents shape their days. From what's for breakfast to which activities we run — choices are real, and voices are heard.</p>
+        </article>
+
+        <article class="card p-7 reveal">
+          <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style="background:var(--rose)">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--cream)"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+          <h3 class="display font-extrabold text-2xl mb-3" style="color:var(--bark)">Growing Together</h3>
+          <p style="color:var(--bark-soft)">We learn, try new things, and celebrate small wins. Growth looks different for everyone — and that's the point.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section id="activities" class="py-20 sm:py-28">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-3xl mb-14 reveal">
+        <span class="tag mb-4 inline-flex">Things We Love To Do</span>
+        <h2 class="display font-extrabold mb-4" style="font-size: clamp(2rem, 4vw, 3.25rem); color:var(--bark)">
+          Activities shaped by the people who live here.
+        </h2>
+        <p class="text-lg" style="color:var(--bark-soft)">
+          Our weekly programme is built around what residents enjoy and want to try. Some activities are calm, some are lively — all are optional, all are welcoming.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <article class="card overflow-hidden reveal">
+          <img src="https://picsum.photos/seed/garden-vegetable-patch/600/400.jpg" alt="Hands planting seedlings in rich garden soil" class="w-full h-52 object-cover" loading="lazy">
+          <div class="p-6">
+            <div class="tag mb-3" style="background:var(--sage); color:var(--bark)">Outdoor</div>
+            <h3 class="display font-extrabold text-xl mb-2" style="color:var(--bark)">Gardening & Growing</h3>
+            <p style="color:var(--bark-soft)">Our vegetable patch, polytunnel, and flower beds. We grow food we eat and flowers we share.</p>
+          </div>
+        </article>
+
+        <article class="card overflow-hidden reveal">
+          <img src="https://picsum.photos/seed/art-paintbrush-colors/600/400.jpg" alt="Paintbrushes and colorful paints on a wooden table" class="w-full h-52 object-cover" loading="lazy">
+          <div class="p-6">
+            <div class="tag mb-3" style="background:var(--rose); color:var(--bark)">Creative</div>
+            <h3 class="display font-extrabold text-xl mb-2" style="color:var(--bark)">Art & Crafting</h3>
+            <p style="color:var(--bark-soft)">Painting, pottery, weaving, and seasonal crafts. We exhibit our work locally each year.</p>
+          </div>
+        </article>
+
+        <article class="card overflow-hidden reveal">
+          <img src="https://picsum.photos/seed/cooking-kitchen-fresh/600/400.jpg" alt="Fresh vegetables being chopped on a wooden cutting board" class="w-full h-52 object-cover" loading="lazy">
+          <div class="p-6">
+            <div class="tag mb-3" style="background:var(--honey); color:var(--bark)">Kitchen</div>
+            <h3 class="display font-extrabold text-xl mb-2" style="color:var(--bark)">Cooking & Baking</h3>
+            <p style="color:var(--bark-soft)">Weekly cookery sessions. We make bread, soups, cakes, and dishes from family recipes.</p>
+          </div>
+        </article>
+
+        <article class="card overflow-hidden reveal">
+          <img src="https://picsum.photos/seed/music-instruments-acoustic/600/400.jpg" alt="Acoustic instruments including guitar and drums arranged together" class="w-full h-52 object-cover" loading="lazy">
+          <div class="p-6">
+            <div class="tag mb-3" style="background:var(--terracotta); color:var(--cream)">Music</div>
+            <h3 class="display font-extrabold text-xl mb-2" style="color:var(--bark)">Music & Singing</h3>
+            <p style="color:var(--bark-soft)">A weekly music group, visiting musicians, and the occasional disco. No experience needed.</p>
+          </div>
+        </article>
+
+        <article class="card overflow-hidden reveal">
+          <img src="https://picsum.photos/seed/library-books-reading/600/400.jpg" alt="A cozy reading nook with books and a comfortable chair" class="w-full h-52 object-cover" loading="lazy">
+          <div class="p-6">
+            <div class="tag mb-3" style="background:var(--teal); color:var(--cream)">Quiet</div>
+            <h3 class="display font-extrabold text-xl mb-2" style="color:var(--bark)">Reading & Stories</h3>
+            <p style="color:var(--bark-soft)">Audiobooks, shared reading groups, and our weekly film afternoon with proper popcorn.</p>
+          </div>
+        </article>
+
+        <article class="card overflow-hidden reveal">
+          <img src="https://picsum.photos/seed/community-market-day/600/400.jpg" alt="People browsing a colourful local market stall" class="w-full h-52 object-cover" loading="lazy">
+          <div class="p-6">
+            <div class="tag mb-3" style="background:var(--bark-soft); color:var(--cream)">Out & About</div>
+            <h3 class="display font-extrabold text-xl mb-2" style="color:var(--bark)">Local Outings</h3>
+            <p style="color:var(--bark-soft)">Market days, café trips, the local cinema, woodland walks, and the annual seaside visit.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOOD CHECK-IN — Interactive -->
+  <section class="py-20 sm:py-28" style="background:var(--cream-deep)">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-10 reveal">
+        <span class="tag mb-4 inline-flex">A Little Hello</span>
+        <h2 class="display font-extrabold mb-4" style="font-size: clamp(2rem, 4vw, 3.25rem); color:var(--bark)">
+          How are you feeling today?
+        </h2>
+        <p class="text-lg" style="color:var(--bark-soft)">
+          Pick a face that matches your mood. We'll share something that might suit how you feel right now.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-3 sm:grid-cols-5 gap-3 sm:gap-4 mb-8 reveal" role="group" aria-label="Choose how you are feeling">
+        <button class="mood-btn" data-mood="happy" aria-label="I feel happy">
+          <span class="mood-emoji" aria-hidden="true">😊</span>
+          <span>Happy</span>
+        </button>
+        <button class="mood-btn" data-mood="calm" aria-label="I feel calm">
+          <span class="mood-emoji" aria-hidden="true">😌</span>
+          <span>Calm</span>
+        </button>
+        <button class="mood-btn" data-mood="curious" aria-label="I feel curious">
+          <span class="mood-emoji" aria-hidden="true">🤔</span>
+          <span>Curious</span>
+        </button>
+        <button class="mood-btn" data-mood="tired" aria-label="I feel tired">
+          <span class="mood-emoji" aria-hidden="true">😴</span>
+          <span>Tired</span>
+        </button>
+        <button class="mood-btn" data-mood="excited" aria-label="I feel excited">
+          <span class="mood-emoji" aria-hidden="true">🤩</span>
+          <span>Excited</span>
+        </button>
+      </div>
+
+      <div id="moodResponse" class="card p-8 sm:p-10 text-center reveal" role="status" aria-live="polite" style="min-height: 200px; display:flex; align-items:center; justify-content:center;">
+        <div id="moodDefault">
+          <p class="text-xl display font-extrabold" style="color:var(--bark)">Tap a face above to see a little message.</p>
+          <p class="mt-2" style="color:var(--bark-soft)">There are no wrong answers here.</p>
+        </div>
+        <div id="moodMessage" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- A DAY WITH US — Timeline -->
+  <section id="day" class="py-20 sm:py-28">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6">
+      <div class="text-center max-w-2xl mx-auto mb-14 reveal">
+        <span class="tag mb-4 inline-flex">A Day at Tinkers Hatch</span>
+        <h2 class="display font-extrabold mb-4" style="font-size: clamp(2rem, 4vw, 3.25rem); color:var(--bark)">
+          A gentle rhythm, not a rigid schedule.
+        </h2>
+        <p class="text-lg" style="color:var(--bark-soft)">
+          Here's a sense of how a typical day flows. Each person chooses what to join — and there's always room for a quiet moment.
+        </p>
+      </div>
+
+      <div class="space-y-8">
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="display font-extrabold text-2xl mb-1" style="color:var(--terracotta)">Morning</div>
+          <p class="text-lg" style="color:var(--bark-soft)">
+            Slow starts with breakfast cooked to order. Some head to the garden, others prefer a quiet cuppa in the conservatory. We come together for a 10am circle to share plans for the day.
+          </p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot" style="background:var(--sage)"></div>
+          <div class="display font-extrabold text-2xl mb-1" style="color:var(--teal)">Midday</div>
+          <p class="text-lg" style="color:var(--bark-soft)">
+            Activities in full swing — art in the studio, baking in the kitchen, or a walk down to the village. Lunch is shared around big tables, with food we've often grown or made ourselves.
+          </p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot" style="background:var(--rose)"></div>
+          <div class="display font-extrabold text-2xl mb-1" style="color:var(--terracotta)">Afternoon</div>
+          <p class="text-lg" style="color:var(--bark-soft)">
+            A slower pace. Reading, music, visits from family, or time spent in a favourite chair. Tea and cake at 3.30 — everyone's welcome.
+          </p>
+        </div>
+        <div class="timeline-item reveal">
+          <div class="timeline-dot" style="background:var(--honey)"></div>
+          <div class="display font-extrabold text-2xl mb-1" style="color:var(--teal)">Evening</div>
+          <p class="text-lg" style="color:var(--bark-soft)">
+            Supper together, then a film, a board game, or simply winding down. Bedtimes are flexible — this is home, and home runs on your own clock.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISIT -->
+  <section id="visit" class="py-20 sm:py-28" style="background:var(--teal); color:var(--cream); position:relative; overflow:hidden;">
+    <svg class="absolute -top-10 -right-10 leaf-deco" style="width:200px; opacity:0.15" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M50 5 Q90 25 50 95 Q10 25 50 5 Z" fill="var(--honey)"/>
+    </svg>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-start">
+        <div class="reveal">
+          <span class="tag mb-4 inline-flex" style="background:rgba(255,255,255,0.15); color:var(--cream)">Come and See Us</span>
+          <h2 class="display font-extrabold mb-6" style="font-size: clamp(2rem, 4vw, 3.25rem); color:var(--cream)">
+            We'd love to show you around.
+          </h2>
+          <p class="text-lg mb-8" style="color:rgba(251,244,230,0.85)">
+            The best way to understand Tinkers Hatch is to visit. Come for a cup of tea, walk the garden, meet some of the people who live and work here. There's no pressure — just a warm welcome.
+          </p>
+
+          <div class="space-y-5">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.12)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cream)" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="2.5"/></svg>
+              </div>
+              <div>
+                <div class="font-bold display text-lg" style="color:var(--cream)">Find us</div>
+                <div style="color:rgba(251,244,230,0.85)">Tinkers Hatch Farm, Hollow Lane,<br>Whitchurch, Somerset TA13 5RR</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.12)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cream)" stroke-width="2"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold display text-lg" style="color:var(--cream)">Call us</div>
+                <a href="tel:+441935123456" style="color:rgba(251,244,230,0.85); font-size:1.15rem;">01935 123 456</a>
+                <div style="color:rgba(251,244,230,0.7)">Monday to Friday, 9am – 5pm</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style="background:rgba(255,255,255,0.12)">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--cream)" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <div class="font-bold display text-lg" style="color:var(--cream)">Email us</div>
+                <a href="mailto:hello@tinkershatch.org.uk" style="color:rgba(251,244,230,0.85); font-size:1.15rem;">hello@tinkershatch.org.uk</a>
+                <div style="color:rgba(251,244,230,0.7)">We reply within two working days</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
+            <a href="tel:+441935123456" class="btn" style="background:var(--honey); color:var(--bark); box-shadow:0 4px 0 #B5821F;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              Call Now
+            </a>
+            <a href="mailto:hello@tinkershatch.org.uk" class="btn btn-secondary" style="color:var(--cream); border-color:var(--cream);">
+              Send an Email
+            </a>
+          </div>
+        </div>
+
+        <!-- Visiting info card -->
+        <div class="reveal">
+          <div class="card p-8" style="background:var(--cream); color:var(--bark); border-radius:32px;">
+            <h3 class="display font-extrabold text-2xl mb-6" style="color:var(--bark)">Visiting Hours</h3>
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between items-center py-3 border-b" style="border-color:var(--border)">
+                <span class="font-bold">Monday – Friday</span>
+                <span>10:00 – 12:00, 14:00 – 18:00</span>
+              </div>
+              <div class="flex justify-between items-center py-3 border-b" style="border-color:var(--border)">
+                <span class="font-bold">Saturday</span>
+                <span>10:00 – 18:00</span>
+              </div>
+              <div class="flex justify-between items-center py-3 border-b" style="border-color:var(--border)">
+                <span class="font-bold">Sunday</span>
+                <span>10:00 – 16:00</span>
+              </div>
+              <div class="flex justify-between items-center py-3">
+                <span class="font-bold">Family events</span>
+                <span style="color:var(--terracotta)">Monthly — see newsletter</span>
+              </div>
+            </div>
+
+            <div class="p-4 rounded-2xl" style="background:var(--cream-deep)">
+              <div class="font-bold display mb-1" style="color:var(--bark)">Good to know</div>
+              <p class="text-sm" style="color:var(--bark-soft)">We're happy to arrange visits outside these hours — just give us a call. We welcome children, well-behaved dogs (on the lead), and home-baked treats.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="py-12" style="background:var(--bark); color:var(--cream)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6">
+    <div class="grid md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <div class="flex items-center gap-3 mb-4">
+          <svg width="40" height="40" viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="21" fill="var(--honey)"/>
+            <path d="M22 10 L34 20 L34 32 L26 32 L26 25 L18 25 L18 32 L10 32 L10 20 Z" fill="var(--teal)"/>
+          </svg>
+          <div>
+            <div class="display font-extrabold text-lg" style="color:var(--cream)">Tinkers Hatch</div>
+            <div class="text-xs" style="color:rgba(251,244,230,0.7)">Community Hub</div>
+          </div>
+        </div>
+        <p style="color:rgba(251,244,230,0.7)">A caring home for adults with learning disabilities. Registered with the Care Quality Commission.</p>
+      </div>
+      <div>
+        <div class="display font-extrabold text-lg mb-4" style="color:var(--cream)">Explore</div>
+        <ul class="space-y-2">
+          <li><a href="#about" style="color:rgba(251,244,230,0.7)" class="hover:underline">About Us</a></li>
+          <li><a href="#values" style="color:rgba(251,244,230,0.7)" class="hover:underline">Our Values</a></li>
+          <li><a href="#activities" style="color:rgba(251,244,230,0.7)" class="hover:underline">Activities</a></li>
+          <li><a href="#day" style="color:rgba(251,244,230,0.7)" class="hover:underline">A Day With Us</a></li>
+          <li><a href="#visit" style="color:rgba(251,244,230,0.7)" class="hover:underline">Visit</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="display font-extrabold text-lg mb-4" style="color:var(--cream)">Accessibility</div>
+        <p class="mb-3" style="color:rgba(251,244,230,0.7)">We're committed to making our home and our website welcoming to everyone.</p>
+        <button id="footerA11y" class="text-sm font-bold underline" style="color:var(--honey)">Read our accessibility statement</button>
+      </div>
+    </div>
+    <div class="pt-8 border-t flex flex-col sm:flex-row justify-between gap-4" style="border-color:rgba(251,244,230,0.15)">
+      <p class="text-sm" style="color:rgba(251,244,230,0.6)">© 2024 Tinkers Hatch Community Hub. All rights reserved.</p>
+      <p class="text-sm" style="color:rgba(251,244,230,0.6)">Made with care in Somerset</p>
+    </div>
+  </div>
+</footer>
 
 <script>
-  // Tiny bit of interactivity: button reacts with a confetti burst
-  const exploreBtn = document.getElementById('exploreBtn');
-  const learnBtn = document.getElementById('learnBtn');
+  // ===== Accessibility controls =====
+  const body = document.body;
 
-  function popConfetti(x, y) {
-    const colors = ['#ff006e','#fb5607','#ffbe0b','#8338ec','#3a86ff','#06d6a0'];
-    for (let i = 0; i < 30; i++) {
-      const dot = document.createElement('div');
-      const size = Math.random() * 8 + 4;
-      Object.assign(dot.style, {
-        position: 'fixed',
-        left: x + 'px',
-        top: y + 'px',
-        width: size + 'px',
-        height: size + 'px',
-        background: colors[Math.floor(Math.random()*colors.length)],
-        borderRadius: Math.random() > 0.5 ? '50%' : '2px',
-        zIndex: 9999,
-        pointerEvents: 'none',
-        transition: 'all 1.2s cubic-bezier(0.2, 0.7, 0.3, 1)'
-      });
-      document.body.appendChild(dot);
-      const angle = Math.random() * Math.PI * 2;
-      const dist = Math.random() * 220 + 80;
-      const dx = Math.cos(angle) * dist;
-      const dy = Math.sin(angle) * dist - 80;
-      requestAnimationFrame(() => {
-        dot.style.transform = `translate(${dx}px, ${dy}px) rotate(${Math.random()*720}deg)`;
-        dot.style.opacity = '0';
-      });
-      setTimeout(() => dot.remove(), 1300);
-    }
+  function toggleContrast(btns) {
+    const isHigh = body.classList.toggle('contrast-high');
+    btns.forEach(b => b.setAttribute('aria-pressed', isHigh));
+    localStorage.setItem('th-contrast', isHigh ? 'high' : 'normal');
   }
 
-  exploreBtn.addEventListener('click', e => {
-    popConfetti(e.clientX, e.clientY);
-    exploreBtn.textContent = 'Let\'s go!';
-  });
+  const contrastBtns = [document.getElementById('contrastToggle'), document.getElementById('contrastToggleMobile')].filter(Boolean);
+  contrastBtns.forEach(b => b && b.addEventListener('click', () => toggleContrast(contrastBtns)));
 
-  learnBtn.addEventListener('click', e => {
-    popConfetti(e.clientX, e.clientY);
-  });
+  function cycleFontSize(btns) {
+    let mode = 'normal';
+    if (body.classList.contains('text-lg')) mode = 'large';
+    else if (body.classList.contains('text-xl')) mode = 'xl';
 
-  // Subtle parallax on mouse move
-  document.addEventListener('mousemove', e => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 20;
-    const y = (e.clientY / window.innerHeight - 0.5) * 20;
-    document.querySelectorAll('.orb').forEach((orb, i) => {
-      const mult = (i + 1) * 0.4;
-      orb.style.translate = `${x * mult}px ${y * mult}px`;
+    body.classList.remove('text-lg', 'text-xl');
+    let pressed = false;
+    if (mode === 'normal') { body.classList.add('text-lg'); pressed = true; }
+    else if (mode === 'large') { body.classList.add('text-xl'); pressed = true; }
+
+    btns.forEach(b => b && b.setAttribute('aria-pressed', pressed));
+    localStorage.setItem('th-fontsize', pressed ? (body.classList.contains('text-xl') ? 'xl' : 'large') : 'normal');
+  }
+
+  const fontBtns = [document.getElementById('fontToggle'), document.getElementById('fontToggleMobile')].filter(Boolean);
+  fontBtns.forEach(b => b && b.addEventListener('click', () => cycleFontSize(fontBtns)));
+
+  // Restore preferences
+  const savedContrast = localStorage.getItem('th-contrast');
+  if (savedContrast === 'high') toggleContrast(contrastBtns);
+
+  // ===== Mobile menu =====
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  menuToggle?.addEventListener('click', () => {
+    const open = mobileMenu.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', open);
+  });
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+  }));
+
+  // ===== Scroll reveal =====
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // ===== Mood check-in =====
+  const moodResponses = {
+    happy: {
+      title: "We're glad you're feeling happy!",
+      body: "Maybe today is a good day to share that with someone. A smile, a wave, or a 'good morning' can make someone else's day brighter too.",
+      color: "var(--honey)"
+    },
+    calm: {
+      title: "Calm is a lovely way to feel.",
+      body: "The garden is a beautiful spot for quiet moments today. There's a bench by the apple tree that catches the morning sun.",
+      color: "var(--sage)"
+    },
+    curious: {
+      title: "Curiosity is a wonderful thing.",
+      body: "There's a new art project starting this afternoon — trying something new is always welcome, even just to watch at first.",
+      color: "var(--terracotta)"
+    },
+    tired: {
+      title: "It's okay to feel tired.",
+      body: "Be gentle with yourself today. The conservatory has comfortable chairs and a pot of tea is never far away. Rest counts as doing something.",
+      color: "var(--rose)"
+    },
+    excited: {
+      title: "How lovely — excitement!",
+      body: "Channel that energy! Today's baking session is making bread rolls, and there's a film afternoon with proper popcorn at 3pm.",
+      color: "var(--honey)"
+    }
+  };
+
+  const moodBtns = document.querySelectorAll('.mood-btn');
+  const moodDefault = document.getElementById('moodDefault');
+  const moodMessage = document.getElementById('moodMessage');
+
+  moodBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mood = btn.dataset.mood;
+      const response = moodResponses[mood];
+      if (!response) return;
+
+      moodBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      moodDefault.hidden = true;
+      moodMessage.hidden = false;
+      moodMessage.innerHTML = `
+        <div style="max-width: 600px; margin: 0 auto;">
+          <div class="display font-extrabold text-2xl sm:text-3xl mb-4" style="color:var(--bark)">${response.title}</div>
+          <p class="text-lg" style="color:var(--bark-soft); line-height:1.6;">${response.body}</p>
+        </div>
+      `;
     });
   });
+
+  // ===== Accessibility statement toast =====
+  const footerA11y = document.getElementById('footerA11y');
+  footerA11y?.addEventListener('click', () => {
+    const toast = document.createElement('div');
+    toast.setAttribute('role', 'alert');
+    toast.style.cssText = 'position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--bark); color:var(--cream); padding:20px 28px; border-radius:16px; z-index:1000; max-width:90vw; box-shadow:0 12px 30px rgba(0,0,0,0.3); font-weight:600;';
+    toast.innerHTML = 'Our full accessibility statement is available on request. Please call us on <strong>01935 123 456</strong> and we will send it to you in your preferred format.';
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.transition = 'opacity 0.4s ease';
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 400);
+    }, 5000);
+  });
+
+  // ===== Respect reduced motion preference for ambient effects =====
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (prefersReducedMotion.matches) {
+    document.querySelectorAll('.blob, .sun-rays, .leaf-deco').forEach(el => {
+      el.style.animation = 'none';
+    });
+  }
 </script>
+
 </body>
 </html>
