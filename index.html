@@ -68,9 +68,7 @@
   }
 
   a, button, input, [tabindex]:focus-visible {
-    outline: 3px solid var(--terracotta);
-    outline-offset: 2px;
-    border-radius: 8px;
+    outline: none;
     z-index: 10;
     position: relative;
   }
@@ -532,16 +530,16 @@
 
           <div class="grid grid-cols-3 gap-4 mt-12 max-w-lg">
             <div>
-              <div class="display text-3xl font-extrabold" style="color:var(--teal)">24</div>
-              <div class="text-sm font-bold" style="color:var(--bark-soft)">Residents</div>
+              <div class="display text-3xl font-extrabold" style="color:var(--teal)">26</div>
+              <div class="text-sm font-bold" style="color:var(--bark-soft)">Full-time Clients</div>
             </div>
             <div>
-              <div class="display text-3xl font-extrabold" style="color:var(--terracotta)">7</div>
-              <div class="text-sm font-bold" style="color:var(--bark-soft)">Days a week</div>
+              <div class="display text-3xl font-extrabold" style="color:var(--terracotta)">5</div>
+              <div class="text-sm font-bold" style="color:var(--bark-soft)">Respite Clients</div>
             </div>
             <div>
-              <div class="display text-3xl font-extrabold" style="color:var(--bark-soft)">1:1</div>
-              <div class="text-sm font-bold" style="color:var(--bark-soft)">Person-centred</div>
+              <div class="display text-3xl font-extrabold" style="color:var(--bark-soft)">7</div>
+              <div class="text-sm font-bold" style="color:var(--bark-soft)">Days a Week</div>
             </div>
           </div>
         </div>
@@ -1325,27 +1323,31 @@
         </p>
       </div>
 
-      <div class="reveal" style="position: relative; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px -20px rgba(42, 31, 26, 0.3); border: 6px solid var(--card);">
-        <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
-          <div id="carouselImages" style="position: absolute; inset: 0; overflow: hidden; background: var(--bark);"></div>
-          
-          <div style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.4) 100%);"></div>
-
-          <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 z-10">
-            <button id="prevBtn" class="carousel-btn" aria-label="Previous image">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 19l-7-7 7-7"/></svg>
-            </button>
-            <button id="playPauseBtn" class="carousel-btn" aria-label="Pause carousel">
-              <svg id="pauseIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
-              <svg id="playIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
-            </button>
-            <button id="nextBtn" class="carousel-btn" aria-label="Next image">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 5l7 7-7 7"/></svg>
-            </button>
-          </div>
-
-          <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm" id="carouselCounter">1 / 25</div>
+      <div class="reveal" style="position: relative; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px -20px rgba(42, 31, 26, 0.3); border: 6px solid var(--card); background: var(--bark);">
+        <!-- Auto-adjusting container -->
+        <div id="carouselImages" style="position: relative; width: 100%; height: 500px; max-height: 80vh; overflow: hidden; transition: height 1s ease-in-out;">
+          <!-- Images injected via JS -->
         </div>
+        
+        <!-- Gradient overlay for better text contrast -->
+        <div style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.4) 100%);"></div>
+
+        <!-- Controls -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 z-10">
+          <button id="prevBtn" class="carousel-btn" aria-label="Previous image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <button id="playPauseBtn" class="carousel-btn" aria-label="Pause carousel">
+            <svg id="pauseIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/></svg>
+            <svg id="playIcon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button id="nextBtn" class="carousel-btn" aria-label="Next image">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <!-- Counter -->
+        <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm" id="carouselCounter">1 / 25</div>
       </div>
     </div>
   </section>
@@ -1686,62 +1688,34 @@
   });
 
   // ===== SUMMER FETE CAROUSEL =====
-  // Using lh3.googleusercontent.com which is much more reliable for web embedding
+  // PostImg direct links provided by user
   const galleryImages = [
-    { src: 'https://lh3.googleusercontent.com/d/1053bcIro2h-6ApQzYMvlEi-d5s55LLbw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/10TZ9rNHT-QMIL29jJZWKw9kU2cyFA1cf=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/10s01ZVji5PDTjaam7_2zL5RTGuzOscpa=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/10uWTs8ax84WNUayff9-ZOMd7BxQrBUoB=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/11zxMxAyKEIZWmbIIm1fAJas62VnPpIFw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/120-z-kVeB11zejICMdEYJtojMNQyXYmp=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/12c0inl5vnvEcfj8w4kpFYFeZL1yhJh15=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/13VgxXxiwbm8XKHUul0rHjcB8aiEIgS2T=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/14Dcps3xTQktGqsTQ6BBqHkPqEuBwVA_P=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/16LpJ1Kar-2GYQp4dywd2lZyMIhGdEY4C=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/16QjnNkvlzpQaAtnav9ReMiTa-veKkZan=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/18jVVC2eA0tCKkIgdDMrGi4lLGWi7oInG=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/19AgxhVXDn2KBmEvlqaQtbqwTgB7_474w=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/19dTg_16mooNp7z2zPfxNcmRpWST-a4bn=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1AzatyV9MPC2LFWNY6ppOgREZjyAfWeDM=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1CFWDzpR8oXWwQhLBVmhYWASluQYA1Xpe=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1D9NsKc09DIkSUKFzLVZnFYcXoDzHmKL-=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1DxWoTRtDT5wJMqGUnjk6FO6hl1BN7oOz=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1ER8ttrPwz2PCzNFPuAG647Q_4HOlDaEw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1Emga7EeykSOkete9Yoamp3fzYIluH1Cb=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1KMGjJ8gMGNn0nkk8721I2gRYlxVvjGT0=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1M4kD_BAwZlrng8wGVa4AROjmpDwWezhb=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1Nr4nuBN2Gf7oyoVpYPrcXmohmdSA9dd9=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1OKnd8JQ5O_j7Hzl0jgQehU-S-1FME4YI=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1Ph2jcjLit71GohVotqNXHa7GatbAQ6Qv=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1SwXl0EHKdrmaN6QbRUeyONo9TZpFtY0b=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1UbsqcPGpTuBbUvoqw3EUjf5h-OR2SeZW=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1Uo7lrFGWKT__-fGkVjBV_XbuJ6H7bVoo=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1VUB1EMigdw5W8YBVn5Qo44XCcsaHss5J=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1XEvW09s_g8vsUhH0rUlTTCmFG3RlqXmn=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1_AiGdoal_HcckI78boZLF1njMuO3zZTY=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1_n9qaq-iCJYf4Z6EKKOUWsttoxp8iBNz=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1_sf8msruFFubmBgwhsoT1Km9xUPHGNM2=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1cNeT5Xdb8ZdxSAY7dzRzVUcznzK7tliN=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1gp1olGPU9dfQ6tpuHQhmQQIqFZz3zTtD=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1hALLXXsJRnIhI5cQSxdla088S_pdno3k=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1hVYWPCS6BARDan6Gtv5oDHbwJUtTVdvM=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1hjx30yJFSOYu6-yhqvnPzzq8BCl20BIt=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1incrJOEDQ8YKUEhjC2HWS2zq6va-ED98=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1o1yw1kQ4oNBNlnYvh3jCTkhdCzMOWkaf=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1oA2k63Cj-2P6OncmUA2qgyKtH2RJTFPw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1oXpU2vt6-wR62nwtuVfuzWtAC6u-yveN=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1qFguTg5zy1l-yCQ3wVDS4IS_iucH6cIy=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1rh3KaQ8BbUaxd988IQQD62kQyi6cBPqT=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1tDWCHL8a4bK1zDu9Em1LBWGc-enI9aa6=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1tEn9Bwe3nXXHj72IPu7_7sUga42WtD_R=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1tG3xhR4H8XpgN9VvTrQjM19ffceQdO9b=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1tpJsh6h0ZhWyR6QbD3W4yBbFIDrKFFDh=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1v2Ci_2GHG_fbluvZzJSZHRoOGBpTNDZM=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://lh3.googleusercontent.com/d/1yuVsAKTjG1cJ205Hbcfy3l-CpsLw-tdn=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' }
+    { src: 'https://i.postimg.cc/k67ngNpp/123-(1).jpg', alt: 'Beautiful flower 1' },
+    { src: 'https://i.postimg.cc/BP64xSsp/123-(10).jpg', alt: 'Beautiful flower 2' },
+    { src: 'https://i.postimg.cc/q6R48J0Z/123-(11).jpg', alt: 'Beautiful flower 3' },
+    { src: 'https://i.postimg.cc/w3TqKVJ7/123-(12).jpg', alt: 'Beautiful flower 4' },
+    { src: 'https://i.postimg.cc/145mxH63/123-(13).jpg', alt: 'Beautiful flower 5' },
+    { src: 'https://i.postimg.cc/V5LfyRMM/123-(14).jpg', alt: 'Beautiful flower 6' },
+    { src: 'https://i.postimg.cc/RqsMvHQb/123-(15).jpg', alt: 'Beautiful flower 7' },
+    { src: 'https://i.postimg.cc/9z8Wc7tL/123-(16).jpg', alt: 'Beautiful flower 8' },
+    { src: 'https://i.postimg.cc/9z8Wc7t1/123-(17).jpg', alt: 'Beautiful flower 9' },
+    { src: 'https://i.postimg.cc/14C9yqcW/123-(18).jpg', alt: 'Beautiful flower 10' },
+    { src: 'https://i.postimg.cc/56Xfy2sf/123-(19).jpg', alt: 'Beautiful flower 11' },
+    { src: 'https://i.postimg.cc/N9bQ99hs/123-(2).jpg', alt: 'Beautiful flower 12' },
+    { src: 'https://i.postimg.cc/LnJm58xd/123-(20).jpg', alt: 'Beautiful flower 13' },
+    { src: 'https://i.postimg.cc/crvdCLFS/123-(21).jpg', alt: 'Beautiful flower 14' },
+    { src: 'https://i.postimg.cc/PPCdJ5SJ/123-(22).jpg', alt: 'Beautiful flower 15' },
+    { src: 'https://i.postimg.cc/kB27GgT2/123-(23).jpg', alt: 'Beautiful flower 16' },
+    { src: 'https://i.postimg.cc/fJ1D9QPW/123-(24).jpg', alt: 'Beautiful flower 17' },
+    { src: 'https://i.postimg.cc/tY8pxGcC/123-(25).jpg', alt: 'Beautiful flower 18' },
+    { src: 'https://i.postimg.cc/8JwTJJ85/123-(3).jpg', alt: 'Beautiful flower 19' },
+    { src: 'https://i.postimg.cc/jwvRwwVj/123-(4).jpg', alt: 'Beautiful flower 20' },
+    { src: 'https://i.postimg.cc/zbpqbbm3/123-(5).jpg', alt: 'Beautiful flower 21' },
+    { src: 'https://i.postimg.cc/wRvghqH1/123-(6).jpg', alt: 'Beautiful flower 22' },
+    { src: 'https://i.postimg.cc/LgX2z9Rx/123-(7).jpg', alt: 'Beautiful flower 23' },
+    { src: 'https://i.postimg.cc/gLJmvzdM/123-(8).jpg', alt: 'Beautiful flower 24' },
+    { src: 'https://i.postimg.cc/fSLDxzZd/123-(9).jpg', alt: 'Beautiful flower 25' }
   ];
-
-  // Shuffle array to mix flowers randomly
-  galleryImages.sort(() => Math.random() - 0.5);
 
   let currentImgIndex = 0;
   let carouselInterval;
@@ -1761,7 +1735,22 @@
     img.style.opacity = '0';
     img.style.transition = 'opacity 2s ease-in-out';
     img.loading = 'lazy';
-    img.referrerPolicy = 'no-referrer'; // Helps bypass some Google Drive hotlink blocks
+    
+    // Explicitly calculate pixel height to fit screen while maintaining aspect ratio
+    img.onload = function() {
+      if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+        const width = container.offsetWidth;
+        let height = (width * img.naturalHeight) / img.naturalWidth;
+        
+        // Ensure it doesn't exceed 80% of the viewport height on small screens
+        const maxViewportHeight = window.innerHeight * 0.8;
+        if (height > maxViewportHeight) {
+          height = maxViewportHeight;
+        }
+        
+        container.style.height = `${height}px`;
+      }
+    };
     
     container.appendChild(img);
     
