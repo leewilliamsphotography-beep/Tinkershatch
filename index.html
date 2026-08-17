@@ -1325,7 +1325,7 @@
 
       <div class="reveal" style="position: relative; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px -20px rgba(42, 31, 26, 0.3); border: 6px solid var(--card); background: var(--bark);">
         <!-- Auto-adjusting container -->
-        <div id="carouselImages" style="position: relative; width: 100%; height: 500px; max-height: 80vh; overflow: hidden; transition: height 1s ease-in-out;">
+        <div id="carouselImages" style="position: relative; width: 100%; height: 500px; max-height: 80vh; overflow: hidden; transition: height 1s ease-in-out; display: flex; align-items: center; justify-content: center;">
           <!-- Images injected via JS -->
         </div>
         
@@ -1727,30 +1727,20 @@
     const img = document.createElement('img');
     img.src = galleryImages[index].src;
     img.alt = galleryImages[index].alt;
+    
+    // FIX: Use 'contain' instead of 'cover' so images aren't zoomed/cropped
+    img.style.maxWidth = '100%';
+    img.style.maxHeight = '100%';
+    img.style.width = 'auto';
+    img.style.height = 'auto';
+    img.style.objectFit = 'contain';
     img.style.position = 'absolute';
-    img.style.inset = '0';
-    img.style.width = '100%';
-    img.style.height = '100%';
-    img.style.objectFit = 'cover';
+    img.style.top = '50%';
+    img.style.left = '50%';
+    img.style.transform = 'translate(-50%, -50%)';
     img.style.opacity = '0';
     img.style.transition = 'opacity 2s ease-in-out';
     img.loading = 'lazy';
-    
-    // Explicitly calculate pixel height to fit screen while maintaining aspect ratio
-    img.onload = function() {
-      if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-        const width = container.offsetWidth;
-        let height = (width * img.naturalHeight) / img.naturalWidth;
-        
-        // Ensure it doesn't exceed 80% of the viewport height on small screens
-        const maxViewportHeight = window.innerHeight * 0.8;
-        if (height > maxViewportHeight) {
-          height = maxViewportHeight;
-        }
-        
-        container.style.height = `${height}px`;
-      }
-    };
     
     container.appendChild(img);
     
@@ -1843,7 +1833,6 @@
     document.querySelectorAll('.blob, .sun-rays, .leaf-deco, .cloud-drift, .bird, .steam').forEach(el => {
       el.style.animation = 'none';
     });
-    // Also stop carousel if reduced motion is preferred
     stopCarousel();
   }
 </script>
