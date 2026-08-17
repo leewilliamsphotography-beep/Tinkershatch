@@ -1649,12 +1649,61 @@
   });
 
   // ===== NATURE CAROUSEL =====
-  const galleryImages = [];
-  // Generate 25 images (mix of flower and mushroom seeds)
-  for(let i=1; i<=12; i++) galleryImages.push({ src: `https://picsum.photos/seed/flower${i}/1200/800.jpg`, alt: `Beautiful flower ${i} from the Tinkers Hatch garden` });
-  for(let i=1; i<=13; i++) galleryImages.push({ src: `https://picsum.photos/seed/mushroom${i}/1200/800.jpg`, alt: `Wild mushroom ${i} found in the Tinkers Hatch grounds` });
+  // Array of your 49 Google Drive image links formatted for web display.
+  const galleryImages = [
+    { src: 'https://drive.google.com/thumbnail?id=1053bcIro2h-6ApQzYMvlEi-d5s55LLbw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=10TZ9rNHT-QMIL29jJZWKw9kU2cyFA1cf&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=10s01ZVji5PDTjaam7_2zL5RTGuzOscpa&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=10uWTs8ax84WNUayff9-ZOMd7BxQrBUoB&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=11zxMxAyKEIZWmbIIm1fAJas62VnPpIFw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=120-z-kVeB11zejICMdEYJtojMNQyXYmp&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=12c0inl5vnvEcfj8w4kpFYFeZL1yhJh15&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=13VgxXxiwbm8XKHUul0rHjcB8aiEIgS2T&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=14Dcps3xTQktGqsTQ6BBqHkPqEuBwVA_P&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=16LpJ1Kar-2GYQp4dywd2lZyMIhGdEY4C&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=16QjnNkvlzpQaAtnav9ReMiTa-veKkZan&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=18jVVC2eA0tCKkIgdDMrGi4lLGWi7oInG&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=19AgxhVXDn2KBmEvlqaQtbqwTgB7_474w&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=19dTg_16mooNp7z2zPfxNcmRpWST-a4bn&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1AzatyV9MPC2LFWNY6ppOgREZjyAfWeDM&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1CFWDzpR8oXWwQhLBVmhYWASluQYA1Xpe&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1D9NsKc09DIkSUKFzLVZnFYcXoDzHmKL-&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1DxWoTRtDT5wJMqGUnjk6FO6hl1BN7oOz&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1ER8ttrPwz2PCzNFPuAG647Q_4HOlDaEw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1Emga7EeykSOkete9Yoamp3fzYIluH1Cb&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1KMGjJ8gMGNn0nkk8721I2gRYlxVvjGT0&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1M4kD_BAwZlrng8wGVa4AROjmpDwWezhb&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1Nr4nuBN2Gf7oyoVpYPrcXmohmdSA9dd9&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1OKnd8JQ5O_j7Hzl0jgQehU-S-1FME4YI&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1Ph2jcjLit71GohVotqNXHa7GatbAQ6Qv&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1SwXl0EHKdrmaN6QbRUeyONo9TZpFtY0b&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1UbsqcPGpTuBbUvoqw3EUjf5h-OR2SeZW&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1Uo7lrFGWKT__-fGkVjBV_XbuJ6H7bVoo&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1VUB1EMigdw5W8YBVn5Qo44XCcsaHss5J&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1XEvW09s_g8vsUhH0rUlTTCmFG3RlqXmn&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1_AiGdoal_HcckI78boZLF1njMuO3zZTY&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1_n9qaq-iCJYf4Z6EKKOUWsttoxp8iBNz&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1_sf8msruFFubmBgwhsoT1Km9xUPHGNM2&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1cNeT5Xdb8ZdxSAY7dzRzVUcznzK7tliN&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1gp1olGPU9dfQ6tpuHQhmQQIqFZz3zTtD&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1hALLXXsJRnIhI5cQSxdla088S_pdno3k&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1hVYWPCS6BARDan6Gtv5oDHbwJUtTVdvM&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1hjx30yJFSOYu6-yhqvnPzzq8BCl20BIt&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1incrJOEDQ8YKUEhjC2HWS2zq6va-ED98&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1o1yw1kQ4oNBNlnYvh3jCTkhdCzMOWkaf&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1oA2k63Cj-2P6OncmUA2qgyKtH2RJTFPw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1oXpU2vt6-wR62nwtuVfuzWtAC6u-yveN&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1qFguTg5zy1l-yCQ3wVDS4IS_iucH6cIy&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1rh3KaQ8BbUaxd988IQQD62kQyi6cBPqT&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1tDWCHL8a4bK1zDu9Em1LBWGc-enI9aa6&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1tEn9Bwe3nXXHj72IPu7_7sUga42WtD_R&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1tG3xhR4H8XpgN9VvTrQjM19ffceQdO9b&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1tpJsh6h0ZhWyR6QbD3W4yBbFIDrKFFDh&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1v2Ci_2GHG_fbluvZzJSZHRoOGBpTNDZM&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://drive.google.com/thumbnail?id=1yuVsAKTjG1cJ205Hbcfy3l-CpsLw-tdn&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' }
+  ];
 
-  // Shuffle array to mix flowers and mushrooms randomly
+  // Shuffle array to mix flowers randomly
   galleryImages.sort(() => Math.random() - 0.5);
 
   let currentImgIndex = 0;
