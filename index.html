@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Tinkers Hatch Community Hub — A Warm Welcome</title>
+<title>Tinkers Hatch Community Hub — Summer Fete</title>
 <meta name="description" content="Tinkers Hatch Community Hub, New Pond Hill — a caring home for adults with learning disabilities. A place to grow, belong, and thrive." />
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -13,20 +13,20 @@
 
 <style>
   :root {
-    --cream: #FBF4E6;
-    --cream-deep: #F2E6CC;
-    --bark: #2A1F1A;
-    --bark-soft: #4A3A30;
-    --teal: #0F5A56;
-    --teal-deep: #083C39;
-    --terracotta: #C24A1F;
-    --honey: #E8A33D;
-    --rose: #D2776A;
-    --sage: #8FAE7A;
-    --sky: #FCE8B5;
-    --sky-deep: #F9D68A;
-    --card: #FFF8EA;
-    --border: #E5D8BE;
+    --cream: #FFFCF2;
+    --cream-deep: #FFF3C4;
+    --bark: #1A535C;
+    --bark-soft: #2A6F6F;
+    --teal: #06A77D;
+    --teal-deep: #048A66;
+    --terracotta: #FF6B35;
+    --honey: #FFC857;
+    --rose: #F072A1;
+    --sage: #95D5B2;
+    --sky: #E0F8F5;
+    --sky-deep: #B8E6E0;
+    --card: #FFFFFF;
+    --border: #D4EDE9;
   }
 
   body.contrast-high {
@@ -34,8 +34,8 @@
     --cream-deep: #0a0a0a;
     --bark: #FFFFFF;
     --bark-soft: #FFE08A;
-    --teal: #66E0D9;
-    --teal-deep: #B5FFF7;
+    --teal: #00FFC8;
+    --teal-deep: #00C49E;
     --terracotta: #FF9E5C;
     --honey: #FFD700;
     --rose: #FFA9A0;
@@ -67,9 +67,8 @@
     letter-spacing: -0.02em;
   }
 
-  /* Refined focus states - teal and inset so they don't break layout */
   a, button, input, [tabindex]:focus-visible {
-    outline: 3px solid var(--teal);
+    outline: 3px solid var(--terracotta);
     outline-offset: 2px;
     border-radius: 8px;
     z-index: 10;
@@ -88,6 +87,37 @@
   }
   .skip-link:focus { left: 16px; top: 16px; }
 
+  .fete-banner {
+    background: var(--terracotta);
+    color: var(--cream);
+    padding: 14px 16px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    position: relative;
+    z-index: 60;
+    overflow: hidden;
+    border-bottom: 4px solid var(--honey);
+    transform: translateY(0);
+    opacity: 1;
+    transition: transform 0.8s ease-out, opacity 0.8s ease-out, max-height 0.8s ease-out, padding 0.8s ease-out, border 0.8s ease-out;
+    max-height: 100px;
+  }
+  .fete-banner.hide {
+    transform: translateY(-100%);
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+    pointer-events: none;
+  }
+  .fete-banner svg { flex-shrink: 0; }
+
   .ambient {
     position: fixed;
     inset: 0;
@@ -98,13 +128,13 @@
   .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.35;
+    filter: blur(70px);
+    opacity: 0.4;
     animation: drift 22s ease-in-out infinite;
   }
   .blob-1 { width: 380px; height: 380px; background: var(--honey); top: -80px; left: -80px; }
   .blob-2 { width: 460px; height: 460px; background: var(--sage); bottom: -120px; right: -100px; animation-delay: -8s; }
-  .blob-3 { width: 300px; height: 300px; background: var(--rose); top: 40%; left: 60%; animation-delay: -14s; opacity: 0.25; }
+  .blob-3 { width: 300px; height: 300px; background: var(--rose); top: 40%; left: 60%; animation-delay: -14s; opacity: 0.3; }
 
   @keyframes drift {
     0%, 100% { transform: translate(0, 0) scale(1); }
@@ -119,7 +149,7 @@
     right: -150px;
     top: -150px;
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.6;
   }
   .sun-rays::before {
     content: '';
@@ -142,7 +172,7 @@
   .card:hover {
     transform: translateY(-4px);
     border-color: var(--teal);
-    box-shadow: 0 12px 32px -12px rgba(15, 90, 86, 0.25);
+    box-shadow: 0 12px 32px -12px rgba(6, 167, 125, 0.25);
   }
 
   .btn {
@@ -239,7 +269,7 @@
 
   header {
     backdrop-filter: blur(12px);
-    background: rgba(251, 244, 230, 0.85);
+    background: rgba(255, 252, 242, 0.9);
     border-bottom: 1px solid var(--border);
   }
   body.contrast-high header { background: rgba(0, 0, 0, 0.9); }
@@ -278,18 +308,13 @@
     display: block;
   }
 
-  /* === FLUSH GRID FOR ACTIVITY CARDS === */
   .flush-grid {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 0;
   }
-  @media (min-width: 640px) {
-    .flush-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (min-width: 1024px) {
-    .flush-grid { grid-template-columns: repeat(3, 1fr); }
-  }
+  @media (min-width: 640px) { .flush-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .flush-grid { grid-template-columns: repeat(3, 1fr); } }
 
   .activity-card {
     background: var(--card);
@@ -302,7 +327,7 @@
   .activity-card:hover {
     transform: scale(1.02);
     z-index: 5;
-    box-shadow: 0 16px 40px -10px rgba(15, 90, 86, 0.3);
+    box-shadow: 0 16px 40px -10px rgba(6, 167, 125, 0.3);
     transition: transform 0.3s ease, z-index 0s 0s, box-shadow 0.3s ease;
   }
   .activity-card .img-wrap {
@@ -311,14 +336,13 @@
     border-bottom: 2px solid var(--border);
   }
 
-  /* === CAROUSEL STYLES === */
   .carousel-btn {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: rgba(42, 31, 26, 0.7);
+    background: rgba(26, 83, 92, 0.7);
     backdrop-filter: blur(8px);
-    border: 2px solid rgba(251, 244, 230, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.6);
     color: var(--cream);
     display: inline-flex;
     align-items: center;
@@ -394,6 +418,16 @@
 
 <a href="#main" class="skip-link">Skip to main content</a>
 
+<div id="feteBanner" class="fete-banner" role="status">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--honey)" aria-hidden="true">
+    <path d="M12 2l2.5 7.5H22l-6.2 4.5 2.4 7.5L12 17l-6.2 4.5 2.4-7.5L2 9.5h7.5z"/>
+  </svg>
+  <span>Welcome to our Summer Fete! Join us for games, tea, and cake in the garden.</span>
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="var(--honey)" aria-hidden="true">
+    <path d="M12 2l2.5 7.5H22l-6.2 4.5 2.4 7.5L12 17l-6.2 4.5 2.4-7.5L2 9.5h7.5z"/>
+  </svg>
+</div>
+
 <div class="ambient" aria-hidden="true">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
@@ -418,7 +452,7 @@
       <a href="#about" class="nav-link">About Us</a>
       <a href="#values" class="nav-link">Our Values</a>
       <a href="#activities" class="nav-link">Activities</a>
-      <a href="#gallery" class="nav-link">Nature</a>
+      <a href="#gallery" class="nav-link">Summer Fete</a>
       <a href="#day" class="nav-link">A Day With Us</a>
       <a href="#visit" class="nav-link">Visit</a>
     </nav>
@@ -446,7 +480,7 @@
       <a href="#about" class="nav-link">About Us</a>
       <a href="#values" class="nav-link">Our Values</a>
       <a href="#activities" class="nav-link">Activities</a>
-      <a href="#gallery" class="nav-link">Nature</a>
+      <a href="#gallery" class="nav-link">Summer Fete</a>
       <a href="#day" class="nav-link">A Day With Us</a>
       <a href="#visit" class="nav-link">Visit</a>
       <div class="flex gap-2 mt-2">
@@ -1278,29 +1312,25 @@
     </div>
   </section>
 
-  <!-- NATURE CAROUSEL -->
+  <!-- SUMMER FETE CAROUSEL -->
   <section id="gallery" class="py-20 sm:py-28" style="background:var(--cream-deep)">
     <div class="max-w-6xl mx-auto px-4 sm:px-6">
       <div class="text-center max-w-2xl mx-auto mb-10 reveal">
-        <span class="tag mb-4 inline-flex">Nature & Wildlife</span>
+        <span class="tag mb-4 inline-flex">Summer Fete Highlights</span>
         <h2 class="display font-extrabold mb-4" style="font-size: clamp(2rem, 4vw, 3.25rem); color:var(--bark)">
-          Gardens, Flowers & Foraging
+          Gardens in Bloom
         </h2>
         <p class="text-lg" style="color:var(--bark-soft)">
-          Our grounds are full of life. Here are some of the beautiful flowers and mushrooms found around Tinkers Hatch.
+          Our grounds are looking wonderful this summer. Here are some of the beautiful flowers blooming around Tinkers Hatch.
         </p>
       </div>
 
       <div class="reveal" style="position: relative; border-radius: 32px; overflow: hidden; box-shadow: 0 20px 50px -20px rgba(42, 31, 26, 0.3); border: 6px solid var(--card);">
-        <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%; /* 16:9 Aspect Ratio */">
-          <div id="carouselImages" style="position: absolute; inset: 0; overflow: hidden; background: var(--bark);">
-            <!-- Images injected via JS -->
-          </div>
+        <div style="position: relative; width: 100%; height: 0; padding-bottom: 56.25%;">
+          <div id="carouselImages" style="position: absolute; inset: 0; overflow: hidden; background: var(--bark);"></div>
           
-          <!-- Gradient overlay for better text contrast -->
           <div style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.4) 100%);"></div>
 
-          <!-- Controls -->
           <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 z-10">
             <button id="prevBtn" class="carousel-btn" aria-label="Previous image">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M15 19l-7-7 7-7"/></svg>
@@ -1314,7 +1344,6 @@
             </button>
           </div>
 
-          <!-- Counter -->
           <div class="absolute top-4 right-4 bg-black bg-opacity-50 text-white px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm" id="carouselCounter">1 / 25</div>
         </div>
       </div>
@@ -1529,7 +1558,7 @@
           <li><a href="#about" style="color:rgba(251,244,230,0.7)" class="hover:underline">About Us</a></li>
           <li><a href="#values" style="color:rgba(251,244,230,0.7)" class="hover:underline">Our Values</a></li>
           <li><a href="#activities" style="color:rgba(251,244,230,0.7)" class="hover:underline">Activities</a></li>
-          <li><a href="#gallery" style="color:rgba(251,244,230,0.7)" class="hover:underline">Nature</a></li>
+          <li><a href="#gallery" style="color:rgba(251,244,230,0.7)" class="hover:underline">Summer Fete</a></li>
           <li><a href="#day" style="color:rgba(251,244,230,0.7)" class="hover:underline">A Day With Us</a></li>
           <li><a href="#visit" style="color:rgba(251,244,230,0.7)" class="hover:underline">Visit</a></li>
         </ul>
@@ -1549,6 +1578,14 @@
 
 <script>
   const body = document.body;
+
+  // === Summer Fete Banner Disappear Logic ===
+  setTimeout(() => {
+    const banner = document.getElementById('feteBanner');
+    if (banner) {
+      banner.classList.add('hide');
+    }
+  }, 10000); // 10 seconds
 
   function toggleContrast(btns) {
     const isHigh = body.classList.toggle('contrast-high');
@@ -1648,59 +1685,59 @@
     });
   });
 
-  // ===== NATURE CAROUSEL =====
-  // Array of your 49 Google Drive image links formatted for web display.
+  // ===== SUMMER FETE CAROUSEL =====
+  // Using lh3.googleusercontent.com which is much more reliable for web embedding
   const galleryImages = [
-    { src: 'https://drive.google.com/thumbnail?id=1053bcIro2h-6ApQzYMvlEi-d5s55LLbw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=10TZ9rNHT-QMIL29jJZWKw9kU2cyFA1cf&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=10s01ZVji5PDTjaam7_2zL5RTGuzOscpa&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=10uWTs8ax84WNUayff9-ZOMd7BxQrBUoB&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=11zxMxAyKEIZWmbIIm1fAJas62VnPpIFw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=120-z-kVeB11zejICMdEYJtojMNQyXYmp&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=12c0inl5vnvEcfj8w4kpFYFeZL1yhJh15&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=13VgxXxiwbm8XKHUul0rHjcB8aiEIgS2T&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=14Dcps3xTQktGqsTQ6BBqHkPqEuBwVA_P&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=16LpJ1Kar-2GYQp4dywd2lZyMIhGdEY4C&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=16QjnNkvlzpQaAtnav9ReMiTa-veKkZan&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=18jVVC2eA0tCKkIgdDMrGi4lLGWi7oInG&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=19AgxhVXDn2KBmEvlqaQtbqwTgB7_474w&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=19dTg_16mooNp7z2zPfxNcmRpWST-a4bn&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1AzatyV9MPC2LFWNY6ppOgREZjyAfWeDM&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1CFWDzpR8oXWwQhLBVmhYWASluQYA1Xpe&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1D9NsKc09DIkSUKFzLVZnFYcXoDzHmKL-&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1DxWoTRtDT5wJMqGUnjk6FO6hl1BN7oOz&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1ER8ttrPwz2PCzNFPuAG647Q_4HOlDaEw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1Emga7EeykSOkete9Yoamp3fzYIluH1Cb&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1KMGjJ8gMGNn0nkk8721I2gRYlxVvjGT0&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1M4kD_BAwZlrng8wGVa4AROjmpDwWezhb&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1Nr4nuBN2Gf7oyoVpYPrcXmohmdSA9dd9&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1OKnd8JQ5O_j7Hzl0jgQehU-S-1FME4YI&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1Ph2jcjLit71GohVotqNXHa7GatbAQ6Qv&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1SwXl0EHKdrmaN6QbRUeyONo9TZpFtY0b&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1UbsqcPGpTuBbUvoqw3EUjf5h-OR2SeZW&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1Uo7lrFGWKT__-fGkVjBV_XbuJ6H7bVoo&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1VUB1EMigdw5W8YBVn5Qo44XCcsaHss5J&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1XEvW09s_g8vsUhH0rUlTTCmFG3RlqXmn&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1_AiGdoal_HcckI78boZLF1njMuO3zZTY&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1_n9qaq-iCJYf4Z6EKKOUWsttoxp8iBNz&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1_sf8msruFFubmBgwhsoT1Km9xUPHGNM2&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1cNeT5Xdb8ZdxSAY7dzRzVUcznzK7tliN&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1gp1olGPU9dfQ6tpuHQhmQQIqFZz3zTtD&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1hALLXXsJRnIhI5cQSxdla088S_pdno3k&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1hVYWPCS6BARDan6Gtv5oDHbwJUtTVdvM&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1hjx30yJFSOYu6-yhqvnPzzq8BCl20BIt&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1incrJOEDQ8YKUEhjC2HWS2zq6va-ED98&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1o1yw1kQ4oNBNlnYvh3jCTkhdCzMOWkaf&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1oA2k63Cj-2P6OncmUA2qgyKtH2RJTFPw&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1oXpU2vt6-wR62nwtuVfuzWtAC6u-yveN&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1qFguTg5zy1l-yCQ3wVDS4IS_iucH6cIy&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1rh3KaQ8BbUaxd988IQQD62kQyi6cBPqT&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1tDWCHL8a4bK1zDu9Em1LBWGc-enI9aa6&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1tEn9Bwe3nXXHj72IPu7_7sUga42WtD_R&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1tG3xhR4H8XpgN9VvTrQjM19ffceQdO9b&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1tpJsh6h0ZhWyR6QbD3W4yBbFIDrKFFDh&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1v2Ci_2GHG_fbluvZzJSZHRoOGBpTNDZM&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' },
-    { src: 'https://drive.google.com/thumbnail?id=1yuVsAKTjG1cJ205Hbcfy3l-CpsLw-tdn&sz=w1600', alt: 'Beautiful flower from the Tinkers Hatch garden' }
+    { src: 'https://lh3.googleusercontent.com/d/1053bcIro2h-6ApQzYMvlEi-d5s55LLbw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/10TZ9rNHT-QMIL29jJZWKw9kU2cyFA1cf=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/10s01ZVji5PDTjaam7_2zL5RTGuzOscpa=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/10uWTs8ax84WNUayff9-ZOMd7BxQrBUoB=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/11zxMxAyKEIZWmbIIm1fAJas62VnPpIFw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/120-z-kVeB11zejICMdEYJtojMNQyXYmp=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/12c0inl5vnvEcfj8w4kpFYFeZL1yhJh15=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/13VgxXxiwbm8XKHUul0rHjcB8aiEIgS2T=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/14Dcps3xTQktGqsTQ6BBqHkPqEuBwVA_P=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/16LpJ1Kar-2GYQp4dywd2lZyMIhGdEY4C=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/16QjnNkvlzpQaAtnav9ReMiTa-veKkZan=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/18jVVC2eA0tCKkIgdDMrGi4lLGWi7oInG=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/19AgxhVXDn2KBmEvlqaQtbqwTgB7_474w=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/19dTg_16mooNp7z2zPfxNcmRpWST-a4bn=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1AzatyV9MPC2LFWNY6ppOgREZjyAfWeDM=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1CFWDzpR8oXWwQhLBVmhYWASluQYA1Xpe=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1D9NsKc09DIkSUKFzLVZnFYcXoDzHmKL-=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1DxWoTRtDT5wJMqGUnjk6FO6hl1BN7oOz=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1ER8ttrPwz2PCzNFPuAG647Q_4HOlDaEw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1Emga7EeykSOkete9Yoamp3fzYIluH1Cb=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1KMGjJ8gMGNn0nkk8721I2gRYlxVvjGT0=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1M4kD_BAwZlrng8wGVa4AROjmpDwWezhb=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1Nr4nuBN2Gf7oyoVpYPrcXmohmdSA9dd9=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1OKnd8JQ5O_j7Hzl0jgQehU-S-1FME4YI=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1Ph2jcjLit71GohVotqNXHa7GatbAQ6Qv=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1SwXl0EHKdrmaN6QbRUeyONo9TZpFtY0b=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1UbsqcPGpTuBbUvoqw3EUjf5h-OR2SeZW=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1Uo7lrFGWKT__-fGkVjBV_XbuJ6H7bVoo=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1VUB1EMigdw5W8YBVn5Qo44XCcsaHss5J=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1XEvW09s_g8vsUhH0rUlTTCmFG3RlqXmn=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1_AiGdoal_HcckI78boZLF1njMuO3zZTY=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1_n9qaq-iCJYf4Z6EKKOUWsttoxp8iBNz=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1_sf8msruFFubmBgwhsoT1Km9xUPHGNM2=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1cNeT5Xdb8ZdxSAY7dzRzVUcznzK7tliN=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1gp1olGPU9dfQ6tpuHQhmQQIqFZz3zTtD=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1hALLXXsJRnIhI5cQSxdla088S_pdno3k=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1hVYWPCS6BARDan6Gtv5oDHbwJUtTVdvM=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1hjx30yJFSOYu6-yhqvnPzzq8BCl20BIt=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1incrJOEDQ8YKUEhjC2HWS2zq6va-ED98=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1o1yw1kQ4oNBNlnYvh3jCTkhdCzMOWkaf=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1oA2k63Cj-2P6OncmUA2qgyKtH2RJTFPw=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1oXpU2vt6-wR62nwtuVfuzWtAC6u-yveN=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1qFguTg5zy1l-yCQ3wVDS4IS_iucH6cIy=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1rh3KaQ8BbUaxd988IQQD62kQyi6cBPqT=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1tDWCHL8a4bK1zDu9Em1LBWGc-enI9aa6=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1tEn9Bwe3nXXHj72IPu7_7sUga42WtD_R=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1tG3xhR4H8XpgN9VvTrQjM19ffceQdO9b=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1tpJsh6h0ZhWyR6QbD3W4yBbFIDrKFFDh=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1v2Ci_2GHG_fbluvZzJSZHRoOGBpTNDZM=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' },
+    { src: 'https://lh3.googleusercontent.com/d/1yuVsAKTjG1cJ205Hbcfy3l-CpsLw-tdn=w1600-h900', alt: 'Beautiful flower from the Tinkers Hatch garden' }
   ];
 
   // Shuffle array to mix flowers randomly
@@ -1724,6 +1761,7 @@
     img.style.opacity = '0';
     img.style.transition = 'opacity 2s ease-in-out';
     img.loading = 'lazy';
+    img.referrerPolicy = 'no-referrer'; // Helps bypass some Google Drive hotlink blocks
     
     container.appendChild(img);
     
