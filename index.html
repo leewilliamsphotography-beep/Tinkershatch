@@ -214,11 +214,11 @@ body.theme-dark .hamburger-menu{box-shadow:10px 0 40px -10px rgba(0,0,0,0.5)}
 /* Premium Lightbox Redesign */
 .lightbox-overlay {
   position: fixed; inset: 0; 
-  background: rgba(10, 12, 15, 0.96); 
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: rgba(10, 12, 15, 0.98); 
   z-index: 2000; display: flex; align-items: center; justify-content: center; 
   opacity: 0; visibility: hidden; 
   transition: opacity .3s ease, visibility .3s ease;
+  perspective: 1500px; /* Required for 3D flip effect */
 }
 .lightbox-overlay.active { opacity: 1; visibility: visible; }
 
@@ -227,9 +227,33 @@ body.theme-dark .hamburger-menu{box-shadow:10px 0 40px -10px rgba(0,0,0,0.5)}
   border-radius: 4px; 
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); 
   cursor: pointer; 
-  transition: opacity 0.3s ease; 
-  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto; 
+  backface-visibility: hidden;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
+
+/* Directional 3D Flip Animations */
+@keyframes flipOutNext {
+  0% { transform: rotateY(0deg); opacity: 1; }
+  100% { transform: rotateY(90deg); opacity: 0; }
+}
+@keyframes flipInNext {
+  0% { transform: rotateY(-90deg); opacity: 0; }
+  100% { transform: rotateY(0deg); opacity: 1; }
+}
+@keyframes flipOutPrev {
+  0% { transform: rotateY(0deg); opacity: 1; }
+  100% { transform: rotateY(-90deg); opacity: 0; }
+}
+@keyframes flipInPrev {
+  0% { transform: rotateY(90deg); opacity: 0; }
+  100% { transform: rotateY(0deg); opacity: 1; }
+}
+.flip-out-next { animation: flipOutNext 0.25s ease-in forwards; }
+.flip-in-next { animation: flipInNext 0.25s ease-out forwards; }
+.flip-out-prev { animation: flipOutPrev 0.25s ease-in forwards; }
+.flip-in-prev { animation: flipInPrev 0.25s ease-out forwards; }
 
 .lightbox-close, .lightbox-nav-btn {
   position: absolute;
@@ -265,9 +289,6 @@ body.theme-dark .hamburger-menu{box-shadow:10px 0 40px -10px rgba(0,0,0,0.5)}
   border: 1px solid rgba(255, 255, 255, 0.1); 
   backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
 }
-
-@keyframes animNext{0%{opacity:0;transform:scale(.95) translateX(20px)}100%{opacity:1;transform:scale(1) translateX(0)}}@keyframes animPrev{0%{opacity:0;transform:scale(.95) translateX(-20px)}100%{opacity:1;transform:scale(1) translateX(0)}}
-.anim-next{animation:animNext .4s cubic-bezier(.25,1,.5,1) forwards}.anim-prev{animation:animPrev .4s cubic-bezier(.25,1,.5,1) forwards}
 
 .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;background:var(--cream-deep);border-radius:6px;font-size:.8rem;font-weight:700;color:var(--bark-soft);border:1px solid var(--border)}
 @media(max-width:768px){.btn{width:100%;justify-content:center}.lightbox-nav-btn{width:40px;height:40px}.lightbox-close{top:16px;right:16px;width:40px;height:40px}.gallery-cta{padding:40px 16px}.gallery-cta-text{font-size:1.2rem}.gallery-cta-icon{width:60px;height:60px}}
@@ -800,7 +821,159 @@ const MenuModule=(function(){
 
 const RevealModule=(function(){function init(){const ob=new IntersectionObserver(e=>{e.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');ob.unobserve(en.target)}})},{threshold:.1,rootMargin:'0px 0px -50px 0px'});document.querySelectorAll('.reveal').forEach(e=>ob.observe(e))}return{init}})();
 const MoodModule=(function(){const r={happy:{t:"We're glad you're feeling happy!",b:"Maybe today is a good day to share that with someone. A smile, a wave, or a 'good morning' can make someone else's day brighter too."},calm:{t:"Calm is a lovely way to feel.",b:"The garden is a beautiful spot for quiet moments today. There's a bench by the apple tree that catches the morning sun."},curious:{t:"Curiosity is a wonderful thing.",b:"There's a new art project starting this afternoon — trying something new is always welcome, even just to watch at first."},tired:{t:"It's okay to feel tired.",b:"Be gentle with yourself today. The conservatory has comfortable chairs and a pot of tea is never far away. Rest counts as doing something."},excited:{t:"How lovely — excitement!",b:"Channel that energy! Today's baking session is making bread rolls, and there's a film afternoon with proper popcorn at 3pm."}};function init(){const btns=document.querySelectorAll('.mood-btn'),md=document.getElementById('moodDefault'),mm=document.getElementById('moodMessage');if(!btns.length||!md||!mm)return;btns.forEach(btn=>btn.addEventListener('click',()=>{const k=btn.dataset.mood,res=r[k];if(!res)return;btns.forEach(b=>b.classList.remove('active'));btn.classList.add('active');md.hidden=true;mm.hidden=false;mm.innerHTML=`<div style="max-width:600px;margin:0 auto;"><div class="display font-extrabold text-xl mb-4" style="color:var(--bark)">${res.t}</div><p style="color:var(--bark-soft);line-height:1.6;">${res.b}</p></div>`}))}return{init}})();
-const LightboxModule=(function(){const imgs=[{src:'https://i.ibb.co/jP6KryGz/123-1.jpg',alt:'Beautiful flower 1'},{src:'https://i.ibb.co/Xk6hNXk7/123-2.jpg',alt:'Beautiful flower 2'},{src:'https://i.ibb.co/sv53dY7f/123-3.jpg',alt:'Beautiful flower 3'},{src:'https://i.ibb.co/V0sjqXN6/123-4.jpg',alt:'Beautiful flower 4'},{src:'https://i.ibb.co/B29Gr10Z/123-5.jpg',alt:'Beautiful flower 5'},{src:'https://i.ibb.co/V0LcTgcb/123-6.jpg',alt:'Beautiful flower 6'},{src:'https://i.ibb.co/dJk593dp/123-7.jpg',alt:'Beautiful flower 7'},{src:'https://i.ibb.co/qLSmfDxZ/123-8.jpg',alt:'Beautiful flower 8'},{src:'https://i.ibb.co/qF1Zg8wB/123-9.jpg',alt:'Beautiful flower 9'},{src:'https://i.ibb.co/wFjSh7b5/123-10.jpg',alt:'Beautiful flower 10'},{src:'https://i.ibb.co/TBGDkXNH/123-11.jpg',alt:'Beautiful flower 11'},{src:'https://i.ibb.co/GvGj4PRW/123-12.jpg',alt:'Beautiful flower 12'},{src:'https://i.ibb.co/zhRn3t1f/123-13.jpg',alt:'Beautiful flower 13'},{src:'https://i.ibb.co/hxGdYjZv/123-14.jpg',alt:'Beautiful flower 14'},{src:'https://i.ibb.co/wZn2H9JN/123-15.jpg',alt:'Beautiful flower 15'},{src:'https://i.ibb.co/MxDrgbSc/123-16.jpg',alt:'Beautiful flower 16'},{src:'https://i.ibb.co/99SgPHMS/123-17.jpg',alt:'Beautiful flower 17'},{src:'https://i.ibb.co/5hRKvzsj/123-18.jpg',alt:'Beautiful flower 18'},{src:'https://i.ibb.co/20SQZT1s/123-19.jpg',alt:'Beautiful flower 19'},{src:'https://i.ibb.co/wNwMTxGq/123-20.jpg',alt:'Beautiful flower 20'},{src:'https://i.ibb.co/Kcc3KdqQ/123-21.jpg',alt:'Beautiful flower 21'},{src:'https://i.ibb.co/Y427q1yW/123-22.jpg',alt:'Beautiful flower 22'},{src:'https://i.ibb.co/Wpn7L7jq/123-23.jpg',alt:'Beautiful flower 23'},{src:'https://i.ibb.co/MD4HqzgJ/123-24.jpg',alt:'Beautiful flower 24'},{src:'https://i.ibb.co/fdWSxkqn/123-25.jpg',alt:'Beautiful flower 25'}];let cur=0,lb,li,lc,lp,ln,lct,ogb;function render(d){li.classList.remove('anim-next','anim-prev');li.dataset.direction=d;li.src=imgs[cur].src;li.alt=imgs[cur].alt;lct.textContent=`${cur+1} / ${imgs.length}`}function onLoad(){const d=li.dataset.direction;if(!d)return;li.classList.remove('anim-next','anim-prev');void li.offsetWidth;if(d==='next')li.classList.add('anim-next');else li.classList.add('anim-prev');delete li.dataset.direction}function open(i){cur=i;li.classList.remove('anim-next','anim-prev');delete li.dataset.direction;li.src=imgs[cur].src;li.alt=imgs[cur].alt;lct.textContent=`${cur+1} / ${imgs.length}`;lb.classList.add('active')}function close(){lb.classList.remove('active')}function next(){cur=(cur+1)%imgs.length;render('next')}function prev(){cur=(cur-1+imgs.length)%imgs.length;render('prev')}function onKey(e){if(!lb.classList.contains('active'))return;switch(e.key){case'Escape':close();break;case'ArrowRight':next();break;case'ArrowLeft':prev();break}}function init(){lb=document.getElementById('lightbox');li=document.getElementById('lightboxImg');lc=document.getElementById('lightboxClose');lp=document.getElementById('lightboxPrev');ln=document.getElementById('lightboxNext');lct=document.getElementById('lightboxCounter');ogb=document.getElementById('openGalleryBtn');if(!lb||!ogb)return;li.addEventListener('load',onLoad);ogb.addEventListener('click',()=>open(0));lc.addEventListener('click',close);ln.addEventListener('click',e=>{e.stopPropagation();next()});lp.addEventListener('click',e=>{e.stopPropagation();prev()});li.addEventListener('click',e=>{e.stopPropagation();next()});lb.addEventListener('click',e=>{if(e.target===lb)close()});document.addEventListener('keydown',onKey)}return{init}})();
+
+// Updated Lightbox Module: Preloads adjacent images to guarantee smooth, instant 3D flip transitions
+const LightboxModule=(function(){
+  // Fisher-Yates Shuffle Algorithm
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  const imgs = shuffleArray([
+    {src:'https://i.ibb.co/xSq92n0r/123-1.jpg', alt:'Beautiful flower 1'},
+    {src:'https://i.ibb.co/WNjYC10y/123-2.jpg', alt:'Beautiful flower 2'},
+    {src:'https://i.ibb.co/Y7WfbmDV/123-3.jpg', alt:'Beautiful flower 3'},
+    {src:'https://i.ibb.co/wFBgfMtX/123-4.jpg', alt:'Beautiful flower 4'},
+    {src:'https://i.ibb.co/4nKQ3X6s/123-5.jpg', alt:'Beautiful flower 5'},
+    {src:'https://i.ibb.co/dsc78qPJ/123-6.jpg', alt:'Beautiful flower 6'},
+    {src:'https://i.ibb.co/Hf7zy7cT/123-7.jpg', alt:'Beautiful flower 7'},
+    {src:'https://i.ibb.co/gbGCRGw7/123-8.jpg', alt:'Beautiful flower 8'},
+    {src:'https://i.ibb.co/dnMqD6Q/123-9.jpg', alt:'Beautiful flower 9'},
+    {src:'https://i.ibb.co/mCR6j9My/123-10.jpg', alt:'Beautiful flower 10'},
+    {src:'https://i.ibb.co/NnKMgqMk/123-11.jpg', alt:'Beautiful flower 11'},
+    {src:'https://i.ibb.co/mV5qKTyc/123-12.jpg', alt:'Beautiful flower 12'},
+    {src:'https://i.ibb.co/FbPPRg25/123-13.jpg', alt:'Beautiful flower 13'},
+    {src:'https://i.ibb.co/s9pxGVR9/123-14.jpg', alt:'Beautiful flower 14'},
+    {src:'https://i.ibb.co/Z6q8JP2y/123-15.jpg', alt:'Beautiful flower 15'},
+    {src:'https://i.ibb.co/PG5FWcBW/123-16.jpg', alt:'Beautiful flower 16'},
+    {src:'https://i.ibb.co/M5f67ySH/123-17.jpg', alt:'Beautiful flower 17'},
+    {src:'https://i.ibb.co/kNDRT0m/123-18.jpg', alt:'Beautiful flower 18'},
+    {src:'https://i.ibb.co/wrSyhJgW/123-19.jpg', alt:'Beautiful flower 19'},
+    {src:'https://i.ibb.co/4gKXrcnN/123-20.jpg', alt:'Beautiful flower 20'},
+    {src:'https://i.ibb.co/fm1drc4/123-21.jpg', alt:'Beautiful flower 21'},
+    {src:'https://i.ibb.co/1fjBRLFR/123-22.jpg', alt:'Beautiful flower 22'},
+    {src:'https://i.ibb.co/gZFbBh4L/123-23.jpg', alt:'Beautiful flower 23'},
+    {src:'https://i.ibb.co/chwdKyGL/123-24.jpg', alt:'Beautiful flower 24'},
+    {src:'https://i.ibb.co/3yhFpPJK/123-25.jpg', alt:'Beautiful flower 25'}
+  ]);
+  
+  let cur=0, lb, li, lc, lp, ln, lct, ogb;
+  let isAnimating = false; // Prevents overlapping clicks during animation
+
+  // Preload surrounding images invisibly in the background
+  function preloadImages() {
+    for(let i = -1; i <= 2; i++) {
+      const idx = (cur + i + imgs.length) % imgs.length;
+      const img = new Image();
+      img.src = imgs[idx].src;
+    }
+  }
+
+  function render(dir) {
+    if(isAnimating) return;
+    isAnimating = true;
+    
+    const outClass = dir === 'next' ? 'flip-out-next' : 'flip-out-prev';
+    const inClass = dir === 'next' ? 'flip-in-next' : 'flip-in-prev';
+    
+    li.classList.add(outClass);
+    li.classList.remove('flip-in-next', 'flip-in-prev');
+    void li.offsetWidth; // Force reflow to ensure animation restarts cleanly
+
+    setTimeout(() => {
+      // Image is likely already cached from preloadImages(), so swap is instant
+      li.src = imgs[cur].src;
+      li.alt = imgs[cur].alt;
+      lct.textContent = `${cur + 1} / ${imgs.length}`;
+      
+      li.classList.remove(outClass);
+      void li.offsetWidth; // Force reflow
+      li.classList.add(inClass);
+      
+      // Wait for flip-in to finish
+      setTimeout(() => {
+        isAnimating = false;
+        preloadImages(); // Preload next/prev for the upcoming click
+      }, 250);
+    }, 250);
+  }
+
+  function open(i) {
+    cur = i;
+    li.classList.remove('flip-in-next', 'flip-in-prev', 'flip-out-next', 'flip-out-prev');
+    li.src = imgs[cur].src;
+    li.alt = imgs[cur].alt;
+    lct.textContent = `${cur + 1} / ${imgs.length}`;
+    lb.classList.add('active');
+    isAnimating = false; // Reset lock on open
+    preloadImages(); // Start preloading immediately
+  }
+
+  function close() { lb.classList.remove('active'); }
+  
+  function next() {
+    if(isAnimating) return;
+    cur = (cur + 1) % imgs.length;
+    render('next');
+  }
+  
+  function prev() {
+    if(isAnimating) return;
+    cur = (cur - 1 + imgs.length) % imgs.length;
+    render('prev');
+  }
+  
+  function onKey(e) {
+    if(!lb.classList.contains('active')) return;
+    switch(e.key) {
+      case 'Escape': close(); break;
+      case 'ArrowRight': next(); break;
+      case 'ArrowLeft': prev(); break;
+    }
+  }
+  
+  function init() {
+    lb=document.getElementById('lightbox');
+    li=document.getElementById('lightboxImg');
+    lc=document.getElementById('lightboxClose');
+    lp=document.getElementById('lightboxPrev');
+    ln=document.getElementById('lightboxNext');
+    lct=document.getElementById('lightboxCounter');
+    ogb=document.getElementById('openGalleryBtn');
+    if(!lb||!ogb) return;
+    
+    ogb.addEventListener('click',()=>open(0));
+    lc.addEventListener('click',close);
+    
+    ln.addEventListener('click', e => {
+      e.stopPropagation();
+      next();
+    });
+    
+    lp.addEventListener('click', e => {
+      e.stopPropagation();
+      prev();
+    });
+    
+    li.addEventListener('click', e => {
+      e.stopPropagation();
+      next();
+    });
+    
+    lb.addEventListener('click', e => {
+      if(e.target === lb) close();
+    });
+    
+    document.addEventListener('keydown', onKey);
+  }
+  
+  return { init };
+})();
+
 const FooterA11yModule=(function(){function init(){const btn=document.getElementById('footerA11y');if(!btn)return;btn.addEventListener('click',()=>{const n=document.createElement('div');n.setAttribute('role','alert');n.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bark);color:#fff;padding:16px 24px;border-radius:8px;z-index:3000;max-width:90vw;box-shadow:0 10px 30px rgba(0,0,0,0.2);font-size:14px;';n.innerHTML='Our full accessibility statement is available on request. Please call us on <strong>01435 863119</strong> or email <strong>services@tinkershatch.co.uk</strong> and we will send it to you in your preferred format.';document.body.appendChild(n);setTimeout(()=>{n.style.transition='opacity 0.4s ease';n.style.opacity='0';setTimeout(()=>n.remove(),400)},5000)})}return{init}})();
 const ProgressModule=(function(){function init(){const bar=document.getElementById('progressBar');if(!bar)return;window.addEventListener('scroll',()=>{const ws=document.body.scrollTop||document.documentElement.scrollTop;const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;const sc=(ws/h)*100;bar.style.width=sc+'%'})}return{init}})();
 
