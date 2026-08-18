@@ -278,6 +278,61 @@ body.theme-dark .hamburger-menu{box-shadow:10px 0 40px -10px rgba(0,0,0,0.5)}
 .sun-pulse{animation:sunPulse 4s ease-in-out infinite;transform-origin:center}@keyframes sunPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .float-anim{animation:float 4s ease-in-out infinite}@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .stat-pop{animation:popIn .8s cubic-bezier(.34,1.56,.64,1) backwards}@keyframes popIn{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
+
+/* Enhanced The Quiet Cove Logo Animations */
+.quiet-cove-svg { animation: coveFloat 6s ease-in-out infinite; transform-origin: center; }
+@keyframes coveFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+@keyframes waveShift { 0%, 100% { transform: translateX(0) translateY(0); } 50% { transform: translateX(8px) translateY(2px); } }
+@keyframes waveShift2 { 0%, 100% { transform: translateX(0) translateY(0); } 50% { transform: translateX(-6px) translateY(-2px); } }
+.wave-1 { animation: waveShift 6s ease-in-out infinite; }
+.wave-2 { animation: waveShift2 7s ease-in-out infinite; }
+.wave-3 { animation: waveShift 8s ease-in-out 1s infinite; }
+
+.cove-glow { animation: coveGlow 5s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes coveGlow { 0%, 100% { opacity: 0.3; transform: scale(0.98); } 50% { opacity: 0.6; transform: scale(1.03); } }
+
+.cove-ring { transform-box: fill-box; transform-origin: center; animation: ringPulse 4s ease-in-out infinite; }
+@keyframes ringPulse { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.02); } }
+
+.star-dot, .star-dot-2, .star-dot-3 { transform-box: fill-box; transform-origin: center; }
+@keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.4); } }
+.star-dot { animation: twinkle 3s ease-in-out infinite; }
+.star-dot-2 { animation: twinkle 3.5s ease-in-out 0.5s infinite; }
+.star-dot-3 { animation: twinkle 4s ease-in-out 1s infinite; }
+
+/* --- DYNAMIC "WHAT'S NEW" SECTION & PARTICLE EFFECTS --- */
+#whats-new {
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+  /* Light Mode Default - Muted Blue */
+  background: linear-gradient(135deg, #5A7896, #3F5973);
+  color: #fff;
+}
+body.theme-dark #whats-new { background: radial-gradient(circle at 80% 20%, #1E293B, #0B1117); }
+body.theme-warm #whats-new { background: linear-gradient(135deg, #677886, #3F4B55); }
+body.theme-soft #whats-new { background: linear-gradient(135deg, #7B95B3, #506B86); }
+body.theme-high-contrast #whats-new { background: #000; border-top: 2px solid #fff; border-bottom: 2px solid #fff; }
+
+.summer-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.particle {
+  position: absolute; border-radius: 50%; opacity: 0; 
+  animation: floatUp 12s linear infinite;
+  background: #FFD700; box-shadow: 0 0 8px #FFD700; /* Light Mode Default */
+}
+body.theme-dark .particle { background: #8aaa8a; box-shadow: 0 0 12px #8aaa8a; } /* Fireflies */
+body.theme-warm .particle { background: #FFD700; box-shadow: 0 0 8px #D66B3C; } /* Golden dust */
+body.theme-soft .particle { background: #FFFFFF; box-shadow: 0 0 8px #FFFFFF; } /* Soft bubbles */
+body.theme-high-contrast .particle { background: #FFFF00; box-shadow: none; } /* High vis yellow */
+
+@keyframes floatUp {
+  0% { transform: translateY(20px) translateX(0); opacity: 0; }
+  15% { opacity: 0.8; }
+  85% { opacity: 0.8; }
+  100% { transform: translateY(-400px) translateX(40px); opacity: 0; }
+}
+
 footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var(--teal)}
 </style>
 </head>
@@ -452,7 +507,7 @@ A place to grow, belong, and thrive
 <rect x="60" y="80" width="280" height="280" fill="#A2D5DB"/><rect x="60" y="80" width="280" height="280" fill="none" stroke="var(--bark-soft)" stroke-width="3"/><line x1="200" y1="80" x2="200" y2="360" stroke="var(--bark-soft)" stroke-width="2.5"/><line x1="60" y1="220" x2="340" y2="220" stroke="var(--bark-soft)" stroke-width="2.5"/><circle cx="130" cy="160" r="30" fill="var(--honey)" opacity="0.8"/><ellipse cx="260" cy="290" rx="60" ry="25" fill="var(--sage)" opacity="0.7"/><ellipse cx="100" cy="310" rx="50" ry="20" fill="var(--sage)" opacity="0.7"/>
 <path d="M40 80 L60 80 L60 360 L40 360 Z" fill="var(--terracotta)"/><path d="M40 80 L60 80 L60 360 L40 360 Z" fill="none" stroke="var(--terracotta)" stroke-width="2" opacity="0.6"/><path d="M340 80 L360 80 L360 360 L340 360 Z" fill="var(--terracotta)"/><path d="M340 80 L360 80 L360 360 L340 360 Z" fill="none" stroke="var(--terracotta)" stroke-width="2" opacity="0.6"/>
 <rect x="430" y="100" width="160" height="120" fill="#FFF8EA"/><rect x="430" y="100" width="160" height="120" fill="none" stroke="var(--bark-soft)" stroke-width="2.5"/><rect x="430" y="100" width="160" height="80" fill="#A2D5DB"/><circle cx="540" cy="140" r="15" fill="var(--honey)"/><polygon points="430,180 480,140 530,180 580,150 590,180" fill="var(--sage)"/><rect x="430" y="180" width="160" height="40" fill="#D4B98C"/>
-<g><rect x="380" y="380" width="280" height="90" fill="var(--teal)" rx="12"/><rect x="380" y="380" width="280" height="90" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="12"/><rect x="370" y="450" width="300" height="80" fill="var(--teal)" rx="12"/><rect x="370" y="450" width="300" height="80" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="12"/><rect x="395" y="455" width="80" height="40" fill="var(--honey)" rx="6"/><rect x="395" y="455" width="80" height="40" fill="none" stroke="var(--honey)" stroke-width="1.5" rx="6" opacity="0.6"/><rect x="490" y="455" width="80" height="40" fill="var(--rose)" rx="6"/><rect x="490" y="455" width="80" height="40" fill="none" stroke="var(--rose)" stroke-width="1.5" rx="6" opacity="0.6"/><rect x="365" y="410" width="30" height="120" fill="var(--teal-deep)" rx="8"/><rect x="365" y="410" width="30" height="120" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="8"/><rect x="645" y="410" width="30" height="120" fill="var(--teal-deep)" rx="8"/><rect x="645" y="410" width="30" height="120" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="8"/><rect x="380" y="530" width="14" height="20" fill="#8B5A2B"/><rect x="646" y="530" width="14" height="20" fill="#8B5A2B"/></g>
+<g><rect x="380" y="380" width="280" height="90" fill="var(--teal)" rx="12"/><rect x="380" y="380" width="280" height="90" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="12"/><rect x="370" y="450" width="300" height="80" fill="var(--teal)" rx="12"/><rect x="370" y="450" width="300" height="80" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="12"/><rect x="395" y="455" width="80" height="40" fill="var(--honey)" rx="6"/><rect x="395" y="455" width="80" height="40" fill="none" stroke="var(--honey)" stroke-width="1.5" rx="6" opacity="0.6"/><rect x="490" y="455" width="80" height="40" fill="var(--rose)" rx="6"/><rect x="490" y="455" width="80" height="40" fill="none" stroke="var(--rose)" stroke-width="1.5" rx="6" opacity="0.6"/><rect x="365" y="410" width="30" height="120" fill="var(--teal-deep)" rx="8"/><rect x="365" y="410" width="30" height:120" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="8"/><rect x="645" y="410" width="30" height="120" fill="var(--teal-deep)" rx="8"/><rect x="645" y="410" width="30" height="120" fill="none" stroke="var(--bark-soft)" stroke-width="2.5" rx="8"/><rect x="380" y="530" width="14" height="20" fill="#8B5A2B"/><rect x="646" y="530" width="14" height="20" fill="#8B5A2B"/></g>
 <rect x="270" y="450" width="90" height="20" fill="#8B5A2B"/><rect x="280" y="470" width="8" height="80" fill="#8B5A2B"/><rect x="342" y="470" width="8" height="80" fill="#8B5A2B"/><rect x="305" y="410" width="14" height="40" fill="#8B5A2B"/><polygon points="280,410 344,410 334,370 290,370" fill="var(--honey)"/><circle cx="312" cy="390" r="40" fill="var(--honey)" opacity="0.2"/>
 <g transform="translate(80, 470)"><rect x="0" y="50" width="60" height="50" fill="var(--terracotta)"/><ellipse cx="30" cy="50" rx="35" ry="8" fill="#8B5A2B"/><ellipse cx="10" cy="20" rx="12" ry="35" fill="var(--sage)" transform="rotate(-25 10 20)"/><ellipse cx="30" cy="10" rx="12" ry="40" fill="var(--sage)"/><ellipse cx="50" cy="20" rx="12" ry="35" fill="var(--sage)" transform="rotate(25 50 20)"/></g>
 <ellipse cx="500" cy="650" rx="220" ry="40" fill="var(--rose)" opacity="0.6"/>
@@ -610,27 +665,70 @@ A place to grow, belong, and thrive
 </div>
 </section>
 
-<section id="whats-new" class="py-24" style="background:var(--teal);color:#fff;position:relative;overflow:hidden;">
-<div class="max-w-6xl mx-auto px-6 lg:px-8 reveal">
-<div class="grid lg:grid-cols-2 gap-16 items-center">
-<div>
-<span class="tag mb-4 inline-flex" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.2)">What's New</span>
-<h2 class="display font-extrabold mb-6 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:#fff">The Quiet Cove</h2>
-<p class="text-lg mb-8" style="color:rgba(255,255,255,0.85)">We are thrilled to introduce our brand-new sensory room, The Quiet Cove. Designed as a calming sanctuary, it features soft fiber-optic lighting, tactile wall panels, and gentle sounds to help residents relax, regulate, and find peace whenever they need it.</p>
-<ul class="space-y-4">
-<li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Soothing interactive lights</li>
-<li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Tactile and sensory exploration</li>
-<li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> A safe space for everyone</li>
-</ul>
-</div>
-<div class="relative">
-<div class="card p-8 text-center" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);box-shadow:none;">
-<svg width="100%" height="200" viewBox="0 0 200 200" fill="none" stroke="#fff" stroke-width="1.5"><path d="M100 20 C60 20, 40 50, 40 100 C40 150, 60 180, 100 180 C140 180, 160 150, 160 100 C160 50, 140 20, 100 20 Z M100 50 L100 150 M50 100 L150 100" stroke="var(--honey)"/><circle cx="100" cy="100" r="20" fill="var(--honey)"/></svg>
-<h3 class="display font-extrabold text-xl mt-4" style="color:#fff">A Sanctuary of Calm</h3>
-</div>
-</div>
-</div>
-</div>
+<!-- DYNAMIC WHAT'S NEW SECTION WITH SUMMER EFFECTS -->
+<section id="whats-new" class="py-24">
+  <div class="summer-particles" id="summerParticles" aria-hidden="true"></div>
+  
+  <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10 reveal">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <span class="tag mb-4 inline-flex" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.2)">What's New</span>
+        <h2 class="display font-extrabold mb-6 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:#fff">The Quiet Cove</h2>
+        <p class="text-lg mb-8" style="color:rgba(255,255,255,0.85)">We are thrilled to introduce our brand-new sensory room, The Quiet Cove. Designed as a calming sanctuary, it features soft fiber-optic lighting, tactile wall panels, and gentle sounds to help residents relax, regulate, and find peace whenever they need it.</p>
+        <ul class="space-y-4">
+          <li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Soothing interactive lights</li>
+          <li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Tactile and sensory exploration</li>
+          <li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> A safe space for everyone</li>
+        </ul>
+      </div>
+      <div class="relative">
+        <div class="card p-8 text-center flex flex-col items-center justify-center" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);box-shadow:0 10px 40px -10px rgba(0,0,0,0.2);">
+          <svg class="w-full max-w-[260px] h-auto mb-4 quiet-cove-svg" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Quiet Cove logo">
+            <defs>
+              <radialGradient id="coveGlow" cx="50%" cy="58%" r="40%">
+                <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.5"/>
+                <stop offset="60%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+              </radialGradient>
+              <linearGradient id="coveGrad" x1="140" y1="60" x2="140" y2="220" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FFFFFF"/>
+                <stop offset="100%" stop-color="#FFFFFF"/>
+              </linearGradient>
+              <linearGradient id="waterGrad" x1="80" y1="180" x2="200" y2="240" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.25"/>
+              </linearGradient>
+              <clipPath id="coveClip">
+                <path d="M140 68 C88 68 52 108 52 158 C52 188 72 210 100 218 L180 218 C208 210 228 188 228 158 C228 108 192 68 140 68Z"/>
+              </clipPath>
+            </defs>
+
+            <ellipse class="cove-glow" cx="140" cy="160" rx="110" ry="100" fill="url(#coveGlow)"/>
+            <circle class="cove-ring" cx="140" cy="140" r="130" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="0.75" fill="none"/>
+
+            <path d="M140 68 C88 68 52 108 52 158 C52 188 72 210 100 218 L180 218 C208 210 228 188 228 158 C228 108 192 68 140 68Z" fill="none" stroke="url(#coveGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <path d="M140 76 C94 76 62 112 62 156 C62 182 78 204 102 212 L178 212 C202 204 218 182 218 156 C218 112 186 76 140 76Z" fill="#FFFFFF" fill-opacity="0.08"/>
+
+            <g clip-path="url(#coveClip)">
+              <path class="wave-3" d="M40 195 Q70 185 100 195 Q130 205 160 195 Q190 185 220 195 L220 240 L40 240Z" fill="#FFFFFF" fill-opacity="0.12"/>
+              <path class="wave-2" d="M40 205 Q75 193 110 205 Q145 217 180 205 Q215 193 250 205 L250 240 L40 240Z" fill="url(#waterGrad)"/>
+              <path class="wave-1" d="M40 215 Q80 203 120 215 Q160 227 200 215 Q240 203 280 215 L280 240 L40 240Z" fill="#FFFFFF" fill-opacity="0.35"/>
+            </g>
+
+            <circle class="star-dot" cx="110" cy="110" r="2" fill="#FFFFFF" fill-opacity="0.8"/>
+            <circle class="star-dot-2" cx="165" cy="95" r="1.5" fill="#FFFFFF" fill-opacity="0.9"/>
+            <circle class="star-dot-3" cx="130" cy="130" r="1.8" fill="#FFFFFF" fill-opacity="0.6"/>
+            <circle class="star-dot" cx="155" cy="145" r="1.2" fill="#FFFFFF" fill-opacity="0.7"/>
+
+            <path d="M140 38 A8 8 0 1 1 139.99 38" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.6" stroke-linecap="round"/>
+            <path d="M140 32 A14 14 0 0 1 140 44" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" stroke-linecap="round"/>
+          </svg>
+          <h3 class="display font-extrabold text-xl mt-2" style="color:#fff">A Sanctuary of Calm</h3>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <section id="visit" class="py-24" style="background:var(--cream);position:relative;overflow:hidden;">
@@ -1018,6 +1116,32 @@ const ProgressModule=(function(){
   return{init}
 })();
 
+// Summer Effects Module: Generates floating particles for the What's New section
+const SummerEffectsModule = (function(){
+  function init() {
+    const container = document.getElementById('summerParticles');
+    if(!container) return;
+    
+    // Clear any existing particles
+    container.innerHTML = '';
+    
+    // Generate 20 particles
+    for(let i=0; i<20; i++) {
+      const p = document.createElement('div');
+      p.classList.add('particle');
+      const size = Math.random() * 4 + 2; // 2px to 6px
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.bottom = '0';
+      p.style.animationDuration = (Math.random() * 8 + 8) + 's'; // 8s to 16s
+      p.style.animationDelay = (Math.random() * 10) + 's';
+      container.appendChild(p);
+    }
+  }
+  return { init };
+})();
+
 document.addEventListener('DOMContentLoaded',()=>{
   ThemeModule.init(); 
   PaletteModule.init(); 
@@ -1028,6 +1152,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   LightboxModule.init(); 
   FooterA11yModule.init(); 
   ProgressModule.init();
+  SummerEffectsModule.init();
 });
 </script>
 </body>
