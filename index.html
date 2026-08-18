@@ -211,21 +211,66 @@ body.theme-dark .hamburger-menu{box-shadow:10px 0 40px -10px rgba(0,0,0,0.5)}
 .gallery-cta-text{font-size:1.35rem;font-weight:700;color:var(--bark);max-width:600px;line-height:1.4}
 .gallery-cta-subtext{font-size:0.95rem;color:var(--bark-soft);font-weight:400}
 
-.lightbox-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:2000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}
-.lightbox-overlay.active{opacity:1;visibility:visible}
-.lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.5);cursor:pointer}
-.lightbox-close{position:absolute;top:24px;right:32px;color:#fff;font-size:40px;font-weight:700;cursor:pointer;z-index:2002;background:none;border:none;transition:transform .2s ease,color .2s ease}
-.lightbox-close:hover{transform:scale(1.1);color:var(--terracotta)}
-.lightbox-nav-btn{position:absolute;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#fff;font-size:40px;cursor:pointer;padding:16px;opacity:.5;z-index:2001;transition:all .2s ease}
-.lightbox-nav-btn:hover{opacity:1;color:var(--honey);transform:translateY(-50%) scale(1.1)}
-.lightbox-prev{left:2vw}.lightbox-next{right:2vw}
-.lightbox-counter{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);color:#fff;font-size:14px;font-weight:600;background:rgba(255,255,255,.1);padding:6px 16px;border-radius:20px;backdrop-filter:blur(4px)}
+/* Premium Lightbox Redesign */
+.lightbox-overlay {
+  position: fixed; inset: 0; 
+  background: rgba(10, 12, 15, 0.96); 
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  z-index: 2000; display: flex; align-items: center; justify-content: center; 
+  opacity: 0; visibility: hidden; 
+  transition: opacity .3s ease, visibility .3s ease;
+}
+.lightbox-overlay.active { opacity: 1; visibility: visible; }
+
+.lightbox-img { 
+  max-width: 90vw; max-height: 80vh; object-fit: contain; 
+  border-radius: 4px; 
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); 
+  cursor: pointer; 
+  transition: opacity 0.3s ease; 
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.lightbox-close, .lightbox-nav-btn {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border-radius: 50%;
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 2002;
+}
+.lightbox-close { top: 24px; right: 24px; }
+.lightbox-nav-btn { top: 50%; transform: translateY(-50%); z-index: 2001; }
+.lightbox-prev { left: 24px; }
+.lightbox-next { right: 24px; }
+
+.lightbox-close:hover, .lightbox-nav-btn:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+  transform: scale(1.1) translateY(-50%); 
+}
+.lightbox-close:hover { transform: scale(1.1); }
+.lightbox-nav-btn:active { transform: scale(0.95) translateY(-50%); }
+.lightbox-close:active { transform: scale(0.95); }
+
+.lightbox-counter {
+  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); 
+  color: #fff; font-size: 12px; font-weight: 600; letter-spacing: 1px; 
+  background: rgba(0, 0, 0, 0.6); padding: 8px 16px; border-radius: 20px; 
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
 
 @keyframes animNext{0%{opacity:0;transform:scale(.95) translateX(20px)}100%{opacity:1;transform:scale(1) translateX(0)}}@keyframes animPrev{0%{opacity:0;transform:scale(.95) translateX(-20px)}100%{opacity:1;transform:scale(1) translateX(0)}}
 .anim-next{animation:animNext .4s cubic-bezier(.25,1,.5,1) forwards}.anim-prev{animation:animPrev .4s cubic-bezier(.25,1,.5,1) forwards}
 
 .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;background:var(--cream-deep);border-radius:6px;font-size:.8rem;font-weight:700;color:var(--bark-soft);border:1px solid var(--border)}
-@media(max-width:768px){.btn{width:100%;justify-content:center}.lightbox-nav-btn{font-size:32px;padding:10px}.lightbox-close{top:16px;right:20px;font-size:32px}.gallery-cta{padding:40px 16px}.gallery-cta-text{font-size:1.2rem}.gallery-cta-icon{width:60px;height:60px}}
+@media(max-width:768px){.btn{width:100%;justify-content:center}.lightbox-nav-btn{width:40px;height:40px}.lightbox-close{top:16px;right:16px;width:40px;height:40px}.gallery-cta{padding:40px 16px}.gallery-cta-text{font-size:1.2rem}.gallery-cta-icon{width:60px;height:60px}}
 
 .cloud-drift{animation:cloudMove 30s ease-in-out infinite}@keyframes cloudMove{0%,100%{transform:translateX(0)}50%{transform:translateX(20px)}}
 .steam{animation:steamRise 3s ease-in-out infinite;transform-origin:center bottom}@keyframes steamRise{0%,100%{transform:translateY(0) scale(1);opacity:.7}50%{transform:translateY(-6px) scale(1.1);opacity:1}}
@@ -239,12 +284,20 @@ footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var
 <body>
 <div class="progress-bar" id="progressBar"></div>
 <a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- Premium Lightbox UI -->
 <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Photo gallery viewer">
-<button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">&times;</button>
-<button class="lightbox-nav-btn lightbox-prev" id="lightboxPrev" aria-label="Previous image">&#10094;</button>
-<img id="lightboxImg" class="lightbox-img" src="" alt="Expanded flower view">
-<button class="lightbox-nav-btn lightbox-next" id="lightboxNext" aria-label="Next image">&#10095;</button>
-<div id="lightboxCounter" class="lightbox-counter">1 / 25</div>
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <button class="lightbox-nav-btn lightbox-prev" id="lightboxPrev" aria-label="Previous image">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <img id="lightboxImg" class="lightbox-img" src="" alt="Expanded flower view">
+  <button class="lightbox-nav-btn lightbox-next" id="lightboxNext" aria-label="Next image">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+  <div id="lightboxCounter" class="lightbox-counter">1 / 25</div>
 </div>
 
 <header>
@@ -451,13 +504,13 @@ A place to grow, belong, and thrive
 </article>
 <article class="activity-card">
 <div class="img-wrap">
-<svg class="illustration" viewBox="0 0 400 208" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of a cooking pot"><rect width="400" height="208" fill="var(--sky)"/><rect x="0" y="160" width="400" height="48" fill="#8B5A2B"/><rect x="0" y="160" width="400" height="48" fill="none" stroke="var(--bark)" stroke-width="2"/><rect x="0" y="155" width="400" height="10" fill="#D4B98C"/><rect x="0" y="155" width="400" height="10" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><g transform="translate(200, 100)"><ellipse cx="0" cy="60" rx="70" ry="10" fill="var(--bark)" opacity="0.2"/><rect x="-65" y="0" width="130" height="60" fill="var(--teal)" rx="5"/><rect x="-65" y="0" width="130" height="60" fill="none" stroke="var(--bark-soft)" stroke-width="2" rx="5"/><ellipse cx="0" cy="0" rx="65" ry="12" fill="var(--teal-deep)"/><ellipse cx="0" cy="0" rx="65" ry="12" fill="none" stroke="var(--bark-soft)" stroke-width="2"/><ellipse cx="-70" cy="30" rx="8" ry="5" fill="var(--teal-deep)"/><ellipse cx="-70" cy="30" rx="8" ry="5" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><ellipse cx="70" cy="30" rx="8" ry="5" fill="var(--teal-deep)"/><ellipse cx="70" cy="30" rx="8" ry="5" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><ellipse cx="0" cy="0" rx="60" ry="10" fill="var(--terracotta)" opacity="0.8"/><g class="steam"><path d="M-20 -5 Q-25 -20 -18 -35 Q-12 -45 -20 -60" stroke="var(--bark-soft)" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M0 -5 Q-5 -25 5 -40 Q12 -50 0 -65" stroke="var(--bark-soft)" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M20 -5 Q15 -20 25 -35 Q30 -45 20 -60" stroke="var(--bark-soft)" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/></g></g><g transform="translate(60, 140)"><ellipse cx="0" cy="0" rx="18" ry="14" fill="var(--terracotta)"/><ellipse cx="0" cy="0" rx="18" ry="14" fill="none" stroke="var(--terracotta)" stroke-width="1.5" opacity="0.6"/><path d="M-3 -10 L-5 -18 M0 -10 L0 -20 M3 -10 L5 -18" stroke="var(--sage)" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(110, 145)"><ellipse cx="0" cy="0" rx="15" ry="11" fill="var(--sage)"/><ellipse cx="0" cy="0" rx="15" ry="11" fill="none" stroke="var(--sage)" stroke-width="1.5" opacity="0.6"/><ellipse cx="-5" cy="-3" rx="5" ry="3" fill="#9DC089"/></g><g transform="translate(330, 140)"><ellipse cx="0" cy="0" rx="18" ry="14" fill="var(--honey)"/><ellipse cx="0" cy="0" rx="18} ry="14" fill="none" stroke="var(--honey)" stroke-width="1.5" opacity="0.6"/><ellipse cx="-4" cy="-4" rx="6" ry="4" fill="#F4D4A8"/></g><g transform="translate(370, 145)"><ellipse cx="0" cy="0" rx="14} ry="10" fill="#E74C3C"/><ellipse cx="0" cy="0" rx="14} ry="10" fill="none" stroke="var(--bark)" stroke-width="1.5"/><path d="M-2 -8 L0 -14 M2 -8 L4 -12" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round"/></g><g transform="translate(150, 90) rotate(30)"><rect x="0" y="0" width="6} height="60" fill="#8B5A2B"/><rect x="0" y="0" width="6} height="60" fill="none" stroke="var(--bark)" stroke-width="1"/><ellipse cx="3} cy="-8" rx="10} ry="14" fill="#8B5A2B"/><ellipse cx="3} cy="-8" rx="10} ry="14" fill="none" stroke="var(--bark)" stroke-width="1"/></g></svg>
+<svg class="illustration" viewBox="0 0 400 208" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of a cooking pot"><rect width="400" height="208" fill="var(--sky)"/><rect x="0" y="160" width="400" height="48" fill="#8B5A2B"/><rect x="0" y="160" width="400" height="48" fill="none" stroke="var(--bark)" stroke-width="2"/><rect x="0" y="155" width="400" height="10" fill="#D4B98C"/><rect x="0" y="155" width="400" height="10" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><g transform="translate(200, 100)"><ellipse cx="0" cy="60" rx="70" ry="10" fill="var(--bark)" opacity="0.2"/><rect x="-65" y="0" width="130" height="60" fill="var(--teal)" rx="5"/><rect x="-65" y="0" width="130" height="60" fill="none" stroke="var(--bark-soft)" stroke-width="2" rx="5"/><ellipse cx="0" cy="0" rx="65" ry="12" fill="var(--teal-deep)"/><ellipse cx="0" cy="0" rx="65" ry="12" fill="none" stroke="var(--bark-soft)" stroke-width="2"/><ellipse cx="-70" cy="30" rx="8" ry="5" fill="var(--teal-deep)"/><ellipse cx="-70" cy="30" rx="8" ry="5" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><ellipse cx="70" cy="30" rx="8" ry="5" fill="var(--teal-deep)"/><ellipse cx="70" cy="30" rx="8" ry="5" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><ellipse cx="0" cy="0" rx="60" ry="10" fill="var(--terracotta)" opacity="0.8"/><g class="steam"><path d="M-20 -5 Q-25 -20 -18 -35 Q-12 -45 -20 -60" stroke="var(--bark-soft)" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M0 -5 Q-5 -25 5 -40 Q12 -50 0 -65" stroke="var(--bark-soft)" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M20 -5 Q15 -20 25 -35 Q30 -45 20 -60" stroke="var(--bark-soft)" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/></g></g><g transform="translate(60, 140)"><ellipse cx="0" cy="0" rx="18" ry="14" fill="var(--terracotta)"/><ellipse cx="0" cy="0" rx="18" ry="14" fill="none" stroke="var(--terracotta)" stroke-width="1.5" opacity="0.6"/><path d="M-3 -10 L-5 -18 M0 -10 L0 -20 M3 -10 L5 -18" stroke="var(--sage)" stroke-width="2" stroke-linecap="round"/></g><g transform="translate(110, 145)"><ellipse cx="0" cy="0" rx="15" ry="11" fill="var(--sage)"/><ellipse cx="0" cy="0" rx="15" ry="11" fill="none" stroke="var(--sage)" stroke-width="1.5" opacity="0.6"/><ellipse cx="-5" cy="-3" rx="5" ry="3" fill="#9DC089"/></g><g transform="translate(330, 140)"><ellipse cx="0" cy="0" rx="18" ry="14" fill="var(--honey)"/><ellipse cx="0" cy="0" rx="18" ry="14" fill="none" stroke="var(--honey)" stroke-width="1.5" opacity="0.6"/><ellipse cx="-4" cy="-4" rx="6" ry="4" fill="#F4D4A8"/></g><g transform="translate(370, 145)"><ellipse cx="0" cy="0" rx="14" ry="10" fill="#E74C3C"/><ellipse cx="0" cy="0" rx="14" ry="10" fill="none" stroke="var(--bark)" stroke-width="1.5"/><path d="M-2 -8 L0 -14 M2 -8 L4 -12" stroke="var(--sage)" stroke-width="1.5" stroke-linecap="round"/></g><g transform="translate(150, 90) rotate(30)"><rect x="0" y="0" width="6" height="60" fill="#8B5A2B"/><rect x="0" y="0" width="6" height="60" fill="none" stroke="var(--bark)" stroke-width="1"/><ellipse cx="3" cy="-8" rx="10" ry="14" fill="#8B5A2B"/><ellipse cx="3" cy="-8" rx="10" ry="14" fill="none" stroke="var(--bark)" stroke-width="1"/></g></svg>
 </div>
 <div class="p-6"><div class="tag mb-3">Kitchen</div><h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Cooking & Baking</h3><p class="text-sm" style="color:var(--bark-soft)">Weekly cookery sessions. We make bread, soups, cakes, and dishes from family recipes.</p></div>
 </article>
 <article class="activity-card">
 <div class="img-wrap">
-<svg class="illustration" viewBox="0 0 400 208" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of musical instruments"><rect width="400} height="208} fill="var(--sky)"/><rect x="0} y="170} width="400} height="38} fill="#D4B98C"/><rect x="0} y="170} width="400} height="38} fill="none} stroke="var(--bark-soft)" stroke-width="2"/><g transform="translate(110, 100) rotate(-15)"><ellipse cx="0" cy="40" rx="50" ry="55" fill="#E8A33D"/><ellipse cx="0" cy="40" rx="50" ry="55" fill="none" stroke="var(--bark-soft)" stroke-width="2"/><ellipse cx="0" cy="55" rx="35" ry="40" fill="#D4902A"/><ellipse cx="0" cy="55" rx="35} ry="40" fill="none" stroke="var(--bark)" stroke-width="1"/><circle cx="0" cy="40" r="14" fill="var(--bark)"/><circle cx="0" cy="40" r="14} fill="none" stroke="var(--bark-soft)" stroke-width="1"/><rect x="-7} y="-70} width="14} height="60} fill="#8B5A2B"/><rect x="-7} y="-70} width="14} height="60} fill="none} stroke="var(--bark)" stroke-width="1.5"/><rect x="-12} y="-85} width="24} height="20} fill="#8B5A2B"/><rect x="-12} y="-85} width="24} height="20} fill="none} stroke="var(--bark)" stroke-width="1.5"/><line x1="-3} y1="-70} x2="-3} y2="40} stroke="#FFF8EA" stroke-width="1"/><line x1="0} y1="-70} x2="0} y2="40} stroke="#FFF8EA" stroke-width="1"/><line x1="3} y1="-70} x2="3} y2="40} stroke="#FFF8EA" stroke-width="1"/></g><g transform="translate(280, 110)"><ellipse cx="0" cy="50" rx="45" ry="10" fill="var(--terracotta)"/><ellipse cx="0" cy="50" rx="45" ry="10" fill="none" stroke="var(--terracotta)" stroke-width="2" opacity="0.6"/><rect x="-45" y="0" width="90" height="50" fill="var(--terracotta)"/><rect x="-45" y="0" width="90" height="50" fill="none" stroke="var(--terracotta)" stroke-width="2" opacity="0.6"/><ellipse cx="0" cy="0" rx="45" ry="10" fill="#FFF8EA"/><ellipse cx="0" cy="0" rx="45" ry="10" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><path d="M-40 25 L-25 15 L-10 25 L5 15 L20 25 L35 15" fill="none" stroke="var(--honey)" stroke-width="2.5"/></g><g fill="var(--bark)"><g transform="translate(200, 40)"><ellipse cx="0" cy="10" rx="8" ry="6" transform="rotate(-20 0 10)"/><rect x="6} y="-25} width="3} height="35"/><path d="M9 -25 Q20 -20 18 -10" fill="none" stroke="var(--bark)" stroke-width="2"/></g><g transform="translate(240, 20)"><ellipse cx="0" cy="10" rx="7" ry="5" transform="rotate(-20 0 10)"/><rect x="5} y="-20} width="3} height="30"/></g><g transform="translate(50, 50)"><ellipse cx="0" cy="10" rx="7" ry="5" transform="rotate(-20 0 10)"/><rect x="5} y="-20} width="3} height="30"/><path d="M8 -20 Q18 -15 16 -5" fill="none" stroke="var(--bark)" stroke-width="2"/></g></g><g fill="var(--honey)"><path d="M340 30 L343 38 L351 41 L343 44 L340 52 L337 44 L329 41 L337 38 Z"/><path d="M180 70 L182 75 L187 77 L182 79 L180 84 L178 79 L173 77 L178 75 Z"/></g></svg>
+<svg class="illustration" viewBox="0 0 400 208" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of musical instruments"><rect width="400" height="208" fill="var(--sky)"/><rect x="0" y="170" width="400" height="38" fill="#D4B98C"/><rect x="0" y="170" width="400" height="38" fill="none" stroke="var(--bark-soft)" stroke-width="2"/><g transform="translate(110, 100) rotate(-15)"><ellipse cx="0" cy="40" rx="50" ry="55" fill="#E8A33D"/><ellipse cx="0" cy="40" rx="50" ry="55" fill="none" stroke="var(--bark-soft)" stroke-width="2"/><ellipse cx="0" cy="55" rx="35" ry="40" fill="#D4902A"/><ellipse cx="0" cy="55" rx="35" ry="40" fill="none" stroke="var(--bark)" stroke-width="1"/><circle cx="0" cy="40" r="14" fill="var(--bark)"/><circle cx="0" cy="40" r="14" fill="none" stroke="var(--bark-soft)" stroke-width="1"/><rect x="-7" y="-70" width="14" height="60" fill="#8B5A2B"/><rect x="-7" y="-70" width="14" height="60" fill="none" stroke="var(--bark)" stroke-width="1.5"/><rect x="-12" y="-85" width="24" height="20" fill="#8B5A2B"/><rect x="-12" y="-85" width="24" height="20" fill="none" stroke="var(--bark)" stroke-width="1.5"/><line x1="-3" y1="-70" x2="-3" y2="40" stroke="#FFF8EA" stroke-width="1"/><line x1="0" y1="-70" x2="0" y2="40" stroke="#FFF8EA" stroke-width="1"/><line x1="3" y1="-70" x2="3" y2="40" stroke="#FFF8EA" stroke-width="1"/></g><g transform="translate(280, 110)"><ellipse cx="0" cy="50" rx="45" ry="10" fill="var(--terracotta)"/><ellipse cx="0" cy="50" rx="45" ry="10" fill="none" stroke="var(--terracotta)" stroke-width="2" opacity="0.6"/><rect x="-45" y="0" width="90" height="50" fill="var(--terracotta)"/><rect x="-45" y="0" width="90" height="50" fill="none" stroke="var(--terracotta)" stroke-width="2" opacity="0.6"/><ellipse cx="0" cy="0" rx="45" ry="10" fill="#FFF8EA"/><ellipse cx="0" cy="0" rx="45" ry="10" fill="none" stroke="var(--bark-soft)" stroke-width="1.5"/><path d="M-40 25 L-25 15 L-10 25 L5 15 L20 25 L35 15" fill="none" stroke="var(--honey)" stroke-width="2.5"/></g><g fill="var(--bark)"><g transform="translate(200, 40)"><ellipse cx="0" cy="10" rx="8" ry="6" transform="rotate(-20 0 10)"/><rect x="6" y="-25" width="3" height="35"/><path d="M9 -25 Q20 -20 18 -10" fill="none" stroke="var(--bark)" stroke-width="2"/></g><g transform="translate(240, 20)"><ellipse cx="0" cy="10" rx="7" ry="5" transform="rotate(-20 0 10)"/><rect x="5" y="-20" width="3" height="30"/></g><g transform="translate(50, 50)"><ellipse cx="0" cy="10" rx="7" ry="5" transform="rotate(-20 0 10)"/><rect x="5" y="-20" width="3" height="30"/><path d="M8 -20 Q18 -15 16 -5" fill="none" stroke="var(--bark)" stroke-width="2"/></g></g><g fill="var(--honey)"><path d="M340 30 L343 38 L351 41 L343 44 L340 52 L337 44 L329 41 L337 38 Z"/><path d="M180 70 L182 75 L187 77 L182 79 L180 84 L178 79 L173 77 L178 75 Z"/></g></svg>
 </div>
 <div class="p-6"><div class="tag mb-3">Music</div><h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Music & Singing</h3><p class="text-sm" style="color:var(--bark-soft)">A weekly music group, visiting musicians, and the occasional disco. No experience needed.</p></div>
 </article>
@@ -465,7 +518,6 @@ A place to grow, belong, and thrive
 <div class="img-wrap">
 <svg class="illustration" viewBox="0 0 400 208" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Illustration of an open book"><rect width="400" height="208" fill="var(--sky)"/><rect x="0" y="170" width="400" height="38" fill="#D4B98C"/><rect x="0" y="170" width="400" height="38" fill="none" stroke="var(--bark-soft)" stroke-width="2"/><rect x="80" y="140" width="240" height="15" fill="#8B5A2B"/><rect x="80" y="140" width="240" height="15" fill="none" stroke="var(--bark)" stroke-width="1.5"/><rect x="90" y="155" width="8" height="15" fill="#8B5A2B"/><rect x="302" y="155" width="8" height="15" fill="#8B5A2B"/><g transform="translate(200, 110)"><polygon points="-60,30 60,30 55,0 -55,0" fill="#FFF8EA"/><polygon points="-60,30 60,30 55,0 -55,0" fill="none" stroke="var(--bark-soft)" stroke-width="2"/><polygon points="-55,0 0,0 0,30 -55,30" fill="#FFF8EA"/><polygon points="-55,0 0,0 0,30 -55,30" fill="none" stroke="var(--bark-soft)" stroke-width="1"/><polygon points="0,0 55,0 55,30 0,30" fill="#FFF8EA"/><polygon points="0,0 55,0 55,30 0,30" fill="none" stroke="var(--bark-soft)" stroke-width="1"/><line x1="0" y1="0" x2="0" y2="30" stroke="var(--bark-soft)" stroke-width="2"/><line x1="-48" y1="8" x2="-8" y2="8" stroke="var(--bark-soft)" stroke-width="1"/><line x1="-48" y1="14" x2="-8" y2="14" stroke="var(--bark-soft)" stroke-width="1"/><line x1="-48" y1="20" x2="-15" y2="20" stroke="var(--bark-soft)" stroke-width="1"/><line x1="8" y1="8" x2="48" y2="8" stroke="var(--bark-soft)" stroke-width="1"/><line x1="8" y1="14" x2="48" y2="14" stroke="var(--bark-soft)" stroke-width="1"/><line x1="8" y1="20" x2="40" y2="20" stroke="var(--bark-soft)" stroke-width="1"/></g><g transform="translate(100, 50)"><rect x="-3" y="0" width="6" height="90" fill="#8B5A2B"/><rect x="-3" y="0" width="6" height="90" fill="none" stroke="var(--bark)" stroke-width="1"/><ellipse cx="0" cy="90" rx="15" ry="5" fill="#8B5A2B"/><ellipse cx="0" cy="90" rx="15" ry="5" fill="none" stroke="var(--bark)" stroke-width="1"/><polygon points="-20,0 20,0 15,-30 -15,-30" fill="var(--terracotta)"/><polygon points="-20,0 20,0 15,-30 -15,-30" fill="none" stroke="var(--terracotta)" stroke-width="2" opacity="0.6"/><ellipse cx="0" cy="0" rx="20" ry="4" fill="var(--honey)"/></g><circle cx="100" cy="50" r="60" fill="var(--honey)" opacity="0.15"/><g transform="translate(300, 125)"><rect x="0" y="0" width="25" height="18" fill="#FFF8EA" rx="2"/><rect x="0" y="0" width="25" height="18" fill="none" stroke="var(--bark-soft)" stroke-width="1" rx="2"/><path d="M25 3 Q33 3 33 9 Q33 15 25 15" fill="none" stroke="var(--bark-soft)" stroke-width="1"/><ellipse cx="12" cy="2" rx="11" ry="3" fill="var(--terracotta)" opacity="0.6"/><g class="steam"><path d="M8 -2 Q5 -12 10 -22 Q14 -30 8 -40" stroke="var(--bark-soft)" stroke-width="1" fill="none" opacity="0.5" stroke-linecap="round"/><path d="M16 -2 Q13 -12 18 -22" stroke="var(--bark-soft)" stroke-width="1" fill="none" opacity="0.5" stroke-linecap="round"/></g></g><rect x="220" y="110" width="6" height="25" fill="var(--rose)"/><polygon points="220,135 226,135 223,142" fill="var(--rose)"/></svg>
 </div>
-<!-- Removed "and our weekly film afternoon with proper popcorn" -->
 <div class="p-6"><div class="tag mb-3">Quiet</div><h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Reading & Stories</h3><p class="text-sm" style="color:var(--bark-soft)">Audiobooks, shared reading groups, and quiet time in the library.</p></div>
 </article>
 <article class="activity-card">
