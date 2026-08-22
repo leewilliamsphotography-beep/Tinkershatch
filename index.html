@@ -957,7 +957,7 @@ const FilmNightModule = (function() {
         }
     }
     
-    async function addFilm(title) {
+       async function addFilm(title) {
         try {
             const { data, error } = await supabaseClient
                 .from('Filmnight')
@@ -972,7 +972,8 @@ const FilmNightModule = (function() {
                 ToastModule.show('Film added!');
             }
         } catch (err) {
-            ToastModule.show('Error adding film.');
+            console.error('Add film error details:', err);
+            ToastModule.show('Error adding film: ' + err.message);
         }
     }
     
