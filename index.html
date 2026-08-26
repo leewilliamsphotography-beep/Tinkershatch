@@ -1062,8 +1062,7 @@ const TesterModule=(function(){
         await supabaseClient.auth.signOut();
         c(); 
     }
-
-        async function showMenu() 
+    async function showMenu() {
         la.style.display='none';
         ma.style.display='block';
         if(gearBtn) gearBtn.classList.add('show');
