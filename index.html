@@ -237,16 +237,78 @@ footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var
                 </div>
             </div>
             
-            <!-- Right Column: Interactive Map -->
-            <div class="reveal">
-                <div class="map-container" style="height: 100%; min-height: 500px;">
-                    <iframe src="https://www.google.com/maps?q=Tinkers%20Hatch%20New%20Pond%20Hill%20TN21%200LX&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing Tinkers Hatch location"></iframe>
+                       <!-- Right Column: Interactive Map -->
+            <div class="reveal flex">
+                <div class="map-container" style="width: 100%; height: 550px;">
+                    <iframe src="https://www.google.com/maps?q=Tinkers%20Hatch%20New%20Pond%20Hill%20TN21%200LX&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing Tinkers Hatch location" style="width:100%; height:100%; border:0;"></iframe>
                     <a href="https://www.google.com/maps/dir/?api=1&destination=Tinkers+Hatch+New+Pond+Hill+TN21+0LX" target="_blank" rel="noopener noreferrer" class="map-directions-btn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
                         Get Directions
                     </a>
                 </div>
             </div>
+               /* Interactive Map Styling */
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 550px; /* Strict height so it doesn't shrink */
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    background: var(--cream);
+    transition: box-shadow .4s ease, border-color .4s ease;
+}
+.map-container:hover {
+    box-shadow: var(--shadow-hover);
+    border-color: var(--teal);
+}
+.map-container iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    filter: grayscale(0.3) sepia(0.15) contrast(0.95);
+    transition: filter 0.4s ease;
+}
+body.theme-dark .map-container iframe {
+    filter: invert(0.92) hue-rotate(180deg) brightness(0.9) contrast(0.9) grayscale(0.2);
+}
+body.theme-warm .map-container iframe {
+    filter: sepia(0.35) hue-rotate(-5deg) saturate(1.4) contrast(0.9);
+}
+body.theme-high-contrast .map-container iframe {
+    filter: grayscale(1) contrast(1.5);
+}
+
+.map-directions-btn {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: var(--teal);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 14px -4px rgba(26,163,126,.6);
+    transition: all .3s cubic-bezier(.34,1.56,.64,1);
+    z-index: 10;
+}
+.map-directions-btn:hover {
+    background: var(--teal-deep);
+    transform: translateY(-3px) scale(1.05);
+}
+/* Lock the SVG icon size */
+.map-directions-btn svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex-shrink: 0;
+}
         </div>
     </div>
 </section><section id="changelog" class="py-24" style="background:var(--cream)"><div class="max-w-4xl mx-auto px-6 lg:px-8"><div class="text-center max-w-2xl mx-auto mb-12 reveal"><span class="tag mb-4 inline-flex">App Updates</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">App Changelog</h2><p class="text-lg" style="color:var(--bark-soft)">We are always looking for ways to improve our app to make it more accessible and enjoyable. Here is what we've been working on.</p></div><div class="card p-8 reveal"><div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b gap-2" style="border-color: var(--border)"><h3 class="display font-extrabold text-xl" style="color: var(--bark)">Recent Changes</h3><span class="text-sm font-bold px-3 py-1 rounded-full" style="background: var(--cream-deep); color: var(--teal); border: 1px solid var(--border);">Live Updates</span></div><div id="changelog-container" class="space-y-6"><p style="color: var(--bark-soft);">Loading updates...</p></div></div></div></section>
