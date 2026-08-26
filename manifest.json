@@ -1,0 +1,21 @@
+{
+  "name": "Tinkers Hatch",
+  "short_name": "Tinkers",
+  "description": "A caring home for adults with learning disabilities.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FCFBFA",
+  "theme_color": "#152630",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/0j5q3X2/tinkers-hatch-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.ibb.co/0j5q3X2/tinkers-hatch-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
