@@ -5,19 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tinkers Hatch</title>
 <meta name="description" content="Tinkers Hatch, New Pond Hill — a caring home for adults with learning disabilities.">
-    <!-- Social Sharing & SEO (Open Graph) -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://tinkershatch.netlify.app/">
-<meta property="og:title" content="Tinkers Hatch | A Caring Home in East Sussex">
-<meta property="og:description" content="A warm and caring home for adults with learning disabilities. Where every person is known by name, supported with dignity, and celebrated for who they are.">
-<meta property="og:image" content="https://i.ibb.co/0j5q3X2/tinkers-hatch-logo.png">
-<meta property="og:site_name" content="Tinkers Hatch">
-
-<!-- Twitter Card Sharing -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Tinkers Hatch | A Caring Home in East Sussex">
-<meta name="twitter:description" content="A warm and caring home for adults with learning disabilities.">
-<meta name="twitter:image" content="https://i.ibb.co/0j5q3X2/tinkers-hatch-logo.png">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#152630">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -93,69 +80,6 @@ footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var
     .illustration { transform: translateZ(0); backface-visibility: hidden; }
     .photo-frame, .img-wrap { contain: strict; overflow: hidden; }
     .activity-card:hover .img-wrap .illustration { transform: none !important; }
-}/* Interactive Map Styling */
-.map-container {
-    position: relative;
-    width: 100%;
-    height: 320px;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    background: var(--cream);
-    margin-top: 16px;
-    transition: box-shadow .4s ease, border-color .4s ease;
-}
-.map-container:hover {
-    box-shadow: var(--shadow-hover);
-    border-color: var(--teal);
-}
-.map-container iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    /* Softens the map to match the warm vibe */
-    filter: grayscale(0.3) sepia(0.15) contrast(0.95);
-    transition: filter 0.4s ease;
-}
-/* Auto-styling for Dark Mode */
-body.theme-dark .map-container iframe {
-    filter: invert(0.92) hue-rotate(180deg) brightness(0.9) contrast(0.9) grayscale(0.2);
-}
-/* Auto-styling for Warm Mode */
-body.theme-warm .map-container iframe {
-    filter: sepia(0.35) hue-rotate(-5deg) saturate(1.4) contrast(0.9);
-}
-/* Auto-styling for High Contrast */
-body.theme-high-contrast .map-container iframe {
-    filter: grayscale(1) contrast(1.5);
-}
-
-.map-directions-btn {
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    background: var(--teal);
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    box-shadow: 0 4px 14px -4px rgba(26,163,126,.6);
-    transition: all .3s cubic-bezier(.34,1.56,.64,1);
-    z-index: 10;
-}
-.map-directions-btn:hover {
-    background: var(--teal-deep);
-    transform: translateY(-3px) scale(1.05);
-}
-.map-directions-btn svg {
-    width: 18px;
-    height: 18px;
 }
 </style>
 </head>
@@ -246,16 +170,86 @@ body.theme-high-contrast .map-container iframe {
 <section id="day" class="py-24" style="background:var(--cream-deep)"><div class="max-w-4xl mx-auto px-6 lg:px-8"><div class="text-center max-w-2xl mx-auto mb-16 reveal"><span class="tag mb-4 inline-flex">A Day at Tinkers Hatch</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">A gentle rhythm, not a rigid schedule.</h2><p class="text-lg" style="color:var(--bark-soft)">Here's a sense of how a typical day flows. Each person chooses what to join — and there's always room for a quiet moment.</p></div><div class="space-y-10"><div class="timeline-item reveal"><div class="timeline-dot"></div><div class="display font-extrabold text-xl mb-2" style="color:var(--terracotta)">Morning</div><p style="color:var(--bark-soft)">Slow starts with breakfast cooked to order. Some head to the garden, others prefer a quiet cuppa in the cozy lounge. We come together for a 10am circle to share plans for the day.</p></div><div class="timeline-item reveal"><div class="timeline-dot" style="border-color:var(--sage)"></div><div class="display font-extrabold text-xl mb-2" style="color:var(--teal)">Midday</div><p style="color:var(--bark-soft)">Activities in full swing — baking in the kitchen, or a walk down to the village. Lunch is shared around big tables, with fresh food prepared lovingly by our chef Joe.</p></div><div class="timeline-item reveal"><div class="timeline-dot" style="border-color:var(--rose)"></div><div class="display font-extrabold text-xl mb-2" style="color:var(--terracotta)">Afternoon</div><p style="color:var(--bark-soft)">A slower pace. Reading, music, visits from family, or time spent in a favourite chair. Tea and cake at 3.30 — everyone's welcome.</p></div><div class="timeline-item reveal"><div class="timeline-dot" style="border-color:var(--honey)"></div><div class="display font-extrabold text-xl mb-2" style="color:var(--teal)">Evening</div><p style="color:var(--bark-soft)">Supper together, then a film, a board game, or simply winding down. Bedtimes are flexible — this is home, and home runs on your own clock.</p></div></div></div></section>
 <section id="whats-new" class="py-24"><div class="summer-particles" id="summerParticles" aria-hidden="true"></div><div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10 reveal"><div class="grid lg:grid-cols-2 gap-16 items-center"><div><span class="tag mb-4 inline-flex" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.2)">What's New</span><h2 class="display font-extrabold mb-6 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:#fff">The Quiet Cove</h2><p class="text-lg mb-8" style="color:rgba(255,255,255,0.85)">We are thrilled to introduce our brand-new sensory room, The Quiet Cove. Designed as a calming sanctuary, it features soft fiber-optic lighting, tactile wall panels, and gentle sounds to help residents relax, regulate, and find peace whenever they need it.</p><ul class="space-y-4"><li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Soothing interactive lights</li><li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> Tactile and sensory exploration</li><li class="flex items-center gap-3"><svg width="20" height="20" viewBox="0 0 24 24" fill="#fff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg> A safe space for everyone</li></ul></div><div class="relative"><div class="card p-8 text-center flex flex-col items-center justify-center" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);box-shadow:0 10px 40px -10px rgba(0,0,0,0.2);"><svg class="w-full max-w-[260px] h-auto mb-4 quiet-cove-svg" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Quiet Cove logo"><defs><radialGradient id="coveGlow" cx="50%" cy="58%" r="40%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.5"/><stop offset="60%" stop-color="#FFFFFF" stop-opacity="0.15"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient><linearGradient id="coveGrad" x1="140" y1="60" x2="140" y2="220" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#FFFFFF"/></linearGradient><linearGradient id="waterGrad" x1="80" y1="180" x2="200" y2="240" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.25"/></linearGradient><clipPath id="coveClip"><path d="M140 68 C88 68 52 108 52 158 C52 188 72 210 100 218 L180 218 C208 210 228 188 228 158 C228 108 192 68 140 68Z"/></clipPath></defs><ellipse class="cove-glow" cx="140" cy="160" rx="110" ry="100" fill="url(#coveGlow)"/><circle class="cove-ring" cx="140" cy="140" r="130" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="0.75" fill="none"/><path d="M140 68 C88 68 52 108 52 158 C52 188 72 210 100 218 L180 218 C208 210 228 188 228 158 C228 108 192 68 140 68Z" fill="none" stroke="url(#coveGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M140 76 C94 76 62 112 62 156 C52 188 78 204 102 212 L178 212 C202 204 218 182 218 156 C218 112 186 76 140 76Z" fill="#FFFFFF" fill-opacity="0.08"/><g clip-path="url(#coveClip)"><path class="wave-3" d="M40 195 Q70 185 100 195 Q130 205 160 195 Q190 185 220 195 L220 240 L40 240Z" fill="#FFFFFF" fill-opacity="0.12"/><path class="wave-2" d="M40 205 Q75 193 110 205 Q145 217 180 205 Q215 193 250 205 L250 240 L40 240Z" fill="url(#waterGrad)"/><path class="wave-1" d="M40 215 Q80 203 120 215 Q160 227 200 215 Q240 203 280 215 L280 240 L40 240Z" fill="#FFFFFF" fill-opacity="0.35"/></g><circle class="star-dot" cx="110" cy="110" r="2" fill="#FFFFFF" fill-opacity="0.8"/><circle class="star-dot-2" cx="165" cy="95" r="1.5" fill="#FFFFFF" fill-opacity="0.9"/><circle class="star-dot-3" cx="130" cy="130" r="1.8" fill="#FFFFFF" fill-opacity="0.6"/><circle class="star-dot" cx="155" cy="145" r="1.2" fill="#FFFFFF" fill-opacity="0.7"/><path d="M140 38 A8 8 0 1 1 139.99 38" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-opacity="0.6" stroke-linecap="round"/><path d="M140 32 A14 14 0 0 1 140 44" fill="none" stroke="#FFFFFF" stroke-width="1" stroke-opacity="0.3" stroke-linecap="round"/></svg><h3 class="display font-extrabold text-xl mt-2" style="color:#fff">A Sanctuary of Calm</h3><div class="ambient-player"><button class="ambient-btn" data-sound="rain" aria-label="Play rain sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 13v8M8 13v8M12 15v8M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"/></svg><span>Rain</span></button><button class="ambient-btn" data-sound="birds" aria-label="Play birds sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 7h.01M3 4l18 18M19.5 14.5L12 22l-7.5-7.5C2.7 12.9 2.7 9.1 4.5 7.5c1.8-1.6 4.6-1.4 6.3.3l1.2 1.2"/></svg><span>Birds</span></button><button class="ambient-btn" data-sound="ocean" aria-label="Play ocean sound"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12c1.5 0 1.5-2 3-2s1.5 2 3 2 1.5-2 3-2 1.5 2 3 2 1.5-2 3-2 1.5 2 3 2M2 18c1.5 0 1.5-2 3-2s1.5 2 3 2 1.5-2 3-2 1.5 2 3 2 1.5-2 3-2 1.5 2 3 2"/></svg><span>Ocean</span></button></div></div></div></div></div></section>
 <section id="faq" class="py-24" style="background:var(--cream)"><div class="max-w-4xl mx-auto px-6 lg:px-8"><div class="text-center max-w-2xl mx-auto mb-12 reveal"><span class="tag mb-4 inline-flex">Good to Know</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">Questions, Answered.</h2><p class="text-lg" style="color:var(--bark-soft)">Thinking about Tinkers Hatch for a loved one? Here are some of the things families ask us most.</p></div><div class="space-y-4 reveal"><details class="faq-item card p-0 overflow-hidden" style="border-radius:12px;"><summary class="faq-summary">Can residents bring their own furniture?<svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></summary><div class="faq-content"><p>Absolutely. We want Tinkers Hatch to feel like home, not a hotel. Residents are encouraged to bring their own beds, wardrobes, pictures, and treasured belongings to make their space uniquely theirs.</p></div></details><details class="faq-item card p-0 overflow-hidden" style="border-radius:12px;"><summary class="faq-summary">How do you handle medical appointments and medication?<svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></summary><div class="faq-content"><p>Our trained keyworkers oversee all medication management in a safe, regulated way. We also accompany residents to medical appointments and keep families fully informed of any health updates or doctor recommendations.</p></div></details><details class="faq-item card p-0 overflow-hidden" style="border-radius:12px;"><summary class="faq-summary">What is the difference between full-time and respite care?<svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></summary><div class="faq-content"><p>Full-time clients live at Tinkers Hatch permanently. Respite clients stay with us for shorter periods — perhaps while their usual family caregiver takes a holiday or needs a break. Both receive the exact same level of care, activities, and warmth.</p></div></details><details class="faq-item card p-0 overflow-hidden" style="border-radius:12px;"><summary class="faq-summary">Are pets allowed to visit?<svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg></summary><div class="faq-content"><p>Yes! We know how important animal companionship is. Well-behaved dogs on leads are very welcome to visit the garden. We also regularly have Wilf, our wonderful therapy dog, visit the home.</p></div></details></div></div></section>
-<section id="visit" class="py-24" style="background:var(--cream-deep);position:relative;overflow:hidden;"><div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10"><div class="grid lg:grid-cols-2 gap-16 items-start"><div class="reveal"><span class="tag mb-4 inline-flex">Come and See Us</span><h2 class="display font-extrabold mb-6 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">We'd love to show you around.</h2><p class="text-lg mb-10" style="color:var(--bark-soft)">The best way to understand Tinkers Hatch is to visit. Come for a cup of tea, walk the garden, meet some of the people who live and work here. There's no pressure — just a warm welcome.</p><div class="space-y-6"><div class="flex items-start gap-4"><div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="2.5"/></svg></div><div><div class="font-bold mb-1" style="color:var(--bark)">Find us</div>
-<div class="text-sm" style="color:var(--bark-soft)">Tinkers Hatch,<br>New Pond Hill,<br>TN21 0LX</div>
-<div class="map-container">
-    <iframe src="https://www.google.com/maps?q=Tinkers%20Hatch%20New%20Pond%20Hill%20TN21%200LX&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing Tinkers Hatch location"></iframe>
-    <a href="https://www.google.com/maps/dir/?api=1&destination=Tinkers+Hatch+New+Pond+Hill+TN21+0LX" target="_blank" rel="noopener noreferrer" class="map-directions-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
-        Get Directions
-    </a>
-</div></div></div><div class="flex items-start gap-4"><div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg></div><div><div class="font-bold mb-1" style="color:var(--bark)">Call us</div><a href="tel:+441435863119" class="text-sm font-medium" style="color:var(--teal)">01435 863119</a><div class="text-xs mt-1" style="color:var(--bark-soft)">Monday to Sunday, 9am – 5pm</div></div></div><div class="flex items-start gap-4"><div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></div><div><div class="font-bold mb-1" style="color:var(--bark)">Email us</div><a href="mailto:services@tinkershatch.co.uk" class="text-sm font-medium" style="color:var(--teal)">services@tinkershatch.co.uk</a><div class="text-xs mt-1" style="color:var(--bark-soft)">We reply within two working days</div></div></div></div><div class="mt-10 flex flex-col sm:flex-row gap-4"><a href="tel:+441435863119" class="btn btn-primary"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>Call Now</a><a href="mailto:services@tinkershatch.co.uk" class="btn btn-secondary">Send an Email</a></div></div><div class="reveal"><div class="card p-8" style="background:var(--card);color:var(--bark);border-radius:12px;"><h3 class="display font-extrabold text-xl mb-6" style="color:var(--bark)">Visiting Hours</h3><div class="space-y-4 mb-8"><div class="flex justify-between items-center pb-4 border-b" style="border-color:var(--border)"><span class="font-medium">Monday – Friday</span><span class="text-sm" style="color:var(--bark-soft)">09:00 – 17:00</span></div><div class="flex justify-between items-center pb-4 border-b" style="border-color:var(--border)"><span class="font-medium">Saturday</span><span class="text-sm" style="color:var(--bark-soft)">09:00 – 17:00</span></div><div class="flex justify-between items-center pb-4 border-b" style="border-color:var(--border)"><span class="font-medium">Sunday</span><span class="text-sm" style="color:var(--bark-soft)">09:00 – 17:00</span></div><div class="flex justify-between items-center"><span class="font-medium">Family events</span><span class="text-sm" style="color:var(--terracotta)">Monthly — see newsletter</span></div></div><div class="p-4 rounded-lg" style="background:var(--cream)"><div class="font-bold text-sm mb-2" style="color:var(--bark)">Good to know</div><p class="text-xs" style="color:var(--bark-soft)">We're happy to arrange visits outside these hours — just give us a call. We welcome children, well-behaved dogs (on the lead), and home-baked treats.</p></div></div></div></div></div></section>
-<section id="changelog" class="py-24" style="background:var(--cream)"><div class="max-w-4xl mx-auto px-6 lg:px-8"><div class="text-center max-w-2xl mx-auto mb-12 reveal"><span class="tag mb-4 inline-flex">App Updates</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">App Changelog</h2><p class="text-lg" style="color:var(--bark-soft)">We are always looking for ways to improve our app to make it more accessible and enjoyable. Here is what we've been working on.</p></div><div class="card p-8 reveal"><div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b gap-2" style="border-color: var(--border)"><h3 class="display font-extrabold text-xl" style="color: var(--bark)">Recent Changes</h3><span class="text-sm font-bold px-3 py-1 rounded-full" style="background: var(--cream-deep); color: var(--teal); border: 1px solid var(--border);">Live Updates</span></div><div id="changelog-container" class="space-y-6"><p style="color: var(--bark-soft);">Loading updates...</p></div></div></div></section>
+<section id="visit" class="py-20" style="background:var(--cream-deep);position:relative;overflow:hidden;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+        <div class="text-center max-w-2xl mx-auto mb-10 reveal">
+            <span class="tag mb-4 inline-flex">Come and See Us</span>
+            <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">We'd love to show you around.</h2>
+            <p class="text-lg" style="color:var(--bark-soft)">The best way to understand Tinkers Hatch is to visit. Come for a cup of tea, walk the garden, meet some of the people who live and work here. There's no pressure — just a warm welcome.</p>
+        </div>
+        
+        <div class="grid lg:grid-cols-2 gap-10 lg:gap-12 items-stretch">
+            <!-- Left Column: Contact Info & Hours -->
+            <div class="flex flex-col gap-8 reveal">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="2.5"/></svg>
+                        </div>
+                        <div>
+                            <div class="font-bold" style="color:var(--bark)">Find us</div>
+                            <div class="text-sm" style="color:var(--bark-soft)">Tinkers Hatch, New Pond Hill, TN21 0LX</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        </div>
+                        <div>
+                            <div class="font-bold" style="color:var(--bark)">Call us</div>
+                            <a href="tel:+441435863119" class="text-sm font-medium" style="color:var(--teal)">01435 863119</a>
+                            <div class="text-xs" style="color:var(--bark-soft)">Monday to Sunday, 9am – 5pm</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream)">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <div class="font-bold" style="color:var(--bark)">Email us</div>
+                            <a href="mailto:services@tinkershatch.co.uk" class="text-sm font-medium" style="color:var(--teal)">services@tinkershatch.co.uk</a>
+                            <div class="text-xs" style="color:var(--bark-soft)">We reply within two working days</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <a href="tel:+441435863119" class="btn btn-primary flex-1"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>Call Now</a>
+                    <a href="mailto:services@tinkershatch.co.uk" class="btn btn-secondary flex-1">Send an Email</a>
+                </div>
+                
+                <!-- Visiting Hours Card -->
+                <div class="card p-6" style="background:var(--card);color:var(--bark);border-radius:12px;">
+                    <h3 class="display font-extrabold text-lg mb-4" style="color:var(--bark)">Visiting Hours</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm pb-2 border-b" style="border-color:var(--border)">
+                            <span class="font-medium">Monday – Sunday</span>
+                            <span style="color:var(--bark-soft)">09:00 – 17:00</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm pt-1">
+                            <span class="font-medium">Family events</span>
+                            <span style="color:var(--terracotta)">Monthly — see newsletter</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-lg mt-4" style="background:var(--cream)">
+                        <p class="text-xs" style="color:var(--bark-soft)">We're happy to arrange visits outside these hours — just give us a call. We welcome children, well-behaved dogs (on the lead), and home-baked treats.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column: Interactive Map -->
+            <div class="reveal">
+                <div class="map-container" style="height: 100%; min-height: 500px;">
+                    <iframe src="https://www.google.com/maps?q=Tinkers%20Hatch%20New%20Pond%20Hill%20TN21%200LX&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Map showing Tinkers Hatch location"></iframe>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=Tinkers+Hatch+New+Pond+Hill+TN21+0LX" target="_blank" rel="noopener noreferrer" class="map-directions-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                        Get Directions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><section id="changelog" class="py-24" style="background:var(--cream)"><div class="max-w-4xl mx-auto px-6 lg:px-8"><div class="text-center max-w-2xl mx-auto mb-12 reveal"><span class="tag mb-4 inline-flex">App Updates</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">App Changelog</h2><p class="text-lg" style="color:var(--bark-soft)">We are always looking for ways to improve our app to make it more accessible and enjoyable. Here is what we've been working on.</p></div><div class="card p-8 reveal"><div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b gap-2" style="border-color: var(--border)"><h3 class="display font-extrabold text-xl" style="color: var(--bark)">Recent Changes</h3><span class="text-sm font-bold px-3 py-1 rounded-full" style="background: var(--cream-deep); color: var(--teal); border: 1px solid var(--border);">Live Updates</span></div><div id="changelog-container" class="space-y-6"><p style="color: var(--bark-soft);">Loading updates...</p></div></div></div></section>
 </main>
 <footer class="pt-16 pb-12" style="background:var(--bark);color:rgba(255,255,255,0.7)"><div class="max-w-7xl mx-auto px-6 lg:px-8"><div class="grid md:grid-cols-2 gap-12 mb-12"><div><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="display:flex;align-items:center;gap:16px;text-decoration:none;margin-bottom:16px;"><svg viewBox="0 0 600 500" width="120" height="100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="color: #fff;"><circle cx="300" cy="250" r="240" fill="none" stroke="currentColor" stroke-width="3"/><text x="300" y="260" font-family="Outfit, sans-serif" font-size="42" font-weight="bold" fill="currentColor" text-anchor="middle" letter-spacing="1.5">Tinkers Hatch</text><circle cx="280" cy="290" r="3" fill="currentColor" /><circle cx="300" cy="290" r="4" fill="currentColor" /><circle cx="320" cy="290" r="3" fill="currentColor" /><text x="300" y="320" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="normal" fill="currentColor" text-anchor="middle" letter-spacing="4">CARING SINCE 1984</text></svg></a><p class="text-sm">A caring home for adults with learning disabilities. Registered with the Care Quality Commission.</p></div><div class="flex flex-col items-start md:items-end"><div class="display font-extrabold text-lg text-white mb-4">Accessibility & Support</div><p class="text-sm mb-4 md:text-right">We're committed to making our home and our app welcoming to everyone.</p><button id="footerA11y" class="text-xs font-bold underline text-white mb-6">Read our accessibility statement</button><button id="footerStaffLogin" class="text-xs font-bold underline text-white mb-6" style="opacity: 0.5;">Staff Login</button><button class="bcn-btn" aria-label="Proud to support Breast Cancer Now"><span>Proud to support Breast Cancer Now 🎗️</span></button></div></div></div></footer>
 <button id="testerOpenBtn" class="tester-trigger" aria-label="Tester Menu">⚙️</button>
