@@ -72,16 +72,41 @@ header{position:fixed;top:30px;left:0;right:0;z-index:50;display:flex;justify-co
 .summer-particles{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}.particle{position:absolute;border-radius:50%;opacity:0;animation:floatUp 12s linear infinite;background:#FFD700;box-shadow:0 0 8px #FFD700}body.theme-dark .particle{background:#8aaa8a;box-shadow:0 0 12px #8aaa8a}body.theme-warm .particle{background:#FFD700;box-shadow:0 0 8px #D66B3C}body.theme-soft .particle{background:#FFF;box-shadow:0 0 8px #FFF}body.theme-high-contrast .particle{background:#FFFF00;box-shadow:none}body.season-winter .particle{background:#FFF;box-shadow:0 0 8px #A8D0E6}body.season-spring .particle{background:#F2C84B;box-shadow:0 0 8px #F2C84B}body.season-summer .particle{background:#FFD700;box-shadow:0 0 8px #FFD700}body.season-autumn .particle{background:#D49522;box-shadow:0 0 8px #A05631}@keyframes floatUp{0%{transform:translateY(20px) translateX(0);opacity:0}15%{opacity:.8}85%{opacity:.8}100%{transform:translateY(-400px) translateX(40px);opacity:0}}
 footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var(--teal)}.grid>*{min-width:0}#seasonal-bg{position:fixed;inset:0;z-index:-2;pointer-events:none;overflow:hidden;transition:opacity .5s ease}.season-el{position:absolute;top:-50px;opacity:.5;filter:blur(0.5px)}.season-el.snow{background:rgba(255,255,255,.95);border-radius:50%;box-shadow:0 0 6px rgba(255,255,255,.9);animation:snowfall linear infinite}@keyframes snowfall{0%{transform:translateY(-10vh) translateX(0) rotate(0deg);opacity:0}15%{opacity:.8}85%{opacity:.8}100%{transform:translateY(110vh) translateX(100px) rotate(360deg);opacity:0}}.season-el.petal{background:#F2A6B3;border-radius:50% 10% 50% 10%;animation:petalfall linear infinite}@keyframes petalfall{0%{transform:translateY(-10vh) rotate(0deg) translateX(0);opacity:0}15%{opacity:.8}85%{opacity:.8}100%{transform:translateY(110vh) rotate(720deg) translateX(80px);opacity:0}}.season-el.sunbeam{background:#D9A521;border-radius:50%;box-shadow:0 0 10px #FFD700;animation:sunray linear infinite}@keyframes sunray{0%{transform:translateY(110vh) scale(.5);opacity:0}15%{opacity:.7}85%{opacity:.7}100%{transform:translateY(-10vh) scale(1.2);opacity:0}}.season-el.leaf{background:#D9633E;border-radius:0 50% 0 50%;animation:leaffall linear infinite}@keyframes leaffall{0%{transform:translateY(-10vh) rotate(0deg) translateX(0);opacity:0}15%{opacity:.8}85%{opacity:.8}100%{transform:translateY(110vh) rotate(-720deg) translateX(-80px);opacity:0}}
 .back-to-top-btn{position:fixed;bottom:24px;right:24px;width:42px;height:42px;border-radius:50%;background:color-mix(in srgb, var(--teal) 80%, transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border:1px solid rgba(255,255,255,0.1);box-shadow:0 4px 14px -2px rgba(26,163,126,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(20px) scale(.8);transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:45}.back-to-top-btn.show{opacity:.9;visibility:visible;transform:translateY(0) scale(1)}.back-to-top-btn:hover{background:var(--teal-deep);transform:translateY(-5px) scale(1.15) rotate(-5deg);box-shadow:0 8px 20px -2px rgba(26,163,126,.7);opacity:1}.back-to-top-btn:active{transform:scale(.9)}.back-to-top-btn:focus-visible{outline:3px solid var(--honey);outline-offset:3px}.back-to-top-btn svg{transition:transform .3s ease}.back-to-top-btn:hover svg{transform:translateY(-3px)}@media(max-width:480px){.back-to-top-btn{bottom:16px;right:16px;width:38px;height:38px}}
-.tester-trigger{position:fixed;bottom:16px;left:16px;width:44px;height:44px;background:color-mix(in srgb, var(--cream-deep) 50%, transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--border);border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,.1);cursor:pointer;z-index:4000;font-size:1.2rem;line-height:1;display:none;transition:all .4s cubic-bezier(.34,1.56,.64,1)}.tester-trigger.show{display:flex;align-items:center;justify-content:center}.tester-trigger:hover{color:var(--teal);transform:rotate(90deg) scale(1.2)}.tester-modal{position:fixed;inset:0;background:rgba(10,12,15,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:5000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}.tester-modal.active{opacity:1;visibility:visible}.tester-content{background:var(--card);color:var(--bark);padding:32px;border-radius:16px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.2);position:relative;text-align:center;transform:scale(.9);transition:transform .3s ease}.tester-modal.active .tester-content{transform:scale(1)}.tester-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;color:var(--bark-soft);cursor:pointer}.tester-close:hover{color:var(--terracotta)}.tester-input{width:100%;padding:12px;margin-top:16px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:1rem;background:var(--cream);color:var(--bark);outline:none;transition:border-color .2s ease}.tester-input:focus{border-color:var(--teal)}.tester-btn{width:100%;padding:12px;margin-top:12px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;transition:background-color .2s ease}.tester-btn:hover{background:var(--teal-deep)}.tester-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}.tester-season-btn{padding:12px;background:var(--cream-deep);color:var(--bark);border:1px solid var(--border);border-radius:8px;font-weight:700;cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease}.tester-season-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal)}.tester-season-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}.tester-error{color:#D94646;font-size:.9rem;margin-top:8px;min-height:1.2em}.tester-divider{border:none;border-top:1px solid var(--border);margin:24px 0}#toast-container{position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:6000;display:flex;flex-direction:column;gap:10px;width:100%;max-width:400px;padding:0 16px;pointer-events:none}.toast{background:var(--bark);color:var(--cream);padding:16px 24px;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;align-items:center;gap:12px;font-weight:700;opacity:0;transform:translateY(-20px);transition:opacity .4s ease,transform .4s ease;pointer-events:auto}.toast.show{opacity:1;transform:translateY(0)}
+.tester-trigger{position:fixed;bottom:16px;left:16px;width:44px;height:44px;background:color-mix(in srgb, var(--cream-deep) 50%, transparent);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid var(--border);border-radius:50%;box-shadow:0 2px 10px rgba(0,0,0,.1);cursor:pointer;z-index:4000;font-size:1.2rem;line-height:1;display:none;transition:all .4s cubic-bezier(.34,1.56,.64,1)}.tester-trigger.show{display:flex;align-items:center;justify-content:center}.tester-trigger:hover{color:var(--teal);transform:rotate(90deg) scale(1.2)}.tester-modal{position:fixed;inset:0;background:rgba(10,12,15,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:5000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}.tester-modal.active{opacity:1;visibility:visible}.tester-content{background:var(--card);color:var(--bark);padding:32px;border-radius:16px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.2);position:relative;text-align:center;transform:scale(.9);transition:transform .3s ease}
+@media(min-width:1024px){.tester-content{max-width:700px;padding:48px}}.tester-modal.active .tester-content{transform:scale(1)}.tester-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;color:var(--bark-soft);cursor:pointer}.tester-close:hover{color:var(--terracotta)}.tester-input{width:100%;padding:12px;margin-top:16px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:1rem;background:var(--cream);color:var(--bark);outline:none;transition:border-color .2s ease}.tester-input:focus{border-color:var(--teal)}.tester-btn{width:100%;padding:12px;margin-top:12px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;transition:background-color .2s ease}.tester-btn:hover{background:var(--teal-deep)}.tester-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}.tester-season-btn{padding:12px;background:var(--cream-deep);color:var(--bark);border:1px solid var(--border);border-radius:8px;font-weight:700;cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease}.tester-season-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal)}.tester-season-btn.active{background:var(--teal);color:#fff;border-color:var(--teal)}.tester-error{color:#D94646;font-size:.9rem;margin-top:8px;min-height:1.2em}.tester-divider{border:none;border-top:1px solid var(--border);margin:24px 0}#toast-container{position:fixed;top:40px;left:50%;transform:translateX(-50%);z-index:6000;display:flex;flex-direction:column;gap:10px;width:100%;max-width:400px;padding:0 16px;pointer-events:none}.toast{background:var(--bark);color:var(--cream);padding:16px 24px;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.2);display:flex;align-items:center;gap:12px;font-weight:700;opacity:0;transform:translateY(-20px);transition:opacity .4s ease,transform .4s ease;pointer-events:auto}.toast.show{opacity:1;transform:translateY(0)}
 .faq-item{transition:all .3s cubic-bezier(.34,1.56,.64,1);background:color-mix(in srgb, var(--card) 85%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}.faq-item[open]{box-shadow:var(--shadow-hover);border-color:var(--teal);transform:scale(1.01)}.faq-summary{list-style:none;cursor:pointer;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;font-weight:700;font-size:1.1rem;color:var(--bark)}.faq-summary::-webkit-details-marker{display:none}.faq-icon{transition:transform .4s cubic-bezier(.34,1.56,.64,1);flex-shrink:0;color:var(--teal)}.faq-item[open] .faq-icon{transform:rotate(180deg) scale(1.1)}.faq-content{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0 24px;color:var(--bark-soft);line-height:1.6}.faq-item[open] .faq-content{max-height:300px;padding-bottom:20px}.changelog-item{position:relative;padding-left:32px;padding-bottom:24px;border-left:2px solid var(--border)}.changelog-item:last-child{border-left:2px solid transparent;padding-bottom:0}.changelog-item::before{content:'';position:absolute;left:-7px;top:0;width:12px;height:12px;border-radius:50%;background:var(--teal);border:2px solid var(--card);box-shadow:0 0 0 1px var(--teal)}footer a svg{transition:transform .4s cubic-bezier(.34,1.56,.64,1)!important}footer a:hover svg{transform:rotate(-15deg) scale(1.2)!important}#filmListContainer .card { display: flex; flex-direction: column; min-height: 180px; }#filmListContainer .film-toggle { align-self: flex-start; margin-top: auto; }.staff-fav { line-height: 1; }.film-item h5 { font-size: 1.1rem; font-weight: 700; color: var(--bark); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }.film-item .staff-fav { color: var(--honey); font-size: 1.2rem; }.film-item p.review-text { font-size: 0.9rem; color: var(--bark-soft); font-style: italic; margin-top: 8px; border-left: 3px solid var(--teal); padding-left: 10px; }.film-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--cream); color: var(--bark); transition: all .2s ease; }.film-toggle:hover { border-color: var(--teal); color: var(--teal); }.film-toggle.watched { background: var(--teal); color: #fff; border-color: var(--teal-deep); }.film-review { width: 100%; margin-top: 12px; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--cream); color: var(--bark); font-family: inherit; font-size: 0.95rem; resize: vertical; min-height: 60px; }.film-review:focus { outline: none; border-color: var(--teal); }.admin-film-item { background: var(--cream-deep); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 12px; }.admin-film-item h6 { font-size: 1rem; font-weight: 700; color: var(--bark); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }@media (prefers-reduced-motion: reduce) {*, *::before, *::after {animation-duration: 0.01ms !important;animation-iteration-count: 1 !important;transition-duration: 0.01ms !important;scroll-behavior: auto !important;}}body.theme-high-contrast .btn, body.theme-high-contrast .card, body.theme-high-contrast .mood-btn, body.theme-high-contrast .faq-item, body.theme-high-contrast .stat-item, body.theme-high-contrast .activity-card, body.theme-high-contrast .gallery-cta, body.theme-high-contrast .read-aloud-btn, body.theme-high-contrast .tester-trigger, body.theme-high-contrast .back-to-top-btn, body.theme-high-contrast .bcn-btn, body.theme-high-contrast #time-date-bar, body.theme-high-contrast .a11y-content, body.theme-high-contrast #splash-screen, body.theme-high-contrast .film-item { background: var(--card) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-color: var(--border) !important; }
-.tester-tabs { display: flex; gap: 6px; margin-bottom: 16px; background: var(--cream-deep); padding: 6px; border-radius: 10px; }
-.tester-tab-btn { flex: 1; background: transparent; color: var(--bark-soft); border: none; padding: 8px 4px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+
+/* TABS STYLING */
+.tester-tabs { 
+    display: flex; 
+    gap: 6px; 
+    margin-bottom: 20px; 
+    background: var(--cream-deep); 
+    padding: 6px; 
+    border-radius: 10px; 
+    overflow-x: auto; 
+    flex-wrap: nowrap; 
+    justify-content: flex-start;
+}
+.tester-tab-btn { 
+    flex-shrink: 0; 
+    white-space: nowrap;
+    background: transparent; 
+    color: var(--bark-soft); 
+    border: none; 
+    padding: 10px 16px; 
+    border-radius: 6px; 
+    font-size: 0.85rem; 
+    font-weight: 700; 
+    cursor: pointer; 
+    transition: all 0.2s ease; 
+    text-align: center; 
+}
 .tester-tab-btn:hover { color: var(--bark); }
 .tester-tab-btn.active { background: var(--card); color: var(--teal); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 .tester-tab-content { display: none; animation: fadeIn 0.3s ease; }
 .tester-tab-content.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 768px) {
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }@media (max-width: 768px) {
     .card, .a11y-content, #time-date-bar, .photo-frame, .activity-card, .gallery-cta, .mood-btn, .faq-item, .read-aloud-btn, .bcn-btn, .tester-trigger, .tester-content, .lightbox-close, .lightbox-nav-btn, .ambient-btn {
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
@@ -291,91 +316,109 @@ footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var
 </section><section id="changelog" class="py-24" style="background:var(--cream)"><div class="max-w-4xl mx-auto px-6 lg:px-8"><div class="text-center max-w-2xl mx-auto mb-12 reveal"><span class="tag mb-4 inline-flex">App Updates</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">App Changelog</h2><p class="text-lg" style="color:var(--bark-soft)">We are always looking for ways to improve our app to make it more accessible and enjoyable. Here is what we've been working on.</p></div><div class="card p-8 reveal"><div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b gap-2" style="border-color: var(--border)"><h3 class="display font-extrabold text-xl" style="color: var(--bark)">Recent Changes</h3><span class="text-sm font-bold px-3 py-1 rounded-full" style="background: var(--cream-deep); color: var(--teal); border: 1px solid var(--border);">Live Updates</span></div><div id="changelog-container" class="space-y-6"><p style="color: var(--bark-soft);">Loading updates...</p></div></div></div></section>
 </main>
 <footer class="pt-16 pb-12" style="background:var(--bark);color:rgba(255,255,255,0.7)"><div class="max-w-7xl mx-auto px-6 lg:px-8"><div class="grid md:grid-cols-2 gap-12 mb-12"><div><a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="display:flex;align-items:center;gap:16px;text-decoration:none;margin-bottom:16px;"><svg viewBox="0 0 600 500" width="120" height="100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="color: #fff;"><circle cx="300" cy="250" r="240" fill="none" stroke="currentColor" stroke-width="3"/><text x="300" y="260" font-family="Outfit, sans-serif" font-size="42" font-weight="bold" fill="currentColor" text-anchor="middle" letter-spacing="1.5">Tinkers Hatch</text><circle cx="280" cy="290" r="3" fill="currentColor" /><circle cx="300" cy="290" r="4" fill="currentColor" /><circle cx="320" cy="290" r="3" fill="currentColor" /><text x="300" y="320" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="normal" fill="currentColor" text-anchor="middle" letter-spacing="4">CARING SINCE 1984</text></svg></a><p class="text-sm">A caring home for adults with learning disabilities. Registered with the Care Quality Commission.</p></div><div class="flex flex-col items-start md:items-end"><div class="display font-extrabold text-lg text-white mb-4">Accessibility & Support</div><p class="text-sm mb-4 md:text-right">We're committed to making our home and our app welcoming to everyone.</p><button id="footerA11y" class="text-xs font-bold underline text-white mb-6">Read our accessibility statement</button><button id="footerStaffLogin" class="text-xs font-bold underline text-white mb-6" style="opacity: 0.5;">Staff Login</button><button class="bcn-btn" aria-label="Proud to support Breast Cancer Now"><span>Proud to support Breast Cancer Now 🎗️</span></button></div></div></div></footer>
-<button id="testerOpenBtn" class="tester-trigger" aria-label="Tester Menu">⚙️</button>
-<div id="testerModal" class="tester-modal" role="dialog" aria-modal="true" aria-label="Tester Menu"><div class="tester-content"><button class="tester-close" id="testerCloseBtn" aria-label="Close">&times;</button><div id="testerLogin"><h3 class="display font-extrabold text-xl">Staff Login</h3><p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Enter your staff credentials to access the dashboard.</p><input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email" style="margin-bottom: 8px;"><input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password"><button id="testerLoginBtn" class="tester-btn">Log In</button><div id="testerError" class="tester-error"></div></div><div id="testerMenu" style="display:none;">
-    <div class="tester-tabs">
-        <button class="tester-tab-btn active" data-tab="content">Content</button>
-        <button class="tester-tab-btn" data-tab="appearance">Appearance</button>
-        <button class="tester-tab-btn" data-tab="system">System</button>
-    </div>
-    
-    <div id="tab-content" class="tester-tab-content active">
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Gallery Manager</h3>
-        <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="padding:10px; margin-top: 8px;">
-        <button id="uploadPhotoBtn" class="tester-btn" style="background:var(--teal-deep);">Upload Photo</button>
-        <div id="adminPhotoContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
-        
-        <hr class="tester-divider">
-        
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Events Manager</h3>
-        <input type="text" id="newEventTitle" class="tester-input" placeholder="Event Title (e.g., Coffee Morning)">
-        <input type="date" id="newEventDate" class="tester-input" style="margin-top: 8px;">
-        <textarea id="newEventDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:40px;"></textarea>
-        <button id="addEventBtn" class="tester-btn" style="background:var(--teal-deep);">Add Event</button>
-        <div id="adminEventContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+ <button id="testerOpenBtn" class="tester-trigger" aria-label="Tester Menu">⚙️</button>
+<div id="testerModal" class="tester-modal" role="dialog" aria-modal="true" aria-label="Tester Menu">
+    <div class="tester-content">
+        <button class="tester-close" id="testerCloseBtn" aria-label="Close">&times;</button>
+        <div id="testerLogin">
+            <h3 class="display font-extrabold text-xl">Staff Login</h3>
+            <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Enter your staff credentials to access the dashboard.</p>
+            <input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email" style="margin-bottom: 8px;">
+            <input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password">
+            <button id="testerLoginBtn" class="tester-btn">Log In</button>
+            <div id="testerError" class="tester-error"></div>
+        </div>
+        <div id="testerMenu" style="display:none;">
+            <div class="tester-tabs">
+                <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
+                <button class="tester-tab-btn" data-tab="events">📅 Events</button>
+                <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
+                <button class="tester-tab-btn" data-tab="wilf">🐾 Wilf</button>
+                <button class="tester-tab-btn" data-tab="updates">📝 Updates</button>
+                <button class="tester-tab-btn" data-tab="films">🎬 Films</button>
+                <button class="tester-tab-btn" data-tab="settings">⚙️ Settings</button>
+            </div>
+            
+            <div id="tab-photos" class="tester-tab-content active">
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Gallery Manager</h3>
+                <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="padding:10px; margin-top: 8px;">
+                <button id="uploadPhotoBtn" class="tester-btn" style="background:var(--teal-deep);">Upload Photo</button>
+                <div id="adminPhotoContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+            </div>
 
-        <hr class="tester-divider">
-<div id="chefOnlySection" style="display: none;">
-    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Weekly Menu Manager</h3>
-    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Update the weekly dinners. Changes save instantly to the website.</p>
-    <div id="adminMenuContainer" class="space-y-3 mt-4 text-left"></div>
-    <button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Save Weekly Menu</button>
-    <hr class="tester-divider">
+            <div id="tab-events" class="tester-tab-content">
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Events Manager</h3>
+                <input type="text" id="newEventTitle" class="tester-input" placeholder="Event Title (e.g., Coffee Morning)">
+                <input type="date" id="newEventDate" class="tester-input" style="margin-top: 8px;">
+                <textarea id="newEventDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:40px;"></textarea>
+                <button id="addEventBtn" class="tester-btn" style="background:var(--teal-deep);">Add Event</button>
+                <div id="adminEventContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+            </div>
+
+            <div id="tab-menu" class="tester-tab-content">
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Weekly Menu Manager</h3>
+                <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Update the weekly dinners. Changes save instantly to the website.</p>
+                <div id="adminMenuContainer" class="space-y-3 mt-4 text-left"></div>
+                <button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Save Weekly Menu</button>
+            </div>
+
+            <div id="tab-wilf" class="tester-tab-content">
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Wilf Status & Blog</h3>
+                <button id="wilfToggleBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Wilf Status</button>
+                <hr class="tester-divider">
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Wilf's Blog Manager</h3>
+                <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title (e.g., A day in the garden)">
+                <textarea id="newWilfBlogContent" class="film-review" placeholder="Write Wilf's adventure here..." style="width:100%;margin-top:8px;min-height:80px;"></textarea>
+                <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL (leave blank if none)" style="margin-top:8px;">
+                <button id="addWilfBlogBtn" class="tester-btn" style="background:var(--teal-deep);">Post Blog</button>
+                <div id="adminWilfBlogContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+            </div>
+
+            <div id="tab-updates" class="tester-tab-content">
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">App Updates Manager</h3>
+                <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title (e.g., New Photos)" style="margin-top:8px;">
+                <textarea id="newUpdateContent" class="film-review" placeholder="What's the new update?" style="width:100%;margin-top:8px;min-height:60px;"></textarea>
+                <button id="addUpdateBtn" class="tester-btn" style="background:var(--teal-deep);">Post Update</button>
+                <div id="adminUpdateContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+            </div>
+
+            <div id="tab-films" class="tester-tab-content">
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Film Night Admin</h3>
+                <div class="flex gap-2 mt-2">
+                    <input type="text" id="newFilmTitle" class="tester-input" style="margin-top:0;flex:1;" placeholder="Enter new film...">
+                    <button id="addFilmBtn" class="tester-btn" style="margin-top:0;width:auto;padding:12px 20px;">Add</button>
+                </div>
+                <div id="adminFilmContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+            </div>
+
+                    <div id="adminOnlyThemes" style="display: none;">
+            <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Seasonal Themes</h3>
+            <div class="tester-grid">
+                <button class="tester-season-btn" data-season="winter">Winter</button>
+                <button class="tester-season-btn" data-season="spring">Spring</button>
+                <button class="tester-season-btn" data-season="summer">Summer</button>
+                <button class="tester-season-btn" data-season="autumn">Autumn</button>
+                <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
+            </div>
+            <hr class="tester-divider">
+        </div>
+
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Layout Customizer</h3>
+                <div id="layoutContainer" class="space-y-2 mt-2 max-h-40 overflow-y-auto text-left"></div>
+                <button id="resetLayoutBtn" class="tester-btn" style="background:var(--bark-soft);margin-top:12px;">Reset Layout</button>
+                
+                <hr class="tester-divider">
+                
+                <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Live Broadcast</h3>
+                <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message..." style="margin-top:8px;" aria-label="Broadcast Message">
+                <button id="broadcastBtn" class="tester-btn" style="background:var(--terracotta);">Broadcast Message</button>
+                
+                <hr class="tester-divider">
+                <button id="testerLogoutBtn" class="tester-btn" style="background:var(--terracotta);">Log Out</button>
+            </div>
+        </div>
+    </div>
 </div>
-<hr class="tester-divider">
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Wilf Status</h3>
-        <button id="wilfToggleBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Wilf Status</button><hr class="tester-divider">
-<h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Wilf's Blog Manager</h3>
-<input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title (e.g., A day in the garden)">
-<textarea id="newWilfBlogContent" class="film-review" placeholder="Write Wilf's adventure here..." style="width:100%;margin-top:8px;min-height:80px;"></textarea>
-<input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL (leave blank if none)" style="margin-top:8px;">
-<button id="addWilfBlogBtn" class="tester-btn" style="background:var(--teal-deep);">Post Blog</button>
-<div id="adminWilfBlogContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
-
-        <hr class="tester-divider">
-        
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">App Updates Manager</h3>
-        <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title (e.g., New Photos)" style="margin-top:8px;">
-        <textarea id="newUpdateContent" class="film-review" placeholder="What's the new update?" style="width:100%;margin-top:8px;min-height:60px;"></textarea>
-        <button id="addUpdateBtn" class="tester-btn" style="background:var(--teal-deep);">Post Update</button>
-        <div id="adminUpdateContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
-        
-        <hr class="tester-divider">
-        
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Film Night Admin</h3>
-        <div class="flex gap-2 mt-2">
-            <input type="text" id="newFilmTitle" class="tester-input" style="margin-top:0;flex:1;" placeholder="Enter new film...">
-            <button id="addFilmBtn" class="tester-btn" style="margin-top:0;width:auto;padding:12px 20px;">Add</button>
-        </div>
-        <div id="adminFilmContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
-    </div>
-
-    <div id="tab-appearance" class="tester-tab-content">
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Seasonal Themes</h3>
-        <div class="tester-grid">
-            <button class="tester-season-btn" data-season="winter">Winter</button>
-            <button class="tester-season-btn" data-season="spring">Spring</button>
-            <button class="tester-season-btn" data-season="summer">Summer</button>
-            <button class="tester-season-btn" data-season="autumn">Autumn</button>
-            <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
-        </div>
-        
-        <hr class="tester-divider">
-
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Layout Customizer</h3>
-        <div id="layoutContainer" class="space-y-2 mt-2 max-h-40 overflow-y-auto text-left"></div>
-        <button id="resetLayoutBtn" class="tester-btn" style="background:var(--bark-soft);margin-top:12px;">Reset Layout</button>
-    </div>
-
-    <div id="tab-system" class="tester-tab-content">
-        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Live Broadcast</h3>
-        <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message..." style="margin-top:8px;" aria-label="Broadcast Message">
-        <button id="broadcastBtn" class="tester-btn" style="background:var(--terracotta);">Broadcast Message</button>
-        
-        <hr class="tester-divider">
-        <button id="testerLogoutBtn" class="tester-btn" style="background:var(--terracotta);">Log Out</button>
-    </div>
-</div></div></div>
 <script>
 'use strict';if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }window.addEventListener('load', function() { window.scrollTo(0, 0); });
 
@@ -748,82 +791,6 @@ const MenuModule = (function(){
 
     return { init, loadAdminMenu };
 })();
-    async function loadMenu() {
-        const c = document.getElementById('menuContainer');
-        if(!c || !supabaseClient) return;
-        try {
-            const { data, error } = await supabaseClient.from('weekly_menu').select('*').order('id', { ascending: true });
-            if(error) throw error;
-            if(!data || data.length === 0) {
-                c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Menu is being updated. Please check back soon!</p>';
-                return;
-            }
-            c.innerHTML = data.map(day => {
-                const meal = day.meal_text && day.meal_text.trim() !== '' ? day.meal_text : 'To be announced';
-                const isPlaceholder = !day.meal_text || day.meal_text.trim() === '';
-                return `
-                    <div class="card p-6 flex flex-col">
-                        <div class="display font-extrabold text-lg mb-2" style="color:var(--terracotta)">${day.day_name}</div>
-                        <p class="text-sm" style="color:var(--bark-soft); ${isPlaceholder ? 'font-style: italic; opacity: 0.7;' : ''}">${meal}</p>
-                    </div>
-                `;
-            }).join('');
-        } catch(e) {
-            c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load the menu.</p>';
-        }
-    }
-
-    async function loadAdminMenu() {
-        const ac = document.getElementById('adminMenuContainer');
-        if(!ac || !supabaseClient) return;
-        ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">Loading menu...</p>';
-        try {
-            const { data, error } = await supabaseClient.from('weekly_menu').select('*').order('id', { ascending: true });
-            if(error) throw error;
-            if(!data || data.length === 0) {
-                ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">No menu days found.</p>';
-                return;
-            }
-            ac.innerHTML = data.map(day => `
-                <div class="admin-film-item" style="padding: 8px 12px;">
-                    <label style="font-size:.8rem; font-weight:700; color:var(--bark); display:block; margin-bottom:4px;">${day.day_name}</label>
-                    <input type="text" class="tester-input menu-input" data-id="${day.id}" value="${day.meal_text || ''}" placeholder="e.g., Roast chicken with seasonal veg" style="margin-top:0; padding:8px; font-size:.9rem;">
-                </div>
-            `).join('');
-        } catch(e) {
-            ac.innerHTML = '<p class="text-sm" style="color: var(--terracotta);">Error loading menu.</p>';
-        }
-    }
-
-    async function saveMenu() {
-        const inputs = document.querySelectorAll('.menu-input');
-        if(inputs.length === 0) return;
-        ToastModule.show("Saving menu...");
-        
-        try {
-            // Loop through all inputs and update them in Supabase
-            for (let input of inputs) {
-                const id = input.dataset.id;
-                const val = input.value.trim();
-                const { error } = await supabaseClient.from('weekly_menu').update({ meal_text: val }).eq('id', id);
-                if(error) throw error;
-            }
-            ToastModule.show("Weekly menu saved successfully!");
-            loadAdminMenu();
-            loadMenu();
-        } catch(err) {
-            ToastModule.show("Error saving menu.");
-        }
-    }
-
-    function init() {
-        loadMenu();
-        const saveBtn = document.getElementById('saveMenuBtn');
-        if(saveBtn) saveBtn.addEventListener('click', saveMenu);
-    }
-
-    return { init, loadAdminMenu };
-})();
 const WilfBlogModule = (function(){
     async function loadBlog() {
         const c = document.getElementById('wilfBlogContainer');
@@ -1137,23 +1104,35 @@ const TesterModule=(function(){
         await supabaseClient.auth.signOut();
         c(); 
     }
-        async function showMenu() {
+
+           async function showMenu() {
         la.style.display='none';
         ma.style.display='block';
         if(gearBtn) gearBtn.classList.add('show');
         if(footerLogin) footerLogin.style.display = 'none';
         
-        // Check user role for the Chef Menu
+        // Check user role
         const { data: { user } } = await supabaseClient.auth.getUser();
         const userRole = user?.user_metadata?.role;
         
-        const chefSection = document.getElementById('chefOnlySection');
-        if(chefSection) {
+        // 1. Chef Menu Logic
+        const menuTabBtn = document.querySelector('button[data-tab="menu"]');
+        if(menuTabBtn) {
             if(userRole === 'chef' || userRole === 'admin') {
-                chefSection.style.display = 'block';
+                menuTabBtn.style.display = 'flex'; 
                 if(typeof MenuModule !== 'undefined') MenuModule.loadAdminMenu();
             } else {
-                chefSection.style.display = 'none';
+                menuTabBtn.style.display = 'none'; 
+            }
+        }
+        
+        // 2. Admin Theme Logic
+        const adminThemes = document.getElementById('adminOnlyThemes');
+        if(adminThemes) {
+            if(userRole === 'admin') {
+                adminThemes.style.display = 'block'; // Show themes for admin
+            } else {
+                adminThemes.style.display = 'none'; // Hide themes for everyone else
             }
         }
         
@@ -1165,8 +1144,7 @@ const TesterModule=(function(){
         if(typeof WilfBlogModule !== 'undefined') WilfBlogModule.loadAdminBlog();
         renderPhotoAdmin();
     }
-    }
-
+	
     function showLogin() {
         la.style.display='block';
         ma.style.display='none';
