@@ -315,10 +315,13 @@ footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var
         <div id="adminEventContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
 
         <hr class="tester-divider">
-<h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Weekly Menu Manager</h3>
-<p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Update the weekly dinners. Changes save instantly to the website.</p>
-<div id="adminMenuContainer" class="space-y-3 mt-4 text-left"></div>
-<button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Save Weekly Menu</button>
+<div id="chefOnlySection" style="display: none;">
+    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Weekly Menu Manager</h3>
+    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Update the weekly dinners. Changes save instantly to the website.</p>
+    <div id="adminMenuContainer" class="space-y-3 mt-4 text-left"></div>
+    <button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Save Weekly Menu</button>
+    <hr class="tester-divider">
+</div>
 <hr class="tester-divider">
         <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Wilf Status</h3>
         <button id="wilfToggleBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Wilf Status</button><hr class="tester-divider">
@@ -1060,20 +1063,34 @@ const TesterModule=(function(){
         c(); 
     }
 
-    function showMenu() {
+        async function showMenu() {
         la.style.display='none';
         ma.style.display='block';
-        if(gearBtn) gearBtn.classList.add('show'); // Show gear icon
-        if(footerLogin) footerLogin.style.display = 'none'; // Hide footer login link
+        if(gearBtn) gearBtn.classList.add('show');
+        if(footerLogin) footerLogin.style.display = 'none';
+        
+        // Check user role for the Chef Menu
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        const userRole = user?.user_metadata?.role;
+        
+        const chefSection = document.getElementById('chefOnlySection');
+        if(chefSection) {
+            if(userRole === 'chef' || userRole === 'admin') {
+                chefSection.style.display = 'block'; // Show the menu manager
+                if(typeof MenuModule!=='undefined') MenuModule.loadAdminMenu();
+            } else {
+                chefSection.style.display = 'none'; // Hide it from regular staff
+            }
+        }
         
         if(typeof FilmNightModule!=='undefined')FilmNightModule.loadFilms();
         if(typeof LayoutModule!=='undefined')LayoutModule.onTesterOpen();
         if(typeof DatabaseModule!=='undefined')DatabaseModule.loadUpdates();
         if(typeof LightboxModule!=='undefined') LightboxModule.loadImages();
         if(typeof EventsModule!=='undefined') EventsModule.loadAdminEvents();
-		if(typeof MenuModule!=='undefined') MenuModule.loadAdminMenu();
-		if(typeof WilfBlogModule!=='undefined') WilfBlogModule.loadAdminBlog();
+        if(typeof WilfBlogModule!=='undefined') WilfBlogModule.loadAdminBlog();
         renderPhotoAdmin();
+    }
     }
 
     function showLogin() {
