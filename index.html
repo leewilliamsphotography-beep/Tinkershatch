@@ -726,6 +726,81 @@ const MenuModule = (function(){
         ToastModule.show("Saving menu...");
         
         try {
+            for (let i = 0; i < inputs.length; i++) {
+                const id = inputs[i].dataset.id;
+                const val = inputs[i].value.trim();
+                const { error } = await supabaseClient.from('weekly_menu').update({ meal_text: val }).eq('id', id);
+                if(error) throw error;
+            }
+            ToastModule.show("Weekly menu saved successfully!");
+            loadAdminMenu();
+            loadMenu();
+        } catch(err) {
+            ToastModule.show("Error saving menu.");
+        }
+    }
+
+    function init() {
+        loadMenu();
+        const saveBtn = document.getElementById('saveMenuBtn');
+        if(saveBtn) saveBtn.addEventListener('click', saveMenu);
+    }
+
+    return { init, loadAdminMenu };
+})();
+    async function loadMenu() {
+        const c = document.getElementById('menuContainer');
+        if(!c || !supabaseClient) return;
+        try {
+            const { data, error } = await supabaseClient.from('weekly_menu').select('*').order('id', { ascending: true });
+            if(error) throw error;
+            if(!data || data.length === 0) {
+                c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Menu is being updated. Please check back soon!</p>';
+                return;
+            }
+            c.innerHTML = data.map(day => {
+                const meal = day.meal_text && day.meal_text.trim() !== '' ? day.meal_text : 'To be announced';
+                const isPlaceholder = !day.meal_text || day.meal_text.trim() === '';
+                return `
+                    <div class="card p-6 flex flex-col">
+                        <div class="display font-extrabold text-lg mb-2" style="color:var(--terracotta)">${day.day_name}</div>
+                        <p class="text-sm" style="color:var(--bark-soft); ${isPlaceholder ? 'font-style: italic; opacity: 0.7;' : ''}">${meal}</p>
+                    </div>
+                `;
+            }).join('');
+        } catch(e) {
+            c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load the menu.</p>';
+        }
+    }
+
+    async function loadAdminMenu() {
+        const ac = document.getElementById('adminMenuContainer');
+        if(!ac || !supabaseClient) return;
+        ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">Loading menu...</p>';
+        try {
+            const { data, error } = await supabaseClient.from('weekly_menu').select('*').order('id', { ascending: true });
+            if(error) throw error;
+            if(!data || data.length === 0) {
+                ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">No menu days found.</p>';
+                return;
+            }
+            ac.innerHTML = data.map(day => `
+                <div class="admin-film-item" style="padding: 8px 12px;">
+                    <label style="font-size:.8rem; font-weight:700; color:var(--bark); display:block; margin-bottom:4px;">${day.day_name}</label>
+                    <input type="text" class="tester-input menu-input" data-id="${day.id}" value="${day.meal_text || ''}" placeholder="e.g., Roast chicken with seasonal veg" style="margin-top:0; padding:8px; font-size:.9rem;">
+                </div>
+            `).join('');
+        } catch(e) {
+            ac.innerHTML = '<p class="text-sm" style="color: var(--terracotta);">Error loading menu.</p>';
+        }
+    }
+
+    async function saveMenu() {
+        const inputs = document.querySelectorAll('.menu-input');
+        if(inputs.length === 0) return;
+        ToastModule.show("Saving menu...");
+        
+        try {
             // Loop through all inputs and update them in Supabase
             for (let input of inputs) {
                 const id = input.dataset.id;
@@ -1062,7 +1137,7 @@ const TesterModule=(function(){
         await supabaseClient.auth.signOut();
         c(); 
     }
-    async function showMenu() {
+        async function showMenu() {
         la.style.display='none';
         ma.style.display='block';
         if(gearBtn) gearBtn.classList.add('show');
@@ -1075,19 +1150,19 @@ const TesterModule=(function(){
         const chefSection = document.getElementById('chefOnlySection');
         if(chefSection) {
             if(userRole === 'chef' || userRole === 'admin') {
-                chefSection.style.display = 'block'; // Show the menu manager
-                if(typeof MenuModule!=='undefined') MenuModule.loadAdminMenu();
+                chefSection.style.display = 'block';
+                if(typeof MenuModule !== 'undefined') MenuModule.loadAdminMenu();
             } else {
-                chefSection.style.display = 'none'; // Hide it from regular staff
+                chefSection.style.display = 'none';
             }
         }
         
-        if(typeof FilmNightModule!=='undefined')FilmNightModule.loadFilms();
-        if(typeof LayoutModule!=='undefined')LayoutModule.onTesterOpen();
-        if(typeof DatabaseModule!=='undefined')DatabaseModule.loadUpdates();
-        if(typeof LightboxModule!=='undefined') LightboxModule.loadImages();
-        if(typeof EventsModule!=='undefined') EventsModule.loadAdminEvents();
-        if(typeof WilfBlogModule!=='undefined') WilfBlogModule.loadAdminBlog();
+        if(typeof FilmNightModule !== 'undefined') FilmNightModule.loadFilms();
+        if(typeof LayoutModule !== 'undefined') LayoutModule.onTesterOpen();
+        if(typeof DatabaseModule !== 'undefined') DatabaseModule.loadUpdates();
+        if(typeof LightboxModule !== 'undefined') LightboxModule.loadImages();
+        if(typeof EventsModule !== 'undefined') EventsModule.loadAdminEvents();
+        if(typeof WilfBlogModule !== 'undefined') WilfBlogModule.loadAdminBlog();
         renderPhotoAdmin();
     }
     }
