@@ -16,7 +16,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <noscript><style>.reveal{opacity:1!important;transform:none!important}#splash-screen{display:none!important}</style></noscript>
-<style>
+</* ... other css up here ... */
+
+/* Lock the SVG icon size */
+.map-directions-btn svg {
+    width: 18px;
+    height: 18px;
+    display: block;
+    flex-shrink: 0;
+}
+</style>  <-- MAKE SURE YOUR CSS IS ABOVE THIS LINE!
+</head>
+<body>
+...style>
 *,*::before,*::after{box-sizing:border-box}html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--cream)}body{margin:0;-webkit-font-smoothing:antialiased;overflow-x:hidden;background:transparent}img,svg{max-width:100%;height:auto;display:block}button{font-family:inherit}
 :root{--cream:#FCFBFA;--cream-deep:#F4F2EE;--bark:#152630;--bark-soft:#4A5C66;--teal:#1AA37E;--teal-deep:#14856A;--terracotta:#C25528;--honey:#A87816;--rose:#A63A5A;--sage:#7CA890;--sky:#EDF2F2;--sky-deep:#D8E2E2;--card:#FFFFFF;--border:#E6E2D6;--shadow:0 10px 40px -10px rgba(21,38,48,.05);--shadow-hover:0 20px 50px -15px rgba(21,38,48,.1)}
 body.theme-dark{--cream:#111418;--cream-deep:#1B2026;--bark:#E0E6EA;--bark-soft:#94A3B8;--sky:#1B2026;--sky-deep:#111418;--card:#1B2026;--border:#2D333B;--shadow:0 4px 20px -4px rgba(0,0,0,.2);--shadow-hover:0 12px 30px -8px rgba(0,0,0,.4)}
@@ -247,68 +259,7 @@ footer a{transition:color .2s ease;display:inline-block}footer a:hover{color:var
                     </a>
                 </div>
             </div>
-               /* Interactive Map Styling */
-.map-container {
-    position: relative;
-    width: 100%;
-    height: 550px; /* Strict height so it doesn't shrink */
-    border-radius: 12px;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow);
-    background: var(--cream);
-    transition: box-shadow .4s ease, border-color .4s ease;
-}
-.map-container:hover {
-    box-shadow: var(--shadow-hover);
-    border-color: var(--teal);
-}
-.map-container iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    filter: grayscale(0.3) sepia(0.15) contrast(0.95);
-    transition: filter 0.4s ease;
-}
-body.theme-dark .map-container iframe {
-    filter: invert(0.92) hue-rotate(180deg) brightness(0.9) contrast(0.9) grayscale(0.2);
-}
-body.theme-warm .map-container iframe {
-    filter: sepia(0.35) hue-rotate(-5deg) saturate(1.4) contrast(0.9);
-}
-body.theme-high-contrast .map-container iframe {
-    filter: grayscale(1) contrast(1.5);
-}
-
-.map-directions-btn {
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    background: var(--teal);
-    color: #fff;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    box-shadow: 0 4px 14px -4px rgba(26,163,126,.6);
-    transition: all .3s cubic-bezier(.34,1.56,.64,1);
-    z-index: 10;
-}
-.map-directions-btn:hover {
-    background: var(--teal-deep);
-    transform: translateY(-3px) scale(1.05);
-}
-/* Lock the SVG icon size */
-.map-directions-btn svg {
-    width: 18px;
-    height: 18px;
-    display: block;
-    flex-shrink: 0;
-}
+               
         </div>
     </div>
 </section><section id="changelog" class="py-24" style="background:var(--cream)"><div class="max-w-4xl mx-auto px-6 lg:px-8"><div class="text-center max-w-2xl mx-auto mb-12 reveal"><span class="tag mb-4 inline-flex">App Updates</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">App Changelog</h2><p class="text-lg" style="color:var(--bark-soft)">We are always looking for ways to improve our app to make it more accessible and enjoyable. Here is what we've been working on.</p></div><div class="card p-8 reveal"><div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b gap-2" style="border-color: var(--border)"><h3 class="display font-extrabold text-xl" style="color: var(--bark)">Recent Changes</h3><span class="text-sm font-bold px-3 py-1 rounded-full" style="background: var(--cream-deep); color: var(--teal); border: 1px solid var(--border);">Live Updates</span></div><div id="changelog-container" class="space-y-6"><p style="color: var(--bark-soft);">Loading updates...</p></div></div></div></section>
