@@ -361,7 +361,21 @@ const FilmNightModule=(function(){
             c.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No films found. Add one above!</p>';
             return;
         }
-        c.innerHTML=films.map(f=>`<div class="admin-film-item"><h6><span>${f.title}</span><div class="flex gap-2"><button class="tester-btn" data-fav-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: ${f.is_staff_favourite?'var(--honey)':'var(--cream)'}; color: ${f.is_staff_favourite?'#000':'var(--bark)'}; border: 1px solid ${f.is_staff_favourite?'var(--honey)':'var(--border)'};">${f.is_staff_favourite?'★ Fav':'Mark Fav'}</button><button class="tester-btn" data-del-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: var(--terracotta); color: #fff; border: 1px solid var(--terracotta);">Delete</button></div></h6><textarea class="film-review" placeholder="Write a review..." data-action="save-review" data-id="${f.id}">${f.review||''}</textarea></div>`).join('');
+        c.innerHTML=films.map(f=>`
+            <div class="admin-film-item">
+                <h6>
+                    <span>${f.title} 
+                    ${f.watched ? '<span style="font-size:0.7rem; color:var(--sage);">(Watched)</span>' : '<span style="font-size:0.7rem; color:var(--terracotta);">(Upcoming)</span>'}
+                    </span>
+                    <div class="flex gap-2">
+                        <button class="tester-btn" data-fav-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: ${f.is_staff_favourite?'var(--honey)':'var(--cream)'}; color: ${f.is_staff_favourite?'#000':'var(--bark)'}; border: 1px solid ${f.is_staff_favourite?'var(--honey)':'var(--border)'};">${f.is_staff_favourite?'★ Fav':'Mark Fav'}</button>
+                        <button class="tester-btn" data-action="toggle-watched" data-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: var(--teal); color: #fff;">${f.watched?'✓ Unwatch':'Mark Watched'}</button>
+                        <button class="tester-btn" data-del-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: var(--terracotta); color: #fff; border: 1px solid var(--terracotta);">Delete</button>
+                    </div>
+                </h6>
+                <textarea class="film-review" placeholder="Write a review..." data-action="save-review" data-id="${f.id}">${f.review||''}</textarea>
+            </div>
+        `).join('');
         
         c.querySelectorAll('[data-fav-id]').forEach(b=>b.addEventListener('click',async e=>{
             const id=e.target.dataset.favId,f=films.find(x=>x.id==id);
@@ -374,8 +388,12 @@ const FilmNightModule=(function(){
             }
         }));
         
+        c.querySelectorAll('[data-action="toggle-watched"]').forEach(b=>b.addEventListener('click',async e=>{
+            tw(e.target.dataset.id);
+        }));
+        
         c.querySelectorAll('[data-del-id]').forEach(b=>b.addEventListener('click',async e=>{
-            const id=e.target.dataset_delId;
+            const id=e.target.dataset.delId;
             if(confirm('Are you sure you want to delete this film?')) df(id);
         }));
         
