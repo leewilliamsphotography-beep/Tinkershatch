@@ -68,3 +68,27 @@ body.dyslexia-mode .display {
     border-color: var(--terracotta);
     color: #fff;
 }
+/* Quiet Hours Badge */
+.quiet-badge {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+}
+.quiet-badge.active-hours {
+    background: rgba(124, 168, 144, 0.3); /* Sage green */
+    color: #D4E8DD;
+}
+.quiet-badge.resting-hours {
+    background: rgba(194, 85, 40, 0.3); /* Terracotta */
+    color: #F2C9B5;
+}
+/* Ensure mobile still centers correctly */
+@media(max-width:768px){
+    .time-date-contact{display:none}
+    #time-date-bar{justify-content:center}
+}

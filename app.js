@@ -3,8 +3,39 @@ if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navi
 
 let supabaseClient = null;if (window.supabase) { supabaseClient = window.supabase.createClient('https://bsbwrvqevtoujfvcvvju.supabase.co', 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx');}
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}function generateSeasonalBackground(s){const bg=document.getElementById('seasonal-bg');if(!bg)return;bg.innerHTML='';if(!s)return;const c=window.innerWidth<768?15:20;for(let i=0;i<c;i++){const el=document.createElement('div');el.className='season-el '+s;el.style.left=Math.random()*100+'vw';el.style.animationDuration=(Math.random()*10+10)+'s';el.style.animationDelay=(Math.random()*15)+'s';const size=Math.random()*12+8;el.style.width=size+'px';el.style.height=size+'px';if(s==='winter')el.classList.add('snow');else if(s==='spring')el.classList.add('petal');else if(s==='summer')el.classList.add('sunbeam');else if(s==='autumn')el.classList.add('leaf');else return;bg.appendChild(el)}}
-const TimeModule=(function(){function u(){const n=new Date(),d=n.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),t=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});const e=document.getElementById('liveTimeDate');if(e)e.textContent=d+' • '+t}function init(){u();setInterval(u,1000)}return{init}})();
-
+const TimeModule=(function(){
+    function u(){
+        const n=new Date();
+        const d=n.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+        const t=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        const e=document.getElementById('liveTimeDate');
+        if(e)e.textContent=d+' • '+t;
+        
+        // Quiet Hours Logic
+        const badge=document.getElementById('quietHoursBadge');
+        if(badge){
+            const hours=n.getHours();
+            const minutes=n.getMinutes();
+            const currentMinutes=hours*60+minutes;
+            
+            // Quiet times: 12:00 - 13:30 (Lunch) OR 19:30 - 08:00 (Evening/Morning)
+            const isLunch = currentMinutes >= 720 && currentMinutes <= 810; // 12:00 to 13:30
+            const isEveningMorning = currentMinutes >= 1170 || currentMinutes <= 480; // 19:30 to 08:00
+            
+            if(isLunch || isEveningMorning){
+                badge.textContent="Quiet Hours";
+                badge.className="quiet-badge resting-hours";
+                badge.style.display="inline-block";
+            } else {
+                badge.textContent="Active Hours";
+                badge.className="quiet-badge active-hours";
+                badge.style.display="inline-block";
+            }
+        }
+    }
+    function init(){u();setInterval(u,1000)}
+    return{init};
+})();
 const ToastModule=(function(){
     const c=document.getElementById('toast-container');
     const notifBtn=document.getElementById('notifBtn');
