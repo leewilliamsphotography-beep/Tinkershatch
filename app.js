@@ -5,7 +5,40 @@ let supabaseClient = null;if (window.supabase) { supabaseClient = window.supabas
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}function generateSeasonalBackground(s){const bg=document.getElementById('seasonal-bg');if(!bg)return;bg.innerHTML='';if(!s)return;const c=window.innerWidth<768?15:20;for(let i=0;i<c;i++){const el=document.createElement('div');el.className='season-el '+s;el.style.left=Math.random()*100+'vw';el.style.animationDuration=(Math.random()*10+10)+'s';el.style.animationDelay=(Math.random()*15)+'s';const size=Math.random()*12+8;el.style.width=size+'px';el.style.height=size+'px';if(s==='winter')el.classList.add('snow');else if(s==='spring')el.classList.add('petal');else if(s==='summer')el.classList.add('sunbeam');else if(s==='autumn')el.classList.add('leaf');else return;bg.appendChild(el)}}
 const TimeModule=(function(){function u(){const n=new Date(),d=n.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'}),t=n.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});const e=document.getElementById('liveTimeDate');if(e)e.textContent=d+' • '+t}function init(){u();setInterval(u,1000)}return{init}})();
 const ToastModule=(function(){const c=document.getElementById('toast-container');function show(msg){const t=document.createElement('div');t.className='toast';t.innerHTML=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.5 7.5H22l-6.2 4.5 2.4 7.5L12 17l-6.2 4.5 2.4-7.5L2 9.5h7.5z"/></svg><span>${msg}</span>`;c.appendChild(t);setTimeout(()=>t.classList.add('show'),100);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},5000)}function init(){try{const es=new EventSource('https://ntfy.sh/tinkers-hatch-live/sse');es.addEventListener('message',e=>{try{const d=JSON.parse(e.data);if(d.message)show(d.message)}catch(err){}})}catch(e){console.error('SSE failed',e)}}return{init,show}})();
-const SplashModule=(function(){function init(){const s=document.getElementById('splash-screen'),e=document.getElementById('enterAppBtn');if(!s||!e)return;document.body.style.overflow='hidden';function c(){s.classList.add('hidden');document.body.style.overflow='auto'}e.addEventListener('click',c);document.querySelectorAll('.splash-shortcut').forEach(b=>b.addEventListener('click',e=>{e.preventDefault();c();const t=b.getAttribute('href');setTimeout(()=>{const el=document.querySelector(t);if(el)el.scrollIntoView({behavior:'smooth'})},800)}));const v=document.getElementById('version-tag');if(v){v.textContent="Version 2.0"}}return{init}})();
+const SplashModule = (function () {
+  function init() {
+    const splash = document.getElementById('splash-screen');
+    const enterBtn = document.getElementById('enterAppBtn');
+    if (!splash || !enterBtn) return;
+
+    document.body.style.overflow = 'hidden';
+
+    function closeSplash() {
+      splash.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    enterBtn.addEventListener('click', closeSplash);
+
+    // Shortcut links: fade out, then smooth-scroll to target
+    document.querySelectorAll('.splash-shortcut').forEach(btn => {
+      btn.addEventListener('click', evt => {
+        evt.preventDefault();
+        closeSplash();
+        const target = btn.getAttribute('href');
+        setTimeout(() => {
+          const el = document.querySelector(target);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 800);
+      });
+    });
+
+    const versionTag = document.getElementById('version-tag');
+    if (versionTag) versionTag.textContent = 'Version 2.0';
+  }
+
+  return { init };
+})();
 const LayoutModule=(function(){const defaultOrder=['about','values','activities','summer-fete','film-night','wilf','gallery','social','day','whats-new','faq','visit','changelog'];const key='th-layout-order';let currentOrder=[];function getOrder(){try{const saved=JSON.parse(safeGet(key));if(Array.isArray(saved)&&saved.length===defaultOrder.length){return saved;}}catch(e){}return[...defaultOrder];}function saveOrder(order){safeSet(key,JSON.stringify(order));}function applyLayout(order){const main=document.getElementById('main');const nav=document.getElementById('side-nav');if(!main||!nav)return;order.forEach(id=>{const section=document.getElementById(id);if(section){main.appendChild(section);}});order.forEach(id=>{const dot=nav.querySelector(`a[href="#${id}"]`);if(dot){nav.appendChild(dot);}});}function renderAdminUI(){const container=document.getElementById('layoutContainer');if(!container)return;container.innerHTML='';currentOrder.forEach((id,index)=>{const item=document.createElement('div');item.className='admin-film-item flex justify-between items-center';item.style.padding='8px 12px';const title=id.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());item.innerHTML=`<span style="text-transform:capitalize;font-size:.9rem">${title}</span><div class="flex gap-2"><button class="tester-btn layout-up" data-index="${index}" style="width: auto; margin: 0; padding: 4px 10px; font-size: 0.8rem; background: var(--cream-deep); color: var(--bark); border: 1px solid var(--border); ${index === 0 ? 'opacity: 0.3; pointer-events: none;' : ''}">▲</button><button class="tester-btn layout-down" data-index="${index}" style="width: auto; margin: 0; padding: 4px 10px; font-size: 0.8rem; background: var(--cream-deep); color: var(--bark); border: 1px solid var(--border); ${index === currentOrder.length - 1 ? 'opacity: 0.3; pointer-events: none;' : ''}">▼</button></div>`;container.appendChild(item);});container.querySelectorAll('.layout-up').forEach(btn=>{btn.addEventListener('click',(e)=>{const idx=parseInt(e.target.dataset.index);if(idx>0){[currentOrder[idx-1],currentOrder[idx]]=[currentOrder[idx],currentOrder[idx-1]];saveOrder(currentOrder);applyLayout(currentOrder);renderAdminUI();}});});container.querySelectorAll('.layout-down').forEach(btn=>{btn.addEventListener('click',(e)=>{const idx=parseInt(e.target.dataset.index);if(idx<currentOrder.length-1){[currentOrder[idx+1],currentOrder[idx]]=[currentOrder[idx],currentOrder[idx+1]];saveOrder(currentOrder);applyLayout(currentOrder);renderAdminUI();}});});}function resetLayout(){currentOrder=[...defaultOrder];saveOrder(currentOrder);applyLayout(currentOrder);renderAdminUI();ToastModule.show("Layout reset to default!");}function init(){currentOrder=getOrder();applyLayout(currentOrder);const resetBtn=document.getElementById('resetLayoutBtn');if(resetBtn){resetBtn.addEventListener('click',resetLayout);}}function onTesterOpen(){renderAdminUI();}return{init,onTesterOpen};})();
 const SideNavModule=(function(){function init(){const dots=document.querySelectorAll('.side-dot');if(!dots.length)return;const sections=Array.from(dots).map(dot=>{const id=dot.getAttribute('href').replace('#','');return document.getElementById(id);}).filter(Boolean);if(sections.length===0)return;function onScroll(){const scrollPos=window.scrollY+(window.innerHeight*0.4);let currentId=sections[0].id;for(let i=0;i<sections.length;i++){const section=sections[i];const offsetTop=section.getBoundingClientRect().top+window.scrollY;if(offsetTop<=scrollPos){currentId=section.id;}}dots.forEach(dot=>{if(dot.getAttribute('href')===`#${currentId}`){dot.classList.add('active');}else{dot.classList.remove('active');}});}let ticking=false;window.addEventListener('scroll',()=>{if(!ticking){window.requestAnimationFrame(()=>{onScroll();ticking=false;});ticking=true;}},{passive:true});onScroll();dots.forEach(dot=>dot.addEventListener('click',(e)=>{e.preventDefault();const target=document.querySelector(dot.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth'});}));}return{init};})();
 const AccessibilityModule=(function(){function init(){const t=document.getElementById('a11yToggle'),c=document.getElementById('a11yContent');if(!t||!c)return;t.addEventListener('click',e=>{e.stopPropagation();const o=c.classList.toggle('show');t.setAttribute('aria-expanded',o);});document.addEventListener('click',e=>{if(c.classList.contains('show')&&!c.contains(e.target)&&!t.contains(e.target)){c.classList.remove('show');t.setAttribute('aria-expanded','false');}});}return{init};})();
