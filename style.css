@@ -68,6 +68,7 @@ body.dyslexia-mode .display {
     border-color: var(--terracotta);
     color: #fff;
 }
+
 /* Quiet Hours Badge */
 .quiet-badge {
     padding: 2px 8px;
@@ -87,8 +88,48 @@ body.dyslexia-mode .display {
     background: rgba(194, 85, 40, 0.3); /* Terracotta */
     color: #F2C9B5;
 }
-/* Ensure mobile still centers correctly */
-@media(max-width:768px){
-    .time-date-contact{display:none}
-    #time-date-bar{justify-content:center}
+
+/* Cute Weather Widget */
+.weather-widget {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.weather-widget:hover { 
+    transform: translateY(-3px); 
+    box-shadow: var(--shadow-hover); 
+    border-color: var(--teal); 
+}
+.weather-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    animation: weather-bounce 2s ease-in-out infinite;
+}
+@keyframes weather-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+.weather-text h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: var(--bark);
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+.weather-text p {
+    color: var(--bark-soft);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+.weather-loading {
+    color: var(--bark-soft);
+    font-style: italic;
 }
