@@ -278,7 +278,184 @@ const CelebrationModule=(function(){
     return{init,loadAdminCelebrations};
 })();
 const DatabaseModule=(function(){if(!supabaseClient){console.warn('Supabase library not loaded. Database features disabled.');return{init:function(){}}}async function lu(){const c=document.getElementById('changelog-container');const ac=document.getElementById('adminUpdateContainer');if(c)c.innerHTML='<p style="color: var(--bark-soft);">Loading updates...</p>';if(ac)ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading...</p>';try{const{data,error}=await supabaseClient.from('updates').select('*').order('created_at',{ascending:false});if(error)throw error;if(c){if(!data||data.length===0){c.innerHTML='<p style="color: var(--bark-soft);">No updates just yet. Check back soon!</p>';}else{c.innerHTML=data.map(i=>{const d=new Date(i.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});return`<div class="changelog-item"><div class="font-bold mb-1" style="color: var(--bark)">${i.title||'Update'} <span class="text-xs font-normal" style="color: var(--bark-soft); opacity: 0.7;">- ${d}</span></div><p class="text-sm" style="color: var(--bark-soft)">${i.content||''}</p></div>`}).join('');}}if(ac){if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No updates yet.</p>';}else{ac.innerHTML=data.map(i=>`<div class="admin-film-item" style="padding: 10px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.9rem;font-weight:700;flex:1;">${i.title}</span><button class="tester-btn del-update-btn" data-id="${i.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');ac.querySelectorAll('.del-update-btn').forEach(b=>b.addEventListener('click',async e=>{const id=e.target.dataset.id;if(confirm('Delete this update?')){try{await supabaseClient.from('updates').delete().eq('id',id);lu();ToastModule.show('Update deleted!');}catch(err){ToastModule.show('Error deleting update.');}}}));}}}catch(err){console.warn('Database unreachable.',err.message);if(c)c.innerHTML=`<div class="changelog-item"><div class="font-bold mb-1" style="color: var(--bark)">Offline Mode</div><p class="text-sm" style="color: var(--bark-soft)">Couldn't reach the database.</p></div>`;}}async function addUpdate(title,content){try{const{error}=await supabaseClient.from('updates').insert([{title:title,content:content}]);if(error)throw error;ToastModule.show('Update posted successfully!');lu();}catch(err){ToastModule.show('Error posting update.');}}function init(){lu();const addBtn=document.getElementById('addUpdateBtn');const titleInp=document.getElementById('newUpdateTitle');const contentInp=document.getElementById('newUpdateContent');if(addBtn&&titleInp&&contentInp){addBtn.addEventListener('click',()=>{const t=titleInp.value.trim();const c=contentInp.value.trim();if(t&&c){addUpdate(t,c);titleInp.value='';contentInp.value='';}else{ToastModule.show('Title and content are required.');}});}}return{init,loadUpdates:lu}})();
-const FilmNightModule=(function(){let films=[];async function lf(){if(!supabaseClient)return;const c=document.getElementById('filmListContainer'),ac=document.getElementById('adminFilmContainer');if(!c&&!ac)return;if(c)c.innerHTML='<p style="color: var(--bark-soft); text-align: center; grid-column: 1/-1;">Loading films...</p>';if(ac)ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading films...</p>';try{const{data,error}=await supabaseClient.from('Filmnight').select('*').order('created_at',{ascending:true});if(error)throw error;films=data||[];rf();raf()}catch(err){if(c)c.innerHTML='<p style="color: var(--terracotta); text-align: center; grid-column: 1/-1;">Error loading films.</p>';if(ac)ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading films.</p>';console.error('Film load error:',err)}}function rf(){const c=document.getElementById('filmListContainer');if(!c)return;if(films.length===0){c.innerHTML='<p style="color: var(--bark-soft); text-align: center; grid-column: 1/-1;">No films added yet.</p>';return}c.innerHTML=films.map(f=>`<div class="card p-6 flex flex-col"><div class="flex justify-between items-start mb-2"><h5 class="display font-extrabold text-lg" style="color:var(--bark)">${f.title}</h5>${f.is_staff_favourite?`<span class="staff-fav" title="Staff Favourite" style="color: var(--honey); font-size: 1.2rem;">★</span>`:''}</div>${f.review?`<p class="text-sm mb-4" style="color:var(--bark-soft); font-style: italic; border-left: 3px solid var(--teal); padding-left: 10px;">"${f.review}"</p>`:'<p class="text-sm mb-4" style="color:var(--bark-soft);">No review yet.</p>'}<div class="mt-auto"><button class="film-toggle ${f.watched?'watched':''}" data-action="toggle-watched" data-id="${f.id}">${f.watched?'✓ Watched':'Mark as Watched'}</button></div></div>`).join('');c.querySelectorAll('[data-action="toggle-watched"]').forEach(b=>b.addEventListener('click',e=>tw(e.target.dataset.id)))}function raf(){const c=document.getElementById('adminFilmContainer');if(!c)return;if(films.length===0){c.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No films found. Add one above!</p>';return}c.innerHTML=films.map(f=>`<div class="admin-film-item"><h6><span>${f.title}</span><div class="flex gap-2"><button class="tester-btn" data-fav-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: ${f.is_staff_favourite?'var(--honey)':'var(--cream)'}; color: ${f.is_staff_favourite?'#000':'var(--bark)'}; border: 1px solid ${f.is_staff_favourite?'var(--honey)':'var(--border)'};">${f.is_staff_favourite?'★ Fav':'Mark Fav'}</button><button class="tester-btn" data-del-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: var(--terracotta); color: #fff; border: 1px solid var(--terracotta);">Delete</button></div></h6><textarea class="film-review" placeholder="Write a review..." data-action="save-review" data-id="${f.id}">${f.review||''}</textarea></div>`).join('');c.querySelectorAll('[data-fav-id]').forEach(b=>b.addEventListener('click',async e=>{const id=e.target.dataset.favId,f=films.find(x=>x.id==id);if(!f)return;try{await supabaseClient.from('Filmnight').update({is_staff_favourite:!f.is_staff_favourite}).eq('id',id);lf()}catch(err){ToastModule.show('Error updating favourite.')}}));c.querySelectorAll('[data-del-id]').forEach(b=>b.addEventListener('click',async e=>{const id=e.target.dataset_delId;if(confirm('Are you sure you want to delete this film?'))df(id)}));c.querySelectorAll('[data-action="save-review"]').forEach(t=>t.addEventListener('blur',e=>sr(e.target.dataset.id,e.target.value)))}async function tw(id){const f=films.find(x=>x.id==id);if(!f)return;const ns=!f.watched;try{const{error}=await supabaseClient.from('Filmnight').update({watched:ns}).eq('id',id);if(error)throw error;f.watched=ns;rf();raf()}catch(err){ToastModule.show('Error updating status.')}}async function sr(id,review){try{const{error}=await supabaseClient.from('Filmnight').update({review:review}).eq('id',id);if(error)throw error;const f=films.find(x=>x.id==id);if(f)f.review=review;rf();ToastModule.show('Review saved!')}catch(err){ToastModule.show('Error saving review.')}}async function af(title){try{const{data,error}=await supabaseClient.from('Filmnight').insert([{title:title,watched:false,review:'',is_staff_favourite:false}]).select();if(error)throw error;if(data&&data.length>0){films.push(data[0]);rf();raf();ToastModule.show('Film added!')}}catch(err){console.error('Add film error details:',err);ToastModule.show('Error adding film.')}}async function df(id){try{const{error}=await supabaseClient.from('Filmnight').delete().eq('id',id);if(error)throw error;films=films.filter(f=>f.id!=id);rf();raf();ToastModule.show('Film deleted!')}catch(err){console.error('Delete error:',err);ToastModule.show('Error deleting film.')}}function init(){const ab=document.getElementById('addFilmBtn'),ti=document.getElementById('newFilmTitle');if(ab&&ti){ab.addEventListener('click',()=>{const t=ti.value.trim();if(t){af(t);ti.value=''}});ti.addEventListener('keypress',e=>{if(e.key==='Enter'){e.preventDefault();ab.click()}})}lf()}return{init,loadFilms:lf}})();
+const FilmNightModule=(function(){
+    let films=[];
+    
+    async function lf(){
+        if(!supabaseClient)return;
+        const c=document.getElementById('filmListContainer'),
+              uc=document.getElementById('upcomingFilmsContainer'),
+              ac=document.getElementById('adminFilmContainer');
+        if(!c&&!ac)return;
+        
+        if(c) c.innerHTML='<p style="color: var(--bark-soft); text-align: center; grid-column: 1/-1;">Loading films...</p>';
+        if(uc) uc.innerHTML='<p style="color: var(--bark-soft); text-align: center; grid-column: 1/-1;">Checking the schedule...</p>';
+        if(ac) ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading films...</p>';
+        
+        try{
+            const{data,error}=await supabaseClient.from('Filmnight').select('*').order('created_at',{ascending:true});
+            if(error)throw error;
+            films=data||[];
+            rf();
+            raf();
+        }catch(err){
+            if(c) c.innerHTML='<p style="color: var(--terracotta); text-align: center; grid-column: 1/-1;">Error loading films.</p>';
+            if(uc) uc.innerHTML='<p style="color: var(--terracotta); text-align: center; grid-column: 1/-1;">Error loading films.</p>';
+            if(ac) ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading films.</p>';
+            console.error('Film load error:',err);
+        }
+    }
+    
+    function rf(){
+        const c=document.getElementById('filmListContainer');
+        const uc=document.getElementById('upcomingFilmsContainer');
+        if(!c&&!uc)return;
+        
+        // Split films into upcoming (unwatched) and reviewed (watched)
+        const upcoming = films.filter(f => !f.watched);
+        const reviewed = films.filter(f => f.watched);
+        
+        // 1. Render Upcoming Films
+        if(uc) {
+            if(upcoming.length === 0) {
+                uc.innerHTML='<p style="color: var(--bark-soft); text-align: center; grid-column: 1/-1;">No films scheduled yet. Check back soon!</p>';
+            } else {
+                uc.innerHTML = upcoming.map(f => `
+                    <div class="card p-6 flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4" style="background:var(--cream)">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--terracotta)" stroke-width="2"><path d="M5 4l14 8-14 8V4z"/></svg>
+                        </div>
+                        <h5 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">${f.title}</h5>
+                        <p class="text-sm" style="color:var(--bark-soft);">Coming soon to Film Night!</p>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        // 2. Render Reviewed Films
+        if(c) {
+            if(reviewed.length === 0) {
+                c.innerHTML='<p style="color: var(--bark-soft); text-align: center; grid-column: 1/-1;">No reviews just yet. Check back after our next film night!</p>';
+            } else {
+                c.innerHTML = reviewed.map(f => `
+                    <div class="card p-6 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <h5 class="display font-extrabold text-lg" style="color:var(--bark)">${f.title}</h5>
+                            ${f.is_staff_favourite ? `<span class="staff-fav" title="Staff Favourite" style="color: var(--honey); font-size: 1.2rem;">★</span>` : ''}
+                        </div>
+                        ${f.review ? `
+                            <p class="text-sm mb-4" style="color:var(--bark-soft); font-style: italic; border-left: 3px solid var(--teal); padding-left: 10px;">"${f.review}"</p>
+                        ` : `
+                            <p class="text-sm mb-4" style="color:var(--bark-soft);">No review yet.</p>
+                        `}
+                    </div>
+                `).join('');
+            }
+        }
+    }
+    
+    function raf(){
+        const c=document.getElementById('adminFilmContainer');
+        if(!c)return;
+        if(films.length===0){
+            c.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No films found. Add one above!</p>';
+            return;
+        }
+        c.innerHTML=films.map(f=>`<div class="admin-film-item"><h6><span>${f.title}</span><div class="flex gap-2"><button class="tester-btn" data-fav-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: ${f.is_staff_favourite?'var(--honey)':'var(--cream)'}; color: ${f.is_staff_favourite?'#000':'var(--bark)'}; border: 1px solid ${f.is_staff_favourite?'var(--honey)':'var(--border)'};">${f.is_staff_favourite?'★ Fav':'Mark Fav'}</button><button class="tester-btn" data-del-id="${f.id}" style="width: auto; margin: 0; padding: 6px 12px; font-size: 0.8rem; background: var(--terracotta); color: #fff; border: 1px solid var(--terracotta);">Delete</button></div></h6><textarea class="film-review" placeholder="Write a review..." data-action="save-review" data-id="${f.id}">${f.review||''}</textarea></div>`).join('');
+        
+        c.querySelectorAll('[data-fav-id]').forEach(b=>b.addEventListener('click',async e=>{
+            const id=e.target.dataset.favId,f=films.find(x=>x.id==id);
+            if(!f)return;
+            try{
+                await supabaseClient.from('Filmnight').update({is_staff_favourite:!f.is_staff_favourite}).eq('id',id);
+                lf();
+            }catch(err){
+                ToastModule.show('Error updating favourite.');
+            }
+        }));
+        
+        c.querySelectorAll('[data-del-id]').forEach(b=>b.addEventListener('click',async e=>{
+            const id=e.target.dataset_delId;
+            if(confirm('Are you sure you want to delete this film?')) df(id);
+        }));
+        
+        c.querySelectorAll('[data-action="save-review"]').forEach(t=>t.addEventListener('blur',e=>sr(e.target.dataset.id,e.target.value)));
+    }
+    
+    async function tw(id){
+        const f=films.find(x=>x.id==id);
+        if(!f)return;
+        const ns=!f.watched;
+        try{
+            const{error}=await supabaseClient.from('Filmnight').update({watched:ns}).eq('id',id);
+            if(error)throw error;
+            f.watched=ns;
+            rf();
+            raf();
+        }catch(err){
+            ToastModule.show('Error updating status.');
+        }
+    }
+    
+    async function sr(id,review){
+        try{
+            const{error}=await supabaseClient.from('Filmnight').update({review:review}).eq('id',id);
+            if(error)throw error;
+            const f=films.find(x=>x.id==id);
+            if(f)f.review=review;
+            rf();
+            ToastModule.show('Review saved!');
+        }catch(err){
+            ToastModule.show('Error saving review.');
+        }
+    }
+    
+    async function af(title){
+        try{
+            const{data,error}=await supabaseClient.from('Filmnight').insert([{title:title,watched:false,review:'',is_staff_favourite:false}]).select();
+            if(error)throw error;
+            if(data&&data.length>0){
+                films.push(data[0]);
+                rf();
+                raf();
+                ToastModule.show('Film added!');
+            }
+        }catch(err){
+            console.error('Add film error details:',err);
+            ToastModule.show('Error adding film.');
+        }
+    }
+    
+    async function df(id){
+        try{
+            const{error}=await supabaseClient.from('Filmnight').delete().eq('id',id);
+            if(error)throw error;
+            films=films.filter(f=>f.id!=id);
+            rf();
+            raf();
+            ToastModule.show('Film deleted!');
+        }catch(err){
+            console.error('Delete error:',err);
+            ToastModule.show('Error deleting film.');
+        }
+    }
+    
+    function init(){
+        const ab=document.getElementById('addFilmBtn'),ti=document.getElementById('newFilmTitle');
+        if(ab&&ti){
+            ab.addEventListener('click',()=>{
+                const t=ti.value.trim();
+                if(t){af(t);ti.value=''}
+            });
+            ti.addEventListener('keypress',e=>{
+                if(e.key==='Enter'){e.preventDefault();ab.click()}
+            });
+        }
+        lf();
+    }
+    
+    return{init,loadFilms:lf};
+})();
 const SummerEffectsModule=(function(){function init(){const c=document.getElementById('summerParticles');if(!c)return;c.innerHTML='';const m=window.innerWidth<768,n=m?12:25;for(let i=0;i<n;i++){const p=document.createElement('div');p.classList.add('particle');const s=Math.random()*4+2;p.style.width=s+'px';p.style.height=s+'px';p.style.left=Math.random()*100+'%';p.style.bottom=(Math.random()*-40)+'px';p.style.animationDuration=(Math.random()*8+10)+'s';p.style.animationDelay=(Math.random()*12)+'s';c.appendChild(p)}}return{init}})();
 
 const TesterModule=(function(){const m=document.getElementById('testerModal'),la=document.getElementById('testerLogin'),ma=document.getElementById('testerMenu'),emailInput=document.getElementById('testerEmail'),pi=document.getElementById('testerPass'),et=document.getElementById('testerError'),gearBtn=document.getElementById('testerOpenBtn'),footerLogin=document.getElementById('footerStaffLogin');function o(){m.classList.add('active');et.textContent='';checkAuthState();}function c(){m.classList.remove('active');}async function login(){const email=emailInput.value.trim();const pass=pi.value;if(!email||!pass){et.textContent='Please enter both email and password.';return;}et.textContent='Logging in...';try{const{data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:pass});if(error)throw error;}catch(err){et.textContent='Login failed: '+err.message;}}async function logout(){await supabaseClient.auth.signOut();c();}async function showMenu(){la.style.display='none';ma.style.display='block';if(gearBtn)gearBtn.classList.add('show');if(footerLogin)footerLogin.style.display='none';const{data:{user}}=await supabaseClient.auth.getUser();const userRole=user?.user_metadata?.role;const menuTabBtn=document.querySelector('button[data-tab="menu"]');if(menuTabBtn){if(userRole==='chef'||userRole==='admin'){menuTabBtn.style.display='flex';if(typeof MenuModule!=='undefined')MenuModule.loadAdminMenu();}else{menuTabBtn.style.display='none';}}const adminThemes=document.getElementById('adminOnlyThemes');if(adminThemes){if(userRole==='admin'){adminThemes.style.display='block';}else{adminThemes.style.display='none';}}const maintBtn=document.getElementById('toggleMaintenanceBtn');if(maintBtn){if(userRole==='admin'){maintBtn.style.display='block';}else{maintBtn.style.display='none';}}if(typeof FilmNightModule!=='undefined')FilmNightModule.loadFilms();if(typeof LayoutModule!=='undefined')LayoutModule.onTesterOpen();if(typeof DatabaseModule!=='undefined')DatabaseModule.loadUpdates();if(typeof LightboxModule!=='undefined')LightboxModule.loadImages();if(typeof EventsModule!=='undefined')EventsModule.loadAdminEvents();if(typeof WilfBlogModule!=='undefined')WilfBlogModule.loadAdminBlog();if(typeof EnquiriesModule!=='undefined')EnquiriesModule.loadAdminEnquiries();if(typeof BriefingModule!=='undefined')BriefingModule.loadBriefing();if(typeof CelebrationModule!=='undefined')CelebrationModule.loadAdminCelebrations();renderPhotoAdmin();}function showLogin(){la.style.display='block';ma.style.display='none';if(gearBtn)gearBtn.classList.remove('show');if(footerLogin)footerLogin.style.display='block';pi.value='';emailInput.value='';}async function checkAuthState(){const{data:{session}}=await supabaseClient.auth.getSession();if(session){showMenu();}else{showLogin();}}function ss(s){const b=document.body;b.classList.remove('season-winter','season-spring','season-summer','season-autumn','theme-dark','theme-warm','theme-soft','theme-high-contrast','palette-ocean','palette-sunset','palette-berry');safeSet('th-theme','light');safeSet('th-palette','nature');if(s==='auto'){const cs=SeasonalModule.getCurrentSeason();b.classList.add('season-'+cs);generateSeasonalBackground(cs)}else{b.classList.add('season-'+s);generateSeasonalBackground(s)}document.querySelectorAll('.tester-season-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');document.querySelectorAll('.theme-btn').forEach(e=>e.setAttribute('aria-pressed',e.dataset.theme==='light'))}function bc(){const inp=document.getElementById('broadcastInput'),msg=inp.value.trim();if(!msg)return;fetch('https://ntfy.sh/tinkers-hatch-live',{method:'POST',body:msg}).then(()=>{inp.value='';ToastModule.show('Message broadcasted successfully!')}).catch(err=>ToastModule.show('Error broadcasting message.'))}async function uploadPhoto(){const fileInput=document.getElementById('photoUploadInput');const file=fileInput.files[0];if(!file){ToastModule.show("Please select a file first.");return;}if(!file.type.startsWith('image/')){ToastModule.show("Please upload an image file.");return;}ToastModule.show("Uploading...");const captionInput=document.getElementById('photoCaptionInput');let caption=captionInput?captionInput.value.trim():'';if(caption){caption='_caption_'+caption.replace(/[^a-zA-Z0-9 ]/g,'').replace(/\s+/g,'-');}const fileName=`photo_${Date.now()}${caption}_${file.name.replace(/\s+/g,'_')}`;const{data,error}=await supabaseClient.storage.from('gallery').upload(fileName,file);if(error){ToastModule.show("Upload failed: "+error.message);}else{ToastModule.show("Photo uploaded successfully!");fetch('https://ntfy.sh/tinkers-hatch-live', { method: 'POST', body: 'New photos added to the gallery!' }).catch(()=>{});fileInput.value='';if(captionInput)captionInput.value='';if(typeof LightboxModule!=='undefined')LightboxModule.loadImages();renderPhotoAdmin();}}async function renderPhotoAdmin(){const ac=document.getElementById('adminPhotoContainer');if(!ac)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading photos...</p>';try{const{data,error}=await supabaseClient.storage.from('gallery').list('',{limit:100,offset:0,sortBy:{column:'created_at',order:'desc'}});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No photos found.</p>';return;}const files=data.filter(file=>!file.name.startsWith('.'));if(files.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No photos found.</p>';return;}ac.innerHTML=files.map(file=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;word-break:break-all;">${file.name}</span><button class="tester-btn del-photo-btn" data-path="${file.name}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');ac.querySelectorAll('.del-photo-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const path=e.target.dataset.path;if(confirm('Are you sure you want to delete this photo?')){try{const{error:delError}=await supabaseClient.storage.from('gallery').remove([path]);if(delError)throw delError;ToastModule.show('Photo deleted!');renderPhotoAdmin();if(typeof LightboxModule!=='undefined')LightboxModule.loadImages();}catch(err){ToastModule.show('Error deleting photo.');}}}));}catch(err){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading photos.</p>';}}function init(){if(gearBtn)gearBtn.addEventListener('click',o);if(footerLogin)footerLogin.addEventListener('click',o);document.getElementById('testerCloseBtn').addEventListener('click',c);document.getElementById('testerLoginBtn').addEventListener('click',login);const logoutBtn=document.getElementById('testerLogoutBtn');if(logoutBtn)logoutBtn.addEventListener('click',logout);pi.addEventListener('keypress',e=>{if(e.key==='Enter')login()});emailInput.addEventListener('keypress',e=>{if(e.key==='Enter')pi.focus()});document.querySelectorAll('.tester-season-btn').forEach(b=>b.addEventListener('click',e=>ss(e.target.dataset.season)));document.getElementById('broadcastBtn').addEventListener('click',bc);const uploadBtn=document.getElementById('uploadPhotoBtn');if(uploadBtn)uploadBtn.addEventListener('click',uploadPhoto);m.addEventListener('click',e=>{if(e.target===m)c()});document.querySelectorAll('.tester-tab-btn').forEach(btn=>{btn.addEventListener('click',(e)=>{document.querySelectorAll('.tester-tab-btn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tester-tab-content').forEach(c=>c.classList.remove('active'));e.target.classList.add('active');document.getElementById('tab-'+e.target.dataset.tab).classList.add('active');});});supabaseClient.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_IN'){showMenu();}else if(event==='SIGNED_OUT'){showLogin();}});checkAuthState();}return{init};})();
