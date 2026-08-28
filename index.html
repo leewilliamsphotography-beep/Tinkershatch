@@ -49,10 +49,6 @@
 <div id="celebrationBadge" style="display:none;"></div>
 <div id="confettiContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;overflow:hidden;"></div>
 
-<div id="splash-screen">
-    <div class="splash-content">
-        <h1 class="display font-extrabold tracking-tight" style="font-size:clamp(2rem, 5vw, 3.5rem); color:var(--bark); line-height:1.1;">Welcome to Tinkers Hatch</h1>
-        <p style="color:var(--bark-soft); max-width: 500px; margin: 0 auto;">A caring home for adults with learning disabilities. Where every person is known by name, supported with dignity, and celebrated for who they are.</p>
         <div class="card p-6" style="max-width: 400px; width: 100%;">
             <div class="font-bold mb-4 text-center display" style="color:var(--bark)">Accessibility Settings</div>
             <div class="grid grid-cols-1 gap-4">
@@ -84,6 +80,13 @@
                 </div>
             </div>
             <div class="a11y-group mt-4">
+                <label class="a11y-label">Reading Mode</label>
+                <div class="a11y-btn-group">
+                    <button class="menu-btn bionic-btn" data-bionic="off" aria-pressed="true">Standard</button>
+                    <button class="menu-btn bionic-btn" data-bionic="on" aria-pressed="false">Bionic</button>
+                </div>
+            </div>
+            <div class="a11y-group mt-4">
                 <label class="a11y-label">Theme Mode</label>
                 <div class="a11y-themes" style="grid-template-columns: repeat(5, 1fr);">
                     <button class="menu-btn theme-btn" data-theme="light" aria-pressed="true"><span>Light</span></button>
@@ -91,32 +94,9 @@
                     <button class="menu-btn theme-btn" data-theme="warm" aria-pressed="false"><span>Warm</span></button>
                     <button class="menu-btn theme-btn" data-theme="soft" aria-pressed="false"><span>Soft</span></button>
                     <button class="menu-btn theme-btn" data-theme="high-contrast" aria-pressed="false"><span>Contrast</span></button>
-                                <div class="a11y-group"><label class="a11y-label">Theme Mode</label><div class="a11y-themes"><button class="menu-btn theme-btn" data-theme="light" aria-pressed="true"><span>Light</span></button><button class="menu-btn theme-btn" data-theme="dark" aria-pressed="false"><span>Dark</span></button><button class="menu-btn theme-btn" data-theme="warm" aria-pressed="false"><span>Warm</span></button><button class="menu-btn theme-btn" data-theme="soft" aria-pressed="false"><span>Soft</span></button><button class="menu-btn theme-btn" data-theme="high-contrast" aria-pressed="false"><span>Contrast</span></button></div></div>
-                
-                <!-- PASTE IT RIGHT HERE, INSIDE THE DROPDOWN -->
-                <div class="a11y-group mt-4">
-                    <label class="a11y-label">Reading Mode</label>
-                    <div class="a11y-btn-group">
-                        <button class="menu-btn bionic-btn" data-bionic="off" aria-pressed="true">Standard</button>
-                        <button class="menu-btn bionic-btn" data-bionic="on" aria-pressed="false">Bionic</button>
-                    </div>
                 </div>
-            </div> <!-- This closing div ends the a11y-content dropdown -->
-				</div>
             </div>
         </div>
-        <div class="splash-shortcuts">
-            <a href="#about" class="splash-shortcut" style="--nav-color: #FF5252;">About Us</a>
-            <a href="#values" class="splash-shortcut" style="--nav-color: #FF9800;">Our Values</a>
-            <a href="#activities" class="splash-shortcut" style="--nav-color: #F2C200;">Activities</a>
-            <a href="#gallery" class="splash-shortcut" style="--nav-color: #4CAF50;">Photography</a>
-            <a href="#whats-new" class="splash-shortcut" style="--nav-color: #3F51B5;">What's New</a>
-            <a href="#faq" class="splash-shortcut" style="--nav-color: #00BCD4;">FAQ</a>
-            <a href="#visit" class="splash-shortcut" style="--nav-color: #E91E63;">Visit</a>
-        </div>
-        <button id="enterAppBtn" class="btn btn-primary"><span>Enter</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M13 5l7 7-7 7"/></svg></button>
-    </div>
-</div>
 
 <div id="version-tag">Version 2.0</div>
 <div id="briefing-bar" style="position: fixed; top: 30px; left: 0; right: 0; background: var(--teal); color: #fff; padding: 6px 0; text-align: center; font-size: 0.85rem; font-weight: 700; z-index: 51; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
