@@ -207,13 +207,12 @@ const SensoryModule=(function(){
 const BackToTopModule=(function(){function init(){const b=document.getElementById('backToTopBtn');if(!b)return;let t=false;function os(){if(t)return;t=true;requestAnimationFrame(()=>{if(window.scrollY>400)b.classList.add('show');else b.classList.remove('show');t=false})}window.addEventListener('scroll',os,{passive:true});b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})}})}return{init}})();
 const SeasonalModule=(function(){function g(){const m=new Date().getMonth()+1;if([12,1,2].includes(m))return'winter';if([3,4,5].includes(m))return'spring';if([6,7,8].includes(m))return'summer';if([9,10,11].includes(m))return'autumn';return'summer'}function init(){const b=document.body,t=safeGet('th-theme'),p=safeGet('th-palette');if((!t||t==='light')&&(!p||p==='nature')){const s=g();b.classList.add('season-'+s);generateSeasonalBackground(s)}}return{init,getCurrentSeason:g}})();
 const FaviconModule=(function(){
-    function getSeason() {
-        const m = new Date().getMonth() + 1;
-        if ([12, 1, 2].includes(m)) return 'winter';
-        if ([3, 4, 5].includes(m)) return 'spring';
-        if ([6, 7, 8].includes(m)) return 'summer';
-        if ([9, 10, 11].includes(m)) return 'autumn';
-        return 'summer';
+    function getTimeOfDay() {
+        const h = new Date().getHours();
+        if (h >= 5 && h < 12) return 'morning';   // 05:00 - 11:59
+        if (h >= 12 && h < 17) return 'afternoon'; // 12:00 - 16:59
+        if (h >= 17 && h < 20) return 'evening';   // 17:00 - 19:59
+        return 'night';                            // 20:00 - 04:59
     }
 
     function setFavicon(svg) {
@@ -228,7 +227,6 @@ const FaviconModule=(function(){
     }
 
     async function init() {
-        const season = getSeason();
         let isBirthday = false;
         
         if (typeof supabaseClient !== 'undefined' && supabaseClient) {
@@ -253,22 +251,29 @@ const FaviconModule=(function(){
         if (isBirthday) {
             svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FCFBFA"/><path fill="#C25528" d="M25 55c0-5 10-10 15-5s10 5 15 0 10-5 15 0 10 5 15 5 10 0 15-5v30H25V55z"/><rect x="20" y="80" width="60" height="10" rx="5" fill="#A87816"/><circle cx="50" cy="25" r="5" fill="#FFD700"/><path d="M50 25v-8" stroke="#FFD700" stroke-width="2"/></svg>`;
             themeColor = "#C25528"; 
-        } 
-        else if (season === 'winter') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#F8FBFD"/><path d="M50 15v70M25 30l50 40M75 30l-50 40M15 50h70" stroke="#2E5C8A" stroke-width="8" stroke-linecap="round"/></svg>`;
-            themeColor = "#1E4060"; 
-        } 
-        else if (season === 'spring') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FDFCF8"/><circle cx="50" cy="50" r="15" fill="#A87816"/><circle cx="50" cy="25" r="15" fill="#D8849B"/><circle cx="50" cy="75" r="15" fill="#D8849B"/><circle cx="25" cy="50" r="15" fill="#D8849B"/><circle cx="75" cy="50" r="15" fill="#D8849B"/></svg>`;
-            themeColor = "#4E8A43"; 
-        } 
-        else if (season === 'summer') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FCFBFA"/><circle cx="50" cy="50" r="20" fill="#D9A521"/><path d="M50 15v10M50 75v10M15 50h10M75 50h10M25 25l7 7M68 68l7 7M75 25l-7 7M32 68l-7 7" stroke="#D9A521" stroke-width="8" stroke-linecap="round"/></svg>`;
-            themeColor = "#14856A"; 
-        } 
-        else if (season === 'autumn') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FDF7F2"/><path fill="#D9633E" d="M50 20c15 0 30 15 30 35s-15 35-30 35-30-15-30-35 15-35 30-35z"/><path d="M50 20v60" stroke="#A87816" stroke-width="5"/></svg>`;
-            themeColor = "#7A3F21"; 
+        } else {
+            const timeOfDay = getTimeOfDay();
+            
+            if (timeOfDay === 'morning') {
+                // Sunrise icon
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FCFBFA"/><path d="M15 75h70" stroke="#A87816" stroke-width="8" stroke-linecap="round"/><circle cx="50" cy="75" r="25" fill="#D9A521"/><path d="M50 35v-10M30 45l-6-6M70 45l6-6" stroke="#D9A521" stroke-width="6" stroke-linecap="round"/></svg>`;
+                themeColor = "#D9A521"; // Honey morning color
+            } 
+            else if (timeOfDay === 'afternoon') {
+                // Bright full sun icon
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FCFBFA"/><circle cx="50" cy="50" r="20" fill="#D9A521"/><path d="M50 15v10M50 75v10M15 50h10M75 50h10M25 25l7 7M68 68l7 7M75 25l-7 7M32 68l-7 7" stroke="#D9A521" stroke-width="8" stroke-linecap="round"/></svg>`;
+                themeColor = "#14856A"; // Summer teal
+            } 
+            else if (timeOfDay === 'evening') {
+                // Sunset icon
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FCFBFA"/><path d="M15 75h70" stroke="#C25528" stroke-width="8" stroke-linecap="round"/><circle cx="50" cy="75" r="25" fill="#E74C3C"/><path d="M50 40v-5M30 50l-4-4M70 50l4-4" stroke="#E74C3C" stroke-width="6" stroke-linecap="round"/></svg>`;
+                themeColor = "#C25528"; // Terracotta sunset
+            } 
+            else if (timeOfDay === 'night') {
+                // Crescent moon icon
+                svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#1A2B3C"/><path d="M65 50a25 25 0 1 1-25-25a20 20 0 0 0 25 25z" fill="#FDFCF8"/><circle cx="30" cy="30" r="3" fill="#FFF"/><circle cx="75" cy="70" r="2" fill="#FFF"/></svg>`;
+                themeColor = "#111418"; // Dark night mode
+            }
         }
         
         setFavicon(svg);
