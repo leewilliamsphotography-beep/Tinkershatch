@@ -40,7 +40,13 @@
 <!-- OpenDyslexic Font for Accessibility -->
 <link href="https://fonts.cdnfonts.com/css/open-dyslexic" rel="stylesheet">
 <noscript><style>.reveal{opacity:1!important;transform:none!important}#splash-screen{display:none!important}</style></noscript>
-
+<div class="a11y-group mt-4">
+    <label class="a11y-label">Reading Mode</label>
+    <div class="a11y-btn-group">
+        <button class="menu-btn bionic-btn" data-bionic="off" aria-pressed="true">Standard</button>
+        <button class="menu-btn bionic-btn" data-bionic="on" aria-pressed="false">Bionic</button>
+    </div>
+</div>
 <!-- Code Splitting: CSS is now in style.css -->
 <link rel="stylesheet" href="style.css">
 </head>
@@ -194,6 +200,7 @@
 </header>
 
 <button id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top of page" title="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<button id="nextSectionBtn" class="next-section-btn" aria-label="Go to next section" style="display:none;"></button>
 <div class="ambient" aria-hidden="true" data-parallax="-0.25" data-pt="fixed"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
 
 <main id="main" style="padding-top: 140px; position: relative;">
