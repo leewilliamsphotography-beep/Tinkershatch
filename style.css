@@ -219,3 +219,53 @@ body.dyslexia-mode .display {
         color: #000 !important; 
     }
 }
+/* === Flow & Spacing Improvements === */
+/* Soften Borders - Remove hard colored lines */
+section[id] { border-top: none !important; }
+
+/* Chapter Dividers - Soft leaf icons to break up content */
+#values::after, #day::after, #mood::after, #visit::after {
+    content: '🌿';
+    display: block;
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 80px;
+    opacity: 0.4;
+}
+
+/* Quick Jump Menu Links */
+.quick-jump-link {
+    display: block;
+    padding: 10px 12px;
+    text-decoration: none;
+    color: var(--bark);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.quick-jump-link:hover {
+    background: var(--cream);
+    color: var(--teal);
+}
+
+/* Soften the Mood Section */
+.mood-btn {
+    min-height: 120px; /* Was 140px, makes them less bulky */
+    padding: 16px 12px; /* Tighter padding */
+}
+.mood-emoji {
+    font-size: 2rem; /* Was 2.5rem */
+}
+
+/* Soften Section Padding for better flow */
+section[id] {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+@media (max-width: 768px) {
+    section[id] {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+}
