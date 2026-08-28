@@ -3,6 +3,7 @@ if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navi
 
 let supabaseClient = null;if (window.supabase) { supabaseClient = window.supabase.createClient('https://bsbwrvqevtoujfvcvvju.supabase.co', 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx');}
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}function generateSeasonalBackground(s){const bg=document.getElementById('seasonal-bg');if(!bg)return;bg.innerHTML='';if(!s)return;const c=window.innerWidth<768?15:20;for(let i=0;i<c;i++){const el=document.createElement('div');el.className='season-el '+s;el.style.left=Math.random()*100+'vw';el.style.animationDuration=(Math.random()*10+10)+'s';el.style.animationDelay=(Math.random()*15)+'s';const size=Math.random()*12+8;el.style.width=size+'px';el.style.height=size+'px';if(s==='winter')el.classList.add('snow');else if(s==='spring')el.classList.add('petal');else if(s==='summer')el.classList.add('sunbeam');else if(s==='autumn')el.classList.add('leaf');else return;bg.appendChild(el)}}
+
 function timeAgo(date) {
     if (!date) return "";
     const seconds = Math.floor((new Date() - new Date(date)) / 1000);
@@ -165,7 +166,6 @@ const SensoryModule=(function(){
     }
     
     function init(){
-        // Hook up ALL sensory toggle buttons (in splash, header dropdown, and floating header button)
         document.querySelectorAll('#sensoryToggleBtn, #sensoryFloatBtn').forEach(btn=>{
             if(!btn) return;
             btn.addEventListener('click', ()=>{
@@ -177,12 +177,10 @@ const SensoryModule=(function(){
             });
         });
 
-        // Hook up exit button inside overlay
         const exitBtn=document.getElementById('exitSensoryBtn');
         if(exitBtn) {
             exitBtn.addEventListener('click', ()=>{
                 toggle('off');
-                // Stop the ambient audio when exiting
                 const activeAudioBtn = document.querySelector('#sensoryOverlay .ambient-btn.active');
                 if(activeAudioBtn) activeAudioBtn.click(); 
             });
@@ -190,6 +188,8 @@ const SensoryModule=(function(){
     }
     return{init};
 })();
+const BackToTopModule=(function(){function init(){const b=document.getElementById('backToTopBtn');if(!b)return;let t=false;function os(){if(t)return;t=true;requestAnimationFrame(()=>{if(window.scrollY>400)b.classList.add('show');else b.classList.remove('show');t=false})}window.addEventListener('scroll',os,{passive:true});b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})}})}return{init}})();
+const SeasonalModule=(function(){function g(){const m=new Date().getMonth()+1;if([12,1,2].includes(m))return'winter';if([3,4,5].includes(m))return'spring';if([6,7,8].includes(m))return'summer';if([9,10,11].includes(m))return'autumn';return'summer'}function init(){const b=document.body,t=safeGet('th-theme'),p=safeGet('th-palette');if((!t||t==='light')&&(!p||p==='nature')){const s=g();b.classList.add('season-'+s);generateSeasonalBackground(s)}}return{init,getCurrentSeason:g}})();
 const FaviconModule=(function(){
     function getSeason() {
         const m = new Date().getMonth() + 1;
@@ -207,7 +207,6 @@ const FaviconModule=(function(){
             link.rel = 'icon';
             document.head.appendChild(link);
         }
-        // Convert SVG string to Base64 to ensure all browsers read it as an image
         link.type = 'image/svg+xml';
         link.href = 'data:image/svg+xml;base64,' + btoa(svg);
     }
@@ -264,8 +263,6 @@ const FaviconModule=(function(){
 
     return { init };
 })();
-const BackToTopModule=(function(){function init(){const b=document.getElementById('backToTopBtn');if(!b)return;let t=false;function os(){if(t)return;t=true;requestAnimationFrame(()=>{if(window.scrollY>400)b.classList.add('show');else b.classList.remove('show');t=false})}window.addEventListener('scroll',os,{passive:true});b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})}})}return{init}})();
-const SeasonalModule=(function(){function g(){const m=new Date().getMonth()+1;if([12,1,2].includes(m))return'winter';if([3,4,5].includes(m))return'spring';if([6,7,8].includes(m))return'summer';if([9,10,11].includes(m))return'autumn';return'summer'}function init(){const b=document.body,t=safeGet('th-theme'),p=safeGet('th-palette');if((!t||t==='light')&&(!p||p==='nature')){const s=g();b.classList.add('season-'+s);generateSeasonalBackground(s)}}return{init,getCurrentSeason:g}})();
 const ThemeModule=(function(){const b=document.body,k='th-theme',c=['theme-dark','theme-warm','theme-soft','theme-high-contrast'];function set(t){c.forEach(x=>b.classList.remove(x));b.classList.remove('season-winter','season-spring','season-summer','season-autumn');if(t!=='light')b.classList.add('theme-'+t);document.querySelectorAll('.theme-btn').forEach(e=>e.setAttribute('aria-pressed',e.dataset.theme===t));safeSet(k,t);if(t!=='light')document.getElementById('seasonal-bg').innerHTML='';else{const p=safeGet('th-palette');if(!p||p==='nature'){const s=SeasonalModule.getCurrentSeason();b.classList.add('season-'+s);generateSeasonalBackground(s)}}}function init(){let s='light';try{s=safeGet(k)||'light'}catch(e){}if(s==='light'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){s='dark';}set(s);document.querySelectorAll('.theme-btn').forEach(e=>e.addEventListener('click',()=>set(e.dataset.theme)))}return{init,setTheme:set}})();
 const FontSizeModule=(function(){const h=document.documentElement,b=document.body,k='th-fontsize',c=['th-text-xs','th-text-sm','th-text-md','th-text-lg','th-text-bold'];function set(s){c.forEach(x=>h.classList.remove(x));c.forEach(x=>b.classList.remove(x));h.classList.add('th-text-'+s);if(s==='bold')b.classList.add('th-text-bold');safeSet(k,s);document.querySelectorAll('.font-btn').forEach(btn=>btn.setAttribute('aria-pressed',btn.dataset.size===s))}function init(){const btns=document.querySelectorAll('.font-btn');if(!btns.length)return;let s='md';try{s=safeGet(k)||'md'}catch(e){}set(s);btns.forEach(btn=>btn.addEventListener('click',()=>set(btn.dataset.size)))}return{init}})();
 const DyslexiaModule=(function(){const b=document.body,k='th-dyslexia';function set(state){if(state==='on')b.classList.add('dyslexia-mode');else b.classList.remove('dyslexia-mode');safeSet(k,state);document.querySelectorAll('.dyslexia-btn').forEach(btn=>btn.setAttribute('aria-pressed',btn.dataset.dyslexia===state));}function init(){const btns=document.querySelectorAll('.dyslexia-btn');if(!btns.length)return;let s=safeGet(k)||'off';set(s);btns.forEach(btn=>btn.addEventListener('click',()=>set(btn.dataset.dyslexia)));}return{init};})();
@@ -650,7 +647,7 @@ const TesterModule=(function(){
           footerLogin=document.getElementById('footerStaffLogin'),
           loginBtn=document.getElementById('testerLoginBtn');
     
-    let isMenuLoaded = false; // Prevents double-fetching data
+    let isMenuLoaded = false; 
 
     function o(){
         m.classList.add('active');
@@ -669,7 +666,6 @@ const TesterModule=(function(){
             return;
         }
         
-        // 1. Show loading state on the button
         loginBtn.textContent='Verifying...';
         loginBtn.disabled=true;
         et.textContent='';
@@ -677,13 +673,9 @@ const TesterModule=(function(){
         try{
             const{data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:pass});
             if(error)throw error;
-            
-            // 2. Instantly show the menu while data loads in the background
             await showMenu();
-            
         }catch(err){
             et.textContent='Login failed: '+err.message;
-            // Reset button on failure
             loginBtn.textContent='Log In';
             loginBtn.disabled=false;
         }
@@ -695,24 +687,20 @@ const TesterModule=(function(){
     }
     
     async function showMenu(){
-        if(isMenuLoaded) return; // Stop if already loaded
+        if(isMenuLoaded) return; 
         isMenuLoaded = true;
         
-        // Instantly switch screens
         la.style.display='none';
         ma.style.display='block';
         if(gearBtn)gearBtn.classList.add('show');
         if(footerLogin)footerLogin.style.display='none';
         
-        // Reset login button for next time
         loginBtn.textContent='Log In';
         loginBtn.disabled=false;
         
-        // Fetch user role
         const{data:{user}}=await supabaseClient.auth.getUser();
         const userRole=user?.user_metadata?.role;
         
-        // Show/hide tabs based on role
         const menuTabBtn=document.querySelector('button[data-tab="menu"]');
         if(menuTabBtn){
             if(userRole==='chef'||userRole==='admin'){
@@ -729,7 +717,6 @@ const TesterModule=(function(){
         const maintBtn=document.getElementById('toggleMaintenanceBtn');
         if(maintBtn) maintBtn.style.display = (userRole==='admin') ? 'block' : 'none';
         
-        // Fetch all admin data in parallel (fastest way)
         if(typeof FilmNightModule!=='undefined')FilmNightModule.loadFilms();
         if(typeof LayoutModule!=='undefined')LayoutModule.onTesterOpen();
         if(typeof DatabaseModule!=='undefined')DatabaseModule.loadUpdates();
@@ -743,7 +730,7 @@ const TesterModule=(function(){
     }
     
     function showLogin(){
-        isMenuLoaded = false; // Allow menu to load again next time
+        isMenuLoaded = false; 
         la.style.display='block';
         ma.style.display='none';
         if(gearBtn)gearBtn.classList.remove('show');
@@ -818,14 +805,82 @@ const TesterModule=(function(){
     async function renderPhotoAdmin(){
         const ac=document.getElementById('adminPhotoContainer');
         if(!ac)return;
-        ac.innerHTML='<p class="text-sm" style="color: var(--bark-
-	}
-	
+        ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading photos...</p>';
+        try{
+            const{data,error}=await supabaseClient.storage.from('gallery').list('',{limit:100,offset:0,sortBy:{column:'created_at',order:'desc'}});
+            if(error)throw error;
+            if(!data||data.length===0){
+                ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No photos found.</p>';
+                return;
+            }
+            const files=data.filter(file=>!file.name.startsWith('.'));
+            if(files.length===0){
+                ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No photos found.</p>';
+                return;
+            }
+            ac.innerHTML=files.map(file=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;word-break:break-all;">${file.name}</span><button class="tester-btn del-photo-btn" data-path="${file.name}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');
+            
+            ac.querySelectorAll('.del-photo-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{
+                const path=e.target.dataset.path;
+                if(confirm('Are you sure you want to delete this photo?')){
+                    try{
+                        const{error:delError}=await supabaseClient.storage.from('gallery').remove([path]);
+                        if(delError)throw delError;
+                        ToastModule.show('Photo deleted!');
+                        renderPhotoAdmin();
+                        if(typeof LightboxModule!=='undefined')LightboxModule.loadImages();
+                    }catch(err){
+                        ToastModule.show('Error deleting photo.');
+                    }
+                }
+            }));
+        }catch(err){
+            ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading photos.</p>';
+        }
+    }
+    
+    function init(){
+        if(gearBtn)gearBtn.addEventListener('click',o);
+        if(footerLogin)footerLogin.addEventListener('click',o);
+        document.getElementById('testerCloseBtn').addEventListener('click',c);
+        document.getElementById('testerLoginBtn').addEventListener('click',login);
+        const logoutBtn=document.getElementById('testerLogoutBtn');
+        if(logoutBtn)logoutBtn.addEventListener('click',logout);
+        pi.addEventListener('keypress',e=>{if(e.key==='Enter')login()});
+        emailInput.addEventListener('keypress',e=>{if(e.key==='Enter')pi.focus()});
+        document.querySelectorAll('.tester-season-btn').forEach(b=>b.addEventListener('click',e=>ss(e.target.dataset.season)));
+        document.getElementById('broadcastBtn').addEventListener('click',bc);
+        const uploadBtn=document.getElementById('uploadPhotoBtn');
+        if(uploadBtn)uploadBtn.addEventListener('click',uploadPhoto);
+        m.addEventListener('click',e=>{if(e.target===m)c()});
+        document.querySelectorAll('.tester-tab-btn').forEach(btn=>{
+            btn.addEventListener('click',(e)=>{
+                document.querySelectorAll('.tester-tab-btn').forEach(b=>b.classList.remove('active'));
+                document.querySelectorAll('.tester-tab-content').forEach(c=>c.classList.remove('active'));
+                e.target.classList.add('active');
+                document.getElementById('tab-'+e.target.dataset.tab).classList.add('active');
+            });
+        });
+        
+        supabaseClient.auth.onAuthStateChange((event,session)=>{
+            if(event==='SIGNED_IN'){
+                showMenu();
+            }else if(event==='SIGNED_OUT'){
+                showLogin();
+            }
+        });
+        checkAuthState();
+    }
+    
+    return{init};
+})();
+
 const EventsModule=(function(){
     async function loadEvents(){
         const c=document.getElementById('eventsContainer');
         const printBtn=document.getElementById('printScheduleBtn');
         const printContainer=document.getElementById('printableSchedule');
+        const badge=document.getElementById('eventsFreshnessBadge');
         if(!c||!supabaseClient)return;
         c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Checking for upcoming events...</p>';
         try{
@@ -835,8 +890,18 @@ const EventsModule=(function(){
             if(!data||data.length===0){
                 c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">No upcoming events scheduled right now. Please check back soon!</p>';
                 if(printBtn) printBtn.style.display='none';
+                if(badge) badge.style.display='none';
                 return;
             }
+            
+            if(badge){
+                const latest = data.reduce((a, b) => new Date(a.updated_at) > new Date(b.updated_at) ? a : b);
+                if(latest && latest.updated_at){
+                    badge.innerHTML = `Updated ${timeAgo(latest.updated_at)}`;
+                    badge.style.display = 'inline-flex';
+                }
+            }
+            
             if(printBtn) printBtn.style.display='inline-flex';
             const today=new Date();
             today.setHours(0,0,0,0);
@@ -871,6 +936,7 @@ const EventsModule=(function(){
         }catch(e){
             c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load events.</p>';
             if(printBtn) printBtn.style.display='none';
+            if(badge) badge.style.display='none';
         }
     }
     async function loadAdminEvents(){
@@ -932,16 +998,48 @@ const EventsModule=(function(){
     return{init,loadAdminEvents,loadEvents};
 })();
 const WilfModule=(function(){async function loadStatus(){const badge=document.getElementById('wilfStatusBadge');if(!badge||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('wilf_status').select('is_visiting').eq('id',1).single();if(error)throw error;if(data&&data.is_visiting){badge.style.display='inline-flex';badge.style.background='var(--sage)';badge.style.color='#fff';badge.innerHTML='🐕 Wilf is visiting today!';}else{badge.style.display='inline-flex';badge.style.background='var(--cream-deep)';badge.style.color='var(--bark-soft)';badge.innerHTML='🐕 Wilf is currently off-site.';}}catch(e){}}async function toggleStatus(){if(!supabaseClient)return;try{const{data,error}=await supabaseClient.from('wilf_status').select('is_visiting').eq('id',1).single();if(error)throw error;const newStatus=!data.is_visiting;const{error:updateError}=await supabaseClient.from('wilf_status').update({is_visiting:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Wilf status updated to: ${newStatus?'Visiting':'Off-site'}`);loadStatus();}catch(err){ToastModule.show('Error updating Wilf status.');}}function init(){loadStatus();const toggleBtn=document.getElementById('wilfToggleBtn');if(toggleBtn)toggleBtn.addEventListener('click',toggleStatus);}return{init,loadStatus};})();
-const MenuModule=(function(){async function loadMenu(){const c=document.getElementById('menuContainer');if(!c||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});if(error)throw error;if(!data||data.length===0){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Menu is being updated. Please check back soon!</p>';return;}c.innerHTML=data.map(day=>{const meal=day.meal_text&&day.meal_text.trim()!==''?day.meal_text:'To be announced';const isPlaceholder=!day.meal_text||day.meal_text.trim()==='';return `<div class="card p-6 flex flex-col"><div class="display font-extrabold text-lg mb-2" style="color:var(--terracotta)">${day.day_name}</div><p class="text-sm" style="color:var(--bark-soft); ${isPlaceholder?'font-style: italic; opacity: 0.7;':''}">${meal}</p></div>`;}).join('');}catch(e){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load the menu.</p>';}}async function loadAdminMenu(){const ac=document.getElementById('adminMenuContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading menu...</p>';try{const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No menu days found.</p>';return;}ac.innerHTML=data.map(day=>`<div class="admin-film-item" style="padding: 8px 12px;"><label style="font-size:.8rem; font-weight:700; color:var(--bark); display:block; margin-bottom:4px;">${day.day_name}</label><input type="text" class="tester-input menu-input" data-id="${day.id}" value="${day.meal_text||''}" placeholder="e.g., Roast chicken with seasonal veg" style="margin-top:0; padding:8px; font-size:.9rem;"></div>`).join('');}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading menu.</p>';}}async function saveMenu(){const inputs=document.querySelectorAll('.menu-input');if(inputs.length===0)return;ToastModule.show("Saving menu...");try{for(let i=0;i<inputs.length;i++){const id=inputs[i].dataset.id;const val=inputs[i].value.trim();const{error}=await supabaseClient.from('weekly_menu').update({meal_text:val}).eq('id',id);if(error)throw error;}ToastModule.show("Weekly menu saved successfully!");loadAdminMenu();loadMenu();}catch(err){ToastModule.show("Error saving menu.");}}function init(){loadMenu();const saveBtn=document.getElementById('saveMenuBtn');if(saveBtn)saveBtn.addEventListener('click',saveMenu);}return{init,loadAdminMenu};})();
+const MenuModule=(function(){
+    async function loadMenu(){
+        const c=document.getElementById('menuContainer');
+        const badge=document.getElementById('menuFreshnessBadge');
+        if(!c||!supabaseClient)return;
+        try{
+            const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});
+            if(error)throw error;
+            if(!data||data.length===0){
+                c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Menu is being updated. Please check back soon!</p>';
+                return;
+            }
+            
+            if(badge){
+                const latest = data.reduce((a, b) => new Date(a.updated_at) > new Date(b.updated_at) ? a : b);
+                if(latest && latest.updated_at){
+                    badge.innerHTML = `Updated ${timeAgo(latest.updated_at)}`;
+                    badge.style.display = 'inline-flex';
+                }
+            }
+            
+            c.innerHTML=data.map(day=>{
+                const meal=day.meal_text&&day.meal_text.trim()!==''?day.meal_text:'To be announced';
+                const isPlaceholder=!day.meal_text||day.meal_text.trim()==='';
+                return `<div class="card p-6 flex flex-col"><div class="display font-extrabold text-lg mb-2" style="color:var(--terracotta)">${day.day_name}</div><p class="text-sm" style="color:var(--bark-soft); ${isPlaceholder?'font-style: italic; opacity: 0.7;':''}">${meal}</p></div>`;
+            }).join('');
+        }catch(e){
+            c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load the menu.</p>';
+        }
+    }
+    async function loadAdminMenu(){const ac=document.getElementById('adminMenuContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading menu...</p>';try{const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No menu days found.</p>';return;}ac.innerHTML=data.map(day=>`<div class="admin-film-item" style="padding: 8px 12px;"><label style="font-size:.8rem; font-weight:700; color:var(--bark); display:block; margin-bottom:4px;">${day.day_name}</label><input type="text" class="tester-input menu-input" data-id="${day.id}" value="${day.meal_text||''}" placeholder="e.g., Roast chicken with seasonal veg" style="margin-top:0; padding:8px; font-size:.9rem;"></div>`).join('');}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading menu.</p>';}}
+    async function saveMenu(){const inputs=document.querySelectorAll('.menu-input');if(inputs.length===0)return;ToastModule.show("Saving menu...");try{for(let i=0;i<inputs.length;i++){const id=inputs[i].dataset.id;const val=inputs[i].value.trim();const{error}=await supabaseClient.from('weekly_menu').update({meal_text:val}).eq('id',id);if(error)throw error;}ToastModule.show("Weekly menu saved successfully!");loadAdminMenu();loadMenu();}catch(err){ToastModule.show("Error saving menu.");}}
+    function init(){loadMenu();const saveBtn=document.getElementById('saveMenuBtn');if(saveBtn)saveBtn.addEventListener('click',saveMenu);}
+    return{init,loadAdminMenu};
+})();
 const CommunityModule=(function(){async function loadCommunity(){const c=document.getElementById('communityContainer');if(!c||!supabaseClient)return;c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Loading community moments...</p>';try{const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false}).limit(6);if(error)throw error;if(!data||data.length===0){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">No community updates just yet. Check back soon!</p>';return;}c.innerHTML=data.map(post=>{const d=new Date(post.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const imgHtml=post.image_url?`<div style="height: 200px; background-image: url('${post.image_url}'); background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 12px;"></div>`:'';return `<div class="card p-6 flex flex-col">${imgHtml}<div class="display font-extrabold text-lg mb-1" style="color:var(--teal)">${post.title}</div><div class="text-xs font-bold mb-3" style="color:var(--bark-soft)">${d}</div><p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">${post.description}</p></div>`;}).join('');}catch(e){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load community updates.</p>';}}async function loadAdminCommunity(){const ac=document.getElementById('adminCommunityContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading...</p>';try{const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No posts found.</p>';return;}ac.innerHTML=data.map(post=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;flex:1;">${post.title}</span><button class="tester-btn del-community-btn" data-id="${post.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');ac.querySelectorAll('.del-community-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('community_spotlight').delete().eq('id',id);ToastModule.show('Spotlight deleted!');loadAdminCommunity();loadCommunity();}catch(err){ToastModule.show('Error deleting post.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading posts.</p>';}}async function addCommunity(){const t=document.getElementById('newCommunityTitle').value.trim();const d=document.getElementById('newCommunityDesc').value.trim();const img=document.getElementById('newCommunityImg').value.trim();if(!t||!d){ToastModule.show('Title and Description are required.');return;}try{const{error}=await supabaseClient.from('community_spotlight').insert([{title:t,description:d,image_url:img}]);if(error)throw error;ToastModule.show('Community spotlight posted!');document.getElementById('newCommunityTitle').value='';document.getElementById('newCommunityDesc').value='';document.getElementById('newCommunityImg').value='';loadAdminCommunity();loadCommunity();}catch(err){ToastModule.show('Error adding post.');}}function init(){loadCommunity();const addBtn=document.getElementById('addCommunityBtn');if(addBtn)addBtn.addEventListener('click',addCommunity);}return{init,loadAdminCommunity};})();
 const EnquiriesModule=(function(){async function submitEnquiry(name,email,message){try{const{error}=await supabaseClient.from('enquiries').insert([{name:name,email:email,message:message}]);if(error)throw error;ToastModule.show("Enquiry sent successfully! We'll be in touch soon.");return true;}catch(err){ToastModule.show("Error sending enquiry. Please try calling us instead.");return false;}}async function loadAdminEnquiries(){const ac=document.getElementById('adminEnquiriesContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading enquiries...</p>';try{const{data,error}=await supabaseClient.from('enquiries').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No new enquiries.</p>';return;}ac.innerHTML=data.map(enq=>{const d=new Date(enq.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});return `<div class="admin-film-item" style="padding: 12px;"><div style="display:flex; justify-content:space-between; align-items:start; gap:8px; margin-bottom:6px;"><div><span style="font-weight:700; font-size:.9rem;">${enq.name}</span><span style="font-size:.75rem; color:var(--bark-soft); margin-left:8px;">${d}</span></div><button class="tester-btn del-enq-btn" data-id="${enq.id}" style="width:auto; margin:0; padding:4px 8px; font-size:0.7rem; background:var(--terracotta);">Delete</button></div><a href="mailto:${enq.email}" style="font-size:.85rem; color:var(--teal); font-weight:600; display:block; margin-bottom:6px;">${enq.email}</a><p style="font-size:.85rem; color:var(--bark-soft); line-height:1.4;">${enq.message}</p></div>`;}).join('');ac.querySelectorAll('.del-enq-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('enquiries').delete().eq('id',id);ToastModule.show('Enquiry deleted!');loadAdminEnquiries();}catch(err){ToastModule.show('Error deleting enquiry.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading enquiries.</p>';}}function init(){const form=document.getElementById('contactForm');if(form){form.addEventListener('submit',async(e)=>{e.preventDefault();const name=document.getElementById('contactName').value.trim();const email=document.getElementById('contactEmail').value.trim();const message=document.getElementById('contactMessage').value.trim();if(name&&email&&message){const success=await submitEnquiry(name,email,message);if(success){form.reset();}}});}}return{init,loadAdminEnquiries};})();
 const BriefingModule=(function(){async function loadBriefing(){const bar=document.getElementById('briefing-bar');const textEl=document.getElementById('briefing-text');const input=document.getElementById('briefingInput');if(!bar||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('daily_briefing').select('message').eq('id',1).single();if(error)throw error;if(data&&data.message&&data.message.trim()!==''){textEl.textContent=data.message;bar.style.display='block';if(input)input.value=data.message;}else{bar.style.display='none';}}catch(e){bar.style.display='none';}}async function saveBriefing(){const input=document.getElementById('briefingInput');if(!input||!supabaseClient)return;const msg=input.value.trim();try{const{error}=await supabaseClient.from('daily_briefing').update({message:msg}).eq('id',1);if(error)throw error;ToastModule.show("Briefing updated!");loadBriefing();}catch(err){ToastModule.show("Error saving briefing.");}}function init(){loadBriefing();const btn=document.getElementById('saveBriefingBtn');if(btn)btn.addEventListener('click',saveBriefing);}return{init,loadBriefing};})();
 const MaintenanceModule=(function(){async function checkStatus(){const banner=document.getElementById('maintenance-banner');if(!banner||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;if(data&&data.maintenance_mode){banner.style.display='block';}else{banner.style.display='none';}}catch(e){}}async function toggle(){try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;const newStatus=!data.maintenance_mode;const{error:updateError}=await supabaseClient.from('site_settings').update({maintenance_mode:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Maintenance Mode is now ${newStatus?'ON':'OFF'}`);checkStatus();}catch(err){ToastModule.show('Error toggling maintenance mode.');}}function init(){checkStatus();const btn=document.getElementById('toggleMaintenanceBtn');if(btn)btn.addEventListener('click',toggle);}return{init};})();
 
 document.addEventListener('DOMContentLoaded',()=>{
-	FaviconModule.init();
-	SensoryModule.init();
-    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();BackToTopModule.init();SeasonalModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();
+    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();
     
     const PolishModule = (function () {
       function initReveal() {
