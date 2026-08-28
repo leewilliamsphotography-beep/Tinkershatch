@@ -355,3 +355,30 @@ body.sensory-mode-active #briefing-bar {
     color: #fff;
     border-color: #D9633E;
 }
+/* Freshness Badge */
+.freshness-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 6px 12px;
+    background: rgba(124, 168, 144, 0.15); /* Sage green tint */
+    color: var(--sage);
+    border: 1px solid var(--sage);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.freshness-badge::before {
+    content: '●';
+    font-size: 1rem;
+    line-height: 0;
+    animation: pulse-dot 2s infinite;
+}
+@keyframes pulse-dot {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
