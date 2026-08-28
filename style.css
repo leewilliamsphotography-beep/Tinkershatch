@@ -344,3 +344,14 @@ body.sensory-mode-active #briefing-bar {
     background: rgba(255,255,255,0.3);
     color: #fff;
 }
+/* Floating Sensory Button */
+#sensoryFloatBtn {
+    background: var(--terracotta);
+    color: #fff;
+    border-color: var(--terracotta);
+}
+#sensoryFloatBtn:hover {
+    background: #D9633E;
+    color: #fff;
+    border-color: #D9633E;
+}

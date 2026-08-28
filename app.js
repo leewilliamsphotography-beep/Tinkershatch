@@ -143,16 +143,12 @@ const SensoryModule=(function(){
         if(state==='on') b.classList.add('sensory-mode-active');
         else b.classList.remove('sensory-mode-active');
         safeSet('th-sensory', state);
-        
-        // Stop ambient sounds if turning off
-        if(state==='off' && typeof AmbientAudioModule!=='undefined') {
-            // Accessing the internal stop function directly (safer approach: just let user click again)
-        }
     }
     
     function init(){
-        // Hook up toggle buttons (in splash and header)
-        document.querySelectorAll('#sensoryToggleBtn').forEach(btn=>{
+        // Hook up ALL sensory toggle buttons (in splash, header dropdown, and floating header button)
+        document.querySelectorAll('#sensoryToggleBtn, #sensoryFloatBtn').forEach(btn=>{
+            if(!btn) return;
             btn.addEventListener('click', ()=>{
                 if(document.body.classList.contains('sensory-mode-active')){
                     toggle('off');
@@ -167,7 +163,7 @@ const SensoryModule=(function(){
         if(exitBtn) {
             exitBtn.addEventListener('click', ()=>{
                 toggle('off');
-                // Also stop the ambient audio when exiting
+                // Stop the ambient audio when exiting
                 const activeAudioBtn = document.querySelector('#sensoryOverlay .ambient-btn.active');
                 if(activeAudioBtn) activeAudioBtn.click(); 
             });
