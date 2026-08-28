@@ -647,7 +647,7 @@ const TesterModule=(function(){
           footerLogin=document.getElementById('footerStaffLogin'),
           loginBtn=document.getElementById('testerLoginBtn');
     
-    let isMenuLoaded = false; 
+    let isMenuLoaded = false; // Prevents double-fetching data
 
     function o(){
         m.classList.add('active');
@@ -663,14 +663,19 @@ const TesterModule=(function(){
         const pass=pi.value;
         if(!email||!pass){et.textContent='Please enter both email and password.';return;}
         
+        // 1. Show loading state on the button so you know it's working
         loginBtn.textContent='Verifying...';
         loginBtn.disabled=true;
         et.textContent='';
         
         try{
+            // 2. Send request to Supabase (This is the part that takes a few seconds if the database is asleep)
             const{data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:pass});
             if(error)throw error;
-            await showMenu(); // Explicitly swap UI instantly on success
+            
+            // 3. Instantly swap to the dashboard the moment Supabase replies
+            await showMenu();
+            
         }catch(err){
             et.textContent='Login failed: '+err.message;
             loginBtn.textContent='Log In';
@@ -680,14 +685,15 @@ const TesterModule=(function(){
     
     async function logout(){
         await supabaseClient.auth.signOut();
-        showLogin(); // Explicitly swap UI back instantly on logout
+        showLogin();
         c();
     }
     
     async function showMenu(){
-        if(isMenuLoaded) return; // Prevents double-fetching data
+        if(isMenuLoaded) return; // Stop if already loaded
         isMenuLoaded = true;
         
+        // 1. Instantly switch screens
         la.style.display='none';
         ma.style.display='block';
         if(gearBtn)gearBtn.classList.add('show');
@@ -696,9 +702,11 @@ const TesterModule=(function(){
         loginBtn.textContent='Log In';
         loginBtn.disabled=false;
         
+        // 2. Fetch user role
         const{data:{user}}=await supabaseClient.auth.getUser();
         const userRole=user?.user_metadata?.role;
         
+        // 3. Show/hide tabs based on role
         const menuTabBtn=document.querySelector('button[data-tab="menu"]');
         if(menuTabBtn){
             if(userRole==='chef'||userRole==='admin'){
@@ -715,6 +723,7 @@ const TesterModule=(function(){
         const maintBtn=document.getElementById('toggleMaintenanceBtn');
         if(maintBtn) maintBtn.style.display = (userRole==='admin') ? 'block' : 'none';
         
+        // 4. Fetch all admin data in parallel (fastest way)
         if(typeof FilmNightModule!=='undefined')FilmNightModule.loadFilms();
         if(typeof LayoutModule!=='undefined')LayoutModule.onTesterOpen();
         if(typeof DatabaseModule!=='undefined')DatabaseModule.loadUpdates();
@@ -728,7 +737,7 @@ const TesterModule=(function(){
     }
     
     function showLogin(){
-        isMenuLoaded = false; // Allows menu to load again next time
+        isMenuLoaded = false; // Allow menu to load again next time
         la.style.display='block';
         ma.style.display='none';
         if(gearBtn)gearBtn.classList.remove('show');
@@ -836,6 +845,7 @@ const TesterModule=(function(){
             });
         });
         
+        // Listen for auth changes (handles auto-login and logouts)
         supabaseClient.auth.onAuthStateChange((event,session)=>{
             if(event==='SIGNED_IN'){
                 showMenu();
@@ -843,9 +853,9 @@ const TesterModule=(function(){
                 showLogin();
             }
         });
-        
         checkAuthState();
     }
+    
     return{init};
 })();
 const EventsModule=(function(){
