@@ -635,7 +635,6 @@ const FilmNightModule=(function(){
 })();
 
 const SummerEffectsModule=(function(){function init(){const c=document.getElementById('summerParticles');if(!c)return;c.innerHTML='';const m=window.innerWidth<768,n=m?12:25;for(let i=0;i<n;i++){const p=document.createElement('div');p.classList.add('particle');const s=Math.random()*4+2;p.style.width=s+'px';p.style.height=s+'px';p.style.left=Math.random()*100+'%';p.style.bottom=(Math.random()*-40)+'px';p.style.animationDuration=(Math.random()*8+10)+'s';p.style.animationDelay=(Math.random()*12)+'s';c.appendChild(p)}}return{init}})();
-
 const TesterModule=(function(){
     const m=document.getElementById('testerModal'),
           la=document.getElementById('testerLogin'),
@@ -647,7 +646,7 @@ const TesterModule=(function(){
           footerLogin=document.getElementById('footerStaffLogin'),
           loginBtn=document.getElementById('testerLoginBtn');
     
-    let isMenuLoaded = false; // Prevents double-fetching data
+    let isMenuLoaded = false; 
 
     function o(){
         m.classList.add('active');
@@ -663,18 +662,17 @@ const TesterModule=(function(){
         const pass=pi.value;
         if(!email||!pass){et.textContent='Please enter both email and password.';return;}
         
-        // 1. Show loading state on the button so you know it's working
         loginBtn.textContent='Verifying...';
         loginBtn.disabled=true;
         et.textContent='';
         
         try{
-            // 2. Send request to Supabase (This is the part that takes a few seconds if the database is asleep)
+            // 1. Send login request to Supabase (takes a few seconds if database is asleep)
             const{data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:pass});
             if(error)throw error;
             
-            // 3. Instantly swap to the dashboard the moment Supabase replies
-            await showMenu();
+            // 2. DO NOT await showMenu. Let it run in the background so the UI swaps instantly!
+            showMenu(); 
             
         }catch(err){
             et.textContent='Login failed: '+err.message;
@@ -690,7 +688,7 @@ const TesterModule=(function(){
     }
     
     async function showMenu(){
-        if(isMenuLoaded) return; // Stop if already loaded
+        if(isMenuLoaded) return; 
         isMenuLoaded = true;
         
         // 1. Instantly switch screens
@@ -702,9 +700,10 @@ const TesterModule=(function(){
         loginBtn.textContent='Log In';
         loginBtn.disabled=false;
         
-        // 2. Fetch user role
-        const{data:{user}}=await supabaseClient.auth.getUser();
-        const userRole=user?.user_metadata?.role;
+        // 2. Get user role from local session (no network request needed!)
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        const user = session?.user;
+        const userRole = user?.user_metadata?.role;
         
         // 3. Show/hide tabs based on role
         const menuTabBtn=document.querySelector('button[data-tab="menu"]');
@@ -723,7 +722,7 @@ const TesterModule=(function(){
         const maintBtn=document.getElementById('toggleMaintenanceBtn');
         if(maintBtn) maintBtn.style.display = (userRole==='admin') ? 'block' : 'none';
         
-        // 4. Fetch all admin data in parallel (fastest way)
+        // 4. Fetch all admin data in the background
         if(typeof FilmNightModule!=='undefined')FilmNightModule.loadFilms();
         if(typeof LayoutModule!=='undefined')LayoutModule.onTesterOpen();
         if(typeof DatabaseModule!=='undefined')DatabaseModule.loadUpdates();
@@ -737,7 +736,7 @@ const TesterModule=(function(){
     }
     
     function showLogin(){
-        isMenuLoaded = false; // Allow menu to load again next time
+        isMenuLoaded = false; 
         la.style.display='block';
         ma.style.display='none';
         if(gearBtn)gearBtn.classList.remove('show');
@@ -845,7 +844,6 @@ const TesterModule=(function(){
             });
         });
         
-        // Listen for auth changes (handles auto-login and logouts)
         supabaseClient.auth.onAuthStateChange((event,session)=>{
             if(event==='SIGNED_IN'){
                 showMenu();
