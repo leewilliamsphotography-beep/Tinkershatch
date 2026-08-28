@@ -188,7 +188,9 @@ const FaviconModule=(function(){
             link.rel = 'icon';
             document.head.appendChild(link);
         }
-        link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+        // Convert SVG string to Base64 to ensure all browsers read it as an image
+        link.type = 'image/svg+xml';
+        link.href = 'data:image/svg+xml;base64,' + btoa(svg);
     }
 
     async function init() {
