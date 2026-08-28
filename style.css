@@ -381,4 +381,36 @@ body.sensory-mode-active #briefing-bar {
     0%, 100% { opacity: 0.4; }
     50% { opacity: 1; }
 }
+/* === Golden Hour Lighting === */
+/* Subtly warms the entire site during sunrise/sunset */
+body.golden-hour {
+    --cream: #FFFBF0;
+    --cream-deep: #FFF3D6;
+    --sky: #FFFAEE;
+    --card: #FFFFFF;
+    --border: #F2E6CC;
+}
+
+/* === The Vibe Today (Ambient Backgrounds) === */
+/* Active & Lively: Bright honey/terracotta blobs, higher opacity */
+body.vibe-active .blob { opacity: 0.35 !important; }
+body.vibe-active .blob-1 { background: var(--honey) !important; }
+body.vibe-active .blob-2 { background: var(--terracotta) !important; }
+body.vibe-active .blob-3 { background: var(--rose) !important; opacity: 0.2 !important; }
+
+/* Calm & Quiet: Soft sage/sky blobs, very low opacity */
+body.vibe-calm .blob { opacity: 0.15 !important; filter: blur(120px) !important; }
+body.vibe-calm .blob-1 { background: var(--sage) !important; }
+body.vibe-calm .blob-2 { background: var(--sky-deep) !important; }
+body.vibe-calm .blob-3 { background: var(--sage) !important; }
+
+/* Neutral (Default): Standard ambient blobs */
+body.vibe-neutral .blob { opacity: 0.2 !important; }
+
+/* Highlight active vibe button in admin */
+.vibe-btn.active {
+    background: var(--teal) !important;
+    color: #fff !important;
+    border-color: var(--teal) !important;
+}
 

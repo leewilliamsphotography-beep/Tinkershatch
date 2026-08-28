@@ -564,7 +564,14 @@
                 <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Maintenance Mode</h3>
                 <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Display a banner on the live site letting visitors know updates are underway.</p>
                 <button id="toggleMaintenanceBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Maintenance Banner</button>
-
+<hr class="tester-divider">
+<h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Set The Vibe Today</h3>
+<p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Change the website's ambient background to match the atmosphere in the home right now.</p>
+<div class="tester-grid">
+    <button class="tester-btn vibe-btn" data-vibe="active">☀️ Active</button>
+    <button class="tester-btn vibe-btn" data-vibe="calm">🌿 Calm</button>
+    <button class="tester-btn vibe-btn" data-vibe="neutral">☕ Neutral</button>
+</div>
                 <hr class="tester-divider">
                 <button id="testerLogoutBtn" class="tester-btn" style="background:var(--terracotta);">Log Out</button>
             </div>
@@ -595,6 +602,13 @@
         </button>
     </div>
 </div>
+<script>
+    // Initialize the new atmospheric modules
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof VibeModule !== 'undefined') VibeModule.init();
+        if (typeof GoldenHourModule !== 'undefined') GoldenHourModule.init();
+    });
+</script>
 <script src="app.js"></script>
 </body>
 </html>
