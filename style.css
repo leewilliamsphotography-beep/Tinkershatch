@@ -269,3 +269,78 @@ section[id] {
         padding-bottom: 4rem;
     }
 }
+/* === Sensory Mode Overlay === */
+#sensoryOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: #050505;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1.5s ease, visibility 0s 1.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+body.sensory-mode-active #sensoryOverlay {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1.5s ease;
+}
+
+/* Hide the rest of the website when active to save processing power */
+body.sensory-mode-active #splash-screen,
+body.sensory-mode-active main,
+body.sensory-mode-active header,
+body.sensory-mode-active #time-date-bar,
+body.sensory-mode-active #side-nav,
+body.sensory-mode-active footer,
+body.sensory-mode-active #testerModal,
+body.sensory-mode-active #backToTopBtn,
+body.sensory-mode-active #briefing-bar {
+    display: none !important;
+}
+
+/* Lava Lamp Blobs */
+.sensory-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.6;
+    mix-blend-mode: screen;
+    animation: sensory-float 20s ease-in-out infinite;
+}
+.sensory-blob-1 { width: 40vw; height: 40vw; background: #1AA37E; top: 10%; left: 10%; }
+.sensory-blob-2 { width: 50vw; height: 50vw; background: #A87816; bottom: 10%; right: 10%; animation-delay: -5s; animation-duration: 25s; }
+.sensory-blob-3 { width: 30vw; height: 30vw; background: #A63A5A; top: 40%; left: 50%; animation-delay: -10s; animation-duration: 18s; }
+.sensory-blob-4 { width: 25vw; height: 25vw; background: #7CA890; bottom: 20%; left: 20%; animation-delay: -15s; animation-duration: 22s; }
+
+@keyframes sensory-float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(10vw, -15vh) scale(1.2); }
+    66% { transform: translate(-15vw, 10vh) scale(0.8); }
+}
+
+/* Control Panel */
+.sensory-controls {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    padding: 32px;
+    border-radius: 24px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.sensory-controls .ambient-btn {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
+}
+.sensory-controls .ambient-btn.active {
+    background: rgba(255,255,255,0.3);
+    color: #fff;
+}
