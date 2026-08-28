@@ -172,7 +172,6 @@ const SensoryModule=(function(){
     return{init};
 })();
 const FaviconModule=(function(){
-    // Helper to get current season
     function getSeason() {
         const m = new Date().getMonth() + 1;
         if ([12, 1, 2].includes(m)) return 'winter';
@@ -182,7 +181,6 @@ const FaviconModule=(function(){
         return 'summer';
     }
 
-    // Helper to inject the SVG into the browser tab
     function setFavicon(svg) {
         let link = document.querySelector("link[rel~='icon']");
         if (!link) {
@@ -197,7 +195,6 @@ const FaviconModule=(function(){
         const season = getSeason();
         let isBirthday = false;
         
-        // Check Supabase for a birthday today
         if (typeof supabaseClient !== 'undefined' && supabaseClient) {
             try {
                 const now = new Date();
@@ -215,38 +212,31 @@ const FaviconModule=(function(){
         }
 
         let svg = '';
-        let themeColor = "#152630"; // Default bark dark
+        let themeColor = "#152630"; 
         
-        // 1. Birthday Cake Favicon (Overrides everything else!)
         if (isBirthday) {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FCFBFA"/><path fill="%23C25528" d="M25 55c0-5 10-10 15-5s10 5 15 0 10-5 15 0 10 5 15 5 10 0 15-5v30H25V55z"/><rect x="20" y="80" width="60" height="10" rx="5" fill="%23A87816"/><circle cx="50" cy="25" r="5" fill="%23FFD700"/><path d="M50 25v-8" stroke="%23FFD700" stroke-width="2"/></svg>`;
-            themeColor = "#C25528"; // Terracotta for birthdays
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FCFBFA"/><path fill="#C25528" d="M25 55c0-5 10-10 15-5s10 5 15 0 10-5 15 0 10 5 15 5 10 0 15-5v30H25V55z"/><rect x="20" y="80" width="60" height="10" rx="5" fill="#A87816"/><circle cx="50" cy="25" r="5" fill="#FFD700"/><path d="M50 25v-8" stroke="#FFD700" stroke-width="2"/></svg>`;
+            themeColor = "#C25528"; 
         } 
-        // 2. Winter Snowflake
         else if (season === 'winter') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23F8FBFD"/><path d="M50 15v70M25 30l50 40M75 30l-50 40M15 50h70" stroke="%232E5C8A" stroke-width="8" stroke-linecap="round"/></svg>`;
-            themeColor = "#1E4060"; // Deep winter blue
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#F8FBFD"/><path d="M50 15v70M25 30l50 40M75 30l-50 40M15 50h70" stroke="#2E5C8A" stroke-width="8" stroke-linecap="round"/></svg>`;
+            themeColor = "#1E4060"; 
         } 
-        // 3. Spring Flower
         else if (season === 'spring') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FDFCF8"/><circle cx="50" cy="50" r="15" fill="%23A87816"/><circle cx="50" cy="25" r="15" fill="%23D8849B"/><circle cx="50" cy="75" r="15" fill="%23D8849B"/><circle cx="25" cy="50" r="15" fill="%23D8849B"/><circle cx="75" cy="50" r="15" fill="%23D8849B"/></svg>`;
-            themeColor = "#4E8A43"; // Spring green
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FDFCF8"/><circle cx="50" cy="50" r="15" fill="#A87816"/><circle cx="50" cy="25" r="15" fill="#D8849B"/><circle cx="50" cy="75" r="15" fill="#D8849B"/><circle cx="25" cy="50" r="15" fill="#D8849B"/><circle cx="75" cy="50" r="15" fill="#D8849B"/></svg>`;
+            themeColor = "#4E8A43"; 
         } 
-        // 4. Summer Sun
         else if (season === 'summer') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FCFBFA"/><circle cx="50" cy="50" r="20" fill="%23D9A521"/><path d="M50 15v10M50 75v10M15 50h10M75 50h10M25 25l7 7M68 68l7 7M75 25l-7 7M32 68l-7 7" stroke="%23D9A521" stroke-width="8" stroke-linecap="round"/></svg>`;
-            themeColor = "#14856A"; // Summer teal
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FCFBFA"/><circle cx="50" cy="50" r="20" fill="#D9A521"/><path d="M50 15v10M50 75v10M15 50h10M75 50h10M25 25l7 7M68 68l7 7M75 25l-7 7M32 68l-7 7" stroke="#D9A521" stroke-width="8" stroke-linecap="round"/></svg>`;
+            themeColor = "#14856A"; 
         } 
-        // 5. Autumn Leaf
         else if (season === 'autumn') {
-            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FDF7F2"/><path fill="%23D9633E" d="M50 20c15 0 30 15 30 35s-15 35-30 35-30-15-30-35 15-35 30-35z"/><path d="M50 20v60" stroke="%23A87816" stroke-width="5"/></svg>`;
-            themeColor = "#7A3F21"; // Autumn brown
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#FDF7F2"/><path fill="#D9633E" d="M50 20c15 0 30 15 30 35s-15 35-30 35-30-15-30-35 15-35 30-35z"/><path d="M50 20v60" stroke="#A87816" stroke-width="5"/></svg>`;
+            themeColor = "#7A3F21"; 
         }
         
-        // Apply the Favicon
         setFavicon(svg);
         
-        // Apply the mobile address bar color
         let themeMeta = document.querySelector("meta[name='theme-color']");
         if(themeMeta) themeMeta.setAttribute("content", themeColor);
     }
