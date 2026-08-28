@@ -171,6 +171,88 @@ const SensoryModule=(function(){
     }
     return{init};
 })();
+const FaviconModule=(function(){
+    // Helper to get current season
+    function getSeason() {
+        const m = new Date().getMonth() + 1;
+        if ([12, 1, 2].includes(m)) return 'winter';
+        if ([3, 4, 5].includes(m)) return 'spring';
+        if ([6, 7, 8].includes(m)) return 'summer';
+        if ([9, 10, 11].includes(m)) return 'autumn';
+        return 'summer';
+    }
+
+    // Helper to inject the SVG into the browser tab
+    function setFavicon(svg) {
+        let link = document.querySelector("link[rel~='icon']");
+        if (!link) {
+            link = document.createElement('link');
+            link.rel = 'icon';
+            document.head.appendChild(link);
+        }
+        link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    async function init() {
+        const season = getSeason();
+        let isBirthday = false;
+        
+        // Check Supabase for a birthday today
+        if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+            try {
+                const now = new Date();
+                const currentMonth = now.getMonth() + 1;
+                const currentDay = now.getDate();
+                
+                const { data, error } = await supabaseClient
+                    .from('celebrations')
+                    .select('day, month')
+                    .eq('day', currentDay)
+                    .eq('month', currentMonth);
+                    
+                if (data && data.length > 0) isBirthday = true;
+            } catch(e) { console.error('Favicon bday check failed', e); }
+        }
+
+        let svg = '';
+        let themeColor = "#152630"; // Default bark dark
+        
+        // 1. Birthday Cake Favicon (Overrides everything else!)
+        if (isBirthday) {
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FCFBFA"/><path fill="%23C25528" d="M25 55c0-5 10-10 15-5s10 5 15 0 10-5 15 0 10 5 15 5 10 0 15-5v30H25V55z"/><rect x="20" y="80" width="60" height="10" rx="5" fill="%23A87816"/><circle cx="50" cy="25" r="5" fill="%23FFD700"/><path d="M50 25v-8" stroke="%23FFD700" stroke-width="2"/></svg>`;
+            themeColor = "#C25528"; // Terracotta for birthdays
+        } 
+        // 2. Winter Snowflake
+        else if (season === 'winter') {
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23F8FBFD"/><path d="M50 15v70M25 30l50 40M75 30l-50 40M15 50h70" stroke="%232E5C8A" stroke-width="8" stroke-linecap="round"/></svg>`;
+            themeColor = "#1E4060"; // Deep winter blue
+        } 
+        // 3. Spring Flower
+        else if (season === 'spring') {
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FDFCF8"/><circle cx="50" cy="50" r="15" fill="%23A87816"/><circle cx="50" cy="25" r="15" fill="%23D8849B"/><circle cx="50" cy="75" r="15" fill="%23D8849B"/><circle cx="25" cy="50" r="15" fill="%23D8849B"/><circle cx="75" cy="50" r="15" fill="%23D8849B"/></svg>`;
+            themeColor = "#4E8A43"; // Spring green
+        } 
+        // 4. Summer Sun
+        else if (season === 'summer') {
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FCFBFA"/><circle cx="50" cy="50" r="20" fill="%23D9A521"/><path d="M50 15v10M50 75v10M15 50h10M75 50h10M25 25l7 7M68 68l7 7M75 25l-7 7M32 68l-7 7" stroke="%23D9A521" stroke-width="8" stroke-linecap="round"/></svg>`;
+            themeColor = "#14856A"; // Summer teal
+        } 
+        // 5. Autumn Leaf
+        else if (season === 'autumn') {
+            svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23FDF7F2"/><path fill="%23D9633E" d="M50 20c15 0 30 15 30 35s-15 35-30 35-30-15-30-35 15-35 30-35z"/><path d="M50 20v60" stroke="%23A87816" stroke-width="5"/></svg>`;
+            themeColor = "#7A3F21"; // Autumn brown
+        }
+        
+        // Apply the Favicon
+        setFavicon(svg);
+        
+        // Apply the mobile address bar color
+        let themeMeta = document.querySelector("meta[name='theme-color']");
+        if(themeMeta) themeMeta.setAttribute("content", themeColor);
+    }
+
+    return { init };
+})();
 const BackToTopModule=(function(){function init(){const b=document.getElementById('backToTopBtn');if(!b)return;let t=false;function os(){if(t)return;t=true;requestAnimationFrame(()=>{if(window.scrollY>400)b.classList.add('show');else b.classList.remove('show');t=false})}window.addEventListener('scroll',os,{passive:true});b.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.scrollTo({top:0,behavior:'smooth'})}})}return{init}})();
 const SeasonalModule=(function(){function g(){const m=new Date().getMonth()+1;if([12,1,2].includes(m))return'winter';if([3,4,5].includes(m))return'spring';if([6,7,8].includes(m))return'summer';if([9,10,11].includes(m))return'autumn';return'summer'}function init(){const b=document.body,t=safeGet('th-theme'),p=safeGet('th-palette');if((!t||t==='light')&&(!p||p==='nature')){const s=g();b.classList.add('season-'+s);generateSeasonalBackground(s)}}return{init,getCurrentSeason:g}})();
 const ThemeModule=(function(){const b=document.body,k='th-theme',c=['theme-dark','theme-warm','theme-soft','theme-high-contrast'];function set(t){c.forEach(x=>b.classList.remove(x));b.classList.remove('season-winter','season-spring','season-summer','season-autumn');if(t!=='light')b.classList.add('theme-'+t);document.querySelectorAll('.theme-btn').forEach(e=>e.setAttribute('aria-pressed',e.dataset.theme===t));safeSet(k,t);if(t!=='light')document.getElementById('seasonal-bg').innerHTML='';else{const p=safeGet('th-palette');if(!p||p==='nature'){const s=SeasonalModule.getCurrentSeason();b.classList.add('season-'+s);generateSeasonalBackground(s)}}}function init(){let s='light';try{s=safeGet(k)||'light'}catch(e){}if(s==='light'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){s='dark';}set(s);document.querySelectorAll('.theme-btn').forEach(e=>e.addEventListener('click',()=>set(e.dataset.theme)))}return{init,setTheme:set}})();
@@ -666,6 +748,7 @@ const BriefingModule=(function(){async function loadBriefing(){const bar=documen
 const MaintenanceModule=(function(){async function checkStatus(){const banner=document.getElementById('maintenance-banner');if(!banner||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;if(data&&data.maintenance_mode){banner.style.display='block';}else{banner.style.display='none';}}catch(e){}}async function toggle(){try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;const newStatus=!data.maintenance_mode;const{error:updateError}=await supabaseClient.from('site_settings').update({maintenance_mode:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Maintenance Mode is now ${newStatus?'ON':'OFF'}`);checkStatus();}catch(err){ToastModule.show('Error toggling maintenance mode.');}}function init(){checkStatus();const btn=document.getElementById('toggleMaintenanceBtn');if(btn)btn.addEventListener('click',toggle);}return{init};})();
 
 document.addEventListener('DOMContentLoaded',()=>{
+	FaviconModule.init();
 	SensoryModule.init();
     LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();BackToTopModule.init();SeasonalModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();
     
