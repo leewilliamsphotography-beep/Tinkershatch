@@ -637,38 +637,68 @@ const FilmNightModule=(function(){
 const SummerEffectsModule=(function(){function init(){const c=document.getElementById('summerParticles');if(!c)return;c.innerHTML='';const m=window.innerWidth<768,n=m?12:25;for(let i=0;i<n;i++){const p=document.createElement('div');p.classList.add('particle');const s=Math.random()*4+2;p.style.width=s+'px';p.style.height=s+'px';p.style.left=Math.random()*100+'%';p.style.bottom=(Math.random()*-40)+'px';p.style.animationDuration=(Math.random()*8+10)+'s';p.style.animationDelay=(Math.random()*12)+'s';c.appendChild(p)}}return{init}})();
 
 const TesterModule=(function(){
-    const m=document.getElementById('testerModal'),la=document.getElementById('testerLogin'),ma=document.getElementById('testerMenu'),emailInput=document.getElementById('testerEmail'),pi=document.getElementById('testerPass'),et=document.getElementById('testerError'),gearBtn=document.getElementById('testerOpenBtn'),footerLogin=document.getElementById('footerStaffLogin');
+    const m=document.getElementById('testerModal'),
+          la=document.getElementById('testerLogin'),
+          ma=document.getElementById('testerMenu'),
+          emailInput=document.getElementById('testerEmail'),
+          pi=document.getElementById('testerPass'),
+          et=document.getElementById('testerError'),
+          gearBtn=document.getElementById('testerOpenBtn'),
+          footerLogin=document.getElementById('footerStaffLogin'),
+          loginBtn=document.getElementById('testerLoginBtn');
     
-    function o(){m.classList.add('active');et.textContent='';checkAuthState();}
-    function c(){m.classList.remove('active');}
+    let isMenuLoaded = false; 
+
+    function o(){
+        m.classList.add('active');
+        et.textContent='';
+        checkAuthState();
+    }
+    function c(){
+        m.classList.remove('active');
+    }
     
     async function login(){
         const email=emailInput.value.trim();
         const pass=pi.value;
         if(!email||!pass){et.textContent='Please enter both email and password.';return;}
-        et.textContent='Logging in...';
+        
+        loginBtn.textContent='Verifying...';
+        loginBtn.disabled=true;
+        et.textContent='';
+        
         try{
             const{data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:pass});
             if(error)throw error;
-            await showMenu(); // Explicitly tell the UI to swap instantly!
+            await showMenu(); // Explicitly swap UI instantly on success
         }catch(err){
             et.textContent='Login failed: '+err.message;
+            loginBtn.textContent='Log In';
+            loginBtn.disabled=false;
         }
     }
     
     async function logout(){
         await supabaseClient.auth.signOut();
-        showLogin(); // Explicitly tell the UI to swap back instantly!
+        showLogin(); // Explicitly swap UI back instantly on logout
         c();
     }
     
     async function showMenu(){
+        if(isMenuLoaded) return; // Prevents double-fetching data
+        isMenuLoaded = true;
+        
         la.style.display='none';
         ma.style.display='block';
         if(gearBtn)gearBtn.classList.add('show');
         if(footerLogin)footerLogin.style.display='none';
+        
+        loginBtn.textContent='Log In';
+        loginBtn.disabled=false;
+        
         const{data:{user}}=await supabaseClient.auth.getUser();
         const userRole=user?.user_metadata?.role;
+        
         const menuTabBtn=document.querySelector('button[data-tab="menu"]');
         if(menuTabBtn){
             if(userRole==='chef'||userRole==='admin'){
@@ -678,10 +708,13 @@ const TesterModule=(function(){
                 menuTabBtn.style.display='none';
             }
         }
+        
         const adminThemes=document.getElementById('adminOnlyThemes');
-        if(adminThemes){adminThemes.style.display = (userRole==='admin') ? 'block' : 'none';}
+        if(adminThemes) adminThemes.style.display = (userRole==='admin') ? 'block' : 'none';
+        
         const maintBtn=document.getElementById('toggleMaintenanceBtn');
-        if(maintBtn){maintBtn.style.display = (userRole==='admin') ? 'block' : 'none';}
+        if(maintBtn) maintBtn.style.display = (userRole==='admin') ? 'block' : 'none';
+        
         if(typeof FilmNightModule!=='undefined')FilmNightModule.loadFilms();
         if(typeof LayoutModule!=='undefined')LayoutModule.onTesterOpen();
         if(typeof DatabaseModule!=='undefined')DatabaseModule.loadUpdates();
@@ -695,17 +728,24 @@ const TesterModule=(function(){
     }
     
     function showLogin(){
+        isMenuLoaded = false; // Allows menu to load again next time
         la.style.display='block';
         ma.style.display='none';
         if(gearBtn)gearBtn.classList.remove('show');
         if(footerLogin)footerLogin.style.display='block';
         pi.value='';
         emailInput.value='';
+        loginBtn.textContent='Log In';
+        loginBtn.disabled=false;
     }
     
     async function checkAuthState(){
         const{data:{session}}=await supabaseClient.auth.getSession();
-        if(session){showMenu();}else{showLogin();}
+        if(session){
+            showMenu();
+        }else{
+            showLogin();
+        }
     }
     
     function ss(s){
@@ -795,10 +835,15 @@ const TesterModule=(function(){
                 document.getElementById('tab-'+e.target.dataset.tab).classList.add('active');
             });
         });
+        
         supabaseClient.auth.onAuthStateChange((event,session)=>{
-            if(event==='SIGNED_IN'){showMenu();}
-            else if(event==='SIGNED_OUT'){showLogin();}
+            if(event==='SIGNED_IN'){
+                showMenu();
+            }else if(event==='SIGNED_OUT'){
+                showLogin();
+            }
         });
+        
         checkAuthState();
     }
     return{init};
