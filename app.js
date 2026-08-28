@@ -819,6 +819,8 @@ const TesterModule=(function(){
         const ac=document.getElementById('adminPhotoContainer');
         if(!ac)return;
         ac.innerHTML='<p class="text-sm" style="color: var(--bark-
+	}
+	
 const EventsModule=(function(){
     async function loadEvents(){
         const c=document.getElementById('eventsContainer');
