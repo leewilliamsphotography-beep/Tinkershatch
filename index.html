@@ -603,7 +603,10 @@
         <button id="cancelEditFeaturedBtn" class="tester-btn" style="background:var(--bark-soft); display: none;">Cancel</button>
     </div>
     <hr class="tester-divider">
-    <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
+  <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
+    <hr class="tester-divider">
+    <button id="printFeaturedPostersBtn" class="tester-btn" style="background:var(--bark-soft); margin-top: 12px; width: 100%;">🖨️ Print All as A4 Posters</button>
+</div>
 </div>        
 		  <div id="tab-enquiries" class="tester-tab-content">
                 <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Contact Form Enquiries</h3>
@@ -667,6 +670,11 @@
 <div id="printableSchedule" style="display: none;"></div>
 
 <!-- Code Splitting: JavaScript is now in app.js -->
+<!-- Hidden container for printing A4 Featured Posters -->
+<div id="featuredPrintArea" aria-hidden="true"></div>
+
+<!-- Code Splitting: JavaScript is now in app.js -->
+<script src="app.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

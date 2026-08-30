@@ -371,15 +371,12 @@ const FeaturedEventsModule = (function() {
                     document.getElementById('newFeaturedDate').value = ev.date_text || '';
                     document.getElementById('newFeaturedDesc').value = ev.description || '';
                     
-                    // Handle Emoji Dropdown
                     const iconSelect = document.getElementById('newFeaturedIcon');
-                    // Clear any old temp options first
                     Array.from(iconSelect.querySelectorAll('option[data-temp="true"]')).forEach(opt => opt.remove());
                     let iconExists = Array.from(iconSelect.options).some(opt => opt.value === ev.icon);
                     if (iconExists) {
                         iconSelect.value = ev.icon;
                     } else if (ev.icon) {
-                        // If it's a custom/old emoji not in the list, add it to the top temporarily
                         let opt = document.createElement('option');
                         opt.value = ev.icon;
                         opt.textContent = ev.icon + " (Current)";
@@ -390,7 +387,6 @@ const FeaturedEventsModule = (function() {
                         iconSelect.value = '🎉';
                     }
 
-                    // Handle Color Dropdown
                     const colorSelect = document.getElementById('newFeaturedColor');
                     if (ev.color && ev.color.startsWith('#')) {
                         colorSelect.value = "linear-gradient(135deg, #A87816, #C25528)";
@@ -443,12 +439,10 @@ const FeaturedEventsModule = (function() {
         document.getElementById('newFeaturedDate').value = '';
         document.getElementById('newFeaturedDesc').value = '';
         
-        // Reset Icon Dropdown
         const iconSelect = document.getElementById('newFeaturedIcon');
         Array.from(iconSelect.querySelectorAll('option[data-temp="true"]')).forEach(opt => opt.remove());
         iconSelect.value = '🎉';
         
-        // Reset Color Dropdown
         document.getElementById('newFeaturedColor').value = 'linear-gradient(135deg, #A87816, #C25528)';
         
         document.getElementById('addFeaturedBtn').textContent = 'Add Featured Event';
@@ -490,12 +484,69 @@ const FeaturedEventsModule = (function() {
         }
     }
 
+    async function printPosters() {
+        if (!supabaseClient) return;
+        ToastModule.show("Preparing A4 posters...");
+        try {
+            // Fetch only active events for the poster
+            const { data, error } = await supabaseClient.from('featured_events').select('*').eq('is_active', true).order('id', { ascending: true });
+            if (error) throw error;
+            
+            if (!data || data.length === 0) {
+                ToastModule.show("No active events to print.");
+                return;
+            }
+            
+            const printArea = document.getElementById('featuredPrintArea');
+            printArea.innerHTML = data.map(ev => {
+                // Extract a solid color from the gradient string for the A4 header
+                // Default to terracotta if parsing fails
+                let headerColor = '#C25528';
+                if (ev.color) {
+                    const match = ev.color.match(/#[A-F0-9]{6}/i);
+                    if (match && match.length > 1) {
+                        headerColor = match[1]; // Get the second color in the gradient
+                    } else if (match && match.length > 0) {
+                        headerColor = match[0];
+                    }
+                }
+                
+                return `
+                <div class="fp-poster">
+                    <div class="fp-brand">Tinkers Hatch</div>
+                    <div class="fp-header" style="color: ${headerColor};">
+                        ${ev.icon || '🎉'}
+                    </div>
+                    <div class="fp-title">${ev.title}</div>
+                    ${ev.date_text ? `<div class="fp-date">${ev.date_text}</div>` : ''}
+                    <div class="fp-desc">${ev.description || ''}</div>
+                    <div class="fp-footer">
+                        01435 863119 | services@tinkershatch.co.uk | New Pond Hill, TN21 0LX
+                    </div>
+                </div>`;
+            }).join('');
+            
+            // Trigger print
+            window.print();
+            
+            // Clear the area after printing
+            printArea.innerHTML = '';
+            ToastModule.show("Posters sent to print dialog!");
+            
+        } catch (err) {
+            ToastModule.show("Error generating posters.");
+            console.error(err);
+        }
+    }
+
     function init() {
         loadFeatured();
         const btn = document.getElementById('addFeaturedBtn');
         if (btn) btn.addEventListener('click', addFeatured);
         const cancelBtn = document.getElementById('cancelEditFeaturedBtn');
         if (cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
+        const printBtn = document.getElementById('printFeaturedPostersBtn');
+        if (printBtn) printBtn.addEventListener('click', printPosters);
     }
     return { init, loadAdminFeatured };
 })();
