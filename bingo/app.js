@@ -2894,9 +2894,8 @@ function injectAccessibilityUI() {
     } 
     } 
 
-    // 3. Extra Slow Button
-    const paceSeg = document.getElementById('paceSeg');
-    if (paceSeg && !paceSeg.querySelector('[data-pace="12"]')) {
+         // 3. Extra Slow Button
+        if (paceSeg && !paceSeg.querySelector('[data-pace="12"]')) {
         const extraSlowBtn = document.createElement('button');
         extraSlowBtn.className = 'seg-b';
         extraSlowBtn.setAttribute('data-mode', 'auto');
