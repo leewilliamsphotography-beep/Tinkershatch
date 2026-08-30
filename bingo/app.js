@@ -1,4 +1,4 @@
-(() => { 
+(() => {
 'use strict';
 
 /* ============================== 1. HELPERS & DATA ============================== */
@@ -2830,7 +2830,7 @@ function togglePaperlessMode() {
     toast(paperlessMode ? '<strong>Paperless Mode On.</strong> Boards are digital only.' : '<strong>Paperless Mode Off.</strong> Print options restored.');
 }
 
-function toggleCalmMode() { 
+function toggleCalmMode() {
     calmMode = !calmMode;
     document.documentElement.classList.toggle('calm-mode', calmMode);
     const btn = document.getElementById('calmModeBtn');
@@ -2865,7 +2865,7 @@ function injectAccessibilityUI() {
         stage.prepend(banner);
     }
 
-      // 2. Topbar Buttons (Paperless & Calm Mode)
+    // 2. Topbar Buttons (Paperless & Calm Mode)
     const topbarActions = document.querySelector('.topbar-actions');
     if (topbarActions) {
         // Paperless Mode Button
@@ -2891,18 +2891,18 @@ function injectAccessibilityUI() {
             btn.addEventListener('click', toggleCalmMode);
             topbarActions.insertBefore(btn, document.getElementById('paperlessModeBtn'));
         }
-    } 
-    } 
+    }
 
-         // 3. Extra Slow Button
-        if (paceSeg && !paceSeg.querySelector('[data-pace="12"]')) {
+    // 3. Extra Slow Button
+    const paceSegEl = document.getElementById('paceSeg');
+    if (paceSegEl && !paceSegEl.querySelector('[data-pace="12"]')) {
         const extraSlowBtn = document.createElement('button');
         extraSlowBtn.className = 'seg-b';
         extraSlowBtn.setAttribute('data-mode', 'auto');
         extraSlowBtn.setAttribute('data-pace', '12'); // 12 seconds delay
         extraSlowBtn.setAttribute('aria-checked', 'false');
         extraSlowBtn.textContent = 'Extra Slow';
-        paceSeg.append(extraSlowBtn);
+        paceSegEl.append(extraSlowBtn);
     }
 }
 
