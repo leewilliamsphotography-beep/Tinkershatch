@@ -561,33 +561,34 @@ body.bionic-mode #main b {
 /* === Unified Print Rules === */
 @
 /* === Unified Print Rules === */
+/* === Unified & Bulletproof Print Rules === */
 @media print {
-    /* Hide everything visually */
-    body * { 
-        visibility: hidden; 
+    /* Force the background to be white */
+    html, body {
+        background: #fff !important;
+        height: auto !important;
+        overflow: visible !important;
     }
     
-    /* Show the printable schedule if used */
-    #printableSchedule, #printableSchedule * { 
-        visibility: visible; 
-    }
-    #printableSchedule { 
-        position: absolute; 
-        left: 0; 
-        top: 0; 
-        width: 100%; 
-        padding: 20px;
+    /* Completely remove ALL direct children of the body from the page */
+    body > * {
+        display: none !important;
     }
     
-    /* Show the featured A4 posters if used */
-    #featuredPrintArea, #featuredPrintArea * { 
-        visibility: visible; 
+    /* EXCEPT the featured posters area */
+    body > #featuredPrintArea,
+    body > #printableSchedule {
+        display: block !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
     }
-    #featuredPrintArea { 
-        position: absolute; 
-        left: 0; 
-        top: 0; 
-        width: 100%; 
+    
+    /* Ensure everything inside the print area is visible */
+    #featuredPrintArea *,
+    #printableSchedule * {
+        visibility: visible !important;
     }
     
     /* A4 Poster Styling */

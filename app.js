@@ -483,7 +483,7 @@ const FeaturedEventsModule = (function() {
             ToastModule.show('Error saving event.');
         }
     }
-    async function printPosters() {
+    async function     async function printPosters() {
         if (!supabaseClient) return;
         ToastModule.show("Preparing A4 posters...");
         try {
