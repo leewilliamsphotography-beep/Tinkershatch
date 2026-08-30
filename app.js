@@ -303,9 +303,8 @@ const CommunityModule=(function(){async function loadCommunity(){const c=documen
 const EnquiriesModule=(function(){async function submitEnquiry(name,email,message){try{const{error}=await supabaseClient.from('enquiries').insert([{name:name,email:email,message:message}]);if(error)throw error;ToastModule.show("Enquiry sent successfully! We'll be in touch soon.");return true;}catch(err){ToastModule.show("Error sending enquiry. Please try calling us instead.");return false;}}async function loadAdminEnquiries(){const ac=document.getElementById('adminEnquiriesContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading enquiries...</p>';try{const{data,error}=await supabaseClient.from('enquiries').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No new enquiries.</p>';return;}ac.innerHTML=data.map(enq=>{const d=new Date(enq.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});return `<div class="admin-film-item" style="padding: 12px;"><div style="display:flex; justify-content:space-between; align-items:start; gap:8px; margin-bottom:6px;"><div><span style="font-weight:700; font-size:.9rem;">${enq.name}</span><span style="font-size:.75rem; color:var(--bark-soft); margin-left:8px;">${d}</span></div><button class="tester-btn del-enq-btn" data-id="${enq.id}" style="width:auto; margin:0; padding:4px 8px; font-size:0.7rem; background:var(--terracotta);">Delete</button></div><a href="mailto:${enq.email}" style="font-size:.85rem; color:var(--teal); font-weight:600; display:block; margin-bottom:6px;">${enq.email}</a><p style="font-size:.85rem; color:var(--bark-soft); line-height:1.4;">${enq.message}</p></div>`;}).join('');ac.querySelectorAll('.del-enq-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('enquiries').delete().eq('id',id);ToastModule.show('Enquiry deleted!');loadAdminEnquiries();}catch(err){ToastModule.show('Error deleting enquiry.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading enquiries.</p>';}}function init(){const form=document.getElementById('contactForm');if(form){form.addEventListener('submit',async(e)=>{e.preventDefault();const name=document.getElementById('contactName').value.trim();const email=document.getElementById('contactEmail').value.trim();const message=document.getElementById('contactMessage').value.trim();if(name&&email&&message){const success=await submitEnquiry(name,email,message);if(success){form.reset();}}});}}return{init,loadAdminEnquiries};})();
 const BriefingModule=(function(){async function loadBriefing(){const bar=document.getElementById('briefing-bar');const textEl=document.getElementById('briefing-text');const input=document.getElementById('briefingInput');if(!bar||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('daily_briefing').select('message').eq('id',1).single();if(error)throw error;if(data&&data.message&&data.message.trim()!==''){textEl.textContent=data.message;bar.style.display='block';if(input)input.value=data.message;}else{bar.style.display='none';}}catch(e){bar.style.display='none';}}async function saveBriefing(){const input=document.getElementById('briefingInput');if(!input||!supabaseClient)return;const msg=input.value.trim();try{const{error}=await supabaseClient.from('daily_briefing').update({message:msg}).eq('id',1);if(error)throw error;ToastModule.show("Briefing updated!");loadBriefing();}catch(err){ToastModule.show("Error saving briefing.");}}function init(){loadBriefing();const btn=document.getElementById('saveBriefingBtn');if(btn)btn.addEventListener('click',saveBriefing);}return{init,loadBriefing};})();
 const MaintenanceModule=(function(){async function checkStatus(){const banner=document.getElementById('maintenance-banner');if(!banner||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;if(data&&data.maintenance_mode){banner.style.display='block';}else{banner.style.display='none';}}catch(e){}}async function toggle(){try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;const newStatus=!data.maintenance_mode;const{error:updateError}=await supabaseClient.from('site_settings').update({maintenance_mode:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Maintenance Mode is now ${newStatus?'ON':'OFF'}`);checkStatus();}catch(err){ToastModule.show('Error toggling maintenance mode.');}}function init(){checkStatus();const btn=document.getElementById('toggleMaintenanceBtn');if(btn)btn.addEventListener('click',toggle);}return{init};})();
-
 const FeaturedEventsModule = (function() {
-    let editingId = null; // Tracks if we are editing an existing event
+    let editingId = null;
 
     async function loadFeatured() {
         const c = document.getElementById('featuredEventsContainer');
@@ -318,15 +317,22 @@ const FeaturedEventsModule = (function() {
                 c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;">No featured events right now. Check back soon!</p>';
                 return;
             }
-            c.innerHTML = data.map(ev => `
-                <div class="featured-banner" style="background: linear-gradient(135deg, var(--honey), ${ev.color});">
+            c.innerHTML = data.map(ev => {
+                // Backward compatibility: if it's an old hex code, wrap it in a gradient. Otherwise use the new gradient string.
+                const bgStyle = ev.color && ev.color.startsWith('#') 
+                    ? `linear-gradient(135deg, var(--honey), ${ev.color})` 
+                    : (ev.color || 'linear-gradient(135deg, #A87816, #C25528)');
+                
+                return `
+                <div class="featured-banner" style="background: ${bgStyle};">
                     <div class="icon-row">${ev.icon || '🎉'}</div>
                     <span class="tag mb-4 inline-flex">Save the Date</span>
                     <h2>${ev.title}</h2>
                     ${ev.date_text ? `<p class="date">${ev.date_text}</p>` : ''}
                     <p>${ev.description || ''}</p>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         } catch (e) {
             c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;">Could not load featured events.</p>';
         }
@@ -362,18 +368,22 @@ const FeaturedEventsModule = (function() {
                     const { data: ev, error } = await supabaseClient.from('featured_events').select('*').eq('id', id).single();
                     if (error) throw error;
                     
-                    // Populate the form with the event data
                     document.getElementById('newFeaturedTitle').value = ev.title;
                     document.getElementById('newFeaturedDate').value = ev.date_text || '';
                     document.getElementById('newFeaturedDesc').value = ev.description || '';
                     document.getElementById('newFeaturedIcon').value = ev.icon || '';
-                    document.getElementById('newFeaturedColor').value = ev.color || '#C25528';
+                    
+                    // If it's an old hex color, default the dropdown to the first option so it doesn't break the UI
+                    const colorSelect = document.getElementById('newFeaturedColor');
+                    if (ev.color && ev.color.startsWith('#')) {
+                        colorSelect.value = "linear-gradient(135deg, #A87816, #C25528)";
+                    } else {
+                        colorSelect.value = ev.color || "linear-gradient(135deg, #A87816, #C25528)";
+                    }
                     
                     editingId = id;
                     document.getElementById('addFeaturedBtn').textContent = 'Update Event';
                     document.getElementById('cancelEditFeaturedBtn').style.display = 'inline-block';
-                    
-                    // Scroll to top of modal so they can see the form
                     document.getElementById('newFeaturedTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
                 } catch (err) {
                     ToastModule.show('Error fetching event details.');
@@ -416,7 +426,7 @@ const FeaturedEventsModule = (function() {
         document.getElementById('newFeaturedDate').value = '';
         document.getElementById('newFeaturedDesc').value = '';
         document.getElementById('newFeaturedIcon').value = '';
-        document.getElementById('newFeaturedColor').value = '#C25528';
+        document.getElementById('newFeaturedColor').value = 'linear-gradient(135deg, #A87816, #C25528)';
         document.getElementById('addFeaturedBtn').textContent = 'Add Featured Event';
         document.getElementById('cancelEditFeaturedBtn').style.display = 'none';
     }
@@ -435,30 +445,20 @@ const FeaturedEventsModule = (function() {
         
         try {
             if (editingId) {
-                // Update existing event
                 const { error } = await supabaseClient.from('featured_events').update({ 
-                    title: title, 
-                    date_text: date, 
-                    description: desc, 
-                    icon: icon, 
-                    color: color 
+                    title: title, date_text: date, description: desc, icon: icon, color: color 
                 }).eq('id', editingId);
                 if (error) throw error;
                 ToastModule.show('Featured event updated!');
             } else {
-                // Insert new event
                 const { error } = await supabaseClient.from('featured_events').insert([{ 
-                    title: title, 
-                    date_text: date, 
-                    description: desc, 
-                    icon: icon, 
-                    color: color 
+                    title: title, date_text: date, description: desc, icon: icon, color: color 
                 }]);
                 if (error) throw error;
                 ToastModule.show('Featured event added!');
             }
             
-            cancelEdit(); // Clear form and reset button
+            cancelEdit();
             loadAdminFeatured();
             loadFeatured();
         } catch (err) {
