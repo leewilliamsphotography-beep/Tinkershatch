@@ -298,57 +298,218 @@ const EventsModule=(function(){
 })();
 
 const WilfModule=(function(){async function loadStatus(){const badge=document.getElementById('wilfStatusBadge');if(!badge||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('wilf_status').select('is_visiting').eq('id',1).single();if(error)throw error;if(data&&data.is_visiting){badge.style.display='inline-flex';badge.style.background='var(--sage)';badge.style.color='#fff';badge.innerHTML='🐕 Wilf is visiting today!';}else{badge.style.display='inline-flex';badge.style.background='var(--cream-deep)';badge.style.color='var(--bark-soft)';badge.innerHTML='🐕 Wilf is currently off-site.';}}catch(e){}}async function toggleStatus(){if(!supabaseClient)return;try{const{data,error}=await supabaseClient.from('wilf_status').select('is_visiting').eq('id',1).single();if(error)throw error;const newStatus=!data.is_visiting;const{error:updateError}=await supabaseClient.from('wilf_status').update({is_visiting:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Wilf status updated to: ${newStatus?'Visiting':'Off-site'}`);loadStatus();}catch(err){ToastModule.show('Error updating Wilf status.');}}function init(){loadStatus();const toggleBtn=document.getElementById('wilfToggleBtn');if(toggleBtn)toggleBtn.addEventListener('click',toggleStatus);}return{init,loadStatus};})();
-const MenuModule=(function(){async function loadMenu(){const c=document.getElementById('menuContainer');const badge=document.getElementById('menuFreshnessBadge');if(!c||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});if(error)throw error;if(!data||data.length===0){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Menu is being updated. Please check back soon!</p>';return;}if(badge){const latest=data.reduce((a,b)=>new Date(a.updated_at)>new Date(b.updated_at)?a:b);if(latest&&latest.updated_at){badge.innerHTML=`Updated ${timeAgo(latest.updated_at)}`;badge.style.display='inline-flex';}}c.innerHTML=data.map(day=>{const meal=day.meal_text&&day.meal_text.trim()!==''?day.meal_text:'To be announced';const isPlaceholder=!day.meal_text||day.meal_text.trim()==='';return `<div class="card p-6 flex flex-col"><div class="display font-extrabold text-lg mb-2" style="color:var(--terracotta)">${day.day_name}</div><p class="text-sm" style="color:var(--bark-soft); ${isPlaceholder?'font-style: italic; opacity: 0.7;':''}">${meal}</p></div>`;}).join('');}catch(e){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load the menu.</p>';}}async function loadAdminMenu(){const ac=document.getElementById('adminMenuContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading menu...</p>';try{const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No menu days found.</p>';return;}ac.innerHTML=data.map(day=>`<div class="admin-film-item" style="padding: 8px 12px;"><label style="font-size:.8rem; font-weight:700; color:var(--bark); display:block; margin-bottom:4px;">${day.day_name}</label><input type="text" class="tester-input menu-input" data-id="${day.id}" value="${day.meal_text||''}" placeholder="e.g., Roast chicken with seasonal veg" style="margin-top:0; padding:8px; font-size:.9rem;"></div>`).join('');}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading menu.</p>';}}async function saveMenu(){const inputs=document.querySelectorAll('.menu-input');if(inputs.length===0)return;ToastModule.show("Saving menu...");try{for(let i=0;i<inputs.length;i++){const id=inputs[i].dataset.id;const val=inputs[i].value.trim();const{error}=await supabaseClient.from('weekly_menu').update({meal_text:val}).eq('id',id);if(error)throw error;}ToastModule.show("Weekly menu saved successfully!");loadAdminMenu();loadMenu();}catch(err){ToastModule.show("Error saving menu.");}}function init(){loadMenu();const saveBtn=document.getElementById('saveMenuBtn');if(saveBtn)saveBtn.addEventListener('click',saveMenu);}return{init,loadAdminMenu};})();
-const CommunityModule=(function(){async function loadCommunity(){const c=document.getElementById('communityContainer');if(!c||!supabaseClient)return;c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Loading community moments...</p>';try{const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false}).limit(6);if(error)throw error;if(!data||data.length===0){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">No community updates just yet. Check back soon!</p>';return;}c.innerHTML=data.map(post=>{const d=new Date(post.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const imgHtml=post.image_url?`<div style="height: 200px; background-image: url('${post.image_url}'); background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 12px;"></div>`:'';return `<div class="card p-6 flex flex-col">${imgHtml}<div class="display font-extrabold text-lg mb-1" style="color:var(--teal)">${post.title}</div><div class="text-xs font-bold mb-3" style="color:var(--bark-soft)">${d}</div><p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">${post.description}</p></div>`;}).join('');}catch(e){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load community updates.</p>';}}async function loadAdminCommunity(){const ac=document.getElementById('adminCommunityContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading...</p>';try{const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No posts found.</p>';return;}ac.innerHTML=data.map(post=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;flex:1;">${post.title}</span><button class="tester-btn del-community-btn" data-id="${post.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');ac.querySelectorAll('.del-community-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('community_spotlight').delete().eq('id',id);ToastModule.show('Spotlight deleted!');loadAdminCommunity();loadCommunity();}catch(err){ToastModule.show('Error deleting post.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading posts.</p>';}}async function addCommunity(){const t=document.getElementById('newCommunityTitle').value.trim();const d=document.getElementById('newCommunityDesc').value.trim();const img=document.getElementById('newCommunityImg').value.trim();if(!t||!d){ToastModule.show('Title and Description are required.');return;}try{const{error}=await supabaseClient.from('community_spotlight').insert([{title:t,description:d,image_url:img}]);if(error)throw error;ToastModule.show('Community spotlight posted!');document.getElementById('newCommunityTitle').value='';document.getElementById('newCommunityDesc').value='';document.getElementById('newCommunityImg').value='';loadAdminCommunity();loadCommunity();}catch(err){ToastModule.show('Error adding post.');}}function init(){loadCommunity();const addBtn=document.getElementById('addCommunityBtn');if(addBtn)addBtn.addEventListener('click',addCommunity);}return{init,loadAdminCommunity};})();
-const EnquiriesModule=(function(){async function submitEnquiry(name,email,message){try{const{error}=await supabaseClient.from('enquiries').insert([{name:name,email:email,message:message}]);if(error)throw error;ToastModule.show("Enquiry sent successfully! We'll be in touch soon.");return true;}catch(err){ToastModule.show("Error sending enquiry. Please try calling us instead.");return false;}}async function loadAdminEnquiries(){const ac=document.getElementById('adminEnquiriesContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading enquiries...</p>';try{const{data,error}=await supabaseClient.from('enquiries').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No new enquiries.</p>';return;}ac.innerHTML=data.map(enq=>{const d=new Date(enq.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});return `<div class="admin-film-item" style="padding: 12px;"><div style="display:flex; justify-content:space-between; align-items:start; gap:8px; margin-bottom:6px;"><div><span style="font-weight:700; font-size:.9rem;">${enq.name}</span><span style="font-size:.75rem; color:var(--bark-soft); margin-left:8px;">${d}</span></div><button class="tester-btn del-enq-btn" data-id="${enq.id}" style="width:auto; margin:0; padding:4px 8px; font-size:0.7rem; background:var(--terracotta);">Delete</button></div><a href="mailto:${enq.email}" style="font-size:.85rem; color:var(--teal); font-weight:600; display:block; margin-bottom:6px;">${enq.email}</a><p style="font-size:.85rem; color:var(--bark-soft); line-height:1.4;">${enq.message}</p></div>`;}).join('');ac.querySelectorAll('.del-enq-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('enquiries').delete().eq('id',id);ToastModule.show('Enquiry deleted!');loadAdminEnquiries();}catch(err){ToastModule.show('Error deleting enquiry.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading enquiries.</p>';}}function init(){const form=document.getElementById('contactForm');if(form){form.addEventListener('submit',async(e)=>{e.preventDefault();const name=document.getElementById('contactName').value.trim();const email=document.getElementById('contactEmail').value.trim();const message=document.getElementById('contactMessage').value.trim();if(name&&email&&message){const success=await submitEnquiry(name,email,message);if(success){form.reset();}}});}}return{init,loadAdminEnquiries};})();
-const BriefingModule=(function(){async function loadBriefing(){const bar=document.getElementById('briefing-bar');const textEl=document.getElementById('briefing-text');const input=document.getElementById('briefingInput');if(!bar||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('daily_briefing').select('message').eq('id',1).single();if(error)throw error;if(data&&data.message&&data.message.trim()!==''){textEl.textContent=data.message;bar.style.display='block';if(input)input.value=data.message;}else{bar.style.display='none';}}catch(e){bar.style.display='none';}}async function saveBriefing(){const input=document.getElementById('briefingInput');if(!input||!supabaseClient)return;const msg=input.value.trim();try{const{error}=await supabaseClient.from('daily_briefing').update({message:msg}).eq('id',1);if(error)throw error;ToastModule.show("Briefing updated!");loadBriefing();}catch(err){ToastModule.show("Error saving briefing.");}}function init(){loadBriefing();const btn=document.getElementById('saveBriefingBtn');if(btn)btn.addEventListener('click',saveBriefing);}return{init,loadBriefing};})();
-const MaintenanceModule=(function(){async function checkStatus(){const banner=document.getElementById('maintenance-banner');if(!banner||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;if(data&&data.maintenance_mode){banner.style.display='block';}else{banner.style.display='none';}}catch(e){}}async function toggle(){try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;const newStatus=!data.maintenance_mode;const{error:updateError}=await supabaseClient.from('site_settings').update({maintenance_mode:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Maintenance Mode is now ${newStatus?'ON':'OFF'}`);checkStatus();}catch(err){ToastModule.show('Error toggling maintenance mode.');}}function init(){checkStatus();const btn=document.getElementById('toggleMaintenanceBtn');if(btn)btn.addEventListener('click',toggle);}return{init};})();
-const StaffModule=(function(){
-    async function createAccount(){
-        const email=document.getElementById('newStaffEmail').value.trim();
-        const pass=document.getElementById('newStaffPass').value;
-        const role=document.getElementById('newStaffRole').value;
-        
-        if(!email||!pass){ToastModule.show('Email and password are required.');return;}
-        if(pass.length<6){ToastModule.show('Password must be at least 6 characters.');return;}
-        
-        ToastModule.show('Creating account...');
-        
-        try {
-            // Use a temporary Supabase client with a unique storage key so the admin doesn't get logged out!
-            const tempClient = supabase.createClient(
-                'https://bsbwrvqevtoujfvcvvju.supabase.co', 
-                'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx',
-                { auth: { storageKey: 'th-temp-signup-key' } }
-            );
-            
-            const { data, error } = await tempClient.auth.signUp({ 
-                email: email, 
-                password: pass,
-                options: {
-                    data: {
-                        role: role // This sets the user_metadata.role which TesterModule checks!
-                    }
+const MenuModule=(function(){
+    async function loadMenu(){
+        const c=document.getElementById('menuContainer');
+        const badge=document.getElementById('menuFreshnessBadge');
+        if(!c||!supabaseClient) return;
+        try{
+            const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});
+            if(error) throw error;
+            if(!data||data.length===0){ c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Menu is being updated. Please check back soon!</p>'; return; }
+            if(badge){
+                const latest=data.reduce((a,b)=>new Date(a.updated_at)>new Date(b.updated_at)?a:b);
+                if(latest&&latest.updated_at){ badge.innerHTML=`Updated ${timeAgo(latest.updated_at)}`; badge.style.display='inline-flex'; }
+            }
+            c.innerHTML=data.map(day=>{
+                const meal=day.meal_text&&day.meal_text.trim()!==''?day.meal_text:'To be announced';
+                const isPlaceholder=!day.meal_text||day.meal_text.trim()==='';
+                return `<div class="card p-6 flex flex-col"><div class="display font-extrabold text-lg mb-2" style="color:var(--terracotta)">${day.day_name}</div><p class="text-sm" style="color:var(--bark-soft); ${isPlaceholder?'font-style: italic; opacity: 0.7;':''}">${meal}</p></div>`;
+            }).join('');
+        }catch(e){ c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load the menu.</p>'; }
+    }
+    async function loadAdminMenu(){
+        const ac=document.getElementById('adminMenuContainer');
+        if(!ac||!supabaseClient) return;
+        ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading menu...</p>';
+        try{
+            const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});
+            if(error) throw error;
+            if(!data||data.length===0){ ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No menu days found.</p>'; return; }
+            ac.innerHTML=data.map(day=>`<div class="admin-film-item" style="padding: 8px 12px;"><label style="font-size:.8rem; font-weight:700; color:var(--bark); display:block; margin-bottom:4px;">${day.day_name}</label><input type="text" class="tester-input menu-input" data-id="${day.id}" value="${day.meal_text||''}" placeholder="e.g., Roast chicken with seasonal veg" style="margin-top:0; padding:8px; font-size:.9rem;"></div>`).join('');
+        }catch(e){ ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading menu.</p>'; }
+    }
+    async function saveMenu(){
+        const inputs=document.querySelectorAll('.menu-input');
+        if(inputs.length===0) return;
+        ToastModule.show("Saving menu...");
+        try{
+            for(let i=0;i<inputs.length;i++){
+                const id=inputs[i].dataset.id;
+                const val=inputs[i].value.trim();
+                const{error}=await supabaseClient.from('weekly_menu').update({meal_text:val}).eq('id',id);
+                if(error) throw error;
+            }
+            ToastModule.show("Weekly menu saved successfully!");
+            loadAdminMenu();
+            loadMenu();
+        }catch(err){ ToastModule.show("Error saving menu."); }
+    }
+    function init(){
+        loadMenu();
+        const saveBtn=document.getElementById('saveMenuBtn');
+        if(saveBtn) saveBtn.addEventListener('click',saveMenu);
+    }
+    return{init,loadAdminMenu};
+})();
+
+const CommunityModule=(function(){
+    async function loadCommunity(){
+        const c=document.getElementById('communityContainer');
+        if(!c||!supabaseClient) return;
+        c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Loading community moments...</p>';
+        try{
+            const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false}).limit(6);
+            if(error) throw error;
+            if(!data||data.length===0){ c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">No community updates just yet. Check back soon!</p>'; return; }
+            c.innerHTML=data.map(post=>{
+                const d=new Date(post.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+                const imgHtml=post.image_url?`<div style="height: 200px; background-image: url('${post.image_url}'); background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 12px;"></div>`:'';
+                return `<div class="card p-6 flex flex-col">${imgHtml}<div class="display font-extrabold text-lg mb-1" style="color:var(--teal)">${post.title}</div><div class="text-xs font-bold mb-3" style="color:var(--bark-soft)">${d}</div><p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">${post.description}</p></div>`;
+            }).join('');
+        }catch(e){ c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load community updates.</p>'; }
+    }
+    async function loadAdminCommunity(){
+        const ac=document.getElementById('adminCommunityContainer');
+        if(!ac||!supabaseClient) return;
+        ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading...</p>';
+        try{
+            const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false});
+            if(error) throw error;
+            if(!data||data.length===0){ ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No posts found.</p>'; return; }
+            ac.innerHTML=data.map(post=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;flex:1;">${post.title}</span><button class="tester-btn del-community-btn" data-id="${post.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');
+            ac.querySelectorAll('.del-community-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{
+                const id=e.target.dataset.id;
+                try{ await supabaseClient.from('community_spotlight').delete().eq('id',id); ToastModule.show('Spotlight deleted!'); loadAdminCommunity(); loadCommunity(); }catch(err){ ToastModule.show('Error deleting post.'); }
+            }));
+        }catch(e){ ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading posts.</p>'; }
+    }
+    async function addCommunity(){
+        const t=document.getElementById('newCommunityTitle').value.trim();
+        const d=document.getElementById('newCommunityDesc').value.trim();
+        const img=document.getElementById('newCommunityImg').value.trim();
+        if(!t||!d){ ToastModule.show('Title and Description are required.'); return; }
+        try{
+            const{error}=await supabaseClient.from('community_spotlight').insert([{title:t,description:d,image_url:img}]);
+            if(error) throw error;
+            ToastModule.show('Community spotlight posted!');
+            document.getElementById('newCommunityTitle').value=''; document.getElementById('newCommunityDesc').value=''; document.getElementById('newCommunityImg').value='';
+            loadAdminCommunity(); loadCommunity();
+        }catch(err){ ToastModule.show('Error adding post.'); }
+    }
+    function init(){
+        loadCommunity();
+        const addBtn=document.getElementById('addCommunityBtn');
+        if(addBtn) addBtn.addEventListener('click',addCommunity);
+    }
+    return{init,loadAdminCommunity};
+})();
+
+const EnquiriesModule=(function(){
+    async function submitEnquiry(name,email,message){
+        try{
+            const{error}=await supabaseClient.from('enquiries').insert([{name:name,email:email,message:message}]);
+            if(error) throw error;
+            ToastModule.show("Enquiry sent successfully! We'll be in touch soon.");
+            return true;
+        }catch(err){ ToastModule.show("Error sending enquiry. Please try calling us instead."); return false; }
+    }
+    async function loadAdminEnquiries(){
+        const ac=document.getElementById('adminEnquiriesContainer');
+        if(!ac||!supabaseClient) return;
+        ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading enquiries...</p>';
+        try{
+            const{data,error}=await supabaseClient.from('enquiries').select('*').order('created_at',{ascending:false});
+            if(error) throw error;
+            if(!data||data.length===0){ ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No new enquiries.</p>'; return; }
+            ac.innerHTML=data.map(enq=>{
+                const d=new Date(enq.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+                return `<div class="admin-film-item" style="padding: 12px;"><div style="display:flex; justify-content:space-between; align-items:start; gap:8px; margin-bottom:6px;"><div><span style="font-weight:700; font-size:.9rem;">${enq.name}</span><span style="font-size:.75rem; color:var(--bark-soft); margin-left:8px;">${d}</span></div><button class="tester-btn del-enq-btn" data-id="${enq.id}" style="width:auto; margin:0; padding:4px 8px; font-size:0.7rem; background:var(--terracotta);">Delete</button></div><a href="mailto:${enq.email}" style="font-size:.85rem; color:var(--teal); font-weight:600; display:block; margin-bottom:6px;">${enq.email}</a><p style="font-size:.85rem; color:var(--bark-soft); line-height:1.4;">${enq.message}</p></div>`;
+            }).join('');
+            ac.querySelectorAll('.del-enq-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{
+                const id=e.target.dataset.id;
+                try{ await supabaseClient.from('enquiries').delete().eq('id',id); ToastModule.show('Enquiry deleted!'); loadAdminEnquiries(); }catch(err){ ToastModule.show('Error deleting enquiry.'); }
+            }));
+        }catch(e){ ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading enquiries.</p>'; }
+    }
+    function init(){
+        const form=document.getElementById('contactForm');
+        if(form){
+            form.addEventListener('submit',async(e)=>{
+                e.preventDefault();
+                const name=document.getElementById('contactName').value.trim();
+                const email=document.getElementById('contactEmail').value.trim();
+                const message=document.getElementById('contactMessage').value.trim();
+                if(name&&email&&message){
+                    const success=await submitEnquiry(name,email,message);
+                    if(success){ form.reset(); }
                 }
             });
-            
-            if (error) throw error;
-            
-            ToastModule.show('Account created successfully!');
-            document.getElementById('newStaffEmail').value = '';
-            document.getElementById('newStaffPass').value = '';
-            document.getElementById('newStaffRole').value = 'staff';
-        } catch (err) {
-            ToastModule.show('Error: ' + err.message);
         }
     }
-    
-    function init(){
-        const btn=document.getElementById('createStaffBtn');
-        if(btn)btn.addEventListener('click', createAccount);
+    return{init,loadAdminEnquiries};
+})();
+
+const BriefingModule=(function(){
+    async function loadBriefing(){
+        const bar=document.getElementById('briefing-bar');
+        const textEl=document.getElementById('briefing-text');
+        const input=document.getElementById('briefingInput');
+        if(!bar||!supabaseClient) return;
+        try{
+            const{data,error}=await supabaseClient.from('daily_briefing').select('message').eq('id',1).single();
+            if(error) throw error;
+            if(data&&data.message&&data.message.trim()!==''){ textEl.textContent=data.message; bar.style.display='block'; if(input) input.value=data.message; } else { bar.style.display='none'; }
+        }catch(e){ bar.style.display='none'; }
     }
-    return { init };
-})(); 
+    async function saveBriefing(){
+        const input=document.getElementById('briefingInput');
+        if(!input||!supabaseClient) return;
+        const msg=input.value.trim();
+        try{
+            const{error}=await supabaseClient.from('daily_briefing').update({message:msg}).eq('id',1);
+            if(error) throw error;
+            ToastModule.show("Briefing updated!");
+            loadBriefing();
+        }catch(err){ ToastModule.show("Error saving briefing."); }
+    }
+    function init(){
+        loadBriefing();
+        const btn=document.getElementById('saveBriefingBtn');
+        if(btn) btn.addEventListener('click',saveBriefing);
+    }
+    return{init,loadBriefing};
+})();
+
+const MaintenanceModule=(function(){
+    async function checkStatus(){
+        const banner=document.getElementById('maintenance-banner');
+        if(!banner||!supabaseClient) return;
+        try{
+            const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();
+            if(error) throw error;
+            if(data&&data.maintenance_mode){ banner.style.display='block'; } else { banner.style.display='none'; }
+        }catch(e){}
+    }
+    async function toggle(){
+        try{
+            const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();
+            if(error) throw error;
+            const newStatus=!data.maintenance_mode;
+            const{error:updateError}=await supabaseClient.from('site_settings').update({maintenance_mode:newStatus}).eq('id',1);
+            if(updateError) throw updateError;
+            ToastModule.show(`Maintenance Mode is now ${newStatus?'ON':'OFF'}`);
+            checkStatus();
+        }catch(err){ ToastModule.show('Error toggling maintenance mode.'); }
+    }
+    function init(){
+        checkStatus();
+        const btn=document.getElementById('toggleMaintenanceBtn');
+        if(btn) btn.addEventListener('click',toggle);
+    }
+    return{init};
+})();
+
 const FeaturedEventsModule = (function() {
     let editingId = null;
 
@@ -367,7 +528,6 @@ const FeaturedEventsModule = (function() {
                 const bgStyle = ev.color && ev.color.startsWith('#') 
                     ? `linear-gradient(135deg, var(--honey), ${ev.color})` 
                     : (ev.color || 'linear-gradient(135deg, #A87816, #C25528)');
-                
                 return `
                 <div class="featured-banner" style="background: ${bgStyle};">
                     <div class="icon-row">${ev.icon || '🎉'}</div>
@@ -375,12 +535,9 @@ const FeaturedEventsModule = (function() {
                     <h2>${ev.title}</h2>
                     ${ev.date_text ? `<p class="date">${ev.date_text}</p>` : ''}
                     <p>${ev.description || ''}</p>
-                </div>
-                `;
+                </div>`;
             }).join('');
-        } catch (e) {
-            c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;">Could not load featured events.</p>';
-        }
+        } catch (e) { c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;">Could not load featured events.</p>'; }
     }
 
     async function loadAdminFeatured() {
@@ -390,10 +547,7 @@ const FeaturedEventsModule = (function() {
         try {
             const { data, error } = await supabaseClient.from('featured_events').select('*').order('id', { ascending: false });
             if (error) throw error;
-            if (!data || data.length === 0) {
-                ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">No featured events found.</p>';
-                return;
-            }
+            if (!data || data.length === 0) { ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">No featured events found.</p>'; return; }
             ac.innerHTML = data.map(ev => `
                 <div class="admin-film-item" style="padding: 8px 12px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
@@ -404,79 +558,45 @@ const FeaturedEventsModule = (function() {
                             <button class="tester-btn del-featured-btn" data-id="${ev.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
             
             ac.querySelectorAll('.edit-featured-btn').forEach(btn => btn.addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
                 try {
                     const { data: ev, error } = await supabaseClient.from('featured_events').select('*').eq('id', id).single();
                     if (error) throw error;
-                    
                     document.getElementById('newFeaturedTitle').value = ev.title;
                     document.getElementById('newFeaturedDate').value = ev.date_text || '';
                     document.getElementById('newFeaturedDesc').value = ev.description || '';
-                    
                     const iconSelect = document.getElementById('newFeaturedIcon');
                     Array.from(iconSelect.querySelectorAll('option[data-temp="true"]')).forEach(opt => opt.remove());
                     let iconExists = Array.from(iconSelect.options).some(opt => opt.value === ev.icon);
-                    if (iconExists) {
-                        iconSelect.value = ev.icon;
-                    } else if (ev.icon) {
+                    if (iconExists) { iconSelect.value = ev.icon; } 
+                    else if (ev.icon) {
                         let opt = document.createElement('option');
-                        opt.value = ev.icon;
-                        opt.textContent = ev.icon + " (Current)";
-                        opt.setAttribute('data-temp', 'true');
-                        iconSelect.prepend(opt);
-                        iconSelect.value = ev.icon;
-                    } else {
-                        iconSelect.value = '🎉';
-                    }
-
+                        opt.value = ev.icon; opt.textContent = ev.icon + " (Current)"; opt.setAttribute('data-temp', 'true');
+                        iconSelect.prepend(opt); iconSelect.value = ev.icon;
+                    } else { iconSelect.value = '🎉'; }
                     const colorSelect = document.getElementById('newFeaturedColor');
-                    if (ev.color && ev.color.startsWith('#')) {
-                        colorSelect.value = "linear-gradient(135deg, #A87816, #C25528)";
-                    } else {
-                        colorSelect.value = ev.color || "linear-gradient(135deg, #A87816, #C25528)";
-                    }
-                    
+                    if (ev.color && ev.color.startsWith('#')) { colorSelect.value = "linear-gradient(135deg, #A87816, #C25528)"; } 
+                    else { colorSelect.value = ev.color || "linear-gradient(135deg, #A87816, #C25528)"; }
                     editingId = id;
                     document.getElementById('addFeaturedBtn').textContent = 'Update Event';
                     document.getElementById('cancelEditFeaturedBtn').style.display = 'inline-block';
                     document.getElementById('newFeaturedTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                } catch (err) {
-                    ToastModule.show('Error fetching event details.');
-                }
+                } catch (err) { ToastModule.show('Error fetching event details.'); }
             }));
             
             ac.querySelectorAll('.toggle-featured-btn').forEach(btn => btn.addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
                 const newActive = e.target.dataset.active !== 'true';
-                try {
-                    await supabaseClient.from('featured_events').update({ is_active: newActive }).eq('id', id);
-                    ToastModule.show('Event updated!');
-                    loadAdminFeatured();
-                    loadFeatured();
-                } catch (err) {
-                    ToastModule.show('Error updating event.');
-                }
+                try { await supabaseClient.from('featured_events').update({ is_active: newActive }).eq('id', id); ToastModule.show('Event updated!'); loadAdminFeatured(); loadFeatured(); } catch (err) { ToastModule.show('Error updating event.'); }
             }));
-            
             ac.querySelectorAll('.del-featured-btn').forEach(btn => btn.addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
-                try {
-                    await supabaseClient.from('featured_events').delete().eq('id', id);
-                    ToastModule.show('Event deleted!');
-                    if (editingId === id) cancelEdit();
-                    loadAdminFeatured();
-                    loadFeatured();
-                } catch (err) {
-                    ToastModule.show('Error deleting event.');
-                }
+                try { await supabaseClient.from('featured_events').delete().eq('id', id); ToastModule.show('Event deleted!'); if (editingId === id) cancelEdit(); loadAdminFeatured(); loadFeatured(); } catch (err) { ToastModule.show('Error deleting event.'); }
             }));
-        } catch (e) {
-            ac.innerHTML = '<p class="text-sm" style="color: var(--terracotta);">Error loading events.</p>';
-        }
+        } catch (e) { ac.innerHTML = '<p class="text-sm" style="color: var(--terracotta);">Error loading events.</p>'; }
     }
 
     function cancelEdit() {
@@ -484,13 +604,10 @@ const FeaturedEventsModule = (function() {
         document.getElementById('newFeaturedTitle').value = '';
         document.getElementById('newFeaturedDate').value = '';
         document.getElementById('newFeaturedDesc').value = '';
-        
         const iconSelect = document.getElementById('newFeaturedIcon');
         Array.from(iconSelect.querySelectorAll('option[data-temp="true"]')).forEach(opt => opt.remove());
         iconSelect.value = '🎉';
-        
         document.getElementById('newFeaturedColor').value = 'linear-gradient(135deg, #A87816, #C25528)';
-        
         document.getElementById('addFeaturedBtn').textContent = 'Add Featured Event';
         document.getElementById('cancelEditFeaturedBtn').style.display = 'none';
     }
@@ -501,33 +618,19 @@ const FeaturedEventsModule = (function() {
         const desc = document.getElementById('newFeaturedDesc').value.trim();
         const icon = document.getElementById('newFeaturedIcon').value;
         const color = document.getElementById('newFeaturedColor').value;
-        
-        if (!title) {
-            ToastModule.show('Title is required.');
-            return;
-        }
-        
+        if (!title) { ToastModule.show('Title is required.'); return; }
         try {
             if (editingId) {
-                const { error } = await supabaseClient.from('featured_events').update({ 
-                    title: title, date_text: date, description: desc, icon: icon, color: color 
-                }).eq('id', editingId);
+                const { error } = await supabaseClient.from('featured_events').update({ title: title, date_text: date, description: desc, icon: icon, color: color }).eq('id', editingId);
                 if (error) throw error;
                 ToastModule.show('Featured event updated!');
             } else {
-                const { error } = await supabaseClient.from('featured_events').insert([{ 
-                    title: title, date_text: date, description: desc, icon: icon, color: color 
-                }]);
+                const { error } = await supabaseClient.from('featured_events').insert([{ title: title, date_text: date, description: desc, icon: icon, color: color }]);
                 if (error) throw error;
                 ToastModule.show('Featured event added!');
             }
-            
-            cancelEdit();
-            loadAdminFeatured();
-            loadFeatured();
-        } catch (err) {
-            ToastModule.show('Error saving event.');
-        }
+            cancelEdit(); loadAdminFeatured(); loadFeatured();
+        } catch (err) { ToastModule.show('Error saving event.'); }
     }
 
     async function printPosters() {
@@ -536,55 +639,29 @@ const FeaturedEventsModule = (function() {
         try {
             const { data, error } = await supabaseClient.from('featured_events').select('*').eq('is_active', true).order('id', { ascending: true });
             if (error) throw error;
-            
-            if (!data || data.length === 0) {
-                ToastModule.show("No active events to print.");
-                return;
-            }
-            
+            if (!data || data.length === 0) { ToastModule.show("No active events to print."); return; }
             const printArea = document.getElementById('featuredPrintArea');
             printArea.innerHTML = data.map(ev => {
                 let headerColor = '#C25528';
                 if (ev.color) {
                     const match = ev.color.match(/#[A-F0-9]{6}/ig);
-                    if (match && match.length > 1) {
-                        headerColor = match[1];
-                    } else if (match && match.length > 0) {
-                        headerColor = match[0];
-                    }
+                    if (match && match.length > 1) headerColor = match[1];
+                    else if (match && match.length > 0) headerColor = match[0];
                 }
-                
                 return `
                 <div class="fp-poster">
                     <div class="fp-brand">Tinkers Hatch</div>
-                    <div class="fp-header" style="color: ${headerColor};">
-                        ${ev.icon || '🎉'}
-                    </div>
+                    <div class="fp-header" style="color: ${headerColor};">${ev.icon || '🎉'}</div>
                     <div class="fp-title">${ev.title}</div>
                     ${ev.date_text ? `<div class="fp-date">${ev.date_text}</div>` : ''}
                     <div class="fp-desc">${ev.description || ''}</div>
-                    <div class="fp-footer">
-                        01435 863119 | services@tinkershatch.co.uk | New Pond Hill, TN21 0LX
-                    </div>
+                    <div class="fp-footer">01435 863119 | services@tinkershatch.co.uk | New Pond Hill, TN21 0LX</div>
                 </div>`;
             }).join('');
-            
-            // 1. Close the Staff Dashboard modal so it doesn't block the print layout
             const modal = document.getElementById('testerModal');
             if (modal) modal.classList.remove('active');
-            
-            // 2. Wait 300ms for the browser to render the posters in the DOM
-            setTimeout(() => {
-                window.print();
-                
-                // 3. Clear the area after printing is done
-                printArea.innerHTML = '';
-            }, 300);
-            
-        } catch (err) {
-            ToastModule.show("Error generating posters.");
-            console.error(err);
-        }
+            setTimeout(() => { window.print(); printArea.innerHTML = ''; }, 300);
+        } catch (err) { ToastModule.show("Error generating posters."); console.error(err); }
     }
 
     function init() {
@@ -599,11 +676,49 @@ const FeaturedEventsModule = (function() {
     return { init, loadAdminFeatured };
 })();
 
-const VibeModule=(function(){async function loadVibe(){if(!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('current_vibe').eq('id',1).single();if(error)throw error;applyVibe(data?.current_vibe||'neutral');}catch(e){applyVibe('neutral');}}function applyVibe(vibe){const b=document.body;b.classList.remove('vibe-active','vibe-calm','vibe-neutral');b.classList.add('vibe-'+vibe);document.querySelectorAll('.vibe-btn').forEach(btn=>{btn.classList.toggle('active',btn.dataset.vibe===vibe);});}async function setVibe(vibe){if(!supabaseClient)return;try{const{error}=await supabaseClient.from('site_settings').update({current_vibe:vibe}).eq('id',1);if(error)throw error;applyVibe(vibe);ToastModule.show(`Vibe set to: ${vibe.charAt(0).toUpperCase()+vibe.slice(1)}`);}catch(err){ToastModule.show('Error updating the vibe.');}}function init(){loadVibe();document.querySelectorAll('.vibe-btn').forEach(btn=>{btn.addEventListener('click',()=>setVibe(btn.dataset.vibe));});}return{init};})();
-const GoldenHourModule=(function(){function init(){const now=new Date();const hour=now.getHours();if((hour>=6&&hour<8)||(hour>=18&&hour<20)){document.body.classList.add('golden-hour');}}return{init};})();
-const HapticModule=(function(){function init(){document.body.addEventListener('click',e=>{if(navigator.vibrate&&e.target.closest('button, .mood-btn, .ambient-btn, .gallery-thumb, .splash-shortcut')){navigator.vibrate(8);}}, {passive:true});}return{init};})();
-const BionicModule=(function(){function toggle(state){const b=document.body;if(state==='on')b.classList.add('bionic-mode');else b.classList.remove('bionic-mode');safeSet('th-bionic',state);document.querySelectorAll('.bionic-btn').forEach(btn=>{btn.setAttribute('aria-pressed',btn.dataset.bionic===state);});if(state==='on'){applyBionic();}else{removeBionic();}}function applyBionic(){const elements=document.querySelectorAll('#main p, #main h1, #main h2, #main h3, #main li, #main summary');elements.forEach(el=>{if(el.dataset.bioniced)return;let html=el.innerHTML;if(html.includes('<'))return;const words=html.split(/(\s+)/);let newHtml='';words.forEach(word=>{if(word.trim().length>1){const half=Math.ceil(word.length/2);newHtml+=`<b>${word.substring(0,half)}</b>${word.substring(half)}`;}else{newHtml+=word;}});el.innerHTML=newHtml;el.dataset.bioniced='true';});}function removeBionic(){const elements=document.querySelectorAll('[data-bioniced="true"]');elements.forEach(el=>{el.querySelectorAll('b').forEach(b=>{const text=document.createTextNode(b.textContent);b.parentNode.replaceChild(text,b);});el.normalize();delete el.dataset.bioniced;});}function init(){const btns=document.querySelectorAll('.bionic-btn');if(!btns.length)return;let s=safeGet('th-bionic')||'off';if(s==='on'){setTimeout(()=>toggle('on'),1000);}btns.forEach(btn=>btn.addEventListener('click',()=>toggle(btn.dataset.bionic)));}return{init};})();
-const NextSectionModule=(function(){let sections=[];function init(){const btn=document.getElementById('nextSectionBtn');if(!btn)return;const navDots=document.querySelectorAll('.side-dot');sections=Array.from(navDots).map(dot=>{const id=dot.getAttribute('href').replace('#','');return document.getElementById(id);}).filter(Boolean);let ticking=false;function update(){const scrollPos=window.scrollY+(window.innerHeight*0.5);let nextIndex=-1;for(let i=0;i<sections.length;i++){if(sections[i].offsetTop<=scrollPos){if(i<sections.length-1&&sections[i+1].offsetTop>scrollPos){nextIndex=i+1;break;}}}if(nextIndex!==-1){const nextSection=sections[nextIndex];const title=nextSection.querySelector('h2')?.innerText||nextSection.id.replace(/-/g,' ');btn.innerHTML=`<span>Next: ${title}</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12l7 7 7-7"/></svg>`;btn.classList.add('show');btn.onclick=()=>nextSection.scrollIntoView({behavior:'smooth'});}else{btn.classList.remove('show');}ticking=false;}window.addEventListener('scroll',()=>{if(!ticking){window.requestAnimationFrame(update);ticking=true;}},{passive:true});}return{init};})();
+const VibeModule=(function(){
+    async function loadVibe(){ if(!supabaseClient) return; try { const{data,error}=await supabaseClient.from('site_settings').select('current_vibe').eq('id',1).single(); if(error) throw error; applyVibe(data?.current_vibe||'neutral'); } catch(e){ applyVibe('neutral'); } }
+    function applyVibe(vibe){ const b=document.body; b.classList.remove('vibe-active','vibe-calm','vibe-neutral'); b.classList.add('vibe-'+vibe); document.querySelectorAll('.vibe-btn').forEach(btn=>{ btn.classList.toggle('active',btn.dataset.vibe===vibe); }); }
+    async function setVibe(vibe){ if(!supabaseClient) return; try { const{error}=await supabaseClient.from('site_settings').update({current_vibe:vibe}).eq('id',1); if(error) throw error; applyVibe(vibe); ToastModule.show(`Vibe set to: ${vibe.charAt(0).toUpperCase()+vibe.slice(1)}`); } catch(err){ ToastModule.show('Error updating the vibe.'); } }
+    function init(){ loadVibe(); document.querySelectorAll('.vibe-btn').forEach(btn=>{ btn.addEventListener('click',()=>setVibe(btn.dataset.vibe)); }); }
+    return{init};
+})();
+const GoldenHourModule=(function(){ function init(){ const now=new Date(); const hour=now.getHours(); if((hour>=6&&hour<8)||(hour>=18&&hour<20)){ document.body.classList.add('golden-hour'); } } return{init}; })();
+const HapticModule=(function(){ function init(){ document.body.addEventListener('click',e=>{ if(navigator.vibrate&&e.target.closest('button, .mood-btn, .ambient-btn, .gallery-thumb, .splash-shortcut')){ navigator.vibrate(8); } }, {passive:true}); } return{init}; })();
+const BionicModule=(function(){ function toggle(state){ const b=document.body; if(state==='on')b.classList.add('bionic-mode'); else b.classList.remove('bionic-mode'); safeSet('th-bionic',state); document.querySelectorAll('.bionic-btn').forEach(btn=>{ btn.setAttribute('aria-pressed',btn.dataset.bionic===state); }); if(state==='on'){ applyBionic(); } else { removeBionic(); } } function applyBionic(){ const elements=document.querySelectorAll('#main p, #main h1, #main h2, #main h3, #main li, #main summary'); elements.forEach(el=>{ if(el.dataset.bioniced) return; let html=el.innerHTML; if(html.includes('<')) return; const words=html.split(/(\s+)/); let newHtml=''; words.forEach(word=>{ if(word.trim().length>1){ const half=Math.ceil(word.length/2); newHtml+=`<b>${word.substring(0,half)}</b>${word.substring(half)}`; } else { newHtml+=word; } }); el.innerHTML=newHtml; el.dataset.bioniced='true'; }); } function removeBionic(){ const elements=document.querySelectorAll('[data-bioniced="true"]'); elements.forEach(el=>{ el.querySelectorAll('b').forEach(b=>{ const text=document.createTextNode(b.textContent); b.parentNode.replaceChild(text,b); }); el.normalize(); delete el.dataset.bioniced; }); } function init(){ const btns=document.querySelectorAll('.bionic-btn'); if(!btns.length) return; let s=safeGet('th-bionic')||'off'; if(s==='on'){ setTimeout(()=>toggle('on'),1000); } btns.forEach(btn=>btn.addEventListener('click',()=>toggle(btn.dataset.bionic))); } return{init}; })();
+const NextSectionModule=(function(){ let sections=[]; function init(){ const btn=document.getElementById('nextSectionBtn'); if(!btn) return; const navDots=document.querySelectorAll('.side-dot'); sections=Array.from(navDots).map(dot=>{ const id=dot.getAttribute('href').replace('#',''); return document.getElementById(id); }).filter(Boolean); let ticking=false; function update(){ const scrollPos=window.scrollY+(window.innerHeight*0.5); let nextIndex=-1; for(let i=0;i<sections.length;i++){ if(sections[i].offsetTop<=scrollPos){ if(i<sections.length-1&&sections[i+1].offsetTop>scrollPos){ nextIndex=i+1; break; } } } if(nextIndex!==-1){ const nextSection=sections[nextIndex]; const title=nextSection.querySelector('h2')?.innerText||nextSection.id.replace(/-/g,' '); btn.innerHTML=`<span>Next: ${title}</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12l7 7 7-7"/></svg>`; btn.classList.add('show'); btn.onclick=()=>nextSection.scrollIntoView({behavior:'smooth'}); } else { btn.classList.remove('show'); } ticking=false; } window.addEventListener('scroll',()=>{ if(!ticking){ window.requestAnimationFrame(update); ticking=true; } },{passive:true}); } return{init}; })();
+
+const StaffModule=(function(){
+    async function createAccount(){
+        const email=document.getElementById('newStaffEmail').value.trim();
+        const pass=document.getElementById('newStaffPass').value;
+        const role=document.getElementById('newStaffRole').value;
+        if(!email||!pass){ ToastModule.show('Email and password are required.'); return; }
+        if(pass.length<6){ ToastModule.show('Password must be at least 6 characters.'); return; }
+        ToastModule.show('Creating account...');
+        try {
+            const tempClient = supabase.createClient(
+                'https://bsbwrvqevtoujfvcvvju.supabase.co', 
+                'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx',
+                { auth: { storageKey: 'th-temp-signup-key' } }
+            );
+            const { data, error } = await tempClient.auth.signUp({ 
+                email: email, password: pass,
+                options: { data: { role: role } }
+            });
+            if (error) throw error;
+            ToastModule.show('Account created successfully!');
+            document.getElementById('newStaffEmail').value = '';
+            document.getElementById('newStaffPass').value = '';
+            document.getElementById('newStaffRole').value = 'staff';
+        } catch (err) { ToastModule.show('Error: ' + err.message); }
+    }
+    function init(){
+        const btn=document.getElementById('createStaffBtn');
+        if(btn) btn.addEventListener('click', createAccount);
+    }
+    return { init };
+})();
 
 const TesterModule=(function(){
     const m=document.getElementById('testerModal'),
@@ -822,6 +937,35 @@ const TesterModule=(function(){
     }
     return{init};
 })();
-       
+
+document.addEventListener('DOMContentLoaded',()=>{
+    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
+    
+    const PolishModule = (function () {
+      function initReveal() {
+        const items = document.querySelectorAll('.reveal');
+        if (!items.length) return;
+        const reduceMotion =
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+          !('IntersectionObserver' in window);
+        if (reduceMotion) {
+          items.forEach(el => el.classList.add('is-visible'));
+          return;
+        }
+        items.forEach(el => el.classList.add('pre-reveal'));
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        items.forEach(el => observer.observe(el));
+      }
+      function init() { initReveal(); }
+      return { init };
+    })();
+    
     PolishModule.init();
 });
