@@ -1214,29 +1214,4 @@ document.addEventListener('DOMContentLoaded',()=>{
     })();
     
     PolishModule.init();
-/* === Populate Messages recipient dropdown === */
-(function () {
-    const select = document.getElementById('chat-recipient-email');
-    const msgTabBtn = document.querySelector('.tester-tab-btn[data-tab="messages"]');
-    if (!select || !msgTabBtn) return;
-    let loaded = false;
-    msgTabBtn.addEventListener('click', async () => {
-        if (loaded || !supabaseClient) return;
-        loaded = true;
-        // ⚠️ CHANGE 'staff' to your actual Supabase table that stores staff emails
-        const { data, error } = await supabaseClient.from('staff').select('email').order('email');
-        if (error) {
-            console.error('Staff list failed:', error.message);
-            select.innerHTML = '<option value="">Could not load staff</option>';
-            loaded = false;
-            return;
-        }
-        select.innerHTML = '<option value="">Choose a staff member…</option>';
-        (data || []).forEach(u => {
-            const o = document.createElement('option');
-            o.value = u.email;
-            o.textContent = u.email;
-            select.appendChild(o);
-        });
-    });
-})();
+});
