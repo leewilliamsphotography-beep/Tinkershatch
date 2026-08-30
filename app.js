@@ -903,7 +903,6 @@ const TesterModule=(function(){
         }
     }
      function init(){
-        // If the modal doesn't exist (on index.html), stop running the dashboard code.
         const modalExists = document.getElementById('testerModal');
         if(!modalExists) return; 
 
@@ -919,8 +918,8 @@ const TesterModule=(function(){
         const logoutBtn = document.getElementById('testerLogoutBtn');
         if(logoutBtn) logoutBtn.addEventListener('click',logout);
         
-        pi.addEventListener('keypress',e=>{ if(e.key==='Enter'){ login(); } });
-        emailInput.addEventListener('keypress',e=>{ if(e.key==='Enter'){ pi.focus(); } });
+        if(pi) pi.addEventListener('keypress',e=>{ if(e.key==='Enter'){ login(); } });
+        if(emailInput) emailInput.addEventListener('keypress',e=>{ if(e.key==='Enter'){ pi.focus(); } });
         
         document.querySelectorAll('.tester-season-btn').forEach(b=>b.addEventListener('click',e=>ss(e.target.dataset.season, e)));
         
@@ -946,12 +945,9 @@ const TesterModule=(function(){
             else if(event==='SIGNED_OUT'){ showLogin(); }
         });
         
-        // 1. Force the login screen to show IMMEDIATELY when the page loads
         showLogin(); 
-        
-        // 2. Then check if they are actually logged in
         checkAuthState();
-    }
+    } 
     return{init};
 })();
 
