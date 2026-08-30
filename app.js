@@ -1,9 +1,10 @@
 'use strict';if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }window.addEventListener('load', function() { window.scrollTo(0, 0); });
-// Only register Service Worker on the main site, NOT on staff.html or bingo    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err)); }); 
- // Only register Service Worker on the main site, NOT on staff.html
+// Only register Service Worker on the main site, NOT on staff.html or bingo
 if ('serviceWorker' in navigator && !window.location.pathname.endsWith('staff.html') && !window.location.pathname.includes('bingo')) { 
-    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err)); }); 
-} 
+    window.addEventListener('load', () => { 
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err)); 
+    }); 
+}
 let supabaseClient = null;if (window.supabase) { supabaseClient = window.supabase.createClient('https://bsbwrvqevtoujfvcvvju.supabase.co', 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx');}
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}function generateSeasonalBackground(s){const bg=document.getElementById('seasonal-bg');if(!bg)return;bg.innerHTML='';if(!s)return;const c=window.innerWidth<768?15:20;for(let i=0;i<c;i++){const el=document.createElement('div');el.className='season-el '+s;el.style.left=Math.random()*100+'vw';el.style.animationDuration=(Math.random()*10+10)+'s';el.style.animationDelay=(Math.random()*15)+'s';const size=Math.random()*12+8;el.style.width=size+'px';el.style.height=size+'px';if(s==='winter')el.classList.add('snow');else if(s==='spring')el.classList.add('petal');else if(s==='summer')el.classList.add('sunbeam');else if(s==='autumn')el.classList.add('leaf');else return;bg.appendChild(el)}}
 
