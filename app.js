@@ -318,7 +318,6 @@ const FeaturedEventsModule = (function() {
                 return;
             }
             c.innerHTML = data.map(ev => {
-                // Backward compatibility: if it's an old hex code, wrap it in a gradient. Otherwise use the new gradient string.
                 const bgStyle = ev.color && ev.color.startsWith('#') 
                     ? `linear-gradient(135deg, var(--honey), ${ev.color})` 
                     : (ev.color || 'linear-gradient(135deg, #A87816, #C25528)');
@@ -371,9 +370,27 @@ const FeaturedEventsModule = (function() {
                     document.getElementById('newFeaturedTitle').value = ev.title;
                     document.getElementById('newFeaturedDate').value = ev.date_text || '';
                     document.getElementById('newFeaturedDesc').value = ev.description || '';
-                    document.getElementById('newFeaturedIcon').value = ev.icon || '';
                     
-                    // If it's an old hex color, default the dropdown to the first option so it doesn't break the UI
+                    // Handle Emoji Dropdown
+                    const iconSelect = document.getElementById('newFeaturedIcon');
+                    // Clear any old temp options first
+                    Array.from(iconSelect.querySelectorAll('option[data-temp="true"]')).forEach(opt => opt.remove());
+                    let iconExists = Array.from(iconSelect.options).some(opt => opt.value === ev.icon);
+                    if (iconExists) {
+                        iconSelect.value = ev.icon;
+                    } else if (ev.icon) {
+                        // If it's a custom/old emoji not in the list, add it to the top temporarily
+                        let opt = document.createElement('option');
+                        opt.value = ev.icon;
+                        opt.textContent = ev.icon + " (Current)";
+                        opt.setAttribute('data-temp', 'true');
+                        iconSelect.prepend(opt);
+                        iconSelect.value = ev.icon;
+                    } else {
+                        iconSelect.value = '🎉';
+                    }
+
+                    // Handle Color Dropdown
                     const colorSelect = document.getElementById('newFeaturedColor');
                     if (ev.color && ev.color.startsWith('#')) {
                         colorSelect.value = "linear-gradient(135deg, #A87816, #C25528)";
@@ -425,8 +442,15 @@ const FeaturedEventsModule = (function() {
         document.getElementById('newFeaturedTitle').value = '';
         document.getElementById('newFeaturedDate').value = '';
         document.getElementById('newFeaturedDesc').value = '';
-        document.getElementById('newFeaturedIcon').value = '';
+        
+        // Reset Icon Dropdown
+        const iconSelect = document.getElementById('newFeaturedIcon');
+        Array.from(iconSelect.querySelectorAll('option[data-temp="true"]')).forEach(opt => opt.remove());
+        iconSelect.value = '🎉';
+        
+        // Reset Color Dropdown
         document.getElementById('newFeaturedColor').value = 'linear-gradient(135deg, #A87816, #C25528)';
+        
         document.getElementById('addFeaturedBtn').textContent = 'Add Featured Event';
         document.getElementById('cancelEditFeaturedBtn').style.display = 'none';
     }
@@ -435,7 +459,7 @@ const FeaturedEventsModule = (function() {
         const title = document.getElementById('newFeaturedTitle').value.trim();
         const date = document.getElementById('newFeaturedDate').value.trim();
         const desc = document.getElementById('newFeaturedDesc').value.trim();
-        const icon = document.getElementById('newFeaturedIcon').value.trim() || '🎉';
+        const icon = document.getElementById('newFeaturedIcon').value;
         const color = document.getElementById('newFeaturedColor').value;
         
         if (!title) {
