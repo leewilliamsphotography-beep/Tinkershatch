@@ -552,8 +552,6 @@ const FeaturedEventsModule = (function() {
     }
     return { init, loadAdminFeatured };
 })();
-return { init, loadAdminFeatured };
-})();
 const VibeModule=(function(){async function loadVibe(){if(!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('current_vibe').eq('id',1).single();if(error)throw error;applyVibe(data?.current_vibe||'neutral');}catch(e){applyVibe('neutral');}}function applyVibe(vibe){const b=document.body;b.classList.remove('vibe-active','vibe-calm','vibe-neutral');b.classList.add('vibe-'+vibe);document.querySelectorAll('.vibe-btn').forEach(btn=>{btn.classList.toggle('active',btn.dataset.vibe===vibe);});}async function setVibe(vibe){if(!supabaseClient)return;try{const{error}=await supabaseClient.from('site_settings').update({current_vibe:vibe}).eq('id',1);if(error)throw error;applyVibe(vibe);ToastModule.show(`Vibe set to: ${vibe.charAt(0).toUpperCase()+vibe.slice(1)}`);}catch(err){ToastModule.show('Error updating the vibe.');}}function init(){loadVibe();document.querySelectorAll('.vibe-btn').forEach(btn=>{btn.addEventListener('click',()=>setVibe(btn.dataset.vibe));});}return{init};})();
 const GoldenHourModule=(function(){function init(){const now=new Date();const hour=now.getHours();if((hour>=6&&hour<8)||(hour>=18&&hour<20)){document.body.classList.add('golden-hour');}}return{init};})();
 const HapticModule=(function(){function init(){document.body.addEventListener('click',e=>{if(navigator.vibrate&&e.target.closest('button, .mood-btn, .ambient-btn, .gallery-thumb, .splash-shortcut')){navigator.vibrate(8);}}, {passive:true});}return{init};})();
