@@ -649,4 +649,7 @@ body.bionic-mode #main b {
         padding-top: 20px;
         width: 100%;
     }
-}
+/* Force the admin dashboard to stay hidden by default */
+#testerMenu {
+    display: none !important;
+} 
