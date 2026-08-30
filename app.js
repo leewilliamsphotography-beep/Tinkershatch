@@ -795,7 +795,23 @@ const TesterModule=(function(){
         // Hide Staff Creation panel if not admin
         const staffTabBtn=document.getElementById('staffTabBtn');
         if(staffTabBtn) staffTabBtn.style.display=(userRole==='admin')?'flex':'none';
+		        // === USER-SPECIFIC DASHBOARD THEME ===
+        const userId = user ? user.id : 'default';
+        const staffThemeKey = `th-staff-theme-${userId}`;
+        const savedTheme = safeGet(staffThemeKey) || 'staff-dark';
         
+        document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
+        document.body.classList.add(savedTheme);
+        
+        document.querySelectorAll('.staff-theme-btn').forEach(btn => {
+            btn.onclick = () => {
+                const newTheme = btn.dataset.theme;
+                document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
+                document.body.classList.add(newTheme);
+                safeSet(staffThemeKey, newTheme);
+                ToastModule.show('Dashboard theme saved!');
+            };
+        });
         if(typeof FeaturedEventsModule!=='undefined') FeaturedEventsModule.loadAdminFeatured();
         if(typeof FilmNightModule!=='undefined') FilmNightModule.loadFilms();
         if(typeof LayoutModule!=='undefined') LayoutModule.onTesterOpen();
