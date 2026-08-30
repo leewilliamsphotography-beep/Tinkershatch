@@ -497,7 +497,7 @@
                 <p class="text-sm mb-4 md:text-right">We're committed to making our home and our app welcoming to everyone.</p>
                 <button id="footerA11y" class="text-xs font-bold underline text-white mb-6">Read our accessibility statement</button>
                 <button onclick="window.print()" class="text-xs font-bold underline text-white mb-6" style="cursor:pointer; background:none; border:none; font-family:inherit;">🖨️ Print / Save This Page</button>
-                <button id="footerStaffLogin" class="text-xs font-bold underline text-white mb-6" style="opacity: 0.5;">Staff Login</button>
+<a href="staff.html" id="footerStaffLogin" class="text-xs font-bold underline text-white mb-6" style="opacity: 0.5;">Staff Login</a>
                 <a href="#changelog" id="footerChangelogLink" class="text-xs font-bold underline text-white mb-6" style="opacity: 0.5; cursor: pointer; display: block; background: none; border: none; font-family: inherit;">Website Updates</a>
             </div>
         </div>
@@ -508,18 +508,8 @@
     ⚠️ Maintenance Mode: We are currently performing updates. The site may behave unexpectedly for a few moments.
 </div>
 
-<button id="testerOpenBtn" class="tester-trigger" aria-label="Tester Menu">⚙️</button>
-<div id="testerModal" class="tester-modal" role="dialog" aria-modal="true" aria-label="Tester Menu">
-    <div class="tester-content">
-        <button class="tester-close" id="testerCloseBtn" aria-label="Close">&times;</button>
-        <div id="testerLogin">
-            <h3 class="display font-extrabold text-xl">Staff Login</h3>
-            <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Enter your staff credentials to access the dashboard.</p>
-            <input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email" style="margin-bottom: 8px;">
-            <input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password">
-            <button id="testerLoginBtn" class="tester-btn">Log In</button>
-            <div id="testerError" class="tester-error"></div>
-        </div>
+ aria-label="Tester Menu">⚙️</button>
+
         <div id="testerMenu" style="display:none;">
             <div class="tester-tabs">
 			<button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none;">👥 Staff</button>

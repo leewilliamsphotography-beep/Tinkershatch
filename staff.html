@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staff Portal | Tinkers Hatch</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: var(--cream-deep);
+        padding: 2rem;
+        margin: 0;
+    }
+    /* Make the modal act like a normal page element */
+    .tester-modal {
+        position: relative !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: scale(1) !important;
+        background: transparent !important;
+        max-width: 700px;
+        width: 100%;
+        display: block !important;
+    }
+    /* Hide the gear icon since we are already on the portal */
+    .tester-trigger { display: none !important; }
+</style>
+</head>
+<body>
+    <div class="ambient" aria-hidden="true" data-parallax="-0.25" data-pt="fixed"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
+
+    <!-- This is the exact same Modal code from index.html, but without the modal wrapper -->
+    <div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Staff Portal">
+        <div class="tester-content">
+            <!-- Close button now acts as a "Back to site" button -->
+            <a href="index.html" style="position: absolute; top: 12px; right: 12px; font-size: 24px; color: var(--bark-soft); text-decoration: none; cursor: pointer; display: block; width: 24px; height: 24px; text-align: center; line-height: 20px;">&times;</a>
+            
+            <div id="testerLogin">
+                <h3 class="display font-extrabold text-xl">Staff Login</h3>
+                <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Enter your staff credentials to access the dashboard.</p>
+                <input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email" style="margin-bottom: 8px;">
+                <input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password">
+                <button id="testerLoginBtn" class="tester-btn">Log In</button>
+                <div id="testerError" class="tester-error"></div>
+            </div>
+
+            <div id="testerMenu" style="display:none;">
+                <div class="tester-tabs">
+                    <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
+                    <button class="tester-tab-btn" data-tab="events">📅 Events</button>
+                    <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
+                    <button class="tester-tab-btn" data-tab="wilf">🐾 Wilf</button>
+                    <button class="tester-tab-btn" data-tab="updates">📝 Updates</button>
+                    <button class="tester-tab-btn" data-tab="films">🎬 Films</button>
+                    <button class="tester-tab-btn" data-tab="community">🌟 Community</button>
+                    <button class="tester-tab-btn" data-tab="celebrations">🎉 Celebrations</button>
+                    <button class="tester-tab-btn" data-tab="enquiries">✉️ Enquiries</button>
+                    <button class="tester-tab-btn" data-tab="briefing">📢 Briefing</button>
+                    <button class="tester-tab-btn" data-tab="settings">⚙️ Settings</button>
+                </div>
+                
+                <!-- Include all the tab content from index.html here -->
+                <div id="tab-photos" class="tester-tab-content active">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Gallery Manager</h3>
+                    <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="padding:10px; margin-top: 8px;">
+                    <input type="text" id="photoCaptionInput" class="tester-input" placeholder="Caption (e.g., Margaret's roses)" style="margin-top: 8px;">
+                    <button id="uploadPhotoBtn" class="tester-btn" style="background:var(--teal-deep);">Upload Photo</button>
+                    <div id="adminPhotoContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-events" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Events Manager</h3>
+                    <input type="text" id="newEventTitle" class="tester-input" placeholder="Event Title (e.g., Coffee Morning)">
+                    <input type="date" id="newEventDate" class="tester-input" style="margin-top: 8px;">
+                    <textarea id="newEventDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:40px;"></textarea>
+                    <button id="addEventBtn" class="tester-btn" style="background:var(--teal-deep);">Add Event</button>
+                    <div id="adminEventContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-menu" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Weekly Menu Manager</h3>
+                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Update the weekly dinners. Changes save instantly to the website.</p>
+                    <div id="adminMenuContainer" class="space-y-3 mt-4 text-left"></div>
+                    <button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Save Weekly Menu</button>
+                </div>
+
+                <div id="tab-wilf" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Wilf Status & Blog</h3>
+                    <button id="wilfToggleBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Wilf Status</button>
+                    <hr class="tester-divider">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Wilf's Blog Manager</h3>
+                    <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title (e.g., A day in the garden)">
+                    <textarea id="newWilfBlogContent" class="film-review" placeholder="Write Wilf's adventure here..." style="width:100%;margin-top:8px;min-height:80px;"></textarea>
+                    <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL (leave blank if none)" style="margin-top:8px;">
+                    <button id="addWilfBlogBtn" class="tester-btn" style="background:var(--teal-deep);">Post Blog</button>
+                    <div id="adminWilfBlogContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-updates" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">App Updates Manager</h3>
+                    <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title (e.g., New Photos)" style="margin-top:8px;">
+                    <textarea id="newUpdateContent" class="film-review" placeholder="What's the new update?" style="width:100%;margin-top:8px;min-height:60px;"></textarea>
+                    <button id="addUpdateBtn" class="tester-btn" style="background:var(--teal-deep);">Post Update</button>
+                    <div id="adminUpdateContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-films" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Film Night Admin</h3>
+                    <div class="flex gap-2 mt-2">
+                        <input type="text" id="newFilmTitle" class="tester-input" style="margin-top:0;flex:1;" placeholder="Enter new film...">
+                        <button id="addFilmBtn" class="tester-btn" style="margin-top:0;width:auto;padding:12px 20px;">Add</button>
+                    </div>
+                    <div id="adminFilmContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-community" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Community Spotlight Manager</h3>
+                    <input type="text" id="newCommunityTitle" class="tester-input" placeholder="Title (e.g., Baking together)">
+                    <input type="text" id="newCommunityImg" class="tester-input" placeholder="Image URL (leave blank if none)" style="margin-top: 8px;">
+                    <textarea id="newCommunityDesc" class="film-review" placeholder="Share a short story about the community..." style="width:100%;margin-top:8px;min-height:80px;"></textarea>
+                    <button id="addCommunityBtn" class="tester-btn" style="background:var(--teal-deep);">Post Spotlight</button>
+                    <div id="adminCommunityContainer" class="space-y-3 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-celebrations" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Add Celebration</h3>
+                    <input type="text" id="newCelebName" class="tester-input" placeholder="Name (e.g., Margaret)">
+                    <select id="newCelebType" class="tester-input" style="margin-top: 8px;">
+                        <option value="Birthday">Birthday</option>
+                        <option value="Anniversary">Anniversary</option>
+                    </select>
+                    <div class="flex gap-2" style="margin-top: 8px;">
+                        <select id="newCelebMonth" class="tester-input" style="flex:1;">
+                            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option>
+                            <option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option>
+                            <option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                        </select>
+                        <input type="number" id="newCelebDay" class="tester-input" min="1" max="31" placeholder="Day (1-31)" style="flex:1;">
+                    </div>
+                    <button id="addCelebBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Add Celebration</button>
+                    <hr class="tester-divider">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Manage Celebrations</h3>
+                    <div id="adminCelebContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-enquiries" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Contact Form Enquiries</h3>
+                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Messages submitted by visitors on the Visit page.</p>
+                    <div id="adminEnquiriesContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
+                </div>
+
+                <div id="tab-briefing" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Daily Briefing</h3>
+                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Update the message that appears at the very top of the website for families today. Leave blank to hide it.</p>
+                    <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk at 2pm.">
+                    <button id="saveBriefingBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 8px;">Save Briefing</button>
+                </div>
+
+                <div id="tab-settings" class="tester-tab-content">
+                    <div id="adminOnlyThemes" style="display: none;">
+                        <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Seasonal Themes</h3>
+                        <div class="tester-grid">
+                            <button class="tester-season-btn" data-season="winter">Winter</button>
+                            <button class="tester-season-btn" data-season="spring">Spring</button>
+                            <button class="tester-season-btn" data-season="summer">Summer</button>
+                            <button class="tester-season-btn" data-season="autumn">Autumn</button>
+                            <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
+                        </div>
+                        <hr class="tester-divider">
+                    </div>
+
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Layout Customizer</h3>
+                    <div id="layoutContainer" class="space-y-2 mt-2 max-h-40 overflow-y-auto text-left"></div>
+                    <button id="resetLayoutBtn" class="tester-btn" style="background:var(--bark-soft);margin-top:12px;">Reset Layout</button>
+                    
+                    <hr class="tester-divider">
+                    
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Live Broadcast</h3>
+                    <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message..." style="margin-top:8px;" aria-label="Broadcast Message">
+                    <button id="broadcastBtn" class="tester-btn" style="background:var(--terracotta);">Broadcast Message</button>
+                    
+                    <hr class="tester-divider">
+                    
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Maintenance Mode</h3>
+                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Display a banner on the live site letting visitors know updates are underway.</p>
+                    <button id="toggleMaintenanceBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Maintenance Banner</button>
+
+                    <hr class="tester-divider">
+                    <button id="testerLogoutBtn" class="tester-btn" style="background:var(--terracotta);">Log Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

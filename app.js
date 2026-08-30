@@ -902,20 +902,36 @@ const TesterModule=(function(){
             ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading photos.</p>';
         }
     }
-    function init(){
+     function init(){
+        // If the modal doesn't exist (on index.html), stop running the dashboard code.
+        const modalExists = document.getElementById('testerModal');
+        if(!modalExists) return; 
+
         if(gearBtn) gearBtn.addEventListener('click',o);
         if(footerLogin) footerLogin.addEventListener('click',o);
-        document.getElementById('testerCloseBtn').addEventListener('click',c);
-        document.getElementById('testerLoginBtn').addEventListener('click',login);
-        const logoutBtn=document.getElementById('testerLogoutBtn');
+        
+        const closeBtn = document.getElementById('testerCloseBtn');
+        if(closeBtn) closeBtn.addEventListener('click',c);
+        
+        const loginBtn = document.getElementById('testerLoginBtn');
+        if(loginBtn) loginBtn.addEventListener('click',login);
+        
+        const logoutBtn = document.getElementById('testerLogoutBtn');
         if(logoutBtn) logoutBtn.addEventListener('click',logout);
+        
         pi.addEventListener('keypress',e=>{ if(e.key==='Enter'){ login(); } });
         emailInput.addEventListener('keypress',e=>{ if(e.key==='Enter'){ pi.focus(); } });
+        
         document.querySelectorAll('.tester-season-btn').forEach(b=>b.addEventListener('click',e=>ss(e.target.dataset.season, e)));
-        document.getElementById('broadcastBtn').addEventListener('click',bc);
-        const uploadBtn=document.getElementById('uploadPhotoBtn');
+        
+        const broadcastBtn = document.getElementById('broadcastBtn');
+        if(broadcastBtn) broadcastBtn.addEventListener('click',bc);
+        
+        const uploadBtn = document.getElementById('uploadPhotoBtn');
         if(uploadBtn) uploadBtn.addEventListener('click',uploadPhoto);
+        
         m.addEventListener('click',e=>{ if(e.target===m){ c(); } });
+        
         document.querySelectorAll('.tester-tab-btn').forEach(btn=>{
             btn.addEventListener('click',(e)=>{
                 document.querySelectorAll('.tester-tab-btn').forEach(b=>b.classList.remove('active'));
@@ -924,6 +940,7 @@ const TesterModule=(function(){
                 document.getElementById('tab-'+e.target.dataset.tab).classList.add('active');
             });
         });
+        
         supabaseClient.auth.onAuthStateChange((event,session)=>{
             if(event==='SIGNED_IN'){ showMenu(); }
             else if(event==='SIGNED_OUT'){ showLogin(); }
