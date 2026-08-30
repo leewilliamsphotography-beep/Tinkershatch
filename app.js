@@ -795,21 +795,30 @@ const TesterModule=(function(){
         // Hide Staff Creation panel if not admin
         const staffTabBtn=document.getElementById('staffTabBtn');
         if(staffTabBtn) staffTabBtn.style.display=(userRole==='admin')?'flex':'none';
-		        // === USER-SPECIFIC DASHBOARD THEME ===
+        // === USER-SPECIFIC COLORFUL DASHBOARD THEME ===
         const userId = user ? user.id : 'default';
         const staffThemeKey = `th-staff-theme-${userId}`;
-        const savedTheme = safeGet(staffThemeKey) || 'staff-dark';
+        const savedTheme = safeGet(staffThemeKey) || 'staff-nature';
         
-        document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
+        // Apply the theme
+        document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
         document.body.classList.add(savedTheme);
         
+        // Highlight the active theme button
         document.querySelectorAll('.staff-theme-btn').forEach(btn => {
+            if(btn.dataset.theme === savedTheme) btn.classList.add('theme-btn-active');
+            else btn.classList.remove('theme-btn-active');
+            
             btn.onclick = () => {
                 const newTheme = btn.dataset.theme;
-                document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
+                document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
                 document.body.classList.add(newTheme);
                 safeSet(staffThemeKey, newTheme);
                 ToastModule.show('Dashboard theme saved!');
+                
+                // Update button highlights
+                document.querySelectorAll('.staff-theme-btn').forEach(b => b.classList.remove('theme-btn-active'));
+                btn.classList.add('theme-btn-active');
             };
         });
         if(typeof FeaturedEventsModule!=='undefined') FeaturedEventsModule.loadAdminFeatured();
