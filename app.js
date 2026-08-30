@@ -483,12 +483,10 @@ const FeaturedEventsModule = (function() {
             ToastModule.show('Error saving event.');
         }
     }
-
     async function printPosters() {
         if (!supabaseClient) return;
         ToastModule.show("Preparing A4 posters...");
         try {
-            // Fetch only active events for the poster
             const { data, error } = await supabaseClient.from('featured_events').select('*').eq('is_active', true).order('id', { ascending: true });
             if (error) throw error;
             
@@ -499,13 +497,11 @@ const FeaturedEventsModule = (function() {
             
             const printArea = document.getElementById('featuredPrintArea');
             printArea.innerHTML = data.map(ev => {
-                // Extract a solid color from the gradient string for the A4 header
-                // Default to terracotta if parsing fails
                 let headerColor = '#C25528';
                 if (ev.color) {
-                    const match = ev.color.match(/#[A-F0-9]{6}/i);
+                    const match = ev.color.match(/#[A-F0-9]{6}/ig);
                     if (match && match.length > 1) {
-                        headerColor = match[1]; // Get the second color in the gradient
+                        headerColor = match[1];
                     } else if (match && match.length > 0) {
                         headerColor = match[0];
                     }
@@ -526,19 +522,23 @@ const FeaturedEventsModule = (function() {
                 </div>`;
             }).join('');
             
-            // Trigger print
-            window.print();
+            // 1. Close the Staff Dashboard modal so it doesn't block the print layout
+            const modal = document.getElementById('testerModal');
+            if (modal) modal.classList.remove('active');
             
-            // Clear the area after printing
-            printArea.innerHTML = '';
-            ToastModule.show("Posters sent to print dialog!");
+            // 2. Wait 300ms for the browser to render the posters in the DOM
+            setTimeout(() => {
+                window.print();
+                
+                // 3. Clear the area after printing is done
+                printArea.innerHTML = '';
+            }, 300);
             
         } catch (err) {
             ToastModule.show("Error generating posters.");
             console.error(err);
         }
-    }
-
+    } 
     function init() {
         loadFeatured();
         const btn = document.getElementById('addFeaturedBtn');

@@ -559,13 +559,15 @@ body.bionic-mode #main b {
         width: 100%;
     }
 /* === Unified Print Rules === */
+@
+/* === Unified Print Rules === */
 @media print {
-    /* Hide everything on the page visually */
+    /* Hide everything visually */
     body * { 
         visibility: hidden; 
     }
     
-    /* Show the printable schedule if it has content */
+    /* Show the printable schedule if used */
     #printableSchedule, #printableSchedule * { 
         visibility: visible; 
     }
@@ -577,7 +579,7 @@ body.bionic-mode #main b {
         padding: 20px;
     }
     
-    /* Show the featured posters if they have content */
+    /* Show the featured A4 posters if used */
     #featuredPrintArea, #featuredPrintArea * { 
         visibility: visible; 
     }
@@ -647,4 +649,4 @@ body.bionic-mode #main b {
         padding-top: 20px;
         width: 100%;
     }
-} 
+}
