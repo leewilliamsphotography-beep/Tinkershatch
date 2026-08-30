@@ -493,180 +493,36 @@ const TesterModule=(function(){
         const logoutBtn=document.getElementById('testerLogoutBtn');
         if(logoutBtn) logoutBtn.addEventListener('click',logout);
         
-        pi.addEventListener('keypress',e=>{if(e.key==='Enter')login()});
-        emailInput.addEventListener('keypress',e=>{
-const EventsModule=(function(){async function loadEvents(){const c=document.getElementById('eventsContainer');const printBtn=document.getElementById('printScheduleBtn');const printContainer=document.getElementById('printableSchedule');const badge=document.getElementById('eventsFreshnessBadge');if(!c||!supabaseClient)return;c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Checking for upcoming events...</p>';try{let now=new Date().toISOString();const{data,error}=await supabaseClient.from('events').select('*').gte('event_date',now.split('T')[0]).order('event_date',{ascending:true});if(error)throw error;if(!data||data.length===0){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">No upcoming events scheduled right now. Please check back soon!</p>';if(printBtn)printBtn.style.display='none';if(badge)badge.style.display='none';return;}if(badge){const latest=data.reduce((a,b)=>new Date(a.updated_at)>new Date(b.updated_at)?a:b);if(latest&&latest.updated_at){badge.innerHTML=`Updated ${timeAgo(latest.updated_at)}`;badge.style.display='inline-flex';}}if(printBtn)printBtn.style.display='inline-flex';const today=new Date();today.setHours(0,0,0,0);c.innerHTML=data.slice(0,3).map(ev=>{const d=new Date(ev.event_date).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});const evDate=new Date(ev.event_date);evDate.setHours(0,0,0,0);const isToday=today.getTime()===evDate.getTime();const todayBadge=isToday?`<div class="tag mb-3" style="background: var(--terracotta); color: #fff; border-color: var(--terracotta); align-self: flex-start;">🔥 Happening Today!</div>`:'';const cardStyle=isToday?`border-color: var(--terracotta);`:'';return `<div class="card p-6 flex flex-col" style="${cardStyle}">${todayBadge}<div class="display font-extrabold text-lg mb-2" style="color:var(--teal)">${ev.title}</div><div class="text-sm font-bold mb-3" style="color:var(--bark-soft)">${d}</div><p class="text-sm" style="color:var(--bark-soft)">${ev.description||''}</p></div>`;}).join('');if(printContainer){printContainer.innerHTML=`<h1 style="font-family: 'Outfit', sans-serif; color: #152630; margin-bottom: 4px;">Tinkers Hatch</h1><h2 style="font-family: 'Outfit', sans-serif; color: #4A5C66; font-size: 1.2rem; margin-top: 0; margin-bottom: 24px;">Full Upcoming Events Schedule</h2><div style="display: flex; flex-direction: column; gap: 16px;">${data.map(ev=>{const d=new Date(ev.event_date).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});return `<div style="border: 1px solid #ccc; border-radius: 8px; padding: 16px; break-inside: avoid;"><div style="font-weight: 800; font-size: 1.1rem; color: #1AA37E; margin-bottom: 4px;">${ev.title}</div><div style="font-weight: 700; font-size: 0.9rem; color: #4A5C66; margin-bottom: 8px;">${d}</div><div style="font-size: 0.95rem; color: #152630;">${ev.description||'No additional details.'}</div></div>`;}).join('')}</div><p style="margin-top: 32px; font-size: 0.8rem; color: #999; text-align: center;">Generated from tinkershatch.co.uk on ${new Date().toLocaleDateString('en-GB')}</p>`;}}catch(e){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load events.</p>';if(printBtn)printBtn.style.display='none';if(badge)badge.style.display='none';}}async function loadAdminEvents(){const ac=document.getElementById('adminEventContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading events...</p>';try{const{data,error}=await supabaseClient.from('events').select('*').order('event_date',{ascending:true});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No events found.</p>';return;}ac.innerHTML=data.map(ev=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;flex:1;">${ev.title} (${new Date(ev.event_date).toLocaleDateString('en-GB')})</span><button class="tester-btn del-event-btn" data-id="${ev.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');ac.querySelectorAll('.del-event-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('events').delete().eq('id',id);ToastModule.show('Event deleted!');loadAdminEvents();loadEvents();}catch(err){ToastModule.show('Error deleting event.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading events.</p>';}}async function addEvent(){const t=document.getElementById('newEventTitle').value.trim();const d=document.getElementById('newEventDate').value;const desc=document.getElementById('newEventDesc').value.trim();if(!t||!d){ToastModule.show('Title and Date are required.');return;}try{const{error}=await supabaseClient.from('events').insert([{title:t,event_date:d,description:desc}]);if(error)throw error;ToastModule.show('Event added!');fetch('https://ntfy.sh/tinkers-hatch-live',{method:'POST',body:`New Event Added: ${t} on ${d}`}).catch(()=>{});document.getElementById('newEventTitle').value='';document.getElementById('newEventDate').value='';document.getElementById('newEventDesc').value='';loadAdminEvents();loadEvents();}catch(err){ToastModule.show('Error adding event.');}}function init(){loadEvents();const addBtn=document.getElementById('addEventBtn');if(addBtn)addBtn.addEventListener('click',addEvent);const printBtn=document.getElementById('printScheduleBtn');if(printBtn)printBtn.addEventListener('click',()=>window.print());}return{init,loadAdminEvents,loadEvents};})();
-const WilfModule=(function(){async function loadStatus(){const badge=document.getElementById('wilfStatusBadge');if(!badge||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('wilf_status').select('is_visiting').eq('id',1).single();if(error)throw error;if(data&&data.is_visiting){badge.style.display='inline-flex';badge.style.background='var(--sage)';badge.style.color='#fff';badge.innerHTML='🐕 Wilf is visiting today!';}else{badge.style.display='inline-flex';badge.style.background='var(--cream-deep)';badge.style.color='var(--bark-soft)';badge.innerHTML='🐕 Wilf is currently off-site.';}}catch(e){}}async function toggleStatus(){if(!supabaseClient)return;try{const{data,error}=await supabaseClient.from('wilf_status').select('is_visiting').eq('id',1).single();if(error)throw error;const newStatus=!data.is_visiting;const{error:updateError}=await supabaseClient.from('wilf_status').update({is_visiting:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Wilf status updated to: ${newStatus?'Visiting':'Off-site'}`);loadStatus();}catch(err){ToastModule.show('Error updating Wilf status.');}}function init(){loadStatus();const toggleBtn=document.getElementById('wilfToggleBtn');if(toggleBtn)toggleBtn.addEventListener('click',toggleStatus);}return{init,loadStatus};})();
-const MenuModule=(function(){async function loadMenu(){const c=document.getElementById('menuContainer');const badge=document.getElementById('menuFreshnessBadge');if(!c||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});if(error)throw error;if(!data||data.length===0){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Menu is being updated. Please check back soon!</p>';return;}if(badge){const latest=data.reduce((a,b)=>new Date(a.updated_at)>new Date(b.updated_at)?a:b);if(latest&&latest.updated_at){badge.innerHTML=`Updated ${timeAgo(latest.updated_at)}`;badge.style.display='inline-flex';}}c.innerHTML=data.map(day=>{const meal=day.meal_text&&day.meal_text.trim()!==''?day.meal_text:'To be announced';const isPlaceholder=!day.meal_text||day.meal_text.trim()==='';return `<div class="card p-6 flex flex-col"><div class="display font-extrabold text-lg mb-2" style="color:var(--terracotta)">${day.day_name}</div><p class="text-sm" style="color:var(--bark-soft); ${isPlaceholder?'font-style: italic; opacity: 0.7;':''}">${meal}</p></div>`;}).join('');}catch(e){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load the menu.</p>';}}async function loadAdminMenu(){const ac=document.getElementById('adminMenuContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading menu...</p>';try{const{data,error}=await supabaseClient.from('weekly_menu').select('*').order('id',{ascending:true});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No menu days found.</p>';return;}ac.innerHTML=data.map(day=>`<div class="admin-film-item" style="padding: 8px 12px;"><label style="font-size:.8rem; font-weight:700; color:var(--bark); display:block; margin-bottom:4px;">${day.day_name}</label><input type="text" class="tester-input menu-input" data-id="${day.id}" value="${day.meal_text||''}" placeholder="e.g., Roast chicken with seasonal veg" style="margin-top:0; padding:8px; font-size:.9rem;"></div>`).join('');}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading menu.</p>';}}async function saveMenu(){const inputs=document.querySelectorAll('.menu-input');if(inputs.length===0)return;ToastModule.show("Saving menu...");try{for(let i=0;i<inputs.length;i++){const id=inputs[i].dataset.id;const val=inputs[i].value.trim();const{error}=await supabaseClient.from('weekly_menu').update({meal_text:val}).eq('id',id);if(error)throw error;}ToastModule.show("Weekly menu saved successfully!");loadAdminMenu();loadMenu();}catch(err){ToastModule.show("Error saving menu.");}}function init(){loadMenu();const saveBtn=document.getElementById('saveMenuBtn');if(saveBtn)saveBtn.addEventListener('click',saveMenu);}return{init,loadAdminMenu};})();
-const CommunityModule=(function(){async function loadCommunity(){const c=document.getElementById('communityContainer');if(!c||!supabaseClient)return;c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Loading community moments...</p>';try{const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false}).limit(6);if(error)throw error;if(!data||data.length===0){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">No community updates just yet. Check back soon!</p>';return;}c.innerHTML=data.map(post=>{const d=new Date(post.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});const imgHtml=post.image_url?`<div style="height: 200px; background-image: url('${post.image_url}'); background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 12px;"></div>`:'';return `<div class="card p-6 flex flex-col">${imgHtml}<div class="display font-extrabold text-lg mb-1" style="color:var(--teal)">${post.title}</div><div class="text-xs font-bold mb-3" style="color:var(--bark-soft)">${d}</div><p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">${post.description}</p></div>`;}).join('');}catch(e){c.innerHTML='<p style="color:var(--bark-soft);text-align:center;grid-column:1/-1;">Could not load community updates.</p>';}}async function loadAdminCommunity(){const ac=document.getElementById('adminCommunityContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading...</p>';try{const{data,error}=await supabaseClient.from('community_spotlight').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No posts found.</p>';return;}ac.innerHTML=data.map(post=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;flex:1;">${post.title}</span><button class="tester-btn del-community-btn" data-id="${post.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');ac.querySelectorAll('.del-community-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('community_spotlight').delete().eq('id',id);ToastModule.show('Spotlight deleted!');loadAdminCommunity();loadCommunity();}catch(err){ToastModule.show('Error deleting post.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading posts.</p>';}}async function addCommunity(){const t=document.getElementById('newCommunityTitle').value.trim();const d=document.getElementById('newCommunityDesc').value.trim();const img=document.getElementById('newCommunityImg').value.trim();if(!t||!d){ToastModule.show('Title and Description are required.');return;}try{const{error}=await supabaseClient.from('community_spotlight').insert([{title:t,description:d,image_url:img}]);if(error)throw error;ToastModule.show('Community spotlight posted!');document.getElementById('newCommunityTitle').value='';document.getElementById('newCommunityDesc').value='';document.getElementById('newCommunityImg').value='';loadAdminCommunity();loadCommunity();}catch(err){ToastModule.show('Error adding post.');}}function init(){loadCommunity();const addBtn=document.getElementById('addCommunityBtn');if(addBtn)addBtn.addEventListener('click',addCommunity);}return{init,loadAdminCommunity};})();
-const EnquiriesModule=(function(){async function submitEnquiry(name,email,message){try{const{error}=await supabaseClient.from('enquiries').insert([{name:name,email:email,message:message}]);if(error)throw error;ToastModule.show("Enquiry sent successfully! We'll be in touch soon.");return true;}catch(err){ToastModule.show("Error sending enquiry. Please try calling us instead.");return false;}}async function loadAdminEnquiries(){const ac=document.getElementById('adminEnquiriesContainer');if(!ac||!supabaseClient)return;ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">Loading enquiries...</p>';try{const{data,error}=await supabaseClient.from('enquiries').select('*').order('created_at',{ascending:false});if(error)throw error;if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No new enquiries.</p>';return;}ac.innerHTML=data.map(enq=>{const d=new Date(enq.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});return `<div class="admin-film-item" style="padding: 12px;"><div style="display:flex; justify-content:space-between; align-items:start; gap:8px; margin-bottom:6px;"><div><span style="font-weight:700; font-size:.9rem;">${enq.name}</span><span style="font-size:.75rem; color:var(--bark-soft); margin-left:8px;">${d}</span></div><button class="tester-btn del-enq-btn" data-id="${enq.id}" style="width:auto; margin:0; padding:4px 8px; font-size:0.7rem; background:var(--terracotta);">Delete</button></div><a href="mailto:${enq.email}" style="font-size:.85rem; color:var(--teal); font-weight:600; display:block; margin-bottom:6px;">${enq.email}</a><p style="font-size:.85rem; color:var(--bark-soft); line-height:1.4;">${enq.message}</p></div>`;}).join('');ac.querySelectorAll('.del-enq-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{const id=e.target.dataset.id;try{await supabaseClient.from('enquiries').delete().eq('id',id);ToastModule.show('Enquiry deleted!');loadAdminEnquiries();}catch(err){ToastModule.show('Error deleting enquiry.');}}));}catch(e){ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading enquiries.</p>';}}function init(){const form=document.getElementById('contactForm');if(form){form.addEventListener('submit',async(e)=>{e.preventDefault();const name=document.getElementById('contactName').value.trim();const email=document.getElementById('contactEmail').value.trim();const message=document.getElementById('contactMessage').value.trim();if(name&&email&&message){const success=await submitEnquiry(name,email,message);if(success){form.reset();}}});}}return{init,loadAdminEnquiries};})();
-
-const BriefingModule=(function(){async function loadBriefing(){const bar=document.getElementById('briefing-bar');const textEl=document.getElementById('briefing-text');const input=document.getElementById('briefingInput');if(!bar||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('daily_briefing').select('message').eq('id',1).single();if(error)throw error;if(data&&data.message&&data.message.trim()!==''){textEl.textContent=data.message;bar.style.display='block';if(input)input.value=data.message;}else{bar.style.display='none';}}catch(e){bar.style.display='none';}}async function saveBriefing(){const input=document.getElementById('briefingInput');if(!input||!supabaseClient)return;const msg=input.value.trim();try{const{error}=await supabaseClient.from('daily_briefing').update({message:msg}).eq('id',1);if(error)throw error;ToastModule.show("Briefing updated!");loadBriefing();}catch(err){ToastModule.show("Error saving briefing.");}}function init(){loadBriefing();const btn=document.getElementById('saveBriefingBtn');if(btn)btn.addEventListener('click',saveBriefing);}return{init,loadBriefing};})();
-
-const MaintenanceModule=(function(){async function checkStatus(){const banner=document.getElementById('maintenance-banner');if(!banner||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;if(data&&data.maintenance_mode){banner.style.display='block';}else{banner.style.display='none';}}catch(e){}}async function toggle(){try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;const newStatus=!data.maintenance_mode;const{error:updateError}=await supabaseClient.from('site_settings').update({maintenance_mode:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Maintenance Mode is now ${newStatus?'ON':'OFF'}`);checkStatus();}catch(err){ToastModule.show('Error toggling maintenance mode.');}}function init(){checkStatus();const btn=document.getElementById('toggleMaintenanceBtn');if(btn)btn.addEventListener('click',toggle);}return{init};})();
-
-const FeaturedEventsModule = (function() {
-    
-    async function loadFeatured() {
-        const c = document.getElementById('featuredEventsContainer');
-        if (!c || !supabaseClient) return;
+        pi.addEventListener('keypress',e=>{ if(e.key==='Enter'){ login(); } });
+        emailInput.addEventListener('keypress',e=>{ if(e.key==='Enter'){ pi.focus(); } });
         
-        c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;">Loading featured events...</p>';
+        document.querySelectorAll('.tester-season-btn').forEach(b=>b.addEventListener('click',e=>ss(e.target.dataset.season, e)));
+        document.getElementById('broadcastBtn').addEventListener('click',bc);
         
-        try {
-            const { data, error } = await supabaseClient.from('featured_events').select('*').eq('is_active', true).order('id', { ascending: true });
-            if (error) throw error;
-            
-            if (!data || data.length === 0) {
-                c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;">No featured events right now. Check back soon!</p>';
-                return;
-            }
-            
-            c.innerHTML = data.map(ev => `
-                <div class="featured-banner" style="background: linear-gradient(135deg, var(--honey), ${ev.color});">
-                    <div class="icon-row">${ev.icon || '🎉'}</div>
-                    <span class="tag mb-4 inline-flex">Save the Date</span>
-                    <h2>${ev.title}</h2>
-                    ${ev.date_text ? `<p class="date">${ev.date_text}</p>` : ''}
-                    <p>${ev.description || ''}</p>
-                </div>
-            `).join('');
-            
-        } catch (e) {
-            c.innerHTML = '<p style="color:var(--bark-soft);text-align:center;">Could not load featured events.</p>';
-        }
-    }
-
-    async function loadAdminFeatured() {
-        const ac = document.getElementById('adminFeaturedContainer');
-        if (!ac || !supabaseClient) return;
+        const uploadBtn=document.getElementById('uploadPhotoBtn');
+        if(uploadBtn) uploadBtn.addEventListener('click',uploadPhoto);
         
-        ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">Loading...</p>';
+        m.addEventListener('click',e=>{ if(e.target===m){ c(); } });
         
-        try {
-            const { data, error } = await supabaseClient.from('featured_events').select('*').order('id', { ascending: false });
-            if (error) throw error;
-            
-            if (!data || data.length === 0) {
-                ac.innerHTML = '<p class="text-sm" style="color: var(--bark-soft);">No featured events found.</p>';
-                return;
-            }
-            
-            ac.innerHTML = data.map(ev => `
-                <div class="admin-film-item" style="padding: 8px 12px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                        <span style="font-size:.8rem;font-weight:700;flex:1;">${ev.icon} ${ev.title} ${ev.is_active ? '' : '(Hidden)'}</span>
-                        <div class="flex gap-2">
-                            <button class="tester-btn toggle-featured-btn" data-id="${ev.id}" data-active="${ev.is_active}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:${ev.is_active ? 'var(--sage)' : 'var(--bark-soft)'};">${ev.is_active ? 'Hide' : 'Show'}</button>
-                            <button class="tester-btn del-featured-btn" data-id="${ev.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-            
-            ac.querySelectorAll('.toggle-featured-btn').forEach(btn => btn.addEventListener('click', async (e) => {
-                const id = e.target.dataset.id;
-                const newActive = e.target.dataset.active !== 'true';
-                try {
-                    await supabaseClient.from('featured_events').update({ is_active: newActive }).eq('id', id);
-                    ToastModule.show('Event updated!');
-                    loadAdminFeatured();
-                    loadFeatured();
-                } catch (err) {
-                    ToastModule.show('Error updating event.');
-                }
-            }));
-            
-            ac.querySelectorAll('.del-featured-btn').forEach(btn => btn.addEventListener('click', async (e) => {
-                const id = e.target.dataset.id;
-                try {
-                    await supabaseClient.from('featured_events').delete().eq('id', id);
-                    ToastModule.show('Event deleted!');
-                    loadAdminFeatured();
-                    loadFeatured();
-                } catch (err) {
-                    ToastModule.show('Error deleting event.');
-                }
-            }));
-            
-        } catch (e) {
-            ac.innerHTML = '<p class="text-sm" style="color: var(--terracotta);">Error loading events.</p>';
-        }
-    }
-
-    async function addFeatured() {
-        const title = document.getElementById('newFeaturedTitle').value.trim();
-        const date = document.getElementById('newFeaturedDate').value.trim();
-        const desc = document.getElementById('newFeaturedDesc').value.trim();
-        const icon = document.getElementById('newFeaturedIcon').value.trim() || '🎉';
-        const color = document.getElementById('newFeaturedColor').value;
+        document.querySelectorAll('.tester-tab-btn').forEach(btn=>{
+            btn.addEventListener('click',(e)=>{
+                document.querySelectorAll('.tester-tab-btn').forEach(b=>b.classList.remove('active'));
+                document.querySelectorAll('.tester-tab-content').forEach(c=>c.classList.remove('active'));
+                e.target.classList.add('active');
+                document.getElementById('tab-'+e.target.dataset.tab).classList.add('active');
+            });
+        });
         
-        if (!title) {
-            ToastModule.show('Title is required.');
-            return;
-        }
+        supabaseClient.auth.onAuthStateChange((event,session)=>{
+            if(event==='SIGNED_IN'){ showMenu(); }
+            else if(event==='SIGNED_OUT'){ showLogin(); }
+        });
         
-        try {
-            const { error } = await supabaseClient.from('featured_events').insert([{ title: title, date_text: date, description: desc, icon: icon, color: color }]);
-            if (error) throw error;
-            
-            ToastModule.show('Featured event added!');
-            document.getElementById('newFeaturedTitle').value = '';
-            document.getElementById('newFeaturedDate').value = '';
-            document.getElementById('newFeaturedDesc').value = '';
-            document.getElementById('newFeaturedIcon').value = '';
-            
-            loadAdminFeatured();
-            loadFeatured();
-        } catch (err) {
-            ToastModule.show('Error adding event.');
-        }
-    }
-
-    function init() {
-        loadFeatured();
-        const btn = document.getElementById('addFeaturedBtn');
-        if (btn) btn.addEventListener('click', addFeatured);
+        checkAuthState();
     }
     
-    return { init, loadAdminFeatured };
+    return{init};
 })();
-
-    function init() {
-        loadFeatured();
-        const btn = document.getElementById('addFeaturedBtn');
-        if (btn) btn.addEventListener('click', addFeatured);
-    }
-    
-    return { init, loadAdminFeatured };
-document.addEventListener('DOMContentLoaded',()=>{
-    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();
-    
-    const PolishModule = (function () {
-      function initReveal() {
-        const items = document.querySelectorAll('.reveal');
-        if (!items.length) return;
-        const reduceMotion =
-          window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
-          !('IntersectionObserver' in window);
-        if (reduceMotion) {
-          items.forEach(el => el.classList.add('is-visible'));
-          return;
-        }
-        items.forEach(el => el.classList.add('pre-reveal'));
-        const observer = new IntersectionObserver(entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.15 });
-        items.forEach(el => observer.observe(el));
-      }
-      function init() { initReveal(); }
-      return { init };
-    })();
     
     PolishModule.init();
 });
