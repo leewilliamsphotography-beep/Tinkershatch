@@ -305,6 +305,8 @@ const BriefingModule=(function(){async function loadBriefing(){const bar=documen
 const MaintenanceModule=(function(){async function checkStatus(){const banner=document.getElementById('maintenance-banner');if(!banner||!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;if(data&&data.maintenance_mode){banner.style.display='block';}else{banner.style.display='none';}}catch(e){}}async function toggle(){try{const{data,error}=await supabaseClient.from('site_settings').select('maintenance_mode').eq('id',1).single();if(error)throw error;const newStatus=!data.maintenance_mode;const{error:updateError}=await supabaseClient.from('site_settings').update({maintenance_mode:newStatus}).eq('id',1);if(updateError)throw updateError;ToastModule.show(`Maintenance Mode is now ${newStatus?'ON':'OFF'}`);checkStatus();}catch(err){ToastModule.show('Error toggling maintenance mode.');}}function init(){checkStatus();const btn=document.getElementById('toggleMaintenanceBtn');if(btn)btn.addEventListener('click',toggle);}return{init};})();
 
 const FeaturedEventsModule = (function() {
+    let editingId = null; // Tracks if we are editing an existing event
+
     async function loadFeatured() {
         const c = document.getElementById('featuredEventsContainer');
         if (!c || !supabaseClient) return;
@@ -346,12 +348,37 @@ const FeaturedEventsModule = (function() {
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
                         <span style="font-size:.8rem;font-weight:700;flex:1;">${ev.icon} ${ev.title} ${ev.is_active ? '' : '(Hidden)'}</span>
                         <div class="flex gap-2">
+                            <button class="tester-btn edit-featured-btn" data-id="${ev.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--honey);color:#000;">Edit</button>
                             <button class="tester-btn toggle-featured-btn" data-id="${ev.id}" data-active="${ev.is_active}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:${ev.is_active ? 'var(--sage)' : 'var(--bark-soft)'};">${ev.is_active ? 'Hide' : 'Show'}</button>
                             <button class="tester-btn del-featured-btn" data-id="${ev.id}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button>
                         </div>
                     </div>
                 </div>
             `).join('');
+            
+            ac.querySelectorAll('.edit-featured-btn').forEach(btn => btn.addEventListener('click', async (e) => {
+                const id = e.target.dataset.id;
+                try {
+                    const { data: ev, error } = await supabaseClient.from('featured_events').select('*').eq('id', id).single();
+                    if (error) throw error;
+                    
+                    // Populate the form with the event data
+                    document.getElementById('newFeaturedTitle').value = ev.title;
+                    document.getElementById('newFeaturedDate').value = ev.date_text || '';
+                    document.getElementById('newFeaturedDesc').value = ev.description || '';
+                    document.getElementById('newFeaturedIcon').value = ev.icon || '';
+                    document.getElementById('newFeaturedColor').value = ev.color || '#C25528';
+                    
+                    editingId = id;
+                    document.getElementById('addFeaturedBtn').textContent = 'Update Event';
+                    document.getElementById('cancelEditFeaturedBtn').style.display = 'inline-block';
+                    
+                    // Scroll to top of modal so they can see the form
+                    document.getElementById('newFeaturedTitle').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } catch (err) {
+                    ToastModule.show('Error fetching event details.');
+                }
+            }));
             
             ac.querySelectorAll('.toggle-featured-btn').forEach(btn => btn.addEventListener('click', async (e) => {
                 const id = e.target.dataset.id;
@@ -371,6 +398,7 @@ const FeaturedEventsModule = (function() {
                 try {
                     await supabaseClient.from('featured_events').delete().eq('id', id);
                     ToastModule.show('Event deleted!');
+                    if (editingId === id) cancelEdit();
                     loadAdminFeatured();
                     loadFeatured();
                 } catch (err) {
@@ -382,28 +410,59 @@ const FeaturedEventsModule = (function() {
         }
     }
 
+    function cancelEdit() {
+        editingId = null;
+        document.getElementById('newFeaturedTitle').value = '';
+        document.getElementById('newFeaturedDate').value = '';
+        document.getElementById('newFeaturedDesc').value = '';
+        document.getElementById('newFeaturedIcon').value = '';
+        document.getElementById('newFeaturedColor').value = '#C25528';
+        document.getElementById('addFeaturedBtn').textContent = 'Add Featured Event';
+        document.getElementById('cancelEditFeaturedBtn').style.display = 'none';
+    }
+
     async function addFeatured() {
         const title = document.getElementById('newFeaturedTitle').value.trim();
         const date = document.getElementById('newFeaturedDate').value.trim();
         const desc = document.getElementById('newFeaturedDesc').value.trim();
         const icon = document.getElementById('newFeaturedIcon').value.trim() || '🎉';
         const color = document.getElementById('newFeaturedColor').value;
+        
         if (!title) {
             ToastModule.show('Title is required.');
             return;
         }
+        
         try {
-            const { error } = await supabaseClient.from('featured_events').insert([{ title: title, date_text: date, description: desc, icon: icon, color: color }]);
-            if (error) throw error;
-            ToastModule.show('Featured event added!');
-            document.getElementById('newFeaturedTitle').value = '';
-            document.getElementById('newFeaturedDate').value = '';
-            document.getElementById('newFeaturedDesc').value = '';
-            document.getElementById('newFeaturedIcon').value = '';
+            if (editingId) {
+                // Update existing event
+                const { error } = await supabaseClient.from('featured_events').update({ 
+                    title: title, 
+                    date_text: date, 
+                    description: desc, 
+                    icon: icon, 
+                    color: color 
+                }).eq('id', editingId);
+                if (error) throw error;
+                ToastModule.show('Featured event updated!');
+            } else {
+                // Insert new event
+                const { error } = await supabaseClient.from('featured_events').insert([{ 
+                    title: title, 
+                    date_text: date, 
+                    description: desc, 
+                    icon: icon, 
+                    color: color 
+                }]);
+                if (error) throw error;
+                ToastModule.show('Featured event added!');
+            }
+            
+            cancelEdit(); // Clear form and reset button
             loadAdminFeatured();
             loadFeatured();
         } catch (err) {
-            ToastModule.show('Error adding event.');
+            ToastModule.show('Error saving event.');
         }
     }
 
@@ -411,10 +470,11 @@ const FeaturedEventsModule = (function() {
         loadFeatured();
         const btn = document.getElementById('addFeaturedBtn');
         if (btn) btn.addEventListener('click', addFeatured);
+        const cancelBtn = document.getElementById('cancelEditFeaturedBtn');
+        if (cancelBtn) cancelBtn.addEventListener('click', cancelEdit);
     }
     return { init, loadAdminFeatured };
 })();
-
 const VibeModule=(function(){async function loadVibe(){if(!supabaseClient)return;try{const{data,error}=await supabaseClient.from('site_settings').select('current_vibe').eq('id',1).single();if(error)throw error;applyVibe(data?.current_vibe||'neutral');}catch(e){applyVibe('neutral');}}function applyVibe(vibe){const b=document.body;b.classList.remove('vibe-active','vibe-calm','vibe-neutral');b.classList.add('vibe-'+vibe);document.querySelectorAll('.vibe-btn').forEach(btn=>{btn.classList.toggle('active',btn.dataset.vibe===vibe);});}async function setVibe(vibe){if(!supabaseClient)return;try{const{error}=await supabaseClient.from('site_settings').update({current_vibe:vibe}).eq('id',1);if(error)throw error;applyVibe(vibe);ToastModule.show(`Vibe set to: ${vibe.charAt(0).toUpperCase()+vibe.slice(1)}`);}catch(err){ToastModule.show('Error updating the vibe.');}}function init(){loadVibe();document.querySelectorAll('.vibe-btn').forEach(btn=>{btn.addEventListener('click',()=>setVibe(btn.dataset.vibe));});}return{init};})();
 const GoldenHourModule=(function(){function init(){const now=new Date();const hour=now.getHours();if((hour>=6&&hour<8)||(hour>=18&&hour<20)){document.body.classList.add('golden-hour');}}return{init};})();
 const HapticModule=(function(){function init(){document.body.addEventListener('click',e=>{if(navigator.vibrate&&e.target.closest('button, .mood-btn, .ambient-btn, .gallery-thumb, .splash-shortcut')){navigator.vibrate(8);}}, {passive:true});}return{init};})();

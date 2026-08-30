@@ -580,10 +580,13 @@
             <option value="#4A5C66">Bark</option>
         </select>
     </div>
-    <button id="addFeaturedBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Add Featured Event</button>
+    <div class="flex gap-2" style="margin-top: 12px;">
+        <button id="addFeaturedBtn" class="tester-btn" style="background:var(--teal-deep); flex: 1;">Add Featured Event</button>
+        <button id="cancelEditFeaturedBtn" class="tester-btn" style="background:var(--bark-soft); display: none;">Cancel</button>
+    </div>
     <hr class="tester-divider">
     <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
-</div>          
+</div>        
 		  <div id="tab-enquiries" class="tester-tab-content">
                 <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Contact Form Enquiries</h3>
                 <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Messages submitted by visitors on the Visit page.</p>
