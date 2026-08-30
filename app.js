@@ -520,8 +520,8 @@ const TesterModule=(function(){
         
         checkAuthState();
     }
-    
+        PolishModule.init();
+
     return{init};
-    PolishModule.init();
 
 })();
