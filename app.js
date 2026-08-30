@@ -676,6 +676,9 @@ const TesterModule=(function(){
         if(adminThemes) adminThemes.style.display=(userRole==='admin')?'block':'none';
         const maintBtn=document.getElementById('toggleMaintenanceBtn');
         if(maintBtn) maintBtn.style.display=(userRole==='admin')?'block':'none';
+		        // Hide Staff Creation panel if not admin
+        const staffTabBtn=document.getElementById('staffTabBtn');
+        if(staffTabBtn)staffTabBtn.style.display=(userRole==='admin')?'flex':'none';
         if(typeof FeaturedEventsModule!=='undefined') FeaturedEventsModule.loadAdminFeatured();
         if(typeof FilmNightModule!=='undefined') FilmNightModule.loadFilms();
         if(typeof LayoutModule!=='undefined') LayoutModule.onTesterOpen();
