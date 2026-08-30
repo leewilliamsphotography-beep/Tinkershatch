@@ -789,73 +789,86 @@ const TesterModule=(function(){
         showLogin();
         c();
     }
-    async function showMenu(){
+        async function showMenu(){
         if(isMenuLoaded) return;
         isMenuLoaded = true;
-        la.style.display='none';
-        ma.style.display='flex';
-        if(gearBtn) gearBtn.classList.add('show');
-        if(footerLogin) footerLogin.style.display='none';
-        loginBtn.textContent='Log In';
-        loginBtn.disabled=false;
-        const{data:{session}}=await supabaseClient.auth.getSession();
-        const user=session?.user;
-        const userRole=user?.user_metadata?.role;
-        const menuTabBtn=document.querySelector('button[data-tab="menu"]');
-        if(menuTabBtn){
-            if(userRole==='chef'||userRole==='admin'){
-                menuTabBtn.style.display='flex';
-                if(typeof MenuModule!=='undefined') MenuModule.loadAdminMenu();
-            }else{
-                menuTabBtn.style.display='none';
-            }
-        }
-        const adminThemes=document.getElementById('adminOnlyThemes');
-        if(adminThemes) adminThemes.style.display=(userRole==='admin')?'block':'none';
-        const maintBtn=document.getElementById('toggleMaintenanceBtn');
-        if(maintBtn) maintBtn.style.display=(userRole==='admin')?'block':'none';
         
-        // Hide Staff Creation panel if not admin
-        const staffTabBtn=document.getElementById('staffTabBtn');
-        if(staffTabBtn) staffTabBtn.style.display=(userRole==='admin')?'flex':'none';
-        // === USER-SPECIFIC COLORFUL DASHBOARD THEME ===
-        const userId = user ? user.id : 'default';
-        const staffThemeKey = `th-staff-theme-${userId}`;
-        const savedTheme = safeGet(staffThemeKey) || 'staff-nature';
-        
-        // Apply the theme
-        document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
-        document.body.classList.add(savedTheme);
-        
-        // Highlight the active theme button
-        document.querySelectorAll('.staff-theme-btn').forEach(btn => {
-            if(btn.dataset.theme === savedTheme) btn.classList.add('theme-btn-active');
-            else btn.classList.remove('theme-btn-active');
+        try {
+            la.style.display='none';
+            ma.style.display='flex';
+            if(gearBtn) gearBtn.classList.add('show');
+            if(footerLogin) footerLogin.style.display='none';
+            loginBtn.textContent='Log In';
+            loginBtn.disabled=false;
             
-            btn.onclick = () => {
-                const newTheme = btn.dataset.theme;
-                document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
-                document.body.classList.add(newTheme);
-                safeSet(staffThemeKey, newTheme);
-                ToastModule.show('Dashboard theme saved!');
+            const{data:{session}}=await supabaseClient.auth.getSession();
+            const user=session?.user;
+            const userRole=user?.user_metadata?.role;
+            
+            const menuTabBtn=document.querySelector('button[data-tab="menu"]');
+            if(menuTabBtn){
+                if(userRole==='chef'||userRole==='admin'){
+                    menuTabBtn.style.display='flex';
+                    if(typeof MenuModule!=='undefined') MenuModule.loadAdminMenu();
+                }else{
+                    menuTabBtn.style.display='none';
+                }
+            }
+            
+            const adminThemes=document.getElementById('adminOnlyThemes');
+            if(adminThemes) adminThemes.style.display=(userRole==='admin')?'block':'none';
+            const maintBtn=document.getElementById('toggleMaintenanceBtn');
+            if(maintBtn) maintBtn.style.display=(userRole==='admin')?'block':'none';
+            
+            const staffTabBtn=document.getElementById('staffTabBtn');
+            if(staffTabBtn) staffTabBtn.style.display=(userRole==='admin')?'flex':'none';
+            
+            // === USER-SPECIFIC COLORFUL DASHBOARD THEME ===
+            const userId = user ? user.id : 'default';
+            const staffThemeKey = `th-staff-theme-${userId}`;
+            const savedTheme = safeGet(staffThemeKey) || 'staff-nature';
+            
+            document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
+            document.body.classList.add(savedTheme);
+            
+            document.querySelectorAll('.staff-theme-btn').forEach(btn => {
+                if(btn.dataset.theme === savedTheme) btn.classList.add('theme-btn-active');
+                else btn.classList.remove('theme-btn-active');
                 
-                // Update button highlights
-                document.querySelectorAll('.staff-theme-btn').forEach(b => b.classList.remove('theme-btn-active'));
-                btn.classList.add('theme-btn-active');
-            };
-        });
-        if(typeof FeaturedEventsModule!=='undefined') FeaturedEventsModule.loadAdminFeatured();
-        if(typeof FilmNightModule!=='undefined') FilmNightModule.loadFilms();
-        if(typeof LayoutModule!=='undefined') LayoutModule.onTesterOpen();
-        if(typeof DatabaseModule!=='undefined') DatabaseModule.loadUpdates();
-        if(typeof LightboxModule!=='undefined') LightboxModule.loadImages();
-        if(typeof EventsModule!=='undefined') EventsModule.loadAdminEvents();
-        if(typeof WilfBlogModule!=='undefined') WilfBlogModule.loadAdminBlog();
-        if(typeof EnquiriesModule!=='undefined') EnquiriesModule.loadAdminEnquiries();
-        if(typeof BriefingModule!=='undefined') BriefingModule.loadBriefing();
-        if(typeof CelebrationModule!=='undefined') CelebrationModule.loadAdminCelebrations();
-        renderPhotoAdmin();
-    }
+                btn.onclick = () => {
+                    const newTheme = btn.dataset.theme;
+                    document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
+                    document.body.classList.add(newTheme);
+                    safeSet(staffThemeKey, newTheme);
+                    ToastModule.show('Dashboard theme saved!');
+                    
+                    document.querySelectorAll('.staff-theme-btn').forEach(b => b.classList.remove('theme-btn-active'));
+                    btn.classList.add('theme-btn-active');
+                };
+            });
+
+            // Load all admin data safely
+            if(typeof FeaturedEventsModule!=='undefined') FeaturedEventsModule.loadAdminFeatured();
+            if(typeof FilmNightModule!=='undefined') FilmNightModule.loadFilms();
+            if(typeof LayoutModule!=='undefined') LayoutModule.onTesterOpen();
+            if(typeof DatabaseModule!=='undefined') DatabaseModule.loadUpdates();
+            if(typeof LightboxModule!=='undefined') LightboxModule.loadImages();
+            if(typeof EventsModule!=='undefined') EventsModule.loadAdminEvents();
+            if(typeof WilfBlogModule!=='undefined') WilfBlogModule.loadAdminBlog();
+            if(typeof EnquiriesModule!=='undefined') EnquiriesModule.loadAdminEnquiries();
+            if(typeof BriefingModule!=='undefined') BriefingModule.loadBriefing();
+            if(typeof CelebrationModule!=='undefined') CelebrationModule.loadAdminCelebrations();
+            renderPhotoAdmin();
+            
+        } catch(e) {
+            console.error("Dashboard Load Error:", e);
+            // If it fails, reset the login button so it isn't stuck
+            isMenuLoaded = false;
+            loginBtn.textContent='Log In';
+            loginBtn.disabled=false;
+            et.textContent='Error loading dashboard: ' + e.message;
+        }
+    } 
     function showLogin(){
         isMenuLoaded = false;
         la.style.display='block';
