@@ -3,232 +3,315 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Botanical Wordsearch — A British Puzzle Garden</title>
+<title>Tinker's Word Search</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #f3ede1;
-    --bg-warm: #ebe3d2;
-    --paper: #fdfaf2;
-    --paper-deep: #f7f1e3;
-    --ink: #1f1f1d;
-    --ink-soft: #2c2a25;
-    --ink-muted: #6b6859;
-    --line: #d8cfbb;
-    --line-soft: #e8e0cc;
-    --forest: #2d4a3a;
-    --forest-deep: #1e3328;
-    --forest-soft: #4a6b58;
-    --terracotta: #b8542a;
-    --terracotta-deep: #96431d;
-    --gold: #c69749;
-    --gold-deep: #a87a2e;
-    --rose: #b86b6b;
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --primary-light: #eef2ff;
+    --accent: #ec4899;
+    --success: #10b981;
+    --danger: #ef4444;
   }
 
-  * { -webkit-tap-highlight-color: transparent; }
+  * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
 
   body {
     background: var(--bg);
-    color: var(--ink);
-    font-family: 'Outfit', system-ui, sans-serif;
-    background-image:
-      radial-gradient(circle at 15% 20%, rgba(184, 84, 42, 0.05) 0%, transparent 45%),
-      radial-gradient(circle at 85% 80%, rgba(45, 74, 58, 0.06) 0%, transparent 45%),
-      radial-gradient(circle at 50% 50%, rgba(198, 151, 73, 0.03) 0%, transparent 60%);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+      radial-gradient(at 98% 1%, rgba(236, 72, 153, 0.05) 0px, transparent 50%);
     min-height: 100vh;
   }
 
-  .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
-  .font-italic { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+  .font-display { font-family: 'Space Grotesk', sans-serif; }
 
-  .paper {
-    background: var(--paper);
-    background-image: radial-gradient(circle at 1px 1px, rgba(45, 74, 58, 0.035) 1px, transparent  0);
-    background-size: 22px 22px;
-    border: 1px solid var(--line);
-    position: relative;
+  /* Modern Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
   }
-  .paper-deep {
-    background: var(--paper-deep);
-    background-image: radial-gradient(circle at 1px 1px, rgba(45, 74, 58, 0.04) 1px, transparent  0);
-    background-size: 22px 22px;
-  }
-  .corner-orn::before, .corner-orn::after {
-    content: '';
-    position: absolute;
-    width: 28px; height: 28px;
-    border: 2px solid var(--forest);
-    opacity: 0.4;
-    pointer-events: none;
-  }
-  .corner-orn::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
-  .corner-orn::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
 
-  .grid-table { display: grid; gap: 2px; user-select: none; -webkit-user-select: none; touch-action: none; }
+  /* Grid cells */
+  .grid-table {
+    display: grid;
+    gap: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
   .cell {
     aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
-    background: transparent;
-    border: none; cursor: pointer;
-    font-family: 'Fraunces', serif; font-weight: 500;
-    color: var(--ink-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    border: 1px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    color: var(--text);
     user-select: none;
-    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
-    position: relative; border-radius: 4px;
-    font-size: clamp(0.7rem, 2.2vw, 1.15rem);
-    padding: 0; line-height: 1;
+    transition: all 0.15s ease;
+    font-size: clamp(0.8rem, 2.5vw, 1.2rem);
+    padding: 0;
+    line-height: 1;
   }
-  .cell:hover:not(.found) { background: rgba(45, 74, 58, 0.08); color: var(--forest-deep); }
-  .cell.selected { background: rgba(184, 84, 42, 0.32) !important; color: var(--forest-deep); transform: scale(1.05); z-index: 2; }
-  .cell.found { background: var(--found-color, rgba(138, 154, 91, 0.4)); color: var(--forest-deep); font-weight: 600; }
-  .cell.found.selected { background: var(--found-color, rgba(138, 154, 91, 0.7)) !important; }
-  .cell.hint-flash { animation: hintPulse 1.2s ease; }
+
+  .cell:hover:not(.found) {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .cell.selected {
+    background: var(--primary) !important;
+    color: #ffffff !important;
+    border-color: var(--primary-hover);
+    transform: scale(1.05);
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+
+  .cell.found {
+    background: var(--found-color, rgba(16, 185, 129, 0.15));
+    color: var(--text);
+    border-color: var(--found-border, var(--success));
+  }
+
+  .cell.hint-flash {
+    animation: hintPulse 1.2s ease;
+  }
+
   @keyframes hintPulse {
-    0%, 100% { background: transparent; transform: scale(1); }
-    50% { background: rgba(198, 151, 73, 0.5); transform: scale(1.15); }
+    0%, 100% { background: var(--bg); transform: scale(1); }
+    50% { background: var(--accent); color: #fff; transform: scale(1.15); box-shadow: 0 0 15px rgba(236, 72, 153, 0.5); }
   }
 
+  /* Buttons */
   .btn {
-    font-family: 'Outfit', sans-serif; font-weight: 500; letter-spacing: 0.02em;
-    transition: all 0.2s ease; border-radius: 8px; cursor: pointer;
-    display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    border: none;
   }
+
   .btn-primary {
-    background: var(--forest); color: var(--paper);
-    padding: 0.6rem 1.1rem; border: 1px solid var(--forest-deep);
-    box-shadow: 0 2px 0 var(--forest-deep), 0 4px 12px rgba(45, 74, 58, 0.15);
+    background: var(--primary);
+    color: #ffffff;
+    padding: 0.6rem 1.2rem;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
   }
-  .btn-primary:hover { background: var(--forest-deep); transform: translateY(-1px); box-shadow: 0 3px 0 var(--forest-deep), 0 6px 16px rgba(45, 74, 58, 0.2); }
-  .btn-primary:active { transform: translateY(1px); box-shadow: 0 0 0 var(--forest-deep); }
+  .btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+  }
+  .btn-primary:active { transform: translateY(0); }
+
   .btn-ghost {
-    background: var(--paper); color: var(--ink);
-    padding: 0.6rem 1.1rem; border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--text);
+    padding: 0.6rem 1.2rem;
+    border: 1px solid var(--border);
   }
-  .btn-ghost:hover { background: var(--paper-deep); border-color: var(--forest); color: var(--forest-deep); }
+  .btn-ghost:hover { background: var(--bg); border-color: var(--text-muted); }
+
   .btn-home {
-    background: transparent; color: var(--forest-deep);
-    padding: 0.6rem 1rem; border: 1px solid var(--forest);
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0.6rem 1rem;
   }
-  .btn-home:hover { background: var(--forest); color: var(--paper); }
+  .btn-home:hover { color: var(--text); background: var(--bg); }
 
-  .diff-pill {
-    padding: 0.4rem 0.9rem; border-radius: 999px; cursor: pointer;
-    transition: all 0.2s ease; font-size: 0.82rem; font-weight: 500;
-    border: 1px solid var(--line); background: var(--paper); color: var(--ink-muted);
-    font-family: 'Outfit', sans-serif;
+  /* Pills & Chips */
+  .pill {
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
   }
-  .diff-pill:hover { border-color: var(--forest); color: var(--forest); }
-  .diff-pill.active { background: var(--forest); color: var(--paper); border-color: var(--forest); }
-
-  .cat-chip {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
-    border: 1px solid var(--line); background: var(--paper); cursor: pointer;
-    transition: all 0.2s ease; color: var(--ink-soft); font-family: 'Outfit', sans-serif;
+  .pill:hover { border-color: var(--primary); color: var(--primary); }
+  .pill.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
   }
-  .cat-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .cat-chip.active { background: var(--paper-deep); border-color: var(--forest); color: var(--forest-deep); }
-  .cat-chip:not(.active) { opacity: 0.55; }
-  .cat-chip:not(.active):hover { opacity: 0.85; border-color: var(--forest-soft); }
 
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text);
+  }
+  .chip .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .chip.active { background: #ffffff; border-color: var(--text); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .chip:not(.active) { opacity: 0.5; }
+  .chip:not(.active):hover { opacity: 0.8; }
+
+  /* Word List */
   .word-item {
-    display: flex; align-items: center; gap: 0.6rem;
-    padding: 0.4rem 0.6rem; border-radius: 6px;
-    font-family: 'Fraunces', serif; font-weight: 400; font-size: 0.95rem; letter-spacing: 0.03em;
-    transition: all 0.3s ease; color: var(--ink-soft); position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    color: var(--text);
   }
-  .word-item .marker { width: 10px; height: 10px; border: 1.5px solid var(--line); border-radius: 2px; flex-shrink: 0; transition: all 0.3s ease; }
-  .word-item.found { color: var(--ink-muted); opacity: 0.65; }
-  .word-item.found .marker { background: var(--word-color, var(--forest)); border-color: var(--word-color, var(--forest)); }
-  .word-item.found .word-text { text-decoration: line-through; text-decoration-thickness: 1.5px; text-decoration-color: var(--word-color, var(--forest)); }
+  .word-item .check {
+    width: 20px; height: 20px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .word-item.found {
+    color: var(--text-muted);
+    background: var(--bg);
+  }
+  .word-item.found .check {
+    background: var(--word-color, var(--success));
+    border-color: var(--word-color, var(--success));
+  }
+  .word-item.found .check::after {
+    content: '✓';
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .word-item.found .word-text {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    text-decoration-color: var(--word-color, var(--success));
+  }
   .word-item.just-found { animation: wordFound 0.6s ease; }
   @keyframes wordFound {
-    0% { transform: scale(1); background: transparent; }
-    50% { transform: scale(1.04); background: rgba(198, 151, 73, 0.15); }
-    100% { transform: scale(1); background: transparent; }
+    0% { transform: scale(1); background: var(--bg); }
+    50% { transform: scale(1.03); background: var(--primary-light); }
+    100% { transform: scale(1); background: var(--bg); }
   }
+
   .cat-label {
-    font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 600;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);
-    margin: 0.75rem 0 0.35rem 0.1rem; display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 1rem 0 0.5rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .cat-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  .cat-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .stat { display: flex; flex-direction: column; gap: 0.1rem; }
-  .stat-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
-  .stat-value { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.5rem; color: var(--forest-deep); line-height: 1.1; font-variant-numeric: tabular-nums; }
+  /* Stats */
+  .stat-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
+  .stat-value { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.75rem; color: var(--text); line-height: 1.1; }
 
-  .cell:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible {
-    outline: 2.5px solid var(--terracotta); outline-offset: 2px;
+  /* Focus */
+  .cell:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
   }
   .skip-link {
     position: absolute; top: -100px; left: 1rem;
-    background: var(--forest); color: var(--paper); padding: 0.6rem 1.2rem;
-    border-radius: 6px; z-index: 100; font-weight: 500; transition: top 0.2s;
+    background: var(--primary); color: #fff; padding: 0.6rem 1.2rem;
+    border-radius: 8px; z-index: 100; font-weight: 500; transition: top 0.2s;
   }
   .skip-link:focus { top: 1rem; }
 
+  /* Toast */
   .toast {
     position: fixed; bottom: 2rem; left: 50%;
     transform: translateX(-50%) translateY(120px);
-    background: var(--forest-deep); color: var(--paper);
-    padding: 0.8rem 1.6rem; border-radius: 999px; font-weight: 500;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: var(--text); color: #fff;
+    padding: 0.8rem 1.5rem; border-radius: 999px; font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    z-index: 200; display: flex; align-items: center; gap: 0.6rem;
-    font-family: 'Fraunces', serif; letter-spacing: 0.02em;
+    z-index: 200; display: flex; align-items: center; gap: 0.5rem;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
-  .toast .toast-mark { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+  .toast .toast-mark { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
 
+  /* Modal */
   .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(31, 31, 29, 0.55);
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     z-index: 150; display: flex; align-items: center; justify-content: center;
     padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s;
   }
   .modal-backdrop.show { opacity: 1; pointer-events: auto; }
   .modal {
-    background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
-    max-width: 480px; width: 100%; padding: 2.5rem 2rem; text-align: center;
-    transform: scale(0.92); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: var(--surface); border-radius: 20px;
+    max-width: 440px; width: 100%; padding: 2.5rem;
+    text-align: center; transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative; overflow: hidden;
   }
   .modal-backdrop.show .modal { transform: scale(1); }
-  .modal::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-    background: linear-gradient(90deg, var(--forest), var(--gold), var(--terracotta));
+
+  .confetti {
+    position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 160; opacity: 0;
   }
-  .petal {
-    position: fixed; width: 10px; height: 14px; background: var(--gold);
-    border-radius: 100% 0 100% 0; pointer-events: none; z-index: 160; opacity: 0;
-  }
-  .divider { display: flex; align-items: center; gap: 1rem; color: var(--forest); opacity: 0.5; }
-  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: currentColor; }
-  details.howto { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; transition: background 0.2s; }
-  details.howto[open] { background: var(--paper-deep); }
+
+  /* Accordion */
+  details.howto { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; }
   details.howto summary {
-    cursor: pointer; font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.05rem;
-    color: var(--forest-deep); list-style: none; display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.1rem;
+    color: var(--text); list-style: none; display: flex; align-items: center; justify-content: space-between;
   }
   details.howto summary::-webkit-details-marker { display: none; }
-  details.howto summary::after { content: '+'; font-size: 1.4rem; color: var(--forest); transition: transform 0.2s; line-height: 1; }
+  details.howto summary::after { content: '+'; font-size: 1.5rem; color: var(--text-muted); transition: transform 0.2s; }
   details.howto[open] summary::after { transform: rotate(45deg); }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
-  @media (max-width: 768px) {
-    .stat-value { font-size: 1.2rem; }
-    .cell { border-radius: 3px; }
-  }
+
   .grid-table.selecting .cell { cursor: grabbing; }
-  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  kbd { background: var(--bg); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); font-family: 'Space Grotesk', monospace; font-size: 0.85em; }
 </style>
 </head>
 <body>
@@ -242,15 +325,15 @@
 
 <div id="winModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="winTitle">
   <div class="modal">
-    <div class="font-italic text-sm tracking-widest uppercase" style="color: var(--terracotta);">Puzzle Complete</div>
-    <h2 id="winTitle" class="font-display text-4xl font-light mt-2 mb-1" style="color: var(--forest-deep);">Well done!</h2>
-    <p class="text-sm mb-6" style="color: var(--ink-muted);">You've found every word in the garden.</p>
-    <div class="grid grid-cols-2 gap-4 mb-6">
-      <div class="paper-deep rounded-lg p-4">
+    <div class="font-display text-sm tracking-widest uppercase text-indigo-500 font-bold">Puzzle Complete</div>
+    <h2 id="winTitle" class="font-display text-4xl font-bold mt-2 mb-2 text-slate-900">Well done!</h2>
+    <p class="text-sm mb-8 text-slate-500">You've found every word. Ready for another round?</p>
+    <div class="grid grid-cols-2 gap-4 mb-8">
+      <div class="bg-slate-50 rounded-xl p-4">
         <div class="stat-label">Time</div>
         <div class="stat-value" id="winTime">00:00</div>
       </div>
-      <div class="paper-deep rounded-lg p-4">
+      <div class="bg-slate-50 rounded-xl p-4">
         <div class="stat-label">Words Found</div>
         <div class="stat-value" id="winCount">0</div>
       </div>
@@ -262,19 +345,17 @@
   </div>
 </div>
 
-<header class="border-b" style="border-color: var(--line); background: rgba(253, 250, 242, 0.6); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50;">
+<header class="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
     <div class="flex items-center gap-3">
-      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
-        <circle cx="22" cy="22" r="20" stroke="var(--forest)" stroke-width="1" opacity="0.3"/>
-        <path d="M22 36 L 22 10" stroke="var(--forest)" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M22 14 C 15 12, 11 16, 13 21 C 17 21, 21 18, 22 14 Z" fill="var(--forest)" opacity="0.85"/>
-        <path d="M22 20 C 29 18, 33 22, 31 27 C 27 27, 23 24, 22 20 Z" fill="var(--terracotta)" opacity="0.8"/>
-        <path d="M22 26 C 15 24, 11 28, 13 33 C 17 33, 21 30, 22 26 Z" fill="var(--gold)" opacity="0.8"/>
-      </svg>
+      <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-md shadow-indigo-200">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </div>
       <div>
-        <h1 class="font-display text-xl sm:text-2xl font-medium leading-none" style="color: var(--forest-deep);">The Botanical Wordsearch</h1>
-        <p class="font-italic text-xs sm:text-sm" style="color: var(--ink-muted);">A British puzzle garden</p>
+        <h1 class="font-display text-xl sm:text-2xl font-bold leading-none text-slate-900">Tinker's Word Search</h1>
+        <p class="text-xs text-slate-500 mt-1">UK, Sussex & Botanical Edition</p>
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -282,7 +363,7 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         Home
       </a>
-      <button class="btn btn-ghost text-sm" onclick="showHint()" aria-label="Reveal a hint for one word">
+      <button class="btn btn-ghost text-sm" onclick="showHint()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 3 6 1 1 1 2 1 3h6c0-1 0-2 1-3 1-1 3-3 3-6a7 7 0 0 0-7-7Z"/></svg>
         Hint
       </button>
@@ -294,119 +375,117 @@
   </div>
 </header>
 
-<main id="puzzle" class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+<main id="puzzle" class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
-  <section class="paper rounded-xl p-5 sm:p-6 mb-6 corner-orn" aria-label="Puzzle statistics">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
-      <div class="stat">
+  <section class="card p-6 mb-6">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+      <div>
         <span class="stat-label">Found</span>
-        <span class="stat-value"><span id="foundCount">0</span><span style="color: var(--ink-muted); font-size: 0.9rem;">/<span id="totalCount">0</span></span></span>
+        <div class="stat-value mt-1"><span id="foundCount">0</span><span class="text-slate-300 text-xl">/<span id="totalCount">0</span></span></div>
       </div>
-      <div class="stat">
+      <div>
         <span class="stat-label">Time</span>
-        <span class="stat-value" id="timer">00:00</span>
+        <div class="stat-value mt-1" id="timer">00:00</div>
       </div>
-      <div class="stat col-span-2 sm:col-span-1">
+      <div class="col-span-2 sm:col-span-1">
         <span class="stat-label">Difficulty</span>
-        <div class="flex gap-1.5 mt-1.5 flex-wrap" role="radiogroup" aria-label="Difficulty">
-          <button class="diff-pill" data-diff="Gentle" role="radio" aria-checked="false">Gentle</button>
-          <button class="diff-pill active" data-diff="Classic" role="radio" aria-checked="true">Classic</button>
-          <button class="diff-pill" data-diff="Challenging" role="radio" aria-checked="false">Hardy</button>
+        <div class="flex gap-2 mt-2 flex-wrap">
+          <button class="pill" data-diff="Gentle">Gentle</button>
+          <button class="pill active" data-diff="Classic">Classic</button>
+          <button class="pill" data-diff="Challenging">Hardy</button>
         </div>
       </div>
-      <div class="stat col-span-2 sm:col-span-1">
+      <div class="col-span-2 sm:col-span-1">
         <span class="stat-label">Progress</span>
-        <div class="mt-2 h-2 rounded-full overflow-hidden" style="background: var(--line-soft);">
-          <div id="progressBar" class="h-full transition-all duration-500" style="width: 0%; background: linear-gradient(90deg, var(--forest), var(--gold));"></div>
+        <div class="mt-3 h-2.5 rounded-full overflow-hidden bg-slate-100">
+          <div id="progressBar" class="h-full transition-all duration-500 bg-indigo-500 rounded-full" style="width: 0%;"></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="mb-6" aria-label="Theme selection">
-    <div class="flex items-baseline justify-between mb-3 flex-wrap gap-2">
-      <h2 class="font-display text-lg" style="color: var(--forest-deep);">Choose your themes</h2>
-      <span class="text-xs" style="color: var(--ink-muted);">Toggle to include or exclude word categories</span>
+  <section class="mb-6">
+    <div class="flex items-baseline justify-between mb-4 flex-wrap gap-2">
+      <h2 class="font-display text-lg font-semibold text-slate-900">Themes</h2>
+      <span class="text-xs text-slate-500">Toggle categories on or off</span>
     </div>
     <div id="categoryChips" class="flex flex-wrap gap-2"></div>
   </section>
 
-  <div class="grid lg:grid-cols-[1fr_300px] gap-6">
-    <section class="paper rounded-xl p-4 sm:p-6 lg:p-8 corner-orn" aria-label="Word search grid">
-      <div class="flex items-baseline justify-between mb-4">
-        <div>
-          <span class="font-italic text-xs tracking-widest uppercase" style="color: var(--terracotta);">The Garden Plot</span>
-          <h2 class="font-display text-2xl" style="color: var(--forest-deep);">Find the hidden words</h2>
-        </div>
-        <div class="text-xs hidden sm:block" style="color: var(--ink-muted);">Drag or tap to select</div>
+  <div class="grid lg:grid-cols-[1fr_320px] gap-6">
+    <section class="card p-6 sm:p-8">
+      <div class="flex items-baseline justify-between mb-6">
+        <h2 class="font-display text-2xl font-bold text-slate-900">Find the words</h2>
+        <div class="text-xs hidden sm:block text-slate-500">Drag or tap to select</div>
       </div>
       <div id="gridContainer" class="flex justify-center">
         <div id="grid" class="grid-table" role="grid" aria-label="Word search puzzle grid"></div>
       </div>
-      <div class="mt-5 pt-4 border-t flex flex-wrap items-center justify-between gap-3 text-xs" style="border-color: var(--line-soft); color: var(--ink-muted);">
-        <span>Words may run horizontally, vertically, or diagonally — forwards or backwards.</span>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+        <span>Horizontal, vertical, diagonal — forwards or backwards.</span>
         <button class="btn btn-ghost text-xs" style="padding: 0.35rem 0.8rem;" onclick="newPuzzle()">Regenerate</button>
       </div>
     </section>
 
-    <aside class="paper rounded-xl p-5 sm:p-6" aria-label="Words to find">
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="font-display text-xl" style="color: var(--forest-deep);">Word List</h2>
-        <span class="font-italic text-xs" style="color: var(--ink-muted);" id="remainingLabel">0 remaining</span>
+    <aside class="card p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="font-display text-xl font-bold text-slate-900">Word List</h2>
+        <span class="text-xs text-slate-500 font-medium" id="remainingLabel">0 left</span>
       </div>
-      <div id="wordList" class="space-y-0.5"></div>
+      <div id="wordList" class="space-y-1"></div>
     </aside>
   </div>
 
   <section class="mt-8 max-w-3xl mx-auto">
     <details class="howto">
-      <summary>How to play & accessibility</summary>
-      <div class="mt-4 text-sm space-y-3" style="color: var(--ink-soft); line-height: 1.6;">
-        <p><strong style="color: var(--forest-deep);">Selecting words:</strong> Click and drag across letters, or tap the first letter then tap the last letter of the word. Words can run in any of eight directions — including backwards.</p>
-        <p><strong style="color: var(--forest-deep);">Keyboard:</strong> Tab to move between cells. Press <kbd style="background: var(--paper-deep); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace; font-size: 0.8em;">Enter</kbd> to start a selection, use arrow keys to extend in a straight line, then press <kbd style="background: var(--paper-deep); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace; font-size: 0.8em;">Enter</kbd> again to confirm.</p>
-        <p><strong style="color: var(--forest-deep);">Themes:</strong> Words come from East Sussex places, broader British culture, garden flowers, and everyday British things. Toggle themes above to customise your puzzle.</p>
-        <p><strong style="color: var(--forest-deep);">Difficulty:</strong> <em>Gentle</em> offers a 12×12 grid with 8 words. <em>Classic</em> is 15×15 with 12 words. <em>Hardy</em> is 18×18 with 16 words.</p>
+      <summary>How to play</summary>
+      <div class="mt-4 text-sm space-y-3 text-slate-600 leading-relaxed">
+        <p><strong class="text-slate-900">Selecting words:</strong> Click and drag across letters, or tap the first letter then tap the last letter of the word. Words can run in any of eight directions — including backwards.</p>
+        <p><strong class="text-slate-900">Keyboard:</strong> Tab to move between cells. Press <kbd>Enter</kbd> to start a selection, use arrow keys to extend in a straight line, then press <kbd>Enter</kbd> again to confirm.</p>
+        <p><strong class="text-slate-900">Themes:</strong> Words come from East Sussex places, broader British culture, garden flowers, and everyday British things.</p>
+        <p><strong class="text-slate-900">Difficulty:</strong> <em>Gentle</em> offers a 12×12 grid with 8 words. <em>Classic</em> is 15×15 with 12 words. <em>Hardy</em> is 18×18 with 16 words.</p>
       </div>
     </details>
   </section>
 
-  <footer class="mt-12 pt-8 border-t" style="border-color: var(--line);">
-    <div class="divider mb-6">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-        <path d="M12 2 C 7 6, 5 13, 12 22 C 19 13, 17 6, 12 2 Z" />
-        <path d="M12 2 L 12 22" />
-      </svg>
-    </div>
-    <p class="text-center text-sm font-italic" style="color: var(--ink-muted);">
-      A randomly generated wordsearch, grown fresh each time you visit.
-    </p>
-    <p class="text-center text-xs mt-2" style="color: var(--ink-muted); opacity: 0.7;">
-      Press <kbd style="background: var(--paper-deep); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace;">N</kbd> for a new puzzle · <kbd style="background: var(--paper-deep); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace;">H</kbd> for a hint
-    </p>
+  <footer class="mt-12 pt-8 text-center text-sm text-slate-400 border-t border-slate-100">
+    <p>Tinker's Word Search — A randomly generated puzzle.</p>
+    <p class="mt-2 text-xs">Press <kbd>N</kbd> for a new puzzle · <kbd>H</kbd> for a hint</p>
   </footer>
 </main>
 
 <script>
   const WORD_BANK = {
     'East Sussex': {
-      color: '#2d4a3a',
+      color: '#6366f1',
       words: ['BRIGHTON', 'LEWES', 'HASTINGS', 'BATTLE', 'EASTBOURNE', 'SEAFORD', 'NEWHAVEN', 'HAILSHAM', 'UCKFIELD', 'BEXHILL', 'PEVENSEY', 'BODIAM', 'CAMBER', 'WINCHELSEA', 'RYE', 'CROWBOROUGH', 'TICEHURST', 'WADHURST', 'FIRLE', 'ALFRISTON']
     },
     'United Kingdom': {
-      color: '#b8542a',
+      color: '#ec4899',
       words: ['LONDON', 'EDINBURGH', 'MANCHESTER', 'THAMES', 'BUCKINGHAM', 'WESTMINSTER', 'LIVERPOOL', 'OXFORD', 'CAMBRIDGE', 'CORNWALL', 'YORK', 'BRISTOL', 'BATH', 'CARDIFF', 'BELFAST', 'GLASGOW', 'SHAKESPEARE', 'TRAFALGAR', 'BRITAIN', 'ENGLAND', 'STONEHENGE', 'HADRIAN', 'CALEDONIA']
     },
     'Flowers & Flora': {
-      color: '#b86b6b',
+      color: '#10b981',
       words: ['ROSE', 'LILY', 'DAFFODIL', 'BLUEBELL', 'POPPY', 'LAVENDER', 'PRIMROSE', 'FOXGLOVE', 'SNOWDROP', 'MARIGOLD', 'DAISY', 'TULIP', 'PEONY', 'IRIS', 'HOLLYHOCK', 'JASMINE', 'VIOLET', 'PANSY', 'COLUMBINE', 'SWEETPEA', 'CAMPANULA', 'ASTER']
     },
     'British Things': {
-      color: '#c69749',
+      color: '#f59e0b',
       words: ['CUPPA', 'BROLLY', 'WELLINGTON', 'CRICKET', 'PIMMS', 'SCONE', 'MARMALADE', 'TEAPOT', 'GARDENING', 'HEDGEHOG', 'BISCUIT', 'MARMITE', 'PORRIDGE', 'WIMBLEDON', 'PUB', 'JUMPER', 'WELLIES', 'MAC', 'QUEUE', 'BAP', 'SPANNER', 'WHIPPET']
     }
   };
 
-  const FOUND_COLORS = ['#8a9a5b', '#c97064', '#d4a373', '#6b8e7f', '#b08968', '#a4ac86', '#cb8e8e', '#87a878', '#c69749', '#9c7f5e', '#7a8c69', '#bc6c25', '#a98467', '#c4a484', '#7d8a5e', '#b8866e'];
+  // Modern pastel/vibrant colors for found words
+  const FOUND_COLORS = [
+    { bg: 'rgba(99, 102, 241, 0.15)', border: '#6366f1' },
+    { bg: 'rgba(236, 72, 153, 0.15)', border: '#ec4899' },
+    { bg: 'rgba(16, 185, 129, 0.15)', border: '#10b981' },
+    { bg: 'rgba(245, 158, 11, 0.15)', border: '#f59e0b' },
+    { bg: 'rgba(6, 182, 212, 0.15)', border: '#06b6d4' },
+    { bg: 'rgba(168, 85, 247, 0.15)', border: '#a855f7' },
+    { bg: 'rgba(239, 68, 68, 0.15)', border: '#ef4444' },
+    { bg: 'rgba(14, 165, 233, 0.15)', border: '#0ea5e9' }
+  ];
+
   const DIFFICULTY = { 'Gentle': { size: 12, count: 8 }, 'Classic': { size: 15, count: 12 }, 'Challenging': { size: 18, count: 16 } };
   const DIRECTIONS = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 
@@ -552,17 +631,17 @@
       const catColor = WORD_BANK[cat].color;
       const label = document.createElement('div');
       label.className = 'cat-label';
-      label.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${catColor};"></span>${cat}`;
+      label.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${catColor};"></span>${cat}`;
       listEl.appendChild(label);
 
       for (const placed of byCategory[cat]) {
         const item = document.createElement('div');
         item.className = 'word-item';
         item.dataset.word = placed.word;
-        item.innerHTML = `<span class="marker"></span><span class="word-text">${placed.word}</span>`;
+        item.innerHTML = `<span class="check"></span><span class="word-text">${placed.word}</span>`;
         if (state.foundWords.has(placed.word)) {
           item.classList.add('found');
-          item.style.setProperty('--word-color', state.wordColors[placed.word]);
+          item.style.setProperty('--word-color', state.wordColors[placed.word]?.border);
           foundCount++;
         }
         listEl.appendChild(item);
@@ -570,7 +649,7 @@
     }
     document.getElementById('foundCount').textContent = foundCount;
     document.getElementById('totalCount').textContent = totalWords;
-    document.getElementById('remainingLabel').textContent = `${totalWords - foundCount} remaining`;
+    document.getElementById('remainingLabel').textContent = `${totalWords - foundCount} left`;
     const progress = totalWords > 0 ? (foundCount / totalWords) * 100 : 0;
     document.getElementById('progressBar').style.width = progress + '%';
   }
@@ -580,7 +659,7 @@
     chipsEl.innerHTML = '';
     for (const cat of Object.keys(WORD_BANK)) {
       const chip = document.createElement('button');
-      chip.className = 'cat-chip' + (state.activeCategories.has(cat) ? ' active' : '');
+      chip.className = 'chip' + (state.activeCategories.has(cat) ? ' active' : '');
       chip.innerHTML = `<span class="dot" style="background:${WORD_BANK[cat].color};"></span>${cat}`;
       chip.setAttribute('aria-pressed', state.activeCategories.has(cat));
       chip.addEventListener('click', () => {
@@ -708,7 +787,7 @@
     const cells = state.selectedCells.slice();
     for (const { row, col } of cells) {
       const cell = state.cellElements[row]?.[col];
-      if (cell) { cell.style.transition = 'background 0.1s'; cell.style.background = 'rgba(184, 84, 42, 0.15)'; }
+      if (cell) { cell.style.transition = 'background 0.1s'; cell.style.background = 'rgba(239, 68, 68, 0.2)'; }
     }
     setTimeout(() => {
       for (const { row, col } of cells) {
@@ -720,24 +799,29 @@
 
   function markWordFound(placed) {
     state.foundWords.add(placed.word);
-    const color = FOUND_COLORS[state.colorIndex % FOUND_COLORS.length];
-    state.wordColors[placed.word] = color;
+    const colorPair = FOUND_COLORS[state.colorIndex % FOUND_COLORS.length];
+    state.wordColors[placed.word] = colorPair;
     state.colorIndex++;
+
     for (const { row, col } of placed.cells) {
       const cell = state.cellElements[row]?.[col];
-      if (cell) { cell.classList.add('found'); cell.style.setProperty('--found-color', color); }
+      if (cell) { 
+        cell.classList.add('found'); 
+        cell.style.setProperty('--found-color', colorPair.bg); 
+        cell.style.setProperty('--found-border', colorPair.border); 
+      }
     }
     const item = document.querySelector(`.word-item[data-word="${placed.word}"]`);
     if (item) {
       item.classList.add('found', 'just-found');
-      item.style.setProperty('--word-color', color);
+      item.style.setProperty('--word-color', colorPair.border);
       setTimeout(() => item.classList.remove('just-found'), 600);
     }
     showToast(`Found: ${placed.word}`);
     const foundCount = state.foundWords.size;
     const total = state.placedWords.length;
     document.getElementById('foundCount').textContent = foundCount;
-    document.getElementById('remainingLabel').textContent = `${total - foundCount} remaining`;
+    document.getElementById('remainingLabel').textContent = `${total - foundCount} left`;
     document.getElementById('progressBar').style.width = (foundCount / total * 100) + '%';
     if (foundCount === total) {
       state.completed = true;
@@ -769,7 +853,7 @@
     if (cell) {
       cell.classList.add('hint-flash');
       setTimeout(() => cell.classList.remove('hint-flash'), 1200);
-      showToast(`Hint: a letter of "${target.word}"`);
+      showToast(`Hint revealed`);
     }
   }
 
@@ -788,22 +872,22 @@
     document.getElementById('winTime').textContent = document.getElementById('timer').textContent;
     document.getElementById('winCount').textContent = state.placedWords.length;
     document.getElementById('winModal').classList.add('show');
-    spawnPetals();
+    spawnConfetti();
   }
   function closeWinModal() { document.getElementById('winModal').classList.remove('show'); }
 
-  function spawnPetals() {
-    const colors = ['#c69749', '#b8542a', '#8a9a5b', '#b86b6b', '#6b8e7f'];
-    for (let i = 0; i < 30; i++) {
+  function spawnConfetti() {
+    const colors = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#06b6d4'];
+    for (let i = 0; i < 40; i++) {
       const petal = document.createElement('div');
-      petal.className = 'petal';
+      petal.className = 'confetti';
       petal.style.background = colors[i % colors.length];
+      petal.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
       petal.style.left = Math.random() * 100 + 'vw';
       petal.style.top = '-20px';
-      petal.style.transform = `rotate(${Math.random() * 360}deg)`;
       document.body.appendChild(petal);
-      const duration = 2500 + Math.random() * 2000;
-      const drift = (Math.random() - 0.5) * 200;
+      const duration = 2000 + Math.random() * 2000;
+      const drift = (Math.random() - 0.5) * 300;
       petal.animate([
         { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
         { transform: `translate(${drift}px, 100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
@@ -866,11 +950,10 @@
   }
 
   function setupDifficulty() {
-    document.querySelectorAll('.diff-pill').forEach(pill => {
+    document.querySelectorAll('.pill').forEach(pill => {
       pill.addEventListener('click', () => {
-        document.querySelectorAll('.diff-pill').forEach(p => { p.classList.remove('active'); p.setAttribute('aria-checked', 'false'); });
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
-        pill.setAttribute('aria-checked', 'true');
         state.difficulty = pill.dataset.diff;
         newPuzzle();
       });
@@ -884,9 +967,14 @@
       renderGrid();
       for (const placed of state.placedWords) {
         if (state.foundWords.has(placed.word)) {
+          const colorPair = state.wordColors[placed.word];
           for (const { row, col } of placed.cells) {
             const cell = state.cellElements[row]?.[col];
-            if (cell) { cell.classList.add('found'); cell.style.setProperty('--found-color', state.wordColors[placed.word]); }
+            if (cell) { 
+              cell.classList.add('found'); 
+              cell.style.setProperty('--found-color', colorPair.bg); 
+              cell.style.setProperty('--found-border', colorPair.border); 
+            }
           }
         }
       }
