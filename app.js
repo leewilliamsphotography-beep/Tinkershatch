@@ -770,7 +770,7 @@ const TesterModule=(function(){
         if(isMenuLoaded) return;
         isMenuLoaded = true;
         la.style.display='none';
-        ma.style.display='block';
+        ma.style.display='flex';
         if(gearBtn) gearBtn.classList.add('show');
         if(footerLogin) footerLogin.style.display='none';
         loginBtn.textContent='Log In';
