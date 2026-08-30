@@ -105,7 +105,7 @@
     </div>
 </div>
 
-<div id="version-tag">Version 2.0</div>
+<div id="version-tag">Version 2.5</div>
 <div id="briefing-bar" style="position: fixed; top: 30px; left: 0; right: 0; background: var(--teal); color: #fff; padding: 6px 0; text-align: center; font-size: 0.85rem; font-weight: 700; z-index: 51; display: none; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
     <span id="briefing-text">Loading today's briefing...</span>
 </div>
@@ -263,7 +263,13 @@
         </div>
     </div>
 </section>
-<section id="summer-fete" class="py-24" style="background:linear-gradient(135deg, var(--honey), var(--terracotta)); color:#fff; position:relative; overflow:hidden;"><div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10 reveal"><span class="tag mb-4 inline-flex" style="background:rgba(255,255,255,0.2); color:#fff; border-color:rgba(255,255,255,0.3);">Save the Date</span><h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,5vw,4rem); color:#fff;">Summer Fete</h2><p class="text-2xl font-bold mb-8" style="color:rgba(255,255,255,0.9);">August 28th</p><p class="text-lg mb-10 max-w-2xl mx-auto" style="color:rgba(255,255,255,0.85);">Join us for a wonderful afternoon of fun, community, and charity. Everyone is welcome to enjoy stall games, delicious home baking, a relaxing tea area, and an exciting raffle!</p><div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10"><div class="card p-6" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(10px);"><div class="text-4xl mb-2">🎯</div><div class="font-bold" style="color:#fff;">Stall Games</div></div><div class="card p-6" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(10px);"><div class="text-4xl mb-2">🧁</div><div class="font-bold" style="color:#fff;">Home Baking</div></div><div class="card p-6" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(10px);"><div class="text-4xl mb-2">☕</div><div class="font-bold" style="color:#fff;">Tea & Refreshments</div></div><div class="card p-6" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); backdrop-filter:blur(10px);"><div class="text-4xl mb-2">🎟️</div><div class="font-bold" style="color:#fff;">Raffle</div></div></div><div class="inline-flex items-center gap-3 px-6 py-3 rounded-full" style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3);"><span class="font-bold text-lg" style="color:#fff;">Everyone Welcome</span></div><p class="mt-6 text-sm" style="color:rgba(255,255,255,0.8);">All proceeds proudly donated to Breast Cancer Now 🎗️</p></div></section>
+<section id="featured-events" class="py-24" style="background:var(--cream-deep)">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <div id="featuredEventsContainer" class="grid grid-cols-1 gap-6 reveal">
+            <p style="color:var(--bark-soft);text-align:center;">Loading featured events...</p>
+        </div>
+    </div>
+</section>
 <section id="film-night" class="py-24" style="background:var(--cream-deep)">
     <div class="max-w-5xl mx-auto px-6 lg:px-8">
         <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -461,6 +467,7 @@
         </div>
         <div id="testerMenu" style="display:none;">
             <div class="tester-tabs">
+			<button class="tester-tab-btn" data-tab="featured">📢 Featured</button>
                 <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
                 <button class="tester-tab-btn" data-tab="events">📅 Events</button>
                 <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
@@ -557,7 +564,27 @@
                 <div id="adminCelebContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
             </div>
 
-            <div id="tab-enquiries" class="tester-tab-content">
+<div id="tab-featured" class="tester-tab-content">
+    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Featured Events Manager</h3>
+    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Add "Save the Date" banners for family events, fêtes, and holidays. They appear on the live site instantly.</p>
+    <input type="text" id="newFeaturedTitle" class="tester-input" placeholder="Event Title (e.g., Summer Fete)">
+    <input type="text" id="newFeaturedDate" class="tester-input" placeholder="Date (e.g., August 28th)" style="margin-top: 8px;">
+    <textarea id="newFeaturedDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:60px;"></textarea>
+    <div class="flex gap-2" style="margin-top: 8px;">
+        <input type="text" id="newFeaturedIcon" class="tester-input" placeholder="Emoji (e.g., 🎯)" style="flex:1;">
+        <select id="newFeaturedColor" class="tester-input" style="flex:1;">
+            <option value="#C25528">Terracotta</option>
+            <option value="#1AA37E">Teal</option>
+            <option value="#A87816">Honey</option>
+            <option value="#A63A5A">Rose</option>
+            <option value="#4A5C66">Bark</option>
+        </select>
+    </div>
+    <button id="addFeaturedBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Add Featured Event</button>
+    <hr class="tester-divider">
+    <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
+</div>          
+		  <div id="tab-enquiries" class="tester-tab-content">
                 <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Contact Form Enquiries</h3>
                 <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Messages submitted by visitors on the Visit page.</p>
                 <div id="adminEnquiriesContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
