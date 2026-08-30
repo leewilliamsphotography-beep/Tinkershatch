@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Botanical Wordsearch — A British Puzzle Garden</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Outfit:wght@300..700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f3ede1;
+    --bg-warm: #ebe3d2;
+    --paper: #fdfaf2;
+    --paper-deep: #f7f1e3;
+    --ink: #1f1f1d;
+    --ink-soft: #2c2a25;
+    --ink-muted: #6b6859;
+    --line: #d8cfbb;
+    --line-soft: #e8e0cc;
+    --forest: #2d4a3a;
+    --forest-deep: #1e3328;
+    --forest-soft: #4a6b58;
+    --terracotta: #b8542a;
+    --terracotta-deep: #96431d;
+    --gold: #c69749;
+    --gold-deep: #a87a2e;
+    --rose: #b86b6b;
+  }
+
+  * { -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Outfit', system-ui, sans-serif;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(184, 84, 42, 0.05) 0%, transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(45, 74, 58, 0.06) 0%, transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(198, 151, 73, 0.03) 0%, transparent 60%);
+    min-height: 100vh;
+  }
+
+  .font-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+  .font-italic { font-family: 'Fraunces', Georgia, serif; font-style: italic; }
+
+  .paper {
+    background: var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(45, 74, 58, 0.035) 1px, transparent  0);
+    background-size: 22px 22px;
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .paper-deep {
+    background: var(--paper-deep);
+    background-image: radial-gradient(circle at 1px 1px, rgba(45, 74, 58, 0.04) 1px, transparent  0);
+    background-size: 22px 22px;
+  }
+  .corner-orn::before, .corner-orn::after {
+    content: '';
+    position: absolute;
+    width: 28px; height: 28px;
+    border: 2px solid var(--forest);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .corner-orn::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .corner-orn::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  .grid-table { display: grid; gap: 2px; user-select: none; -webkit-user-select: none; touch-action: none; }
+  .cell {
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: transparent;
+    border: none; cursor: pointer;
+    font-family: 'Fraunces', serif; font-weight: 500;
+    color: var(--ink-soft);
+    user-select: none;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+    position: relative; border-radius: 4px;
+    font-size: clamp(0.7rem, 2.2vw, 1.15rem);
+    padding: 0; line-height: 1;
+  }
+  .cell:hover:not(.found) { background: rgba(45, 74, 58, 0.08); color: var(--forest-deep); }
+  .cell.selected { background: rgba(184, 84, 42, 0.32) !important; color: var(--forest-deep); transform: scale(1.05); z-index: 2; }
+  .cell.found { background: var(--found-color, rgba(138, 154, 91, 0.4)); color: var(--forest-deep); font-weight: 600; }
+  .cell.found.selected { background: var(--found-color, rgba(138, 154, 91, 0.7)) !important; }
+  .cell.hint-flash { animation: hintPulse 1.2s ease; }
+  @keyframes hintPulse {
+    0%, 100% { background: transparent; transform: scale(1); }
+    50% { background: rgba(198, 151, 73, 0.5); transform: scale(1.15); }
+  }
+
+  .btn {
+    font-family: 'Outfit', sans-serif; font-weight: 500; letter-spacing: 0.02em;
+    transition: all 0.2s ease; border-radius: 8px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.5rem; white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--forest); color: var(--paper);
+    padding: 0.6rem 1.1rem; border: 1px solid var(--forest-deep);
+    box-shadow: 0 2px 0 var(--forest-deep), 0 4px 12px rgba(45, 74, 58, 0.15);
+  }
+  .btn-primary:hover { background: var(--forest-deep); transform: translateY(-1px); box-shadow: 0 3px 0 var(--forest-deep), 0 6px 16px rgba(45, 74, 58, 0.2); }
+  .btn-primary:active { transform: translateY(1px); box-shadow: 0 0 0 var(--forest-deep); }
+  .btn-ghost {
+    background: var(--paper); color: var(--ink);
+    padding: 0.6rem 1.1rem; border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { background: var(--paper-deep); border-color: var(--forest); color: var(--forest-deep); }
+  .btn-home {
+    background: transparent; color: var(--forest-deep);
+    padding: 0.6rem 1rem; border: 1px solid var(--forest);
+  }
+  .btn-home:hover { background: var(--forest); color: var(--paper); }
+
+  .diff-pill {
+    padding: 0.4rem 0.9rem; border-radius: 999px; cursor: pointer;
+    transition: all 0.2s ease; font-size: 0.82rem; font-weight: 500;
+    border: 1px solid var(--line); background: var(--paper); color: var(--ink-muted);
+    font-family: 'Outfit', sans-serif;
+  }
+  .diff-pill:hover { border-color: var(--forest); color: var(--forest); }
+  .diff-pill.active { background: var(--forest); color: var(--paper); border-color: var(--forest); }
+
+  .cat-chip {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.82rem; font-weight: 500;
+    border: 1px solid var(--line); background: var(--paper); cursor: pointer;
+    transition: all 0.2s ease; color: var(--ink-soft); font-family: 'Outfit', sans-serif;
+  }
+  .cat-chip .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .cat-chip.active { background: var(--paper-deep); border-color: var(--forest); color: var(--forest-deep); }
+  .cat-chip:not(.active) { opacity: 0.55; }
+  .cat-chip:not(.active):hover { opacity: 0.85; border-color: var(--forest-soft); }
+
+  .word-item {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.4rem 0.6rem; border-radius: 6px;
+    font-family: 'Fraunces', serif; font-weight: 400; font-size: 0.95rem; letter-spacing: 0.03em;
+    transition: all 0.3s ease; color: var(--ink-soft); position: relative;
+  }
+  .word-item .marker { width: 10px; height: 10px; border: 1.5px solid var(--line); border-radius: 2px; flex-shrink: 0; transition: all 0.3s ease; }
+  .word-item.found { color: var(--ink-muted); opacity: 0.65; }
+  .word-item.found .marker { background: var(--word-color, var(--forest)); border-color: var(--word-color, var(--forest)); }
+  .word-item.found .word-text { text-decoration: line-through; text-decoration-thickness: 1.5px; text-decoration-color: var(--word-color, var(--forest)); }
+  .word-item.just-found { animation: wordFound 0.6s ease; }
+  @keyframes wordFound {
+    0% { transform: scale(1); background: transparent; }
+    50% { transform: scale(1.04); background: rgba(198, 151, 73, 0.15); }
+    100% { transform: scale(1); background: transparent; }
+  }
+  .cat-label {
+    font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-muted);
+    margin: 0.75rem 0 0.35rem 0.1rem; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .cat-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+  .stat { display: flex; flex-direction: column; gap: 0.1rem; }
+  .stat-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-muted); }
+  .stat-value { font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.5rem; color: var(--forest-deep); line-height: 1.1; font-variant-numeric: tabular-nums; }
+
+  .cell:focus-visible, button:focus-visible, select:focus-visible, [tabindex]:focus-visible {
+    outline: 2.5px solid var(--terracotta); outline-offset: 2px;
+  }
+  .skip-link {
+    position: absolute; top: -100px; left: 1rem;
+    background: var(--forest); color: var(--paper); padding: 0.6rem 1.2rem;
+    border-radius: 6px; z-index: 100; font-weight: 500; transition: top 0.2s;
+  }
+  .skip-link:focus { top: 1rem; }
+
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: var(--forest-deep); color: var(--paper);
+    padding: 0.8rem 1.6rem; border-radius: 999px; font-weight: 500;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 200; display: flex; align-items: center; gap: 0.6rem;
+    font-family: 'Fraunces', serif; letter-spacing: 0.02em;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast .toast-mark { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(31, 31, 29, 0.55);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    z-index: 150; display: flex; align-items: center; justify-content: center;
+    padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .modal-backdrop.show { opacity: 1; pointer-events: auto; }
+  .modal {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 16px;
+    max-width: 480px; width: 100%; padding: 2.5rem 2rem; text-align: center;
+    transform: scale(0.92); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative; overflow: hidden;
+  }
+  .modal-backdrop.show .modal { transform: scale(1); }
+  .modal::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--forest), var(--gold), var(--terracotta));
+  }
+  .petal {
+    position: fixed; width: 10px; height: 14px; background: var(--gold);
+    border-radius: 100% 0 100% 0; pointer-events: none; z-index: 160; opacity: 0;
+  }
+  .divider { display: flex; align-items: center; gap: 1rem; color: var(--forest); opacity: 0.5; }
+  .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: currentColor; }
+  details.howto { background: var(--paper); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.25rem; transition: background 0.2s; }
+  details.howto[open] { background: var(--paper-deep); }
+  details.howto summary {
+    cursor: pointer; font-family: 'Fraunces', serif; font-weight: 500; font-size: 1.05rem;
+    color: var(--forest-deep); list-style: none; display: flex; align-items: center; justify-content: space-between;
+  }
+  details.howto summary::-webkit-details-marker { display: none; }
+  details.howto summary::after { content: '+'; font-size: 1.4rem; color: var(--forest); transition: transform 0.2s; line-height: 1; }
+  details.howto[open] summary::after { transform: rotate(45deg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+  @media (max-width: 768px) {
+    .stat-value { font-size: 1.2rem; }
+    .cell { border-radius: 3px; }
+  }
+  .grid-table.selecting .cell { cursor: grabbing; }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+</style>
+</head>
+<body>
+
+<a href="#puzzle" class="skip-link">Skip to puzzle</a>
+
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <span class="toast-mark"></span>
+  <span id="toastText">Found!</span>
+</div>
+
+<div id="winModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+  <div class="modal">
+    <div class="font-italic text-sm tracking-widest uppercase" style="color: var(--terracotta);">Puzzle Complete</div>
+    <h2 id="winTitle" class="font-display text-4xl font-light mt-2 mb-1" style="color: var(--forest-deep);">Well done!</h2>
+    <p class="text-sm mb-6" style="color: var(--ink-muted);">You've found every word in the garden.</p>
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div class="paper-deep rounded-lg p-4">
+        <div class="stat-label">Time</div>
+        <div class="stat-value" id="winTime">00:00</div>
+      </div>
+      <div class="paper-deep rounded-lg p-4">
+        <div class="stat-label">Words Found</div>
+        <div class="stat-value" id="winCount">0</div>
+      </div>
+    </div>
+    <div class="flex gap-3 justify-center">
+      <button class="btn btn-primary" onclick="newPuzzle()">New Puzzle</button>
+      <button class="btn btn-ghost" onclick="closeWinModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<header class="border-b" style="border-color: var(--line); background: rgba(253, 250, 242, 0.6); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50;">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
+    <div class="flex items-center gap-3">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none" aria-hidden="true">
+        <circle cx="22" cy="22" r="20" stroke="var(--forest)" stroke-width="1" opacity="0.3"/>
+        <path d="M22 36 L 22 10" stroke="var(--forest)" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M22 14 C 15 12, 11 16, 13 21 C 17 21, 21 18, 22 14 Z" fill="var(--forest)" opacity="0.85"/>
+        <path d="M22 20 C 29 18, 33 22, 31 27 C 27 27, 23 24, 22 20 Z" fill="var(--terracotta)" opacity="0.8"/>
+        <path d="M22 26 C 15 24, 11 28, 13 33 C 17 33, 21 30, 22 26 Z" fill="var(--gold)" opacity="0.8"/>
+      </svg>
+      <div>
+        <h1 class="font-display text-xl sm:text-2xl font-medium leading-none" style="color: var(--forest-deep);">The Botanical Wordsearch</h1>
+        <p class="font-italic text-xs sm:text-sm" style="color: var(--ink-muted);">A British puzzle garden</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <a href="index.html" class="btn btn-home text-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Home
+      </a>
+      <button class="btn btn-ghost text-sm" onclick="showHint()" aria-label="Reveal a hint for one word">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 3 6 1 1 1 2 1 3h6c0-1 0-2 1-3 1-1 3-3 3-6a7 7 0 0 0-7-7Z"/></svg>
+        Hint
+      </button>
+      <button class="btn btn-primary text-sm" onclick="newPuzzle()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 14.85-6.85L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-14.85 6.85L3 16"/><path d="M3 21v-5h5"/></svg>
+        New Puzzle
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="puzzle" class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+
+  <section class="paper rounded-xl p-5 sm:p-6 mb-6 corner-orn" aria-label="Puzzle statistics">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+      <div class="stat">
+        <span class="stat-label">Found</span>
+        <span class="stat-value"><span id="foundCount">0</span><span style="color: var(--ink-muted); font-size: 0.9rem;">/<span id="totalCount">0</span></span></span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Time</span>
+        <span class="stat-value" id="timer">00:00</span>
+      </div>
+      <div class="stat col-span-2 sm:col-span-1">
+        <span class="stat-label">Difficulty</span>
+        <div class="flex gap-1.5 mt-1.5 flex-wrap" role="radiogroup" aria-label="Difficulty">
+          <button class="diff-pill" data-diff="Gentle" role="radio" aria-checked="false">Gentle</button>
+          <button class="diff-pill active" data-diff="Classic" role="radio" aria-checked="true">Classic</button>
+          <button class="diff-pill" data-diff="Challenging" role="radio" aria-checked="false">Hardy</button>
+        </div>
+      </div>
+      <div class="stat col-span-2 sm:col-span-1">
+        <span class="stat-label">Progress</span>
+        <div class="mt-2 h-2 rounded-full overflow-hidden" style="background: var(--line-soft);">
+          <div id="progressBar" class="h-full transition-all duration-500" style="width: 0%; background: linear-gradient(90deg, var(--forest), var(--gold));"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-6" aria-label="Theme selection">
+    <div class="flex items-baseline justify-between mb-3 flex-wrap gap-2">
+      <h2 class="font-display text-lg" style="color: var(--forest-deep);">Choose your themes</h2>
+      <span class="text-xs" style="color: var(--ink-muted);">Toggle to include or exclude word categories</span>
+    </div>
+    <div id="categoryChips" class="flex flex-wrap gap-2"></div>
+  </section>
+
+  <div class="grid lg:grid-cols-[1fr_300px] gap-6">
+    <section class="paper rounded-xl p-4 sm:p-6 lg:p-8 corner-orn" aria-label="Word search grid">
+      <div class="flex items-baseline justify-between mb-4">
+        <div>
+          <span class="font-italic text-xs tracking-widest uppercase" style="color: var(--terracotta);">The Garden Plot</span>
+          <h2 class="font-display text-2xl" style="color: var(--forest-deep);">Find the hidden words</h2>
+        </div>
+        <div class="text-xs hidden sm:block" style="color: var(--ink-muted);">Drag or tap to select</div>
+      </div>
+      <div id="gridContainer" class="flex justify-center">
+        <div id="grid" class="grid-table" role="grid" aria-label="Word search puzzle grid"></div>
+      </div>
+      <div class="mt-5 pt-4 border-t flex flex-wrap items-center justify-between gap-3 text-xs" style="border-color: var(--line-soft); color: var(--ink-muted);">
+        <span>Words may run horizontally, vertically, or diagonally — forwards or backwards.</span>
+        <button class="btn btn-ghost text-xs" style="padding: 0.35rem 0.8rem;" onclick="newPuzzle()">Regenerate</button>
+      </div>
+    </section>
+
+    <aside class="paper rounded-xl p-5 sm:p-6" aria-label="Words to find">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-display text-xl" style="color: var(--forest-deep);">Word List</h2>
+        <span class="font-italic text-xs" style="color: var(--ink-muted);" id="remainingLabel">0 remaining</span>
+      </div>
+      <div id="wordList" class="space-y-0.5"></div>
+    </aside>
+  </div>
+
+  <section class="mt-8 max-w-3xl mx-auto">
+    <details class="howto">
+      <summary>How to play & accessibility</summary>
+      <div class="mt-4 text-sm space-y-3" style="color: var(--ink-soft); line-height: 1.6;">
+        <p><strong style="color: var(--forest-deep);">Selecting words:</strong> Click and drag across letters, or tap the first letter then tap the last letter of the word. Words can run in any of eight directions — including backwards.</p>
+        <p><strong style="color: var(--forest-deep);">Keyboard:</strong> Tab to move between cells. Press <kbd style="background: var(--paper-deep); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace; font-size: 0.8em;">Enter</kbd> to start a selection, use arrow keys to extend in a straight line, then press <kbd style="background: var(--paper-deep); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace; font-size: 0.8em;">Enter</kbd> again to confirm.</p>
+        <p><strong style="color: var(--forest-deep);">Themes:</strong> Words come from East Sussex places, broader British culture, garden flowers, and everyday British things. Toggle themes above to customise your puzzle.</p>
+        <p><strong style="color: var(--forest-deep);">Difficulty:</strong> <em>Gentle</em> offers a 12×12 grid with 8 words. <em>Classic</em> is 15×15 with 12 words. <em>Hardy</em> is 18×18 with 16 words.</p>
+      </div>
+    </details>
+  </section>
+
+  <footer class="mt-12 pt-8 border-t" style="border-color: var(--line);">
+    <div class="divider mb-6">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 2 C 7 6, 5 13, 12 22 C 19 13, 17 6, 12 2 Z" />
+        <path d="M12 2 L 12 22" />
+      </svg>
+    </div>
+    <p class="text-center text-sm font-italic" style="color: var(--ink-muted);">
+      A randomly generated wordsearch, grown fresh each time you visit.
+    </p>
+    <p class="text-center text-xs mt-2" style="color: var(--ink-muted); opacity: 0.7;">
+      Press <kbd style="background: var(--paper-deep); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace;">N</kbd> for a new puzzle · <kbd style="background: var(--paper-deep); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--line); font-family: monospace;">H</kbd> for a hint
+    </p>
+  </footer>
+</main>
+
+<script>
+  const WORD_BANK = {
+    'East Sussex': {
+      color: '#2d4a3a',
+      words: ['BRIGHTON', 'LEWES', 'HASTINGS', 'BATTLE', 'EASTBOURNE', 'SEAFORD', 'NEWHAVEN', 'HAILSHAM', 'UCKFIELD', 'BEXHILL', 'PEVENSEY', 'BODIAM', 'CAMBER', 'WINCHELSEA', 'RYE', 'CROWBOROUGH', 'TICEHURST', 'WADHURST', 'FIRLE', 'ALFRISTON']
+    },
+    'United Kingdom': {
+      color: '#b8542a',
+      words: ['LONDON', 'EDINBURGH', 'MANCHESTER', 'THAMES', 'BUCKINGHAM', 'WESTMINSTER', 'LIVERPOOL', 'OXFORD', 'CAMBRIDGE', 'CORNWALL', 'YORK', 'BRISTOL', 'BATH', 'CARDIFF', 'BELFAST', 'GLASGOW', 'SHAKESPEARE', 'TRAFALGAR', 'BRITAIN', 'ENGLAND', 'STONEHENGE', 'HADRIAN', 'CALEDONIA']
+    },
+    'Flowers & Flora': {
+      color: '#b86b6b',
+      words: ['ROSE', 'LILY', 'DAFFODIL', 'BLUEBELL', 'POPPY', 'LAVENDER', 'PRIMROSE', 'FOXGLOVE', 'SNOWDROP', 'MARIGOLD', 'DAISY', 'TULIP', 'PEONY', 'IRIS', 'HOLLYHOCK', 'JASMINE', 'VIOLET', 'PANSY', 'COLUMBINE', 'SWEETPEA', 'CAMPANULA', 'ASTER']
+    },
+    'British Things': {
+      color: '#c69749',
+      words: ['CUPPA', 'BROLLY', 'WELLINGTON', 'CRICKET', 'PIMMS', 'SCONE', 'MARMALADE', 'TEAPOT', 'GARDENING', 'HEDGEHOG', 'BISCUIT', 'MARMITE', 'PORRIDGE', 'WIMBLEDON', 'PUB', 'JUMPER', 'WELLIES', 'MAC', 'QUEUE', 'BAP', 'SPANNER', 'WHIPPET']
+    }
+  };
+
+  const FOUND_COLORS = ['#8a9a5b', '#c97064', '#d4a373', '#6b8e7f', '#b08968', '#a4ac86', '#cb8e8e', '#87a878', '#c69749', '#9c7f5e', '#7a8c69', '#bc6c25', '#a98467', '#c4a484', '#7d8a5e', '#b8866e'];
+  const DIFFICULTY = { 'Gentle': { size: 12, count: 8 }, 'Classic': { size: 15, count: 12 }, 'Challenging': { size: 18, count: 16 } };
+  const DIRECTIONS = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]];
+
+  const state = {
+    grid: [], placedWords: [], foundWords: new Set(), wordColors: {}, selectedCells: [],
+    startCell: null, currentCell: null, isSelecting: false, startTime: null, timerInterval: null,
+    difficulty: 'Classic', activeCategories: new Set(Object.keys(WORD_BANK)),
+    size: 15, colorIndex: 0, completed: false, cellElements: []
+  };
+
+  function generatePuzzle() {
+    const config = DIFFICULTY[state.difficulty];
+    state.size = config.size;
+    let pool = [];
+    for (const cat of state.activeCategories) {
+      for (const w of WORD_BANK[cat].words) {
+        if (w.length <= state.size) pool.push({ word: w, category: cat });
+      }
+    }
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    let selected = pool.slice(0, config.count);
+    selected.sort((a, b) => b.word.length - a.word.length);
+
+    const grid = Array.from({ length: state.size }, () => Array.from({ length: state.size }, () => null));
+    const placedWords = [];
+
+    for (const { word, category } of selected) {
+      let placed = false;
+      for (let attempt = 0; attempt < 250 && !placed; attempt++) {
+        const dir = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
+        const row = Math.floor(Math.random() * state.size);
+        const col = Math.floor(Math.random() * state.size);
+        if (canPlace(grid, word, row, col, dir)) {
+          placeWord(grid, word, row, col, dir);
+          placedWords.push({ word, category, row, col, dir, cells: getCells(word, row, col, dir) });
+          placed = true;
+        }
+      }
+    }
+    for (let r = 0; r < state.size; r++) {
+      for (let c = 0; c < state.size; c++) {
+        if (!grid[r][c]) grid[r][c] = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      }
+    }
+    state.grid = grid;
+    state.placedWords = placedWords;
+    state.foundWords = new Set();
+    state.wordColors = {};
+    state.colorIndex = 0;
+    state.completed = false;
+    state.selectedCells = [];
+    state.startCell = null;
+    state.currentCell = null;
+    state.isSelecting = false;
+    if (state.timerInterval) clearInterval(state.timerInterval);
+    state.startTime = null;
+    document.getElementById('timer').textContent = '00:00';
+  }
+
+  function canPlace(grid, word, row, col, dir) {
+    const [dr, dc] = dir;
+    for (let i = 0; i < word.length; i++) {
+      const r = row + dr * i;
+      const c = col + dc * i;
+      if (r < 0 || r >= state.size || c < 0 || c >= state.size) return false;
+      if (grid[r][c] !== null && grid[r][c] !== word[i]) return false;
+    }
+    return true;
+  }
+
+  function placeWord(grid, word, row, col, dir) {
+    const [dr, dc] = dir;
+    for (let i = 0; i < word.length; i++) grid[row + dr * i][col + dc * i] = word[i];
+  }
+
+  function getCells(word, row, col, dir) {
+    const [dr, dc] = dir;
+    const cells = [];
+    for (let i = 0; i < word.length; i++) cells.push({ row: row + dr * i, col: col + dc * i });
+    return cells;
+  }
+
+  function renderGrid() {
+    const gridEl = document.getElementById('grid');
+    gridEl.innerHTML = '';
+    gridEl.style.gridTemplateColumns = `repeat(${state.size}, 1fr)`;
+    const containerWidth = Math.min(560, window.innerWidth - 80);
+    gridEl.style.width = containerWidth + 'px';
+    gridEl.style.maxWidth = '100%';
+    state.cellElements = Array.from({ length: state.size }, () => []);
+
+    for (let r = 0; r < state.size; r++) {
+      for (let c = 0; c < state.size; c++) {
+        const cell = document.createElement('button');
+        cell.className = 'cell';
+        cell.textContent = state.grid[r][c];
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.setAttribute('role', 'gridcell');
+        cell.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}, letter ${state.grid[r][c]}`);
+        cell.tabIndex = -1;
+        cell.addEventListener('mousedown', (e) => { e.preventDefault(); startSelection(r, c); cell.focus(); });
+        cell.addEventListener('mouseenter', () => { if (state.isSelecting) updateSelection(r, c); });
+        cell.addEventListener('touchstart', (e) => { e.preventDefault(); startSelection(r, c); }, { passive: false });
+        cell.addEventListener('click', (e) => {
+          if (!state.isSelecting && !state.justFinishedDrag) handleTap(r, c);
+          state.justFinishedDrag = false;
+        });
+        gridEl.appendChild(cell);
+        state.cellElements[r][c] = cell;
+      }
+    }
+    gridEl.addEventListener('touchmove', (e) => {
+      if (!state.isSelecting) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (el && el.classList.contains('cell')) {
+        const r = parseInt(el.dataset.row);
+        const c = parseInt(el.dataset.col);
+        updateSelection(r, c);
+      }
+    }, { passive: false });
+  }
+
+  function renderWordList() {
+    const listEl = document.getElementById('wordList');
+    listEl.innerHTML = '';
+    const byCategory = {};
+    for (const placed of state.placedWords) {
+      if (!byCategory[placed.category]) byCategory[placed.category] = [];
+      byCategory[placed.category].push(placed);
+    }
+    for (const cat of Object.keys(byCategory)) byCategory[cat].sort((a, b) => a.word.localeCompare(b.word));
+    let totalWords = state.placedWords.length;
+    let foundCount = 0;
+
+    for (const cat of Object.keys(WORD_BANK)) {
+      if (!byCategory[cat]) continue;
+      const catColor = WORD_BANK[cat].color;
+      const label = document.createElement('div');
+      label.className = 'cat-label';
+      label.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${catColor};"></span>${cat}`;
+      listEl.appendChild(label);
+
+      for (const placed of byCategory[cat]) {
+        const item = document.createElement('div');
+        item.className = 'word-item';
+        item.dataset.word = placed.word;
+        item.innerHTML = `<span class="marker"></span><span class="word-text">${placed.word}</span>`;
+        if (state.foundWords.has(placed.word)) {
+          item.classList.add('found');
+          item.style.setProperty('--word-color', state.wordColors[placed.word]);
+          foundCount++;
+        }
+        listEl.appendChild(item);
+      }
+    }
+    document.getElementById('foundCount').textContent = foundCount;
+    document.getElementById('totalCount').textContent = totalWords;
+    document.getElementById('remainingLabel').textContent = `${totalWords - foundCount} remaining`;
+    const progress = totalWords > 0 ? (foundCount / totalWords) * 100 : 0;
+    document.getElementById('progressBar').style.width = progress + '%';
+  }
+
+  function renderCategoryChips() {
+    const chipsEl = document.getElementById('categoryChips');
+    chipsEl.innerHTML = '';
+    for (const cat of Object.keys(WORD_BANK)) {
+      const chip = document.createElement('button');
+      chip.className = 'cat-chip' + (state.activeCategories.has(cat) ? ' active' : '');
+      chip.innerHTML = `<span class="dot" style="background:${WORD_BANK[cat].color};"></span>${cat}`;
+      chip.setAttribute('aria-pressed', state.activeCategories.has(cat));
+      chip.addEventListener('click', () => {
+        if (state.activeCategories.has(cat) && state.activeCategories.size === 1) {
+          showToast('At least one theme required');
+          return;
+        }
+        if (state.activeCategories.has(cat)) state.activeCategories.delete(cat);
+        else state.activeCategories.add(cat);
+        renderCategoryChips();
+        newPuzzle();
+      });
+      chipsEl.appendChild(chip);
+    }
+  }
+
+  function startSelection(row, col) {
+    state.isSelecting = true;
+    state.startCell = { row, col };
+    state.currentCell = { row, col };
+    state.selectedCells = [{ row, col }];
+    document.getElementById('grid').classList.add('selecting');
+    startTimer();
+    renderSelection();
+  }
+
+  function updateSelection(row, col) {
+    if (!state.startCell) return;
+    state.currentCell = { row, col };
+    const cells = getLineCells(state.startCell, state.currentCell);
+    if (cells) {
+      state.selectedCells = cells;
+      renderSelection();
+    }
+  }
+
+  function getLineCells(start, end) {
+    const dr = end.row - start.row;
+    const dc = end.col - start.col;
+    if (dr === 0 && dc === 0) return [{ row: start.row, col: start.col }];
+    if (dr !== 0 && dc !== 0 && Math.abs(dr) !== Math.abs(dc)) return null;
+    const length = Math.max(Math.abs(dr), Math.abs(dc));
+    const stepR = dr === 0 ? 0 : Math.sign(dr);
+    const stepC = dc === 0 ? 0 : Math.sign(dc);
+    const cells = [];
+    for (let i = 0; i <= length; i++) cells.push({ row: start.row + stepR * i, col: start.col + stepC * i });
+    return cells;
+  }
+
+  function renderSelection() {
+    for (let r = 0; r < state.size; r++) {
+      for (let c = 0; c < state.size; c++) {
+        const cell = state.cellElements[r][c];
+        if (cell) cell.classList.remove('selected');
+      }
+    }
+    for (const { row, col } of state.selectedCells) {
+      const cell = state.cellElements[row]?.[col];
+      if (cell) cell.classList.add('selected');
+    }
+  }
+
+  function endSelection() {
+    if (!state.isSelecting) return;
+    state.isSelecting = false;
+    document.getElementById('grid').classList.remove('selecting');
+    if (state.selectedCells.length >= 2) {
+      validateSelection();
+    } else if (state.selectedCells.length === 1) {
+      state.tapStart = state.startCell;
+      state.justFinishedDrag = true;
+      setTimeout(() => { if (state.tapStart && !state.isSelecting) renderSelection(); }, 50);
+      return;
+    }
+    setTimeout(() => {
+      state.selectedCells = [];
+      state.startCell = null;
+      state.currentCell = null;
+      renderSelection();
+    }, 150);
+    state.justFinishedDrag = true;
+  }
+
+  function handleTap(row, col) {
+    if (!state.tapStart) {
+      state.tapStart = { row, col };
+      state.selectedCells = [{ row, col }];
+      renderSelection();
+    } else {
+      const cells = getLineCells(state.tapStart, { row, col });
+      if (cells && cells.length >= 2) {
+        state.selectedCells = cells;
+        state.startCell = state.tapStart;
+        renderSelection();
+        validateSelection();
+        state.tapStart = null;
+        setTimeout(() => { state.selectedCells = []; state.startCell = null; renderSelection(); }, 200);
+      } else if (row === state.tapStart.row && col === state.tapStart.col) {
+        state.tapStart = null;
+        state.selectedCells = [];
+        renderSelection();
+      } else {
+        state.tapStart = { row, col };
+        state.selectedCells = [{ row, col }];
+        renderSelection();
+      }
+    }
+  }
+
+  function validateSelection() {
+    if (state.selectedCells.length < 2) return;
+    const word = state.selectedCells.map(c => state.grid[c.row][c.col]).join('');
+    const reversed = word.split('').reverse().join('');
+    for (const placed of state.placedWords) {
+      if (state.foundWords.has(placed.word)) continue;
+      if (word === placed.word || reversed === placed.word) {
+        markWordFound(placed);
+        return;
+      }
+    }
+    flashInvalid();
+  }
+
+  function flashInvalid() {
+    const cells = state.selectedCells.slice();
+    for (const { row, col } of cells) {
+      const cell = state.cellElements[row]?.[col];
+      if (cell) { cell.style.transition = 'background 0.1s'; cell.style.background = 'rgba(184, 84, 42, 0.15)'; }
+    }
+    setTimeout(() => {
+      for (const { row, col } of cells) {
+        const cell = state.cellElements[row]?.[col];
+        if (cell && !cell.classList.contains('found')) cell.style.background = '';
+      }
+    }, 200);
+  }
+
+  function markWordFound(placed) {
+    state.foundWords.add(placed.word);
+    const color = FOUND_COLORS[state.colorIndex % FOUND_COLORS.length];
+    state.wordColors[placed.word] = color;
+    state.colorIndex++;
+    for (const { row, col } of placed.cells) {
+      const cell = state.cellElements[row]?.[col];
+      if (cell) { cell.classList.add('found'); cell.style.setProperty('--found-color', color); }
+    }
+    const item = document.querySelector(`.word-item[data-word="${placed.word}"]`);
+    if (item) {
+      item.classList.add('found', 'just-found');
+      item.style.setProperty('--word-color', color);
+      setTimeout(() => item.classList.remove('just-found'), 600);
+    }
+    showToast(`Found: ${placed.word}`);
+    const foundCount = state.foundWords.size;
+    const total = state.placedWords.length;
+    document.getElementById('foundCount').textContent = foundCount;
+    document.getElementById('remainingLabel').textContent = `${total - foundCount} remaining`;
+    document.getElementById('progressBar').style.width = (foundCount / total * 100) + '%';
+    if (foundCount === total) {
+      state.completed = true;
+      setTimeout(showWinModal, 600);
+    }
+  }
+
+  function startTimer() {
+    if (state.startTime) return;
+    state.startTime = Date.now();
+    state.timerInterval = setInterval(updateTimer, 1000);
+  }
+  function updateTimer() {
+    if (!state.startTime) return;
+    const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+    const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+    const secs = (elapsed % 60).toString().padStart(2, '0');
+    document.getElementById('timer').textContent = `${mins}:${secs}`;
+  }
+  function stopTimer() { if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; } }
+
+  function showHint() {
+    const unfound = state.placedWords.filter(p => !state.foundWords.has(p.word));
+    if (unfound.length === 0) { showToast('All words found!'); return; }
+    const target = unfound[Math.floor(Math.random() * unfound.length)];
+    const cellIdx = Math.floor(Math.random() * target.cells.length);
+    const { row, col } = target.cells[cellIdx];
+    const cell = state.cellElements[row]?.[col];
+    if (cell) {
+      cell.classList.add('hint-flash');
+      setTimeout(() => cell.classList.remove('hint-flash'), 1200);
+      showToast(`Hint: a letter of "${target.word}"`);
+    }
+  }
+
+  let toastTimeout;
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    const text = document.getElementById('toastText');
+    text.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+
+  function showWinModal() {
+    stopTimer();
+    document.getElementById('winTime').textContent = document.getElementById('timer').textContent;
+    document.getElementById('winCount').textContent = state.placedWords.length;
+    document.getElementById('winModal').classList.add('show');
+    spawnPetals();
+  }
+  function closeWinModal() { document.getElementById('winModal').classList.remove('show'); }
+
+  function spawnPetals() {
+    const colors = ['#c69749', '#b8542a', '#8a9a5b', '#b86b6b', '#6b8e7f'];
+    for (let i = 0; i < 30; i++) {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      petal.style.background = colors[i % colors.length];
+      petal.style.left = Math.random() * 100 + 'vw';
+      petal.style.top = '-20px';
+      petal.style.transform = `rotate(${Math.random() * 360}deg)`;
+      document.body.appendChild(petal);
+      const duration = 2500 + Math.random() * 2000;
+      const drift = (Math.random() - 0.5) * 200;
+      petal.animate([
+        { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+        { transform: `translate(${drift}px, 100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration, easing: 'cubic-bezier(0.4, 0, 0.6, 1)' }).onfinish = () => petal.remove();
+    }
+  }
+
+  function newPuzzle() {
+    closeWinModal();
+    stopTimer();
+    generatePuzzle();
+    renderGrid();
+    renderWordList();
+    state.selectedCells = [];
+  }
+
+  function setupKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'n' || e.key === 'N') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') { e.preventDefault(); newPuzzle(); return; }
+      if ((e.key === 'h' || e.key === 'H') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') { e.preventDefault(); showHint(); return; }
+      if (e.key === 'Escape') {
+        if (document.getElementById('winModal').classList.contains('show')) { closeWinModal(); return; }
+        state.selectedCells = []; state.startCell = null; state.tapStart = null; renderSelection();
+      }
+      const cell = e.target.closest('.cell');
+      if (!cell) return;
+      const row = parseInt(cell.dataset.row);
+      const col = parseInt(cell.dataset.col);
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (!state.isSelecting) startSelection(row, col);
+        else endSelection();
+        return;
+      }
+      if (e.key.startsWith('Arrow')) {
+        e.preventDefault();
+        let newRow = row, newCol = col;
+        if (e.key === 'ArrowUp') newRow = Math.max(0, row - 1);
+        else if (e.key === 'ArrowDown') newRow = Math.min(state.size - 1, row + 1);
+        else if (e.key === 'ArrowLeft') newCol = Math.max(0, col - 1);
+        else if (e.key === 'ArrowRight') newCol = Math.min(state.size - 1, col + 1);
+        if (state.isSelecting && state.startCell) {
+          const dr = newRow - state.startCell.row;
+          const dc = newCol - state.startCell.col;
+          const isStraight = (dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc));
+          if (!isStraight) {
+            if (Math.abs(dr) >= Math.abs(dc)) newCol = state.startCell.col;
+            else newRow = state.startCell.row;
+          }
+          const targetCell = state.cellElements[newRow]?.[newCol];
+          if (targetCell) { targetCell.focus(); updateSelection(newRow, newCol); }
+        } else {
+          const targetCell = state.cellElements[newRow]?.[newCol];
+          if (targetCell) targetCell.focus();
+        }
+      }
+    });
+    document.addEventListener('mouseup', () => { if (state.isSelecting) endSelection(); });
+    document.addEventListener('touchend', () => { if (state.isSelecting) endSelection(); });
+  }
+
+  function setupDifficulty() {
+    document.querySelectorAll('.diff-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.diff-pill').forEach(p => { p.classList.remove('active'); p.setAttribute('aria-checked', 'false'); });
+        pill.classList.add('active');
+        pill.setAttribute('aria-checked', 'true');
+        state.difficulty = pill.dataset.diff;
+        newPuzzle();
+      });
+    });
+  }
+
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      renderGrid();
+      for (const placed of state.placedWords) {
+        if (state.foundWords.has(placed.word)) {
+          for (const { row, col } of placed.cells) {
+            const cell = state.cellElements[row]?.[col];
+            if (cell) { cell.classList.add('found'); cell.style.setProperty('--found-color', state.wordColors[placed.word]); }
+          }
+        }
+      }
+    }, 200);
+  });
+
+  function init() {
+    renderCategoryChips();
+    setupDifficulty();
+    setupKeyboard();
+    newPuzzle();
+  }
+  init();
+</script>
+
+</body>
+</html>
