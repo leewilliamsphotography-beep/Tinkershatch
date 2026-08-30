@@ -744,61 +744,38 @@ const TesterModule=(function(){
     function c(){
         m.classList.remove('active');
     }
-            async function login(){
+    async function login(){
         const email=emailInput.value.trim();
         const pass=pi.value;
         if(!email||!pass){
             et.textContent='Please enter both email and password.';
             return;
         }
-        
-        // Check if Supabase loaded properly
-        if(!supabaseClient){
-            et.textContent='Error: Database library failed to load. Check your adblocker.';
-            return;
-        }
-
         loginBtn.textContent='Verifying...';
         loginBtn.disabled=true;
         et.textContent='';
-        
-        try {
-            // Add a 10-second timeout so the button doesn't stay stuck forever
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Request timed out. Check your internet connection or adblocker.')), 10000)
-            );
-            
-            const authPromise = supabaseClient.auth.signInWithPassword({ 
-                email: email, 
-                password: pass 
-            });
-            
-            const { data, error } = await Promise.race([authPromise, timeoutPromise]);
-            
-            if (error) throw error;
-            
-            // If successful, show the menu
+        try{
+            const{data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:pass});
+            if(error) throw error;
             showMenu();
-            
-        } catch (err) {
-            console.error('Login Error Details:', err); // Log the exact error to the console
-            et.textContent = 'Login failed: ' + err.message;
-            loginBtn.textContent = 'Log In';
-            loginBtn.disabled = false;
+        }catch(err){
+            et.textContent='Login failed: '+err.message;
+            loginBtn.textContent='Log In';
+            loginBtn.disabled=false;
         }
-    } 
+    }
     async function logout(){
         await supabaseClient.auth.signOut();
         showLogin();
         c();
     }
-        async function showMenu(){
+    async function showMenu(){
         if(isMenuLoaded) return;
         isMenuLoaded = true;
         
         try {
             la.style.display='none';
-            ma.style.display='flex';
+            ma.style.display='flex'; // Use flex for the sidebar layout
             if(gearBtn) gearBtn.classList.add('show');
             if(footerLogin) footerLogin.style.display='none';
             loginBtn.textContent='Log In';
@@ -823,15 +800,16 @@ const TesterModule=(function(){
             const maintBtn=document.getElementById('toggleMaintenanceBtn');
             if(maintBtn) maintBtn.style.display=(userRole==='admin')?'block':'none';
             
+            // Hide Staff Creation panel if not admin
             const staffTabBtn=document.getElementById('staffTabBtn');
             if(staffTabBtn) staffTabBtn.style.display=(userRole==='admin')?'flex':'none';
             
-            // === USER-SPECIFIC COLORFUL DASHBOARD THEME ===
+            // === USER-SPECIFIC DASHBOARD THEME ===
             const userId = user ? user.id : 'default';
             const staffThemeKey = `th-staff-theme-${userId}`;
-            const savedTheme = safeGet(staffThemeKey) || 'staff-nature';
+            const savedTheme = safeGet(staffThemeKey) || 'staff-dark';
             
-            document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
+            document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
             document.body.classList.add(savedTheme);
             
             document.querySelectorAll('.staff-theme-btn').forEach(btn => {
@@ -840,10 +818,10 @@ const TesterModule=(function(){
                 
                 btn.onclick = () => {
                     const newTheme = btn.dataset.theme;
-                    document.body.classList.remove('staff-nature', 'staff-sunset', 'staff-ocean');
+                    document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
                     document.body.classList.add(newTheme);
                     safeSet(staffThemeKey, newTheme);
-                    ToastModule.show('Dashboard theme saved!');
+                    if(typeof ToastModule!=='undefined') ToastModule.show('Dashboard theme saved!');
                     
                     document.querySelectorAll('.staff-theme-btn').forEach(b => b.classList.remove('theme-btn-active'));
                     btn.classList.add('theme-btn-active');
@@ -871,10 +849,10 @@ const TesterModule=(function(){
             loginBtn.disabled=false;
             et.textContent='Error loading dashboard: ' + e.message;
         }
-    } 
+    }
     function showLogin(){
         isMenuLoaded = false;
-        la.style.display='block';
+        la.style.display='flex'; // Use flex to center the login box
         ma.style.display='none';
         if(gearBtn) gearBtn.classList.remove('show');
         if(footerLogin) footerLogin.style.display='block';
@@ -888,7 +866,7 @@ const TesterModule=(function(){
             const{data:{session}}=await supabaseClient.auth.getSession();
             if(session){ showMenu(); } else { showLogin(); }
         } catch(e) {
-            showLogin(); // Fallback to login screen if Supabase fails to respond
+            showLogin();
         }
     }
     function ss(s, e){
@@ -966,7 +944,7 @@ const TesterModule=(function(){
             ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading photos.</p>';
         }
     }
-     function init(){
+    function init(){
         const modalExists = document.getElementById('testerModal');
         if(!modalExists) return; 
 
@@ -1011,7 +989,7 @@ const TesterModule=(function(){
         
         showLogin(); 
         checkAuthState();
-    } 
+    }
     return{init};
 })();
 
