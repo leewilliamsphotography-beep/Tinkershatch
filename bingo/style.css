@@ -657,3 +657,6 @@ html.calm-mode #calmModeBtn svg { filter: drop-shadow(0 0 4px var(--cream)); }
     .controls .btn { font-size: 1.1rem; padding: 1.2rem 1.5rem; flex: 1; }
     body { padding-bottom: 120px; } /* Space for fixed bar */
 }
+/* Paperless Mode Overrides */
+html.paperless-mode #press { display: none !important; }
+html.paperless-mode #paperlessModeBtn { background: var(--green); color: var(--cream); }

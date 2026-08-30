@@ -71,6 +71,7 @@ const CALLS = {
 let season = 'off';
 let oneAwayOn = true;
 let calmMode = false;
+let paperlessMode = false;
 const recentCalls = [];
 let booted = false;
 let hallName = '';
@@ -2820,7 +2821,16 @@ function buildCallsList(){
     .map(([n, c]) => `<div class="call-item"><b>${n}</b><span>${c}</span></div>`).join('');
 }
 
-function toggleCalmMode() {
+function togglePaperlessMode() {
+    paperlessMode = !paperlessMode;
+    document.documentElement.classList.toggle('paperless-mode', paperlessMode);
+    const btn = document.getElementById('paperlessModeBtn');
+    if (btn) btn.setAttribute('aria-pressed', String(paperlessMode));
+    try { localStorage.setItem('tb-paperless', paperlessMode ? '1' : '0'); } catch(_){}
+    toast(paperlessMode ? '<strong>Paperless Mode On.</strong> Boards are digital only.' : '<strong>Paperless Mode Off.</strong> Print options restored.');
+}
+
+function toggleCalmMode() { 
     calmMode = !calmMode;
     document.documentElement.classList.toggle('calm-mode', calmMode);
     const btn = document.getElementById('calmModeBtn');
@@ -2855,18 +2865,34 @@ function injectAccessibilityUI() {
         stage.prepend(banner);
     }
 
-    // 2. Calm Mode Toggle Button
+      // 2. Topbar Buttons (Paperless & Calm Mode)
     const topbarActions = document.querySelector('.topbar-actions');
-    if (topbarActions && !document.getElementById('calmModeBtn')) {
-        const btn = document.createElement('button');
-        btn.id = 'calmModeBtn';
-        btn.className = 'icon-btn';
-        btn.setAttribute('aria-pressed', 'false');
-        btn.setAttribute('title', 'Toggle Simple/Calm Mode');
-        btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></svg>';
-        btn.addEventListener('click', toggleCalmMode);
-        topbarActions.prepend(btn);
-    }
+    if (topbarActions) {
+        // Paperless Mode Button
+        if (!document.getElementById('paperlessModeBtn')) {
+            const pBtn = document.createElement('button');
+            pBtn.id = 'paperlessModeBtn';
+            pBtn.className = 'icon-btn';
+            pBtn.setAttribute('aria-pressed', String(paperlessMode));
+            pBtn.setAttribute('title', 'Toggle Paperless Mode (Hide Print Options)');
+            pBtn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>';
+            pBtn.addEventListener('click', togglePaperlessMode);
+            topbarActions.prepend(pBtn);
+        }
+        
+        // Calm Mode Button
+        if (!document.getElementById('calmModeBtn')) {
+            const btn = document.createElement('button');
+            btn.id = 'calmModeBtn';
+            btn.className = 'icon-btn';
+            btn.setAttribute('aria-pressed', 'false');
+            btn.setAttribute('title', 'Toggle Simple/Calm Mode');
+            btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4C12.92 3.04 12.46 3 12 3z"/></svg>';
+            btn.addEventListener('click', toggleCalmMode);
+            topbarActions.insertBefore(btn, document.getElementById('paperlessModeBtn'));
+        }
+    } 
+    } 
 
     // 3. Extra Slow Button
     const paceSeg = document.getElementById('paceSeg');
@@ -3235,6 +3261,7 @@ function loadPrefs(){
     if (sn && ['christmas','halloween','valentines','easter','summer'].includes(sn)) season = sn;
     const oa = localStorage.getItem('tb-oneaway'); if (oa != null) oneAwayOn = oa === '1';
     const cm = localStorage.getItem('tb-calm'); if (cm != null) { calmMode = cm === '1'; document.documentElement.classList.toggle('calm-mode', calmMode); }
+    const pm = localStorage.getItem('tb-paperless'); if (pm != null) { paperlessMode = pm === '1'; document.documentElement.classList.toggle('paperless-mode', paperlessMode); }
     const bs = localStorage.getItem('tb-boardset');
     if (bs){
       try{
