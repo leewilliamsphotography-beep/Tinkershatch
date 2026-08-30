@@ -741,24 +741,47 @@ const TesterModule=(function(){
     function c(){
         m.classList.remove('active');
     }
-    async function login(){
+        async function login(){
         const email=emailInput.value.trim();
         const pass=pi.value;
         if(!email||!pass){
             et.textContent='Please enter both email and password.';
             return;
         }
+        
+        // Check if Supabase loaded properly
+        if(!supabaseClient){
+            et.textContent='Error: Database library failed to load. Check your adblocker.';
+            return;
+        }
+
         loginBtn.textContent='Verifying...';
         loginBtn.disabled=true;
         et.textContent='';
-        try{
-            const{data,error}=await supabaseClient.auth.signInWithPassword({email:email,password:pass});
-            if(error) throw error;
+        
+        try {
+            // Add a 10-second timeout so it doesn't hang forever
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Request timed out. Check your internet connection or adblocker.')), 10000)
+            );
+            
+            const authPromise = supabaseClient.auth.signInWithPassword({ 
+                email: email, 
+                password: pass 
+            });
+            
+            const { data, error } = await Promise.race([authPromise, timeoutPromise]);
+            
+            if (error) throw error;
+            
+            // If successful, show the menu
             showMenu();
-        }catch(err){
-            et.textContent='Login failed: '+err.message;
-            loginBtn.textContent='Log In';
-            loginBtn.disabled=false;
+            
+        } catch (err) {
+            console.error('Login Error Details:', err); // Log the exact error to the console
+            et.textContent = 'Login failed: ' + err.message;
+            loginBtn.textContent = 'Log In';
+            loginBtn.disabled = false;
         }
     }
     async function logout(){
