@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Supabase Connection Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h2>Supabase Login Test</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="pass" placeholder="Password">
+    <button onclick="testLogin()">Log In</button>
+    <p id="result" style="color: red; font-weight: bold;"></p>
+
+    <script>
+        const supabaseClient = supabase.createClient('https://bsbwrvqevtoujfvcvvju.supabase.co', 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx');
+
+        async function testLogin() {
+            document.getElementById('result').innerText = "Sending request...";
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('pass').value;
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: pass });
+                
+                if (error) throw error;
+                
+                document.getElementById('result').style.color = "green";
+                document.getElementById('result').innerText = "SUCCESS! You are logged in. Check your network tab on staff.html.";
+            } catch (err) {
+                document.getElementById('result').innerText = "ERROR: " + err.message;
+            }
+        }
+    </script>
+</body>
+</html>
