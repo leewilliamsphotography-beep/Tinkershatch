@@ -6,136 +6,252 @@
 <title>Staff Portal | Tinkers Hatch</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    body { margin: 0; background: #152630; display: block; height: 100vh; overflow: hidden; }
-    .tester-modal { position: relative !important; opacity: 1 !important; visibility: visible !important; transform: none !important; background: transparent !important; width: 100% !important; height: 100vh !important; max-width: 100% !important; display: block !important; }
-    .tester-content { background: transparent !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; max-height: none !important; height: 100% !important; width: 100% !important; }
-    .tester-trigger, .ambient { display: none !important; }
-
-    /* === New Full-Screen Login Layout === */
-    #testerLogin {
-        background: #152630;
-        color: #fff;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-        margin: 0;
-        max-width: 100%;
-        padding: 2rem;
-        position: relative;
-        overflow: hidden;
+    /* === PORTAL DESIGN SYSTEM === */
+    :root {
+        --staff-sidebar-bg: #152630;
+        --staff-content-bg: #F4F2EE;
+        --staff-text: #152630;
+        --staff-input-bg: #FFFFFF;
+        --staff-border: #E6E2D6;
     }
-    #testerLogin::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(26,163,126,0.1) 0%, transparent 60%);
-        pointer-events: none;
+    
+    /* Dark Theme */
+    body.staff-dark {
+        --staff-sidebar-bg: #0F1115;
+        --staff-content-bg: #1A1D23;
+        --staff-text: #E0E6EA;
+        --staff-input-bg: #1F222A;
+        --staff-border: #2D333B;
+    }
+    /* Light Theme */
+    body.staff-light {
+        --staff-sidebar-bg: #FFFFFF;
+        --staff-content-bg: #F4F2EE;
+        --staff-text: #152630;
+        --staff-input-bg: #FFFFFF;
+        --staff-border: #E6E2D6;
+    }
+    /* Warm Theme */
+    body.staff-warm {
+        --staff-sidebar-bg: #3B2E25;
+        --staff-content-bg: #FAF5EB;
+        --staff-text: #3B2E25;
+        --staff-input-bg: #FFFAF0;
+        --staff-border: #E0D2B6;
+    }
+
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        height: 100% !important;
+        width: 100% !important;
+        overflow: hidden !important;
+        background: var(--staff-sidebar-bg) !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+
+    /* === OVERRIDE MAIN SITE MODAL CSS === */
+    .tester-modal {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        background: transparent !important;
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transform: none !important;
+    }
+    .tester-content {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        display: flex !important;
+        overflow: hidden !important;
+    }
+    .tester-trigger, .ambient, #backToTopBtn { display: none !important; }
+
+    /* === LOGIN SCREEN === */
+    #testerLogin {
+        flex: 1 !important;
+        background: radial-gradient(circle at 50% 50%, #1A2B30, #0F1115);
+        color: #fff;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 2rem !important;
     }
     .login-box {
         background: rgba(255,255,255,0.05);
         border: 1px solid rgba(255,255,255,0.1);
-        padding: 48px;
-        border-radius: 16px;
-        max-width: 420px;
-        width: 100%;
-        backdrop-filter: blur(10px);
-        position: relative;
-        z-index: 1;
+        padding: 48px !important;
+        border-radius: 16px !important;
+        max-width: 420px !important;
+        width: 100% !important;
+        backdrop-filter: blur(12px);
     }
-    #testerLogin h3 { font-size: 1.8rem !important; margin-bottom: 8px !important; color: #fff !important; }
+    .login-logo {
+        width: 60px;
+        height: 60px;
+        color: var(--teal);
+        margin: 0 auto 24px;
+        display: block;
+    }
+    #testerLogin h3 { font-size: 1.8rem !important; margin-bottom: 8px !important; color: #fff !important; font-family: 'Outfit', sans-serif !important; }
     #testerLogin p { color: rgba(255,255,255,0.6) !important; margin-bottom: 32px !important; }
-    #testerLogin .tester-input { background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; margin-bottom: 16px !important; }
+    #testerLogin .tester-input { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: #fff !important; margin-bottom: 16px !important; border-radius: 8px !important; padding: 14px !important; }
     #testerLogin .tester-input::placeholder { color: rgba(255,255,255,0.4); }
-    #testerLogin .tester-btn { width: 100%; padding: 14px; font-size: 1rem; margin-top: 8px; background: var(--teal); }
+    #testerLogin .tester-btn { width: 100%; padding: 14px; font-size: 1rem; margin-top: 8px; background: var(--teal); color: #fff; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; }
+    
     #testerCloseBtn {
         position: fixed; top: 20px; right: 20px; z-index: 100;
-        background: rgba(255,255,255,0.1); color: #fff;
+        background: rgba(0,0,0,0.3); color: #fff;
         width: 40px; height: 40px; border-radius: 50%;
         display: flex; align-items: center; justify-content: center;
         text-decoration: none; font-size: 1.5rem; line-height: 1;
         border: 1px solid rgba(255,255,255,0.2);
     }
 
-    /* === Dashboard Layout === */
-    #testerMenu { width: 100%; height: 100%; background: var(--cream); display: none; }
-    
-    /* === Staff Themes (Default is Dark) === */
-    body.staff-dark { background: #111418; }
-    body.staff-dark .tester-tabs { background: #1B2026 !important; border-right: 1px solid #2D333B !important; }
-    body.staff-dark .tester-tab-btn { color: rgba(255,255,255,0.6) !important; }
-    body.staff-dark .tester-tab-btn:hover { background: rgba(255,255,255,0.08) !important; color: #fff !important; }
-    body.staff-dark .tester-tab-content { background: #111418 !important; color: #E0E6EA; }
-    body.staff-dark .tester-tab-content h3 { color: #E0E6EA !important; border-bottom: 2px solid #2D333B !important; }
-    body.staff-dark .tester-input { background: #1B2026 !important; border-color: #2D333B !important; color: #fff !important; }
-    body.staff-dark .admin-film-item { background: #1B2026 !important; border-color: #2D333B !important; color: #fff !important; }
-    
-    /* Light Theme */
-    body.staff-light { background: #F4F2EE; }
-    body.staff-light .tester-tabs { background: #FFFFFF !important; border-right: 1px solid #E6E2D6 !important; }
-    body.staff-light .tester-tab-btn { color: #4A5C66 !important; }
-    body.staff-light .tester-tab-btn:hover { background: #F4F2EE !important; color: #152630 !important; }
-    body.staff-light .tester-tab-content { background: #F4F2EE !important; color: #152630; }
-    
-    /* Warm Theme */
-    body.staff-warm { background: #FAF5EB; }
-    body.staff-warm .tester-tabs { background: #3B2E25 !important; border-right: 1px solid #E0D2B6 !important; }
-    body.staff-warm .tester-tab-btn { color: rgba(250, 245, 235, 0.6) !important; }
-    body.staff-warm .tester-tab-btn:hover { background: rgba(255,255,255,0.08) !important; color: #FAF5EB !important; }
-    body.staff-warm .tester-tab-content { background: #FAF5EB !important; color: #3B2E25; }
-    body.staff-warm .tester-input { background: #FFFAF0 !important; border-color: #E0D2B6 !important; color: #3B2E25 !important; }
-
-    /* === Sidebar Navigation === */
-    .tester-tabs { padding: 24px 16px !important; display: flex !important; flex-direction: column !important; gap: 4px !important; width: 260px !important; height: 100% !important; overflow-y: auto !important; flex-shrink: 0 !important; border-radius: 0 !important; }
-    .tester-tab-btn { background: transparent !important; border: 1px solid transparent !important; text-align: left !important; justify-content: flex-start !important; padding: 14px 18px !important; border-radius: 10px !important; font-weight: 600 !important; font-size: 0.9rem !important; transition: all 0.2s ease !important; white-space: nowrap; }
-    .tester-tab-btn.active { background: var(--teal) !important; color: #fff !important; box-shadow: 0 4px 12px -4px rgba(26,163,126,0.5) !important; }
-    
-    .tester-tab-content { display: none; flex: 1 !important; height: 100% !important; overflow-y: auto !important; padding: 40px 48px !important; border: none !important; animation: none !important; }
-    .tester-tab-content.active { display: block; }
-    .tester-tab-content h3 { font-size: 1.5rem !important; margin-bottom: 24px !important; padding-bottom: 16px !important; border-bottom: 2px solid var(--border) !important; color: var(--bark) !important; }
-    .tester-divider { margin: 32px 0 !important; }
-
-    @media (max-width: 768px) {
-        .tester-tabs { width: 100% !important; height: auto !important; flex-direction: row !important; overflow-x: auto !important; padding: 12px !important; border-bottom: 1px solid var(--border) !important; }
-        #testerMenu { flex-direction: column !important; }
-        .tester-tab-content { padding: 24px !important; }
-        #testerCloseBtn { top: 12px; right: 12px; width: 32px; height: 32px; font-size: 1.2rem; }
+    /* === DASHBOARD LAYOUT === */
+    #testerMenu {
+        flex: 1 !important;
+        display: none !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: var(--staff-content-bg) !important;
+        color: var(--staff-text) !important;
     }
-	    /* === Messages Chat Layout === */
-    #tab-messages { display: none; flex-direction: column; padding: 0 !important; }
+
+    /* Top Header */
+    .staff-header {
+        background: var(--staff-sidebar-bg);
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        color: #fff;
+        flex-shrink: 0;
+    }
+    .staff-header h2 { font-family: 'Outfit', sans-serif; font-weight: 700; margin: 0; font-size: 1.2rem; letter-spacing: -0.02em; }
+    .staff-header #testerLogoutBtn { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; width: auto; margin: 0; }
+    .staff-header #testerLogoutBtn:hover { background: var(--terracotta); border-color: var(--terracotta); }
+
+    /* Main Layout Area (Sidebar + Content) */
+    .staff-body { display: flex; flex: 1; height: calc(100% - 60px); overflow: hidden; }
+
+    /* Sidebar */
+    .tester-tabs {
+        background: var(--staff-sidebar-bg) !important;
+        width: 220px !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 4px !important;
+        padding: 16px !important;
+        overflow-y: auto !important;
+        flex-shrink: 0 !important;
+        border-right: 1px solid rgba(255,255,255,0.05) !important;
+        border-radius: 0 !important;
+    }
+    .tester-tab-btn {
+        background: transparent !important;
+        color: rgba(255,255,255,0.6) !important;
+        border: 1px solid transparent !important;
+        text-align: left !important;
+        padding: 12px 16px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        font-size: 0.9rem !important;
+        transition: all 0.2s ease !important;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+    .tester-tab-btn:hover { background: rgba(255,255,255,0.05) !important; color: #fff !important; }
+    .tester-tab-btn.active { background: var(--teal) !important; color: #fff !important; box-shadow: 0 4px 12px -4px rgba(26,163,126,0.4); }
+
+    /* Content Area */
+    .tester-tab-content {
+        flex: 1 !important;
+        height: 100% !important;
+        overflow-y: auto !important;
+        padding: 40px !important;
+        background: var(--staff-content-bg) !important;
+        color: var(--staff-text) !important;
+        border: none !important;
+        animation: none !important;
+        display: none !important;
+    }
+    .tester-tab-content.active { display: block !important; }
+    
+    /* Themed Inputs */
+    .tester-input {
+        background: var(--staff-input-bg) !important;
+        border: 1px solid var(--staff-border) !important;
+        color: var(--staff-text) !important;
+        border-radius: 8px !important;
+        padding: 12px !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+    .tester-input::placeholder { color: var(--bark-soft); opacity: 0.6; }
+    .tester-btn { border-radius: 8px !important; font-weight: 700 !important; cursor: pointer; border: none; padding: 12px; font-family: 'Plus Jakarta Sans', sans-serif !important; }
+    .tester-divider { border-top: 1px solid var(--staff-border) !important; margin: 32px 0 !important; }
+    .admin-film-item { background: var(--staff-input-bg) !important; border: 1px solid var(--staff-border) !important; border-radius: 8px !important; }
+    .tester-tab-content h3 { color: var(--staff-text) !important; border-bottom: 2px solid var(--staff-border) !important; font-family: 'Outfit', sans-serif !important; }
+
+    /* === CHAT MODULE CSS === */
+    #tab-messages { padding: 0 !important; display: none; flex-direction: column; }
     #tab-messages.active { display: flex; }
-    #chat-layout { display: flex; height: 100%; width: 100%; }
-    #chat-sidebar { width: 300px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--cream-deep); }
-    #new-chat-box { padding: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
-    #new-chat-box input { flex: 1; }
+    #chat-layout { display: flex; height: 100%; width: 100%; background: var(--staff-content-bg); }
+    #chat-sidebar { width: 300px; border-right: 1px solid var(--staff-border); display: flex; flex-direction: column; background: var(--staff-input-bg); }
+    #new-chat-box { padding: 16px; border-bottom: 1px solid var(--staff-border); display: flex; gap: 8px; }
+    #new-chat-box input { flex: 1; margin: 0; }
+    #new-chat-box button { margin: 0; padding: 12px 16px; width: auto; background: var(--teal); color: #fff; }
     #conversation-list { flex: 1; overflow-y: auto; }
-    .conv-item { padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
-    .conv-item:hover { background: var(--cream); }
+    .conv-item { padding: 16px; border-bottom: 1px solid var(--staff-border); cursor: pointer; transition: background 0.2s; }
+    .conv-item:hover { background: var(--staff-content-bg); }
     .conv-item.active { background: var(--teal); color: #fff; }
     .conv-item .conv-name { font-weight: 700; font-size: 0.9rem; }
     .conv-item .conv-preview { font-size: 0.8rem; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #chat-window { flex: 1; display: flex; flex-direction: column; }
-    #chat-header { padding: 16px 24px; border-bottom: 1px solid var(--border); font-weight: 700; background: var(--card); }
+    #chat-header { padding: 16px 24px; border-bottom: 1px solid var(--staff-border); font-weight: 700; background: var(--staff-input-bg); font-family: 'Outfit', sans-serif; }
     #chat-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
     .message-bubble { max-width: 70%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
     .message-bubble.sent { background: var(--teal); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
-    .message-bubble.received { background: var(--cream-deep); color: var(--bark); align-self: flex-start; border-bottom-left-radius: 2px; }
+    .message-bubble.received { background: var(--staff-input-bg); border: 1px solid var(--staff-border); color: var(--staff-text); align-self: flex-start; border-bottom-left-radius: 2px; }
     .message-time { font-size: 0.7rem; opacity: 0.6; margin-top: 4px; display: block; }
-    #chat-input-box { padding: 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; background: var(--card); }
-    #chat-input-box input { flex: 1; } 
+    #chat-input-box { padding: 16px; border-top: 1px solid var(--staff-border); display: flex; gap: 8px; background: var(--staff-input-bg); }
+    #chat-input-box input { flex: 1; margin: 0; }
+    #chat-input-box button { margin: 0; padding: 12px 16px; width: auto; background: var(--teal); color: #fff; }
+
+    /* Theme Buttons */
+    .theme-btn-active { border: 2px solid var(--teal) !important; }
+
+    @media (max-width: 768px) {
+        .tester-tabs { width: 100% !important; height: auto !important; flex-direction: row !important; overflow-x: auto !important; padding: 8px !important; border-bottom: 1px solid rgba(255,255,255,0.05) !important; }
+        .staff-body { flex-direction: column !important; }
+        .tester-tab-content { padding: 24px !important; }
+        #chat-sidebar { width: 100% !important; height: 200px !important; }
+        #chat-layout { flex-direction: column !important; }
+    }
 </style>
 </head>
 <body>
@@ -147,8 +263,14 @@
             <!-- LOGIN VIEW -->
             <div id="testerLogin">
                 <div class="login-box">
-                    <h3 class="display font-extrabold text-xl">Staff Portal</h3>
-                    <p style="font-size:.95rem;">Enter your credentials to access the dashboard.</p>
+                    <svg class="login-logo" viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <circle cx="300" cy="250" r="240" fill="none" stroke="currentColor" stroke-width="3"/>
+                        <text x="300" y="260" font-family="Outfit, sans-serif" font-size="42" font-weight="bold" fill="currentColor" text-anchor="middle" letter-spacing="1.5">Tinkers Hatch</text>
+                        <circle cx="280" cy="290" r="3" fill="currentColor" /><circle cx="300" cy="290" r="4" fill="currentColor" /><circle cx="320" cy="290" r="3" fill="currentColor" />
+                        <text x="300" y="320" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="normal" fill="currentColor" text-anchor="middle" letter-spacing="4">STAFF PORTAL</text>
+                    </svg>
+                    <h3 class="display font-extrabold text-xl">Welcome Back</h3>
+                    <p>Enter your credentials to access the dashboard.</p>
                     <input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email">
                     <input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password">
                     <button id="testerLoginBtn" class="tester-btn">Log In</button>
@@ -158,235 +280,241 @@
 
             <!-- DASHBOARD VIEW -->
             <div id="testerMenu" style="display:none;">
-                <div class="tester-tabs">
-				<button class="tester-tab-btn" data-tab="messages">💬 Messages</button>
-                    <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
-                    <button class="tester-tab-btn" data-tab="events">📅 Events</button>
-                    <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
-                    <button class="tester-tab-btn" data-tab="wilf">🐾 Wilf</button>
-                    <button class="tester-tab-btn" data-tab="updates">📝 Updates</button>
-                    <button class="tester-tab-btn" data-tab="films">🎬 Films</button>
-                    <button class="tester-tab-btn" data-tab="community">🌟 Community</button>
-                    <button class="tester-tab-btn" data-tab="celebrations">🎉 Celebrations</button>
-                    <button class="tester-tab-btn" data-tab="featured">📢 Featured</button>
-                    <button class="tester-tab-btn" data-tab="enquiries">✉️ Enquiries</button>
-                    <button class="tester-tab-btn" data-tab="briefing">⏰ Briefing</button>
-                    <button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none;">👥 Staff</button>
-                    <button class="tester-tab-btn" data-tab="settings">⚙️ Settings</button>
+                <div class="staff-header">
+                    <h2>Tinkers Hatch Dashboard</h2>
+                    <button id="testerLogoutBtn">Log Out</button>
                 </div>
-
-                <div id="tab-photos" class="tester-tab-content active">
-                    <h3 class="display font-extrabold text-xl">Gallery Manager</h3>
-                    <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="padding:10px;">
-                    <input type="text" id="photoCaptionInput" class="tester-input" placeholder="Caption (e.g., Margaret's roses)" style="margin-top: 8px;">
-                    <button id="uploadPhotoBtn" class="tester-btn" style="background:var(--teal-deep);">Upload Photo</button>
-                    <div id="adminPhotoContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
-                </div>
-
-                <div id="tab-events" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Events Manager</h3>
-                    <input type="text" id="newEventTitle" class="tester-input" placeholder="Event Title (e.g., Coffee Morning)">
-                    <input type="date" id="newEventDate" class="tester-input" style="margin-top: 8px;">
-                    <textarea id="newEventDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:60px;"></textarea>
-                    <button id="addEventBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Add Event</button>
-                    <div id="adminEventContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
-                </div>
-
-                <div id="tab-menu" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Weekly Menu Manager</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Update the weekly dinners. Changes save instantly to the website.</p>
-                    <div id="adminMenuContainer" class="space-y-4 text-left"></div>
-                    <button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 24px;">Save Weekly Menu</button>
-                </div>
-
-                <div id="tab-wilf" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Wilf Status & Blog</h3>
-                    <button id="wilfToggleBtn" class="tester-btn" style="background:var(--terracotta);">Toggle Wilf Status</button>
-                    <hr class="tester-divider">
-                    <h3 class="display font-extrabold text-xl">Wilf's Blog Manager</h3>
-                    <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title (e.g., A day in the garden)">
-                    <textarea id="newWilfBlogContent" class="film-review" placeholder="Write Wilf's adventure here..." style="width:100%;margin-top:8px;min-height:100px;"></textarea>
-                    <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL (leave blank if none)" style="margin-top:8px;">
-                    <button id="addWilfBlogBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Post Blog</button>
-                    <div id="adminWilfBlogContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
-                </div>
-
-                <div id="tab-updates" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">App Updates Manager</h3>
-                    <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title (e.g., New Photos)">
-                    <textarea id="newUpdateContent" class="film-review" placeholder="What's the new update?" style="width:100%;margin-top:8px;min-height:80px;"></textarea>
-                    <button id="addUpdateBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Post Update</button>
-                    <div id="adminUpdateContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
-                </div>
-
-                <div id="tab-films" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Film Night Admin</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="newFilmTitle" class="tester-input" style="margin-top:0;flex:1;" placeholder="Enter new film...">
-                        <button id="addFilmBtn" class="tester-btn" style="margin-top:0;width:auto;padding:12px 20px;">Add</button>
+                <div class="staff-body">
+                    <div class="tester-tabs">
+                        <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
+                        <button class="tester-tab-btn" data-tab="events">📅 Events</button>
+                        <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
+                        <button class="tester-tab-btn" data-tab="wilf">🐾 Wilf</button>
+                        <button class="tester-tab-btn" data-tab="updates">📝 Updates</button>
+                        <button class="tester-tab-btn" data-tab="films">🎬 Films</button>
+                        <button class="tester-tab-btn" data-tab="community">🌟 Community</button>
+                        <button class="tester-tab-btn" data-tab="celebrations">🎉 Celebrations</button>
+                        <button class="tester-tab-btn" data-tab="featured">📢 Featured</button>
+                        <button class="tester-tab-btn" data-tab="messages">💬 Messages</button>
+                        <button class="tester-tab-btn" data-tab="enquiries">✉️ Enquiries</button>
+                        <button class="tester-tab-btn" data-tab="briefing">⏰ Briefing</button>
+                        <button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none;">👥 Staff</button>
+                        <button class="tester-tab-btn" data-tab="settings">⚙️ Settings</button>
                     </div>
-                    <div id="adminFilmContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
-                </div>
 
-                <div id="tab-community" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Community Spotlight Manager</h3>
-                    <input type="text" id="newCommunityTitle" class="tester-input" placeholder="Title (e.g., Baking together)">
-                    <input type="text" id="newCommunityImg" class="tester-input" placeholder="Image URL (leave blank if none)" style="margin-top: 8px;">
-                    <textarea id="newCommunityDesc" class="film-review" placeholder="Share a short story about the community..." style="width:100%;margin-top:8px;min-height:100px;"></textarea>
-                    <button id="addCommunityBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Post Spotlight</button>
-                    <div id="adminCommunityContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
-                </div>
+                    <!-- CONTENT AREA -->
+                    <div id="tab-photos" class="tester-tab-content active">
+                        <h3 class="display font-extrabold text-xl">Gallery Manager</h3>
+                        <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="padding:10px;">
+                        <input type="text" id="photoCaptionInput" class="tester-input" placeholder="Caption (e.g., Margaret's roses)" style="margin-top: 8px;">
+                        <button id="uploadPhotoBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff;">Upload Photo</button>
+                        <div id="adminPhotoContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
+                    </div>
 
-                <div id="tab-celebrations" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Add Celebration</h3>
-                    <input type="text" id="newCelebName" class="tester-input" placeholder="Name (e.g., Margaret)">
-                    <select id="newCelebType" class="tester-input" style="margin-top: 8px;">
-                        <option value="Birthday">Birthday</option>
-                        <option value="Anniversary">Anniversary</option>
-                    </select>
-                    <div class="flex gap-2" style="margin-top: 8px;">
-                        <select id="newCelebMonth" class="tester-input" style="flex:1;">
-                            <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option>
-                            <option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option>
-                            <option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                    <div id="tab-events" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Events Manager</h3>
+                        <input type="text" id="newEventTitle" class="tester-input" placeholder="Event Title (e.g., Coffee Morning)">
+                        <input type="date" id="newEventDate" class="tester-input" style="margin-top: 8px;">
+                        <textarea id="newEventDesc" class="tester-input" placeholder="Short description..." style="margin-top:8px;min-height:60px; resize: vertical;"></textarea>
+                        <button id="addEventBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 12px;">Add Event</button>
+                        <div id="adminEventContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
+                    </div>
+
+                    <div id="tab-menu" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Weekly Menu Manager</h3>
+                        <p style="font-size:.9rem; opacity:0.7; margin-bottom:24px">Update the weekly dinners. Changes save instantly to the website.</p>
+                        <div id="adminMenuContainer" class="space-y-4 text-left"></div>
+                        <button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 24px;">Save Weekly Menu</button>
+                    </div>
+
+                    <div id="tab-wilf" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Wilf Status & Blog</h3>
+                        <button id="wilfToggleBtn" class="tester-btn" style="background:var(--terracotta); color:#fff;">Toggle Wilf Status</button>
+                        <hr class="tester-divider">
+                        <h3 class="display font-extrabold text-xl">Wilf's Blog Manager</h3>
+                        <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title (e.g., A day in the garden)">
+                        <textarea id="newWilfBlogContent" class="tester-input" placeholder="Write Wilf's adventure here..." style="width:100%; margin-top:8px; min-height:100px; resize: vertical;"></textarea>
+                        <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL (leave blank if none)" style="margin-top:8px;">
+                        <button id="addWilfBlogBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 12px;">Post Blog</button>
+                        <div id="adminWilfBlogContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
+                    </div>
+
+                    <div id="tab-updates" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">App Updates Manager</h3>
+                        <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title (e.g., New Photos)">
+                        <textarea id="newUpdateContent" class="tester-input" placeholder="What's the new update?" style="width:100%; margin-top:8px; min-height:80px; resize: vertical;"></textarea>
+                        <button id="addUpdateBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 12px;">Post Update</button>
+                        <div id="adminUpdateContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
+                    </div>
+
+                    <div id="tab-films" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Film Night Admin</h3>
+                        <div class="flex gap-2">
+                            <input type="text" id="newFilmTitle" class="tester-input" style="margin-top:0; flex:1;" placeholder="Enter new film...">
+                            <button id="addFilmBtn" class="tester-btn" style="margin-top:0; width:auto; padding:12px 20px; background:var(--teal-deep); color:#fff;">Add</button>
+                        </div>
+                        <div id="adminFilmContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
+                    </div>
+
+                    <div id="tab-community" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Community Spotlight Manager</h3>
+                        <input type="text" id="newCommunityTitle" class="tester-input" placeholder="Title (e.g., Baking together)">
+                        <input type="text" id="newCommunityImg" class="tester-input" placeholder="Image URL (leave blank if none)" style="margin-top: 8px;">
+                        <textarea id="newCommunityDesc" class="tester-input" placeholder="Share a short story about the community..." style="width:100%; margin-top:8px; min-height:100px; resize: vertical;"></textarea>
+                        <button id="addCommunityBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 12px;">Post Spotlight</button>
+                        <div id="adminCommunityContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
+                    </div>
+
+                    <div id="tab-celebrations" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Add Celebration</h3>
+                        <input type="text" id="newCelebName" class="tester-input" placeholder="Name (e.g., Margaret)">
+                        <select id="newCelebType" class="tester-input" style="margin-top: 8px;">
+                            <option value="Birthday">Birthday</option>
+                            <option value="Anniversary">Anniversary</option>
                         </select>
-                        <input type="number" id="newCelebDay" class="tester-input" min="1" max="31" placeholder="Day (1-31)" style="flex:1;">
+                        <div class="flex gap-2" style="margin-top: 8px;">
+                            <select id="newCelebMonth" class="tester-input" style="flex:1;">
+                                <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option>
+                                <option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option>
+                                <option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                            </select>
+                            <input type="number" id="newCelebDay" class="tester-input" min="1" max="31" placeholder="Day (1-31)" style="flex:1;">
+                        </div>
+                        <button id="addCelebBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 12px;">Add Celebration</button>
+                        <hr class="tester-divider">
+                        <h3 class="display font-extrabold text-xl">Manage Celebrations</h3>
+                        <div id="adminCelebContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
                     </div>
-                    <button id="addCelebBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Add Celebration</button>
-                    <hr class="tester-divider">
-                    <h3 class="display font-extrabold text-xl">Manage Celebrations</h3>
-                    <div id="adminCelebContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
-                </div>
 
-                <div id="tab-featured" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Featured Events Manager</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Add "Save the Date" banners for family events. They appear on the live site instantly.</p>
-                    <input type="text" id="newFeaturedTitle" class="tester-input" placeholder="Event Title (e.g., Summer Fete)">
-                    <input type="text" id="newFeaturedDate" class="tester-input" placeholder="Date (e.g., August 28th)" style="margin-top: 8px;">
-                    <textarea id="newFeaturedDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:80px;"></textarea>
-                    <div class="flex gap-2" style="margin-top: 8px;">
-                        <select id="newFeaturedIcon" class="tester-input" style="flex:1;">
-                            <option value="🎉">🎉 Party / Celebration</option>
-                            <option value="☀️">☀️ Summer / Sun</option>
-                            <option value="🍂">🍂 Autumn / Harvest</option>
-                            <option value="❄️">❄️ Winter / Snow</option>
-                            <option value="🌸">🌸 Spring / Flowers</option>
-                            <option value="🎄">🎄 Christmas</option>
-                            <option value="🎁">🎁 Gift / Fete</option>
-                            <option value="❤️">❤️ Valentine's</option>
-                            <option value="🐰">🐰 Easter</option>
-                            <option value="🎯">🎯 Target / Games</option>
-                            <option value="☕">☕ Coffee / Tea</option>
-                            <option value="🍰">🍰 Cake / Baking</option>
-                            <option value="🎵">🎵 Music</option>
-                            <option value="🌟">🌟 Star</option>
-                        </select>
-                        <select id="newFeaturedColor" class="tester-input" style="flex:1;">
-                            <option value="linear-gradient(135deg, #A87816, #C25528)">Default (Warm)</option>
-                            <option value="linear-gradient(135deg, #1AA37E, #14856A)">Teal (Calm)</option>
-                            <option value="linear-gradient(135deg, #7CA890, #4E8A43)">Spring (Garden)</option>
-                            <option value="linear-gradient(135deg, #F2C200, #D9A521)">Summer (Sunny)</option>
-                            <option value="linear-gradient(135deg, #C25528, #A63A5A)">Autumn (Harvest)</option>
-                            <option value="linear-gradient(135deg, #C0392B, #1F6E43)">Festive (Christmas)</option>
-                            <option value="linear-gradient(135deg, #A63A5A, #E0526E)">Valentine's (Love)</option>
-                            <option value="linear-gradient(135deg, #9B8BC4, #7CA890)">Easter (Pastel)</option>
-                        </select>
-                    </div>
-                    <div class="flex gap-2" style="margin-top: 16px;">
-                        <button id="addFeaturedBtn" class="tester-btn" style="background:var(--teal-deep); flex: 1;">Add Featured Event</button>
-                        <button id="cancelEditFeaturedBtn" class="tester-btn" style="background:var(--bark-soft); display: none;">Cancel</button>
-                    </div>
-                    <hr class="tester-divider">
-                    <button id="printFeaturedPostersBtn" class="tester-btn" style="background:var(--bark); width: 100%; margin-top: 16px;">🖨️ Print All as A4 Posters</button>
-                    <hr class="tester-divider">
-                    <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
-                </div>
-
-                <div id="tab-enquiries" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Contact Form Enquiries</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Messages submitted by visitors on the Visit page.</p>
-                    <div id="adminEnquiriesContainer" class="space-y-4 text-left"></div>
-                </div>
-
-                <div id="tab-briefing" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Daily Briefing</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Update the message that appears at the very top of the website for families today.</p>
-                    <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk at 2pm.">
-                    <button id="saveBriefingBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 16px;">Save Briefing</button>
-                </div>
-
-                <div id="tab-staff" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Staff Creation Panel</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Create a new account for a staff member. They will be able to log in immediately.</p>
-                    <input type="email" id="newStaffEmail" class="tester-input" placeholder="New staff email">
-                    <input type="password" id="newStaffPass" class="tester-input" placeholder="Temporary password" style="margin-top: 8px;">
-                    <select id="newStaffRole" class="tester-input" style="margin-top: 8px;">
-                        <option value="staff">Standard Staff</option>
-                        <option value="chef">Chef (Menu access)</option>
-                        <option value="admin">Admin (Full access)</option>
-                    </select>
-                    <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 16px;">Create Account</button>
-                </div>
-<div id="tab-messages" class="tester-tab-content">
-    <div id="chat-layout">
-        <div id="chat-sidebar">
-            <div id="new-chat-box">
-                <input type="text" id="chat-recipient-email" class="tester-input" placeholder="Staff email or Group Name" style="margin:0;">
-                <button id="start-chat-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;">Start</button>
-            </div>
-            <div id="conversation-list"></div>
-        </div>
-        <div id="chat-window">
-            <div id="chat-header">Select a conversation</div>
-            <div id="chat-messages"></div>
-            <div id="chat-input-box">
-                <input type="text" id="chat-message-input" class="tester-input" placeholder="Type a message..." style="margin:0;" disabled>
-                <button id="chat-send-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;" disabled>Send</button>
-            </div>
-        </div>
-    </div>
-</div>
-                <div id="tab-settings" class="tester-tab-content">
-                    <!-- NEW: Dashboard Theme Selector -->
-                    <h3 class="display font-extrabold text-xl">Dashboard Appearance</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Choose a theme for the staff portal. This is saved to your specific account.</p>
-                    <div class="flex gap-2 mb-8">
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-dark" style="flex:1; background:#1B2026; color:#fff;">Dark</button>
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-light" style="flex:1; background:#F4F2EE; color:#152630; border:1px solid #E6E2D6;">Light</button>
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-warm" style="flex:1; background:#3B2E25; color:#FAF5EB;">Warm</button>
-                    </div>
-                    <hr class="tester-divider">
-
-                    <div id="adminOnlyThemes" style="display: none;">
-                        <h3 class="display font-extrabold text-xl">Seasonal Themes (Live Site)</h3>
-                        <div class="tester-grid">
-                            <button class="tester-season-btn" data-season="winter">Winter</button>
-                            <button class="tester-season-btn" data-season="spring">Spring</button>
-                            <button class="tester-season-btn" data-season="summer">Summer</button>
-                            <button class="tester-season-btn" data-season="autumn">Autumn</button>
-                            <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
+                    <div id="tab-featured" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Featured Events Manager</h3>
+                        <p style="font-size:.9rem; opacity:0.7; margin-bottom:24px">Add "Save the Date" banners for family events. They appear on the live site instantly.</p>
+                        <input type="text" id="newFeaturedTitle" class="tester-input" placeholder="Event Title (e.g., Summer Fete)">
+                        <input type="text" id="newFeaturedDate" class="tester-input" placeholder="Date (e.g., August 28th)" style="margin-top: 8px;">
+                        <textarea id="newFeaturedDesc" class="tester-input" placeholder="Short description..." style="margin-top:8px; min-height:80px; resize: vertical;"></textarea>
+                        <div class="flex gap-2" style="margin-top: 8px;">
+                            <select id="newFeaturedIcon" class="tester-input" style="flex:1;">
+                                <option value="🎉">🎉 Party / Celebration</option>
+                                <option value="☀️">☀️ Summer / Sun</option>
+                                <option value="🍂">🍂 Autumn / Harvest</option>
+                                <option value="❄️">❄️ Winter / Snow</option>
+                                <option value="🌸">🌸 Spring / Flowers</option>
+                                <option value="🎄">🎄 Christmas</option>
+                                <option value="🎁">🎁 Gift / Fete</option>
+                                <option value="❤️">❤️ Valentine's</option>
+                                <option value="🐰">🐰 Easter</option>
+                                <option value="🎯">🎯 Target / Games</option>
+                                <option value="☕">☕ Coffee / Tea</option>
+                                <option value="🍰">🍰 Cake / Baking</option>
+                                <option value="🎵">🎵 Music</option>
+                                <option value="🌟">🌟 Star</option>
+                            </select>
+                            <select id="newFeaturedColor" class="tester-input" style="flex:1;">
+                                <option value="linear-gradient(135deg, #A87816, #C25528)">Default (Warm)</option>
+                                <option value="linear-gradient(135deg, #1AA37E, #14856A)">Teal (Calm)</option>
+                                <option value="linear-gradient(135deg, #7CA890, #4E8A43)">Spring (Garden)</option>
+                                <option value="linear-gradient(135deg, #F2C200, #D9A521)">Summer (Sunny)</option>
+                                <option value="linear-gradient(135deg, #C25528, #A63A5A)">Autumn (Harvest)</option>
+                                <option value="linear-gradient(135deg, #C0392B, #1F6E43)">Festive (Christmas)</option>
+                                <option value="linear-gradient(135deg, #A63A5A, #E0526E)">Valentine's (Love)</option>
+                                <option value="linear-gradient(135deg, #9B8BC4, #7CA890)">Easter (Pastel)</option>
+                            </select>
+                        </div>
+                        <div class="flex gap-2" style="margin-top: 16px;">
+                            <button id="addFeaturedBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; flex: 1;">Add Featured Event</button>
+                            <button id="cancelEditFeaturedBtn" class="tester-btn" style="background:var(--bark-soft); color:#fff; display: none;">Cancel</button>
                         </div>
                         <hr class="tester-divider">
+                        <button id="printFeaturedPostersBtn" class="tester-btn" style="background:var(--bark); color:#fff; width: 100%; margin-top: 16px;">🖨️ Print All as A4 Posters</button>
+                        <hr class="tester-divider">
+                        <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
                     </div>
 
-                    <h3 class="display font-extrabold text-xl">Layout Customizer</h3>
-                    <div id="layoutContainer" class="space-y-2 mt-4 max-h-40 overflow-y-auto text-left"></div>
-                    <button id="resetLayoutBtn" class="tester-btn" style="background:var(--bark-soft);margin-top:16px;">Reset Layout</button>
-                    
-                    <hr class="tester-divider">
-                    
-                    <h3 class="display font-extrabold text-xl">Live Broadcast</h3>
-                    <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message..." style="margin-top:8px;" aria-label="Broadcast Message">
-                    <button id="broadcastBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Broadcast Message</button>
-                    
-                    <hr class="tester-divider">
-                    
-                    <h3 class="display font-extrabold text-xl">Maintenance Mode</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Display a banner on the live site letting visitors know updates are underway.</p>
-                    <button id="toggleMaintenanceBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Maintenance Banner</button>
+                    <!-- MESSAGES TAB -->
+                    <div id="tab-messages" class="tester-tab-content">
+                        <div id="chat-layout">
+                            <div id="chat-sidebar">
+                                <div id="new-chat-box">
+                                    <input type="text" id="chat-recipient-email" class="tester-input" placeholder="Staff email" style="margin:0;">
+                                    <button id="start-chat-btn" class="tester-btn" style="margin:0; padding: 10px 16px;">Start</button>
+                                </div>
+                                <div id="conversation-list"></div>
+                            </div>
+                            <div id="chat-window">
+                                <div id="chat-header">Select a conversation</div>
+                                <div id="chat-messages"></div>
+                                <div id="chat-input-box">
+                                    <input type="text" id="chat-message-input" class="tester-input" placeholder="Type a message..." style="margin:0;" disabled>
+                                    <button id="chat-send-btn" class="tester-btn" style="margin:0; padding: 10px 16px;" disabled>Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                    <hr class="tester-divider">
-                    <button id="testerLogoutBtn" class="tester-btn" style="background:var(--terracotta); width: 100%;">Log Out</button>
+                    <div id="tab-enquiries" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Contact Form Enquiries</h3>
+                        <p style="font-size:.9rem; opacity:0.7; margin-bottom:24px">Messages submitted by visitors on the Visit page.</p>
+                        <div id="adminEnquiriesContainer" class="space-y-4 text-left"></div>
+                    </div>
+
+                    <div id="tab-briefing" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Daily Briefing</h3>
+                        <p style="font-size:.9rem; opacity:0.7; margin-bottom:24px">Update the message that appears at the very top of the website for families today.</p>
+                        <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk at 2pm.">
+                        <button id="saveBriefingBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 16px;">Save Briefing</button>
+                    </div>
+
+                    <div id="tab-staff" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Staff Creation Panel</h3>
+                        <p style="font-size:.9rem; opacity:0.7; margin-bottom:24px">Create a new account for a staff member. They will be able to log in immediately.</p>
+                        <input type="email" id="newStaffEmail" class="tester-input" placeholder="New staff email">
+                        <input type="password" id="newStaffPass" class="tester-input" placeholder="Temporary password" style="margin-top: 8px;">
+                        <select id="newStaffRole" class="tester-input" style="margin-top: 8px;">
+                            <option value="staff">Standard Staff</option>
+                            <option value="chef">Chef (Menu access)</option>
+                            <option value="admin">Admin (Full access)</option>
+                        </select>
+                        <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); color:#fff; margin-top: 16px;">Create Account</button>
+                    </div>
+
+                    <div id="tab-settings" class="tester-tab-content">
+                        <h3 class="display font-extrabold text-xl">Dashboard Appearance</h3>
+                        <p style="font-size:.9rem; opacity:0.7; margin-bottom:24px">Choose a colorful theme for your staff portal. Saved to your account.</p>
+                        <div class="grid grid-cols-3 gap-2 mb-8">
+                            <button class="tester-btn staff-theme-btn" data-theme="staff-dark" style="padding: 16px; background:#111418; color:#fff; border: 2px solid transparent;">Dark</button>
+                            <button class="tester-btn staff-theme-btn" data-theme="staff-light" style="padding: 16px; background:#FFFFFF; color:#152630; border: 1px solid #E6E2D6;">Light</button>
+                            <button class="tester-btn staff-theme-btn" data-theme="staff-warm" style="padding: 16px; background:#3B2E25; color:#FAF5EB; border: 2px solid transparent;">Warm</button>
+                        </div>
+                        <hr class="tester-divider">
+
+                        <div id="adminOnlyThemes" style="display: none;">
+                            <h3 class="display font-extrabold text-xl">Seasonal Themes (Live Site)</h3>
+                            <div class="tester-grid">
+                                <button class="tester-season-btn" data-season="winter">Winter</button>
+                                <button class="tester-season-btn" data-season="spring">Spring</button>
+                                <button class="tester-season-btn" data-season="summer">Summer</button>
+                                <button class="tester-season-btn" data-season="autumn">Autumn</button>
+                                <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
+                            </div>
+                            <hr class="tester-divider">
+                        </div>
+
+                        <h3 class="display font-extrabold text-xl">Layout Customizer</h3>
+                        <div id="layoutContainer" class="space-y-2 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                        <button id="resetLayoutBtn" class="tester-btn" style="background:var(--bark-soft); color:#fff; margin-top:16px;">Reset Layout</button>
+                        
+                        <hr class="tester-divider">
+                        
+                        <h3 class="display font-extrabold text-xl">Live Broadcast</h3>
+                        <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message..." style="margin-top:8px;" aria-label="Broadcast Message">
+                        <button id="broadcastBtn" class="tester-btn" style="background:var(--terracotta); color:#fff; margin-top: 8px;">Broadcast Message</button>
+                        
+                        <hr class="tester-divider">
+                        
+                        <h3 class="display font-extrabold text-xl">Maintenance Mode</h3>
+                        <p style="font-size:.9rem; opacity:0.7; margin-top:8px">Display a banner on the live site letting visitors know updates are underway.</p>
+                        <button id="toggleMaintenanceBtn" class="tester-btn" style="background:var(--terracotta); color:#fff; margin-top: 8px;">Toggle Maintenance Banner</button>
+                    </div>
                 </div>
             </div>
         </div>
