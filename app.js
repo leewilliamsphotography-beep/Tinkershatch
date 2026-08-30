@@ -741,7 +741,7 @@ const TesterModule=(function(){
     function c(){
         m.classList.remove('active');
     }
-        async function login(){
+            async function login(){
         const email=emailInput.value.trim();
         const pass=pi.value;
         if(!email||!pass){
@@ -760,7 +760,7 @@ const TesterModule=(function(){
         et.textContent='';
         
         try {
-            // Add a 10-second timeout so it doesn't hang forever
+            // Add a 10-second timeout so the button doesn't stay stuck forever
             const timeoutPromise = new Promise((_, reject) => 
                 setTimeout(() => reject(new Error('Request timed out. Check your internet connection or adblocker.')), 10000)
             );
@@ -783,7 +783,7 @@ const TesterModule=(function(){
             loginBtn.textContent = 'Log In';
             loginBtn.disabled = false;
         }
-    }
+    } 
     async function logout(){
         await supabaseClient.auth.signOut();
         showLogin();
