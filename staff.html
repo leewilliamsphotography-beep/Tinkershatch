@@ -6,8 +6,9 @@
 <title>Staff Portal | Tinkers Hatch</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
     body {
@@ -32,16 +33,17 @@
     }
     /* Hide the gear icon since we are already on the portal */
     .tester-trigger { display: none !important; }
+    /* Hide the ambient blobs from the main site */
+    .ambient { display: none !important; }
 </style>
 </head>
 <body>
-    <div class="ambient" aria-hidden="true" data-parallax="-0.25" data-pt="fixed"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
 
-    <!-- This is the exact same Modal code from index.html, but without the modal wrapper -->
     <div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Staff Portal">
         <div class="tester-content">
-            <!-- Close button now acts as a "Back to site" button -->
-<a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Close">&times;</a>            
+            <!-- Fixed: Added id="testerCloseBtn" so app.js doesn't crash -->
+            <a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">&times;</a>
+            
             <div id="testerLogin">
                 <h3 class="display font-extrabold text-xl">Staff Login</h3>
                 <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Enter your staff credentials to access the dashboard.</p>
@@ -61,12 +63,13 @@
                     <button class="tester-tab-btn" data-tab="films">🎬 Films</button>
                     <button class="tester-tab-btn" data-tab="community">🌟 Community</button>
                     <button class="tester-tab-btn" data-tab="celebrations">🎉 Celebrations</button>
+                    <button class="tester-tab-btn" data-tab="featured">📢 Featured</button>
                     <button class="tester-tab-btn" data-tab="enquiries">✉️ Enquiries</button>
-                    <button class="tester-tab-btn" data-tab="briefing">📢 Briefing</button>
+                    <button class="tester-tab-btn" data-tab="briefing">⏰ Briefing</button>
+                    <button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none;">👥 Staff</button>
                     <button class="tester-tab-btn" data-tab="settings">⚙️ Settings</button>
                 </div>
                 
-                <!-- Include all the tab content from index.html here -->
                 <div id="tab-photos" class="tester-tab-content active">
                     <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Gallery Manager</h3>
                     <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="padding:10px; margin-top: 8px;">
@@ -150,6 +153,50 @@
                     <div id="adminCelebContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
                 </div>
 
+                <div id="tab-featured" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Featured Events Manager</h3>
+                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Add "Save the Date" banners for family events. They appear on the live site instantly.</p>
+                    <input type="text" id="newFeaturedTitle" class="tester-input" placeholder="Event Title (e.g., Summer Fete)">
+                    <input type="text" id="newFeaturedDate" class="tester-input" placeholder="Date (e.g., August 28th)" style="margin-top: 8px;">
+                    <textarea id="newFeaturedDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:60px;"></textarea>
+                    <div class="flex gap-2" style="margin-top: 8px;">
+                        <select id="newFeaturedIcon" class="tester-input" style="flex:1;">
+                            <option value="🎉">🎉 Party / Celebration</option>
+                            <option value="☀️">☀️ Summer / Sun</option>
+                            <option value="🍂">🍂 Autumn / Harvest</option>
+                            <option value="❄️">❄️ Winter / Snow</option>
+                            <option value="🌸">🌸 Spring / Flowers</option>
+                            <option value="🎄">🎄 Christmas</option>
+                            <option value="🎁">🎁 Gift / Fete</option>
+                            <option value="❤️">❤️ Valentine's</option>
+                            <option value="🐰">🐰 Easter</option>
+                            <option value="🎯">🎯 Target / Games</option>
+                            <option value="☕">☕ Coffee / Tea</option>
+                            <option value="🍰">🍰 Cake / Baking</option>
+                            <option value="🎵">🎵 Music</option>
+                            <option value="🌟">🌟 Star</option>
+                        </select>
+                        <select id="newFeaturedColor" class="tester-input" style="flex:1;">
+                            <option value="linear-gradient(135deg, #A87816, #C25528)">Default (Warm)</option>
+                            <option value="linear-gradient(135deg, #1AA37E, #14856A)">Teal (Calm)</option>
+                            <option value="linear-gradient(135deg, #7CA890, #4E8A43)">Spring (Garden)</option>
+                            <option value="linear-gradient(135deg, #F2C200, #D9A521)">Summer (Sunny)</option>
+                            <option value="linear-gradient(135deg, #C25528, #A63A5A)">Autumn (Harvest)</option>
+                            <option value="linear-gradient(135deg, #C0392B, #1F6E43)">Festive (Christmas)</option>
+                            <option value="linear-gradient(135deg, #A63A5A, #E0526E)">Valentine's (Love)</option>
+                            <option value="linear-gradient(135deg, #9B8BC4, #7CA890)">Easter (Pastel)</option>
+                        </select>
+                    </div>
+                    <div class="flex gap-2" style="margin-top: 12px;">
+                        <button id="addFeaturedBtn" class="tester-btn" style="background:var(--teal-deep); flex: 1;">Add Featured Event</button>
+                        <button id="cancelEditFeaturedBtn" class="tester-btn" style="background:var(--bark-soft); display: none;">Cancel</button>
+                    </div>
+                    <hr class="tester-divider">
+                    <button id="printFeaturedPostersBtn" class="tester-btn" style="background:var(--bark-soft); margin-top: 12px; width: 100%;">🖨️ Print All as A4 Posters</button>
+                    <hr class="tester-divider">
+                    <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
+                </div>
+
                 <div id="tab-enquiries" class="tester-tab-content">
                     <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Contact Form Enquiries</h3>
                     <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Messages submitted by visitors on the Visit page.</p>
@@ -161,6 +208,19 @@
                     <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Update the message that appears at the very top of the website for families today. Leave blank to hide it.</p>
                     <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk at 2pm.">
                     <button id="saveBriefingBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 8px;">Save Briefing</button>
+                </div>
+
+                <div id="tab-staff" class="tester-tab-content">
+                    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Staff Creation Panel</h3>
+                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Create a new account for a staff member. They will be able to log in immediately.</p>
+                    <input type="email" id="newStaffEmail" class="tester-input" placeholder="New staff email">
+                    <input type="password" id="newStaffPass" class="tester-input" placeholder="Temporary password" style="margin-top: 8px;">
+                    <select id="newStaffRole" class="tester-input" style="margin-top: 8px;">
+                        <option value="staff">Standard Staff</option>
+                        <option value="chef">Chef (Menu access)</option>
+                        <option value="admin">Admin (Full access)</option>
+                    </select>
+                    <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Create Account</button>
                 </div>
 
                 <div id="tab-settings" class="tester-tab-content">
@@ -198,6 +258,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Hidden container for printing A4 Featured Posters -->
+    <div id="featuredPrintArea" aria-hidden="true"></div>
 
     <script src="app.js"></script>
 </body>
