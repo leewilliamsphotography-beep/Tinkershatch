@@ -523,6 +523,7 @@
         </div>
         <div id="testerMenu" style="display:none;">
             <div class="tester-tabs">
+			<button class="tester-tab-btn" data-tab="staff">👥 Staff</button>
 			<button class="tester-tab-btn" data-tab="featured">📢 Featured</button>
                 <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
                 <button class="tester-tab-btn" data-tab="events">📅 Events</button>
@@ -664,7 +665,19 @@
     <button id="printFeaturedPostersBtn" class="tester-btn" style="background:var(--bark-soft); margin-top: 12px; width: 100%;">🖨️ Print All as A4 Posters</button>
 </div>
 </div>        
-		  <div id="tab-enquiries" class="tester-tab-content">
+<div id="tab-staff" class="tester-tab-content">
+    <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Staff Creation Panel</h3>
+    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Create a new account for a staff member. They will be able to log in immediately using the email and password you set.</p>
+    <input type="email" id="newStaffEmail" class="tester-input" placeholder="New staff email" style="margin-top: 8px;">
+    <input type="password" id="newStaffPass" class="tester-input" placeholder="Temporary password" style="margin-top: 8px;">
+    <select id="newStaffRole" class="tester-input" style="margin-top: 8px;">
+        <option value="staff">Standard Staff</option>
+        <option value="chef">Chef (Menu access)</option>
+        <option value="admin">Admin (Full access)</option>
+    </select>
+    <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Create Account</button>
+</div>		
+		<div id="tab-enquiries" class="tester-tab-content">
                 <h3 class="display font-extrabold text-xl text-left" style="font-size: 1rem;">Contact Form Enquiries</h3>
                 <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Messages submitted by visitors on the Visit page.</p>
                 <div id="adminEnquiriesContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
