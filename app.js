@@ -1,5 +1,6 @@
 'use strict';if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }window.addEventListener('load', function() { window.scrollTo(0, 0); });
-// Only register Service Worker on the main site, NOT on staff.html or bingo
+// Only register Service Worker on the main site, NOT on staff.html or bingo    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err)); }); 
+ // Only register Service Worker on the main site, NOT on staff.html
 if ('serviceWorker' in navigator && !window.location.pathname.endsWith('staff.html') && !window.location.pathname.includes('bingo')) { 
     window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err)); }); 
 } 

@@ -411,5 +411,41 @@
     <div id="featuredPrintArea" aria-hidden="true"></div>
 
     <script src="app.js"></script>
+	<script>
+    // ISOLATED LOGIN SCRIPT
+    // This ensures the login button works perfectly without being blocked by app.js modules.
+    const isoLoginBtn = document.getElementById('testerLoginBtn');
+    const isoError = document.getElementById('testerError');
+    
+    if (isoLoginBtn) {
+        isoLoginBtn.addEventListener('click', async () => {
+            const email = document.getElementById('testerEmail').value.trim();
+            const pass = document.getElementById('testerPass').value;
+            
+            if(!email || !pass) {
+                isoError.textContent = 'Please enter both email and password.';
+                return;
+            }
+            
+            isoLoginBtn.textContent = 'Verifying...';
+            isoLoginBtn.disabled = true;
+            isoError.textContent = '';
+            
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
+                if (error) throw error;
+                
+                // If successful, manually show the dashboard
+                document.getElementById('testerLogin').style.display = 'none';
+                document.getElementById('testerMenu').style.display = 'flex';
+                
+            } catch (err) {
+                isoError.textContent = 'Login failed: ' + err.message;
+                isoLoginBtn.textContent = 'Log In';
+                isoLoginBtn.disabled = false;
+            }
+        });
+    }
+</script>
 </body>
 </html>
