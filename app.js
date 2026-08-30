@@ -174,7 +174,9 @@ const FeaturedEventsModule=(function(){
                     ToastModule.show('Event updated!');
                     loadAdminFeatured();
                     loadFeatured();
-                }catch(err){ToastModule.show('Error updating event.');}
+                }catch(err){
+                    ToastModule.show('Error updating event.');
+                }
             }));
             ac.querySelectorAll('.del-featured-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{
                 const id=e.target.dataset.id;
@@ -183,7 +185,9 @@ const FeaturedEventsModule=(function(){
                     ToastModule.show('Event deleted!');
                     loadAdminFeatured();
                     loadFeatured();
-                }catch(err){ToastModule.show('Error deleting event.');}
+                }catch(err){
+                    ToastModule.show('Error deleting event.');
+                }
             }));
         }catch(e){
             ac.innerHTML='<p class="text-sm" style="color: var(--terracotta);">Error loading events.</p>';
@@ -196,7 +200,10 @@ const FeaturedEventsModule=(function(){
         const desc=document.getElementById('newFeaturedDesc').value.trim();
         const icon=document.getElementById('newFeaturedIcon').value.trim()||'🎉';
         const color=document.getElementById('newFeaturedColor').value;
-        if(!title){ToastModule.show('Title is required.');return;}
+        if(!title){
+            ToastModule.show('Title is required.');
+            return;
+        }
         try{
             const{error}=await supabaseClient.from('featured_events').insert([{title:title,date_text:date,description:desc,icon:icon,color:color}]);
             if(error)throw error;
@@ -207,7 +214,9 @@ const FeaturedEventsModule=(function(){
             document.getElementById('newFeaturedIcon').value='';
             loadAdminFeatured();
             loadFeatured();
-        }catch(err){ToastModule.show('Error adding event.');}
+        }catch(err){
+            ToastModule.show('Error adding event.');
+        }
     }
 
     function init(){
