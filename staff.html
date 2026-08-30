@@ -114,6 +114,28 @@
         .tester-tab-content { padding: 24px !important; }
         #testerCloseBtn { top: 12px; right: 12px; width: 32px; height: 32px; font-size: 1.2rem; }
     }
+	    /* === Messages Chat Layout === */
+    #tab-messages { display: none; flex-direction: column; padding: 0 !important; }
+    #tab-messages.active { display: flex; }
+    #chat-layout { display: flex; height: 100%; width: 100%; }
+    #chat-sidebar { width: 300px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--cream-deep); }
+    #new-chat-box { padding: 16px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; }
+    #new-chat-box input { flex: 1; }
+    #conversation-list { flex: 1; overflow-y: auto; }
+    .conv-item { padding: 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.2s; }
+    .conv-item:hover { background: var(--cream); }
+    .conv-item.active { background: var(--teal); color: #fff; }
+    .conv-item .conv-name { font-weight: 700; font-size: 0.9rem; }
+    .conv-item .conv-preview { font-size: 0.8rem; opacity: 0.7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #chat-window { flex: 1; display: flex; flex-direction: column; }
+    #chat-header { padding: 16px 24px; border-bottom: 1px solid var(--border); font-weight: 700; background: var(--card); }
+    #chat-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+    .message-bubble { max-width: 70%; padding: 12px 16px; border-radius: 12px; font-size: 0.9rem; line-height: 1.4; }
+    .message-bubble.sent { background: var(--teal); color: #fff; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .message-bubble.received { background: var(--cream-deep); color: var(--bark); align-self: flex-start; border-bottom-left-radius: 2px; }
+    .message-time { font-size: 0.7rem; opacity: 0.6; margin-top: 4px; display: block; }
+    #chat-input-box { padding: 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; background: var(--card); }
+    #chat-input-box input { flex: 1; } 
 </style>
 </head>
 <body>
@@ -137,6 +159,7 @@
             <!-- DASHBOARD VIEW -->
             <div id="testerMenu" style="display:none;">
                 <div class="tester-tabs">
+				<button class="tester-tab-btn" data-tab="messages">💬 Messages</button>
                     <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
                     <button class="tester-tab-btn" data-tab="events">📅 Events</button>
                     <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
@@ -304,7 +327,25 @@
                     </select>
                     <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 16px;">Create Account</button>
                 </div>
-
+<div id="tab-messages" class="tester-tab-content">
+    <div id="chat-layout">
+        <div id="chat-sidebar">
+            <div id="new-chat-box">
+                <input type="text" id="chat-recipient-email" class="tester-input" placeholder="Staff email or Group Name" style="margin:0;">
+                <button id="start-chat-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;">Start</button>
+            </div>
+            <div id="conversation-list"></div>
+        </div>
+        <div id="chat-window">
+            <div id="chat-header">Select a conversation</div>
+            <div id="chat-messages"></div>
+            <div id="chat-input-box">
+                <input type="text" id="chat-message-input" class="tester-input" placeholder="Type a message..." style="margin:0;" disabled>
+                <button id="chat-send-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;" disabled>Send</button>
+            </div>
+        </div>
+    </div>
+</div>
                 <div id="tab-settings" class="tester-tab-content">
                     <!-- NEW: Dashboard Theme Selector -->
                     <h3 class="display font-extrabold text-xl">Dashboard Appearance</h3>

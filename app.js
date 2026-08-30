@@ -722,6 +722,195 @@ const StaffModule=(function(){
     }
     return { init };
 })();
+const MessagesModule=(function(){
+    let activeConversationId = null;
+    let currentUserId = null;
+    let realtimeChannel = null;
+
+    async function init(){
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if(!user) return;
+        currentUserId = user.id;
+
+        // Load existing conversations
+        await loadConversations();
+
+        // Setup Realtime listener
+        if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+        realtimeChannel = supabaseClient.channel('public:messages')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+                if(payload.new.conversation_id === activeConversationId){
+                    appendMessage(payload.new);
+                }
+                loadConversations(); // Update sidebar preview
+            })
+            .subscribe();
+
+        // UI Listeners
+        document.getElementById('start-chat-btn').addEventListener('click', startNewChat);
+        document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
+        document.getElementById('chat-message-input').addEventListener('keypress', e => {
+            if(e.key === 'Enter') sendMessage();
+        });
+    }
+
+    async function loadConversations(){
+        const listEl = document.getElementById('conversation-list');
+        listEl.innerHTML = '<p style="padding:16px; font-size:0.8rem; opacity:0.5;">Loading chats...</p>';
+
+        const { data: participations, error } = await supabaseClient
+            .from('conversation_participants')
+            .select('conversation_id')
+            .eq('user_id', currentUserId);
+
+        if(error || !participations.length){
+            listEl.innerHTML = '<p style="padding:16px; font-size:0.8rem; opacity:0.5;">No messages yet.</p>';
+            return;
+        }
+
+        const convIds = participations.map(p => p.conversation_id);
+        const { data: convs } = await supabaseClient
+            .from('conversations')
+            .select('*')
+            .in('id', convIds)
+            .order('created_at', { ascending: false });
+
+        listEl.innerHTML = '';
+        for(let conv of convs){
+            let displayName = conv.group_name || "Private Chat";
+            
+            if(!conv.is_group){
+                // Find the OTHER participant
+                const { data: otherParts } = await supabaseClient
+                    .from('conversation_participants')
+                    .select('user_id')
+                    .eq('conversation_id', conv.id)
+                    .neq('user_id', currentUserId);
+                
+                if(otherParts && otherParts.length > 0){
+                    const { data: emailData, error: emailErr } = await supabaseClient.rpc('get_user_email', { user_id_input: otherParts[0].user_id });
+                    if(!emailErr && emailData) displayName = emailData;
+                }
+            }
+
+            // Get last message for preview
+            const { data: lastMsg } = await supabaseClient
+                .from('messages')
+                .select('content, created_at')
+                .eq('conversation_id', conv.id)
+                .order('created_at', { ascending: false })
+                .limit(1);
+
+            const preview = lastMsg && lastMsg.length ? lastMsg[0].content.substring(0, 30) : 'No messages yet';
+
+            const item = document.createElement('div');
+            item.className = 'conv-item' + (conv.id === activeConversationId ? ' active' : '');
+            item.innerHTML = `<div class="conv-name">${displayName}</div><div class="conv-preview">${preview}</div>`;
+            item.addEventListener('click', () => openConversation(conv.id, displayName));
+            listEl.appendChild(item);
+        }
+    }
+
+    async function startNewChat(){
+        const input = document.getElementById('chat-recipient-email');
+        const emailOrName = input.value.trim();
+        if(!emailOrName) return;
+
+        // If it's a group (we'll assume groups have spaces or are just names, for simplicity let's add a group button later. For now, treat as email lookup)
+        const { data: targetUserId, error } = await supabaseClient.rpc('get_user_id', { email_input: emailOrName });
+        
+        if(error || !targetUserId){
+            ToastModule.show('Could not find staff member with that email.');
+            return;
+        }
+
+        if(targetUserId === currentUserId){
+            ToastModule.show('You cannot start a chat with yourself.');
+            return;
+        }
+
+        // Check if 1-on-1 conversation already exists
+        const { data: existingConvos } = await supabaseClient.rpc('find_private_conversation', { user1: currentUserId, user2: targetUserId });
+        
+        // Note: We need to create the find_private_conversation RPC in Supabase later if we want to prevent duplicates. For now, just create a new one.
+        const { data: newConv, error: convError } = await supabaseClient.from('conversations').insert([{ is_group: false }]).select().single();
+        
+        if(convError){
+            ToastModule.show('Error creating conversation.');
+            return;
+        }
+
+        await supabaseClient.from('conversation_participants').insert([
+            { conversation_id: newConv.id, user_id: currentUserId },
+            { conversation_id: newConv.id, user_id: targetUserId }
+        ]);
+
+        input.value = '';
+        ToastModule.show('Chat started!');
+        await loadConversations();
+        openConversation(newConv.id, emailOrName);
+    }
+
+    async function openConversation(convId, displayName){
+        activeConversationId = convId;
+        document.getElementById('chat-header').textContent = displayName;
+        document.getElementById('chat-message-input').disabled = false;
+        document.getElementById('chat-send-btn').disabled = false;
+        
+        const msgsEl = document.getElementById('chat-messages');
+        msgsEl.innerHTML = '<p style="opacity:0.5;">Loading messages...</p>';
+
+        const { data: messages, error } = await supabaseClient
+            .from('messages')
+            .select('*')
+            .eq('conversation_id', convId)
+            .order('created_at', { ascending: true });
+
+        if(error){
+            msgsEl.innerHTML = '<p style="color:red;">Error loading messages.</p>';
+            return;
+        }
+
+        msgsEl.innerHTML = '';
+        messages.forEach(msg => appendMessage(msg));
+        await loadConversations(); // Update active state in sidebar
+    }
+
+    function appendMessage(msg){
+        const msgsEl = document.getElementById('chat-messages');
+        const bubble = document.createElement('div');
+        bubble.className = 'message-bubble ' + (msg.sender_id === currentUserId ? 'sent' : 'received');
+        
+        const time = new Date(msg.created_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+        bubble.innerHTML = `${msg.content}<span class="message-time">${time}</span>`;
+        
+        msgsEl.appendChild(bubble);
+        msgsEl.scrollTop = msgsEl.scrollHeight;
+    }
+
+    async function sendMessage(){
+        const input = document.getElementById('chat-message-input');
+        const content = input.value.trim();
+        if(!content || !activeConversationId) return;
+
+        input.value = '';
+        
+        const { error } = await supabaseClient.from('messages').insert([
+            {
+                conversation_id: activeConversationId,
+                sender_id: currentUserId,
+                content: content
+            }
+        ]);
+
+        if(error){
+            ToastModule.show('Failed to send message.');
+            input.value = content; // Restore text
+        }
+    }
+
+    return { init };
+})();
 
 const TesterModule=(function(){
     const m=document.getElementById('testerModal'),
@@ -994,6 +1183,7 @@ const TesterModule=(function(){
 })();
 
 document.addEventListener('DOMContentLoaded',()=>{
+	MessagesModule.init();
     LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
     
     const PolishModule = (function () {
