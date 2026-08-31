@@ -727,36 +727,222 @@ const MessagesModule=(function(){
     let activeConversationId = null;
     let currentUserId = null;
     let realtimeChannel = null;
+    let staffMembers = [];
+    let isMainSite = false;
 
     async function init(){
+        // Check if we're on main site or staff portal
+        isMainSite = document.getElementById('staff-messaging') !== null;
+        
+        console.log('MessagesModule init - isMainSite:', isMainSite);
+        
         const { data: { user } } = await supabaseClient.auth.getUser();
-        if(!user) return;
+        if(!user) {
+            console.log('No authenticated user found');
+            return;
+        }
         currentUserId = user.id;
+        console.log('Current user ID:', currentUserId);
 
-        // Load existing conversations
-        await loadConversations();
+        // Show user greeting and messaging button on main site
+        if(isMainSite){
+            const messagingSection = document.getElementById('staff-messaging');
+            const messagingBtn = document.getElementById('staffMessagingBtn');
+            const userGreeting = document.getElementById('userGreeting');
+            const userName = document.getElementById('userName');
+            
+            if(messagingSection){
+                messagingSection.style.display = 'block';
+            }
+            if(messagingBtn){
+                messagingBtn.style.display = 'flex';
+                messagingBtn.addEventListener('click', () => {
+                    messagingSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+            
+            // Show user greeting
+            if(userGreeting && userName){
+                userGreeting.style.display = 'flex';
+                // Try to get user's name from metadata or email
+                const displayName = user.user_metadata?.full_name || 
+                                   user.user_metadata?.name || 
+                                   user.email?.split('@')[0] || 
+                                   'User';
+                userName.textContent = `Hello, ${displayName}`;
+            }
+        }
+        
+        console.log('MessagesModule initialized successfully');
+    }
+    
+    async function updateUserGreeting(user){
+        const userGreeting = document.getElementById('userGreeting');
+        const userName = document.getElementById('userName');
+        
+        if(userGreeting && userName){
+            if(user){
+                userGreeting.style.display = 'flex';
+                const displayName = user.user_metadata?.full_name || 
+                                   user.user_metadata?.name || 
+                                   user.email?.split('@')[0] || 
+                                   'User';
+                userName.textContent = `Hello, ${displayName}`;
+            } else {
+                userGreeting.style.display = 'none';
+            }
+        }
+    }
 
-        // Setup Realtime listener
-        if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
-        realtimeChannel = supabaseClient.channel('public:messages')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-                if(payload.new.conversation_id === activeConversationId){
-                    appendMessage(payload.new);
+    // Load staff members for name display
+    await loadStaffMembers();
+
+    // Load existing conversations
+    await loadConversations();
+
+    // Setup Realtime listener
+    if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+    realtimeChannel = supabaseClient.channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+            if(payload.new.conversation_id === activeConversationId){
+                appendMessage(payload.new);
+            }
+            loadConversations(); // Update sidebar preview
+        })
+        .subscribe();
+
+    // Setup UI listeners based on which site we're on
+        setupUIListeners();
+        
+        console.log('MessagesModule initialized successfully');
+    }
+
+async function setupUIListeners(){
+        const prefix = isMainSite ? 'main-' : '';
+        
+        const startBtn = document.getElementById(prefix + 'start-chat-btn');
+        const sendBtn = document.getElementById(prefix + 'chat-send-btn');
+        const messageInput = document.getElementById(prefix + 'chat-message-input');
+        const toggleBtn = document.getElementById(prefix + 'toggle-manual-input');
+
+        if(startBtn) startBtn.addEventListener('click', startNewChat);
+        if(sendBtn) sendBtn.addEventListener('click', sendMessage);
+        if(messageInput) {
+            messageInput.addEventListener('keypress', e => {
+                if(e.key === 'Enter') sendMessage();
+            });
+        }
+        
+        // Toggle manual input
+        if(toggleBtn){
+            toggleBtn.addEventListener('click', () => {
+                const manualBox = document.getElementById(prefix + 'manual-chat-box');
+                manualBox.style.display = manualBox.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+    }
+
+    async function loadStaffMembers(){
+        try {
+            // Try to get staff from staff table
+            const { data: staffData, error: staffError } = await supabaseClient
+                .from('staff')
+                .select('id, email, name')
+                .eq('is_active', true);
+            
+            if(!staffError && staffData && staffData.length > 0){
+                console.log('Loaded staff members from staff table:', staffData);
+                staffMembers = staffData;
+                populateStaffDropdown();
+            } else {
+                console.log('No staff table or no data, error:', staffError);
+                // Try to get all users from the profiles table (if it exists)
+                const { data: profilesData, error: profilesError } = await supabaseClient
+                    .from('profiles')
+                    .select('id, email, full_name');
+                
+                if(!profilesError && profilesData && profilesData.length > 0){
+                    console.log('Loaded profiles:', profilesData);
+                    staffMembers = profilesData.map(p => ({
+                        id: p.id,
+                        email: p.email,
+                        name: p.full_name || p.email
+                    }));
+                    populateStaffDropdown();
+                } else {
+                    console.log('No profiles table either, error:', profilesError);
+                    // As a fallback, add the current user so they can at least see themselves
+                    if(currentUserId){
+                        staffMembers = [{
+                            id: currentUserId,
+                            email: 'You',
+                            name: 'You (Current User)'
+                        }];
+                    } else {
+                        staffMembers = [];
+                    }
+                    populateStaffDropdown();
                 }
-                loadConversations(); // Update sidebar preview
-            })
-            .subscribe();
+            }
+        } catch(e){
+            console.error('Error loading staff members:', e);
+            staffMembers = [];
+            populateStaffDropdown();
+        }
+    }
 
-        // UI Listeners
-        document.getElementById('start-chat-btn').addEventListener('click', startNewChat);
-        document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
-        document.getElementById('chat-message-input').addEventListener('keypress', e => {
-            if(e.key === 'Enter') sendMessage();
+    async function populateStaffDropdown(){
+        const prefix = isMainSite ? 'main-' : '';
+        const select = document.getElementById(prefix + 'chat-recipient-select');
+        if(!select) {
+            console.log('Dropdown element not found with prefix:', prefix);
+            return;
+        }
+        
+        console.log('Populating dropdown with staff members:', staffMembers.length);
+        console.log('Current user ID:', currentUserId);
+        
+        select.innerHTML = '<option value="">Select staff member...</option>';
+        
+        let addedCount = 0;
+        staffMembers.forEach(staff => {
+            console.log('Checking staff member:', staff);
+            if(staff.id !== currentUserId){
+                const option = document.createElement('option');
+                option.value = staff.email;
+                option.textContent = staff.name || staff.full_name || staff.email;
+                select.appendChild(option);
+                addedCount++;
+            }
         });
+        
+        console.log('Added', addedCount, 'staff members to dropdown');
+        
+        // If no staff members available, show message
+        if(addedCount === 0){
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "No staff members available";
+            option.disabled = true;
+            select.appendChild(option);
+        }
+    }
+
+    async function getStaffNameById(userId){
+        const staff = staffMembers.find(s => s.id === userId);
+        return staff ? (staff.name || staff.full_name || staff.email) : null;
+    }
+
+   async function getStaffNameByEmail(email){
+        const staff = staffMembers.find(s => s.email === email);
+        return staff ? (staff.name || staff.full_name || staff.email) : email;
     }
 
     async function loadConversations(){
-        const listEl = document.getElementById('conversation-list');
+        const prefix = isMainSite ? 'main-' : '';
+        const listEl = document.getElementById(prefix + 'conversation-list');
+        if(!listEl) return;
+        
         listEl.innerHTML = '<p style="padding:16px; font-size:0.8rem; opacity:0.5;">Loading chats...</p>';
 
         const { data: participations, error } = await supabaseClient
@@ -789,8 +975,12 @@ const MessagesModule=(function(){
                     .neq('user_id', currentUserId);
                 
                 if(otherParts && otherParts.length > 0){
-                    const { data: emailData, error: emailErr } = await supabaseClient.rpc('get_user_email', { user_id_input: otherParts[0].user_id });
-                    if(!emailErr && emailData) displayName = emailData;
+                    const staffName = getStaffNameById(otherParts[0].user_id);
+                    if(staffName) displayName = staffName;
+                    else {
+                        const { data: emailData, error: emailErr } = await supabaseClient.rpc('get_user_email', { user_id_input: otherParts[0].user_id });
+                        if(!emailErr && emailData) displayName = emailData;
+                    }
                 }
             }
 
@@ -813,20 +1003,38 @@ const MessagesModule=(function(){
     }
 
     async function startNewChat(){
-		if(existingConvos){
-    input.value = '';
-    openConversation(existingConvos, emailOrName);
-    return;
-} 
-        const input = document.getElementById('chat-recipient-email');
-        const emailOrName = input.value.trim();
-        if(!emailOrName) return;
-
-        // If it's a group (we'll assume groups have spaces or are just names, for simplicity let's add a group button later. For now, treat as email lookup)
-        const { data: targetUserId, error } = await supabaseClient.rpc('get_user_id', { email_input: emailOrName });
+        const prefix = isMainSite ? 'main-' : '';
+        const select = document.getElementById(prefix + 'chat-recipient-select');
+        const manualInput = document.getElementById(prefix + 'chat-recipient-email');
         
-        if(error || !targetUserId){
-            ToastModule.show('Could not find staff member with that email.');
+        let email = select.value;
+        let displayName = email;
+        
+        // If dropdown is empty, try manual input
+        if(!email && manualInput){
+            email = manualInput.value.trim();
+        }
+        
+        if(!email) return;
+
+        // Check if it's a staff member from our list
+        let targetUserId = null;
+        const staff = staffMembers.find(s => s.email === email);
+        
+        if(staff){
+            targetUserId = staff.id;
+            displayName = staff.name || staff.full_name || staff.email;
+        } else {
+            // Fallback to email lookup via RPC
+            const { data: userIdData, error } = await supabaseClient.rpc('get_user_id', { email_input: email });
+            if(!error && userIdData){
+                targetUserId = userIdData;
+                displayName = email;
+            }
+        }
+
+        if(!targetUserId){
+            ToastModule.show('Could not find user with that email.');
             return;
         }
 
@@ -838,7 +1046,13 @@ const MessagesModule=(function(){
         // Check if 1-on-1 conversation already exists
         const { data: existingConvos } = await supabaseClient.rpc('find_private_conversation', { user1: currentUserId, user2: targetUserId });
         
-        // Note: We need to create the find_private_conversation RPC in Supabase later if we want to prevent duplicates. For now, just create a new one.
+        if(existingConvos){
+            select.value = '';
+            if(manualInput) manualInput.value = '';
+            openConversation(existingConvos, displayName);
+            return;
+        }
+        
         const { data: newConv, error: convError } = await supabaseClient.from('conversations').insert([{ is_group: false }]).select().single();
         
         if(convError){
@@ -851,19 +1065,22 @@ const MessagesModule=(function(){
             { conversation_id: newConv.id, user_id: targetUserId }
         ]);
 
-        input.value = '';
+        select.value = '';
+        if(manualInput) manualInput.value = '';
         ToastModule.show('Chat started!');
         await loadConversations();
-        openConversation(newConv.id, emailOrName);
+        openConversation(newConv.id, displayName);
     }
 
     async function openConversation(convId, displayName){
         activeConversationId = convId;
-        document.getElementById('chat-header').textContent = displayName;
-        document.getElementById('chat-message-input').disabled = false;
-        document.getElementById('chat-send-btn').disabled = false;
+        const prefix = isMainSite ? 'main-' : '';
         
-        const msgsEl = document.getElementById('chat-messages');
+        document.getElementById(prefix + 'chat-header').textContent = displayName;
+        document.getElementById(prefix + 'chat-message-input').disabled = false;
+        document.getElementById(prefix + 'chat-send-btn').disabled = false;
+        
+        const msgsEl = document.getElementById(prefix + 'chat-messages');
         msgsEl.innerHTML = '<p style="opacity:0.5;">Loading messages...</p>';
 
         const { data: messages, error } = await supabaseClient
@@ -883,7 +1100,8 @@ const MessagesModule=(function(){
     }
 
     function appendMessage(msg){
-        const msgsEl = document.getElementById('chat-messages');
+        const prefix = isMainSite ? 'main-' : '';
+        const msgsEl = document.getElementById(prefix + 'chat-messages');
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble ' + (msg.sender_id === currentUserId ? 'sent' : 'received');
         
@@ -895,7 +1113,8 @@ const MessagesModule=(function(){
     }
 
     async function sendMessage(){
-        const input = document.getElementById('chat-message-input');
+        const prefix = isMainSite ? 'main-' : '';
+        const input = document.getElementById(prefix + 'chat-message-input');
         const content = input.value.trim();
         if(!content || !activeConversationId) return;
 
@@ -915,6 +1134,33 @@ const MessagesModule=(function(){
         }
     }
 
+    return { init };
+})();
+
+const AuthModule=(function(){
+    function init(){
+        // Listen for auth state changes to update user greeting on main site
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if(event === 'SIGNED_IN' && session?.user){
+                const userGreeting = document.getElementById('userGreeting');
+                const userName = document.getElementById('userName');
+                
+                if(userGreeting && userName){
+                    userGreeting.style.display = 'flex';
+                    const displayName = session.user.user_metadata?.full_name || 
+                                       session.user.user_metadata?.name || 
+                                       session.user.email?.split('@')[0] || 
+                                       'User';
+                    userName.textContent = `Hello, ${displayName}`;
+                }
+            } else if(event === 'SIGNED_OUT'){
+                const userGreeting = document.getElementById('userGreeting');
+                if(userGreeting){
+                    userGreeting.style.display = 'none';
+                }
+            }
+        });
+    }
     return { init };
 })();
 
@@ -1034,6 +1280,7 @@ const TesterModule=(function(){
             if(typeof EnquiriesModule!=='undefined') EnquiriesModule.loadAdminEnquiries();
             if(typeof BriefingModule!=='undefined') BriefingModule.loadBriefing();
             if(typeof CelebrationModule!=='undefined') CelebrationModule.loadAdminCelebrations();
+            
             renderPhotoAdmin();
             
         } catch(e) {
@@ -1188,9 +1435,9 @@ const TesterModule=(function(){
     return{init};
 })();
 
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',=>{
 	MessagesModule.init();
-    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
+    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();AuthModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
     
     const PolishModule = (function () {
       function initReveal() {
