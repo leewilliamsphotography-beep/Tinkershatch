@@ -793,7 +793,7 @@ const MessagesModule=(function(){
             }
         }
     }
-
+    async function initMessagesModule() { 
     // Load staff members for name display
     await loadStaffMembers();
 
@@ -815,7 +815,7 @@ const MessagesModule=(function(){
         setupUIListeners();
         
         console.log('MessagesModule initialized successfully');
-    }
+    } //
 
 async function setupUIListeners(){
         const prefix = isMainSite ? 'main-' : '';
