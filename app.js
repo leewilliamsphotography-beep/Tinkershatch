@@ -813,6 +813,11 @@ const MessagesModule=(function(){
     }
 
     async function startNewChat(){
+		if(existingConvos){
+    input.value = '';
+    openConversation(existingConvos, emailOrName);
+    return;
+} 
         const input = document.getElementById('chat-recipient-email');
         const emailOrName = input.value.trim();
         if(!emailOrName) return;
