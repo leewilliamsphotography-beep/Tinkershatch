@@ -114,14 +114,6 @@
         .tester-tab-content { padding: 24px !important; }
         #testerCloseBtn { top: 12px; right: 12px; width: 32px; height: 32px; font-size: 1.2rem; }
     }
-	    /* === Messages Chat Layout === */
-    #tab-messages { display: none; flex-direction: column; padding: 0 !important; }
-    #tab-messages.active { display: flex; }
-    #chat-layout { display: flex; height: 100%; width: 100%; gap: 0; }
-    #chat-sidebar { width: 320px; min-width: 280px; border-right: 1px solid var(--border); display: flex; flex-direction: column; background: var(--cream-deep); }
-    #new-chat-box { padding: 20px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; background: var(--card); }
-    #new-chat-box select { flex: 1; padding: 12px 16px; font-size: 0.95rem; }
-    #new-chat-box button { white-space: nowrap; padding: 12px 20px; }
     #manual-chat-box { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--card); }
     #manual-chat-box input { width: 100%; padding: 10px 14px; font-size: 0.9rem; }
     #conversation-list { flex: 1; overflow-y: auto; }
@@ -169,7 +161,6 @@
             <!-- DASHBOARD VIEW -->
             <div id="testerMenu" style="display:none;">
                 <div class="tester-tabs">
-				<button class="tester-tab-btn" data-tab="messages">💬 Messages</button>
                     <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
                     <button class="tester-tab-btn" data-tab="events">📅 Events</button>
                     <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
@@ -337,33 +328,6 @@
                     </select>
                     <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 16px;">Create Account</button>
                 </div>
-<div id="tab-messages" class="tester-tab-content">
-    <div id="chat-layout">
-        <div id="chat-sidebar">
-            <div id="new-chat-box">
-                <select id="chat-recipient-select" class="tester-input" style="margin:0; flex:1;">
-                    <option value="">Select staff member...</option>
-                </select>
-                <button id="start-chat-btn" class="tester-btn" style="width:auto; margin:0; padding: 12px 20px;">Start</button>
-            </div>
-            <div style="padding: 8px 20px; text-align: center;">
-                <button id="toggle-manual-input" style="background: none; border: none; color: var(--teal); font-size: 0.8rem; cursor: pointer; text-decoration: underline;">Or enter email manually</button>
-            </div>
-            <div id="manual-chat-box" style="padding: 12px 20px; border-bottom: 1px solid var(--border); display: none;">
-                <input type="text" id="chat-recipient-email" class="tester-input" placeholder="Enter email address..." style="margin:0; width: 100%;">
-            </div>
-            <div id="conversation-list"></div>
-        </div>
-        <div id="chat-window">
-            <div id="chat-header">Select a conversation</div>
-            <div id="chat-messages"></div>
-            <div id="chat-input-box">
-                <input type="text" id="chat-message-input" class="tester-input" placeholder="Type a message..." style="margin:0;" disabled>
-                <button id="chat-send-btn" class="tester-btn" style="width:auto; margin:0; padding: 12px 20px;" disabled>Send</button>
-            </div>
-        </div>
-    </div>
-</div>
                 <div id="tab-settings" class="tester-tab-content">
                     <!-- NEW: Dashboard Theme Selector -->
                     <h3 class="display font-extrabold text-xl">Dashboard Appearance</h3>

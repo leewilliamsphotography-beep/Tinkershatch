@@ -734,14 +734,23 @@ const MessagesModule=(function(){
         // Check if we're on main site or staff portal
         isMainSite = document.getElementById('staff-messaging') !== null;
         
+        console.log('MessagesModule init - isMainSite:', isMainSite);
+        
         const { data: { user } } = await supabaseClient.auth.getUser();
-        if(!user) return;
+        if(!user) {
+            console.log('No authenticated user found');
+            return;
+        }
         currentUserId = user.id;
+        console.log('Current user ID:', currentUserId);
 
-        // Show messaging section if on main site and user is authenticated
+        // Show user greeting and messaging button on main site
         if(isMainSite){
             const messagingSection = document.getElementById('staff-messaging');
             const messagingBtn = document.getElementById('staffMessagingBtn');
+            const userGreeting = document.getElementById('userGreeting');
+            const userName = document.getElementById('userName');
+            
             if(messagingSection){
                 messagingSection.style.display = 'block';
             }
@@ -751,27 +760,61 @@ const MessagesModule=(function(){
                     messagingSection.scrollIntoView({ behavior: 'smooth' });
                 });
             }
+            
+            // Show user greeting
+            if(userGreeting && userName){
+                userGreeting.style.display = 'flex';
+                // Try to get user's name from metadata or email
+                const displayName = user.user_metadata?.full_name || 
+                                   user.user_metadata?.name || 
+                                   user.email?.split('@')[0] || 
+                                   'User';
+                userName.textContent = `Hello, ${displayName}`;
+            }
         }
+        
+        console.log('MessagesModule initialized successfully');
+    }
+    
+    function updateUserGreeting(user){
+        const userGreeting = document.getElementById('userGreeting');
+        const userName = document.getElementById('userName');
+        
+        if(userGreeting && userName){
+            if(user){
+                userGreeting.style.display = 'flex';
+                const displayName = user.user_metadata?.full_name || 
+                                   user.user_metadata?.name || 
+                                   user.email?.split('@')[0] || 
+                                   'User';
+                userName.textContent = `Hello, ${displayName}`;
+            } else {
+                userGreeting.style.display = 'none';
+            }
+        }
+    }
 
-        // Load staff members for name display
-        await loadStaffMembers();
+    // Load staff members for name display
+    await loadStaffMembers();
 
-        // Load existing conversations
-        await loadConversations();
+    // Load existing conversations
+    await loadConversations();
 
-        // Setup Realtime listener
-        if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
-        realtimeChannel = supabaseClient.channel('public:messages')
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-                if(payload.new.conversation_id === activeConversationId){
-                    appendMessage(payload.new);
-                }
-                loadConversations(); // Update sidebar preview
-            })
-            .subscribe();
+    // Setup Realtime listener
+    if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+    realtimeChannel = supabaseClient.channel('public:messages')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+            if(payload.new.conversation_id === activeConversationId){
+                appendMessage(payload.new);
+            }
+            loadConversations(); // Update sidebar preview
+        })
+        .subscribe();
 
-        // Setup UI listeners based on which site we're on
+    // Setup UI listeners based on which site we're on
         setupUIListeners();
+        
+        console.log('MessagesModule initialized successfully');
     }
 
     function setupUIListeners(){
@@ -808,7 +851,7 @@ const MessagesModule=(function(){
                 .eq('is_active', true);
             
             if(!staffError && staffData && staffData.length > 0){
-                console.log('Loaded staff members:', staffData);
+                console.log('Loaded staff members from staff table:', staffData);
                 staffMembers = staffData;
                 populateStaffDropdown();
             } else {
@@ -827,8 +870,17 @@ const MessagesModule=(function(){
                     }));
                     populateStaffDropdown();
                 } else {
-                    console.log('No profiles table either, using empty list');
-                    staffMembers = [];
+                    console.log('No profiles table either, error:', profilesError);
+                    // As a fallback, add the current user so they can at least see themselves
+                    if(currentUserId){
+                        staffMembers = [{
+                            id: currentUserId,
+                            email: 'You',
+                            name: 'You (Current User)'
+                        }];
+                    } else {
+                        staffMembers = [];
+                    }
                     populateStaffDropdown();
                 }
             }
@@ -1085,6 +1137,33 @@ const MessagesModule=(function(){
     return { init };
 })();
 
+const AuthModule=(function(){
+    function init(){
+        // Listen for auth state changes to update user greeting on main site
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if(event === 'SIGNED_IN' && session?.user){
+                const userGreeting = document.getElementById('userGreeting');
+                const userName = document.getElementById('userName');
+                
+                if(userGreeting && userName){
+                    userGreeting.style.display = 'flex';
+                    const displayName = session.user.user_metadata?.full_name || 
+                                       session.user.user_metadata?.name || 
+                                       session.user.email?.split('@')[0] || 
+                                       'User';
+                    userName.textContent = `Hello, ${displayName}`;
+                }
+            } else if(event === 'SIGNED_OUT'){
+                const userGreeting = document.getElementById('userGreeting');
+                if(userGreeting){
+                    userGreeting.style.display = 'none';
+                }
+            }
+        });
+    }
+    return { init };
+})();
+
 const TesterModule=(function(){
     const m=document.getElementById('testerModal'),
           la=document.getElementById('testerLogin'),
@@ -1201,6 +1280,7 @@ const TesterModule=(function(){
             if(typeof EnquiriesModule!=='undefined') EnquiriesModule.loadAdminEnquiries();
             if(typeof BriefingModule!=='undefined') BriefingModule.loadBriefing();
             if(typeof CelebrationModule!=='undefined') CelebrationModule.loadAdminCelebrations();
+            
             renderPhotoAdmin();
             
         } catch(e) {
@@ -1355,9 +1435,9 @@ const TesterModule=(function(){
     return{init};
 })();
 
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',=>{
 	MessagesModule.init();
-    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
+    LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();AuthModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
     
     const PolishModule = (function () {
       function initReveal() {
