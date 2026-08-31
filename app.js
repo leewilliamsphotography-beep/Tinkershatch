@@ -727,11 +727,15 @@ const MessagesModule=(function(){
     let activeConversationId = null;
     let currentUserId = null;
     let realtimeChannel = null;
+    let staffMembers = [];
 
     async function init(){
         const { data: { user } } = await supabaseClient.auth.getUser();
         if(!user) return;
         currentUserId = user.id;
+
+        // Load staff members for name display
+        await loadStaffMembers();
 
         // Load existing conversations
         await loadConversations();
@@ -753,6 +757,31 @@ const MessagesModule=(function(){
         document.getElementById('chat-message-input').addEventListener('keypress', e => {
             if(e.key === 'Enter') sendMessage();
         });
+    }
+
+    async function loadStaffMembers(){
+        try {
+            const { data, error } = await supabaseClient
+                .from('staff')
+                .select('id, email, name')
+                .eq('is_active', true);
+            
+            if(!error && data){
+                staffMembers = data;
+            }
+        } catch(e){
+            console.error('Error loading staff members:', e);
+        }
+    }
+
+    function getStaffNameById(userId){
+        const staff = staffMembers.find(s => s.id === userId);
+        return staff ? staff.name : null;
+    }
+
+    function getStaffNameByEmail(email){
+        const staff = staffMembers.find(s => s.email === email);
+        return staff ? staff.name : email;
     }
 
     async function loadConversations(){
@@ -789,8 +818,12 @@ const MessagesModule=(function(){
                     .neq('user_id', currentUserId);
                 
                 if(otherParts && otherParts.length > 0){
-                    const { data: emailData, error: emailErr } = await supabaseClient.rpc('get_user_email', { user_id_input: otherParts[0].user_id });
-                    if(!emailErr && emailData) displayName = emailData;
+                    const staffName = getStaffNameById(otherParts[0].user_id);
+                    if(staffName) displayName = staffName;
+                    else {
+                        const { data: emailData, error: emailErr } = await supabaseClient.rpc('get_user_email', { user_id_input: otherParts[0].user_id });
+                        if(!emailErr && emailData) displayName = emailData;
+                    }
                 }
             }
 
@@ -813,11 +846,6 @@ const MessagesModule=(function(){
     }
 
     async function startNewChat(){
-		if(existingConvos){
-    input.value = '';
-    openConversation(existingConvos, emailOrName);
-    return;
-} 
         const input = document.getElementById('chat-recipient-email');
         const emailOrName = input.value.trim();
         if(!emailOrName) return;
@@ -838,7 +866,12 @@ const MessagesModule=(function(){
         // Check if 1-on-1 conversation already exists
         const { data: existingConvos } = await supabaseClient.rpc('find_private_conversation', { user1: currentUserId, user2: targetUserId });
         
-        // Note: We need to create the find_private_conversation RPC in Supabase later if we want to prevent duplicates. For now, just create a new one.
+        if(existingConvos){
+            input.value = '';
+            openConversation(existingConvos, emailOrName);
+            return;
+        }
+        
         const { data: newConv, error: convError } = await supabaseClient.from('conversations').insert([{ is_group: false }]).select().single();
         
         if(convError){
