@@ -1,65 +1,63 @@
-const CACHE_NAME = 'tinkers-hatch-v1';
+const CACHE_NAME = 'tinkers-hatch-v2'; // ← BUMP THIS every time you change app.js, style.css, or any HTML
 const CORE_ASSETS = [
-  './',
-  './index.html',
-  './style.css',
-  './app.js',
-  './manifest.json'
+  './', './index.html', './style.css', './app.js', './staff.html', './manifest.json'
 ];
 
-// Install: Cache core assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CORE_ASSETS).catch(err => console.log('Cache error:', err));
-    })
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(CORE_ASSETS))
+      .catch(err => console.log('Cache error:', err))
   );
   self.skipWaiting();
 });
 
-// Activate: Clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys().then((cacheNames) =>
+      Promise.all(cacheNames.map((cacheName) => {
+        if (cacheName !== CACHE_NAME) return caches.delete(cacheName);
+      }))
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch: Serve from Cache first, fall back to network
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  const req = event.request;
+  if (req.method !== 'GET') return;
 
-  // For HTML navigations, try network first (so they get fresh content if online), fallback to cache
-  if (event.request.mode === 'navigate') {
+  const url = new URL(req.url);
+
+  // Live data goes straight to the network — never cached, never stale
+  if (url.hostname.includes('supabase.co') ||
+      url.hostname === 'ntfy.sh' ||
+      url.hostname === 'api.open-meteo.com') {
+    return;
+  }
+
+  // Page navigations: network first, cache only when offline
+  if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => caches.match('./index.html'))
+      fetch(req).catch(() =>
+        caches.match(req).then((cached) => cached || caches.match('./index.html'))
+      )
     );
     return;
   }
 
-  // For everything else (CSS, JS, Images), try cache first, fall back to network
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).then((networkResponse) => {
-        // Dynamically cache new GET requests (like Supabase images)
-        if (networkResponse && networkResponse.status === 200 && event.request.url.startsWith('http')) {
-          const responseToCache = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
-        }
-        return networkResponse;
-      }).catch(() => {
-        // Offline fallback (optional: return a placeholder image if needed)
-      });
-    })
-  );
+  // Static assets: cache first, but ONLY your own files
+  if (url.origin === self.location.origin) {
+    event.respondWith(
+      caches.match(req).then((cached) => {
+        return cached || fetch(req).then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, responseToCache));
+          }
+          return networkResponse;
+        });
+      })
+    );
+  }
+  // Cross-origin stuff (Google Fonts, ibb.co images) passes straight through
 });
