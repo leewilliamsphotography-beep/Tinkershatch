@@ -757,20 +757,61 @@ const MessagesModule=(function(){
         document.getElementById('chat-message-input').addEventListener('keypress', e => {
             if(e.key === 'Enter') sendMessage();
         });
+        
+        // Toggle manual input
+        const toggleBtn = document.getElementById('toggle-manual-input');
+        if(toggleBtn){
+            toggleBtn.addEventListener('click', () => {
+                const manualBox = document.getElementById('manual-chat-box');
+                manualBox.style.display = manualBox.style.display === 'none' ? 'block' : 'none';
+            });
+        }
     }
 
     async function loadStaffMembers(){
         try {
-            const { data, error } = await supabaseClient
+            // Try to get staff from staff table
+            const { data: staffData, error: staffError } = await supabaseClient
                 .from('staff')
                 .select('id, email, name')
                 .eq('is_active', true);
             
-            if(!error && data){
-                staffMembers = data;
+            if(!staffError && staffData && staffData.length > 0){
+                staffMembers = staffData;
+                populateStaffDropdown();
+            } else {
+                // If no staff table, we'll work with email-based lookups only
+                staffMembers = [];
+                populateStaffDropdown();
             }
         } catch(e){
             console.error('Error loading staff members:', e);
+            staffMembers = [];
+            populateStaffDropdown();
+        }
+    }
+
+    function populateStaffDropdown(){
+        const select = document.getElementById('chat-recipient-select');
+        if(!select) return;
+        
+        select.innerHTML = '<option value="">Select staff member...</option>';
+        staffMembers.forEach(staff => {
+            if(staff.id !== currentUserId){
+                const option = document.createElement('option');
+                option.value = staff.email;
+                option.textContent = staff.name || staff.email;
+                select.appendChild(option);
+            }
+        });
+        
+        // If no staff members available, show message
+        if(staffMembers.length === 0){
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "No staff members available";
+            option.disabled = true;
+            select.appendChild(option);
         }
     }
 
@@ -846,15 +887,37 @@ const MessagesModule=(function(){
     }
 
     async function startNewChat(){
-        const input = document.getElementById('chat-recipient-email');
-        const emailOrName = input.value.trim();
-        if(!emailOrName) return;
-
-        // If it's a group (we'll assume groups have spaces or are just names, for simplicity let's add a group button later. For now, treat as email lookup)
-        const { data: targetUserId, error } = await supabaseClient.rpc('get_user_id', { email_input: emailOrName });
+        const select = document.getElementById('chat-recipient-select');
+        const manualInput = document.getElementById('chat-recipient-email');
         
-        if(error || !targetUserId){
-            ToastModule.show('Could not find staff member with that email.');
+        let email = select.value;
+        let displayName = email;
+        
+        // If dropdown is empty, try manual input
+        if(!email && manualInput){
+            email = manualInput.value.trim();
+        }
+        
+        if(!email) return;
+
+        // Check if it's a staff member from our list
+        let targetUserId = null;
+        const staff = staffMembers.find(s => s.email === email);
+        
+        if(staff){
+            targetUserId = staff.id;
+            displayName = staff.name || staff.email;
+        } else {
+            // Fallback to email lookup via RPC
+            const { data: userIdData, error } = await supabaseClient.rpc('get_user_id', { email_input: email });
+            if(!error && userIdData){
+                targetUserId = userIdData;
+                displayName = email;
+            }
+        }
+
+        if(!targetUserId){
+            ToastModule.show('Could not find user with that email.');
             return;
         }
 
@@ -867,8 +930,9 @@ const MessagesModule=(function(){
         const { data: existingConvos } = await supabaseClient.rpc('find_private_conversation', { user1: currentUserId, user2: targetUserId });
         
         if(existingConvos){
-            input.value = '';
-            openConversation(existingConvos, emailOrName);
+            select.value = '';
+            if(manualInput) manualInput.value = '';
+            openConversation(existingConvos, displayName);
             return;
         }
         
@@ -884,10 +948,11 @@ const MessagesModule=(function(){
             { conversation_id: newConv.id, user_id: targetUserId }
         ]);
 
-        input.value = '';
+        select.value = '';
+        if(manualInput) manualInput.value = '';
         ToastModule.show('Chat started!');
         await loadConversations();
-        openConversation(newConv.id, emailOrName);
+        openConversation(newConv.id, displayName);
     }
 
     async function openConversation(convId, displayName){
