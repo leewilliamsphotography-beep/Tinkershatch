@@ -728,11 +728,30 @@ const MessagesModule=(function(){
     let currentUserId = null;
     let realtimeChannel = null;
     let staffMembers = [];
+    let isMainSite = false;
 
     async function init(){
+        // Check if we're on main site or staff portal
+        isMainSite = document.getElementById('staff-messaging') !== null;
+        
         const { data: { user } } = await supabaseClient.auth.getUser();
         if(!user) return;
         currentUserId = user.id;
+
+        // Show messaging section if on main site and user is authenticated
+        if(isMainSite){
+            const messagingSection = document.getElementById('staff-messaging');
+            const messagingBtn = document.getElementById('staffMessagingBtn');
+            if(messagingSection){
+                messagingSection.style.display = 'block';
+            }
+            if(messagingBtn){
+                messagingBtn.style.display = 'flex';
+                messagingBtn.addEventListener('click', () => {
+                    messagingSection.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        }
 
         // Load staff members for name display
         await loadStaffMembers();
@@ -751,18 +770,30 @@ const MessagesModule=(function(){
             })
             .subscribe();
 
-        // UI Listeners
-        document.getElementById('start-chat-btn').addEventListener('click', startNewChat);
-        document.getElementById('chat-send-btn').addEventListener('click', sendMessage);
-        document.getElementById('chat-message-input').addEventListener('keypress', e => {
-            if(e.key === 'Enter') sendMessage();
-        });
+        // Setup UI listeners based on which site we're on
+        setupUIListeners();
+    }
+
+    function setupUIListeners(){
+        const prefix = isMainSite ? 'main-' : '';
+        
+        const startBtn = document.getElementById(prefix + 'start-chat-btn');
+        const sendBtn = document.getElementById(prefix + 'chat-send-btn');
+        const messageInput = document.getElementById(prefix + 'chat-message-input');
+        const toggleBtn = document.getElementById(prefix + 'toggle-manual-input');
+
+        if(startBtn) startBtn.addEventListener('click', startNewChat);
+        if(sendBtn) sendBtn.addEventListener('click', sendMessage);
+        if(messageInput) {
+            messageInput.addEventListener('keypress', e => {
+                if(e.key === 'Enter') sendMessage();
+            });
+        }
         
         // Toggle manual input
-        const toggleBtn = document.getElementById('toggle-manual-input');
         if(toggleBtn){
             toggleBtn.addEventListener('click', () => {
-                const manualBox = document.getElementById('manual-chat-box');
+                const manualBox = document.getElementById(prefix + 'manual-chat-box');
                 manualBox.style.display = manualBox.style.display === 'none' ? 'block' : 'none';
             });
         }
@@ -777,12 +808,29 @@ const MessagesModule=(function(){
                 .eq('is_active', true);
             
             if(!staffError && staffData && staffData.length > 0){
+                console.log('Loaded staff members:', staffData);
                 staffMembers = staffData;
                 populateStaffDropdown();
             } else {
-                // If no staff table, we'll work with email-based lookups only
-                staffMembers = [];
-                populateStaffDropdown();
+                console.log('No staff table or no data, error:', staffError);
+                // Try to get all users from the profiles table (if it exists)
+                const { data: profilesData, error: profilesError } = await supabaseClient
+                    .from('profiles')
+                    .select('id, email, full_name');
+                
+                if(!profilesError && profilesData && profilesData.length > 0){
+                    console.log('Loaded profiles:', profilesData);
+                    staffMembers = profilesData.map(p => ({
+                        id: p.id,
+                        email: p.email,
+                        name: p.full_name || p.email
+                    }));
+                    populateStaffDropdown();
+                } else {
+                    console.log('No profiles table either, using empty list');
+                    staffMembers = [];
+                    populateStaffDropdown();
+                }
             }
         } catch(e){
             console.error('Error loading staff members:', e);
@@ -792,21 +840,34 @@ const MessagesModule=(function(){
     }
 
     function populateStaffDropdown(){
-        const select = document.getElementById('chat-recipient-select');
-        if(!select) return;
+        const prefix = isMainSite ? 'main-' : '';
+        const select = document.getElementById(prefix + 'chat-recipient-select');
+        if(!select) {
+            console.log('Dropdown element not found with prefix:', prefix);
+            return;
+        }
+        
+        console.log('Populating dropdown with staff members:', staffMembers.length);
+        console.log('Current user ID:', currentUserId);
         
         select.innerHTML = '<option value="">Select staff member...</option>';
+        
+        let addedCount = 0;
         staffMembers.forEach(staff => {
+            console.log('Checking staff member:', staff);
             if(staff.id !== currentUserId){
                 const option = document.createElement('option');
                 option.value = staff.email;
-                option.textContent = staff.name || staff.email;
+                option.textContent = staff.name || staff.full_name || staff.email;
                 select.appendChild(option);
+                addedCount++;
             }
         });
         
+        console.log('Added', addedCount, 'staff members to dropdown');
+        
         // If no staff members available, show message
-        if(staffMembers.length === 0){
+        if(addedCount === 0){
             const option = document.createElement('option');
             option.value = "";
             option.textContent = "No staff members available";
@@ -817,16 +878,19 @@ const MessagesModule=(function(){
 
     function getStaffNameById(userId){
         const staff = staffMembers.find(s => s.id === userId);
-        return staff ? staff.name : null;
+        return staff ? (staff.name || staff.full_name || staff.email) : null;
     }
 
     function getStaffNameByEmail(email){
         const staff = staffMembers.find(s => s.email === email);
-        return staff ? staff.name : email;
+        return staff ? (staff.name || staff.full_name || staff.email) : email;
     }
 
     async function loadConversations(){
-        const listEl = document.getElementById('conversation-list');
+        const prefix = isMainSite ? 'main-' : '';
+        const listEl = document.getElementById(prefix + 'conversation-list');
+        if(!listEl) return;
+        
         listEl.innerHTML = '<p style="padding:16px; font-size:0.8rem; opacity:0.5;">Loading chats...</p>';
 
         const { data: participations, error } = await supabaseClient
@@ -887,8 +951,9 @@ const MessagesModule=(function(){
     }
 
     async function startNewChat(){
-        const select = document.getElementById('chat-recipient-select');
-        const manualInput = document.getElementById('chat-recipient-email');
+        const prefix = isMainSite ? 'main-' : '';
+        const select = document.getElementById(prefix + 'chat-recipient-select');
+        const manualInput = document.getElementById(prefix + 'chat-recipient-email');
         
         let email = select.value;
         let displayName = email;
@@ -906,7 +971,7 @@ const MessagesModule=(function(){
         
         if(staff){
             targetUserId = staff.id;
-            displayName = staff.name || staff.email;
+            displayName = staff.name || staff.full_name || staff.email;
         } else {
             // Fallback to email lookup via RPC
             const { data: userIdData, error } = await supabaseClient.rpc('get_user_id', { email_input: email });
@@ -957,11 +1022,13 @@ const MessagesModule=(function(){
 
     async function openConversation(convId, displayName){
         activeConversationId = convId;
-        document.getElementById('chat-header').textContent = displayName;
-        document.getElementById('chat-message-input').disabled = false;
-        document.getElementById('chat-send-btn').disabled = false;
+        const prefix = isMainSite ? 'main-' : '';
         
-        const msgsEl = document.getElementById('chat-messages');
+        document.getElementById(prefix + 'chat-header').textContent = displayName;
+        document.getElementById(prefix + 'chat-message-input').disabled = false;
+        document.getElementById(prefix + 'chat-send-btn').disabled = false;
+        
+        const msgsEl = document.getElementById(prefix + 'chat-messages');
         msgsEl.innerHTML = '<p style="opacity:0.5;">Loading messages...</p>';
 
         const { data: messages, error } = await supabaseClient
@@ -981,7 +1048,8 @@ const MessagesModule=(function(){
     }
 
     function appendMessage(msg){
-        const msgsEl = document.getElementById('chat-messages');
+        const prefix = isMainSite ? 'main-' : '';
+        const msgsEl = document.getElementById(prefix + 'chat-messages');
         const bubble = document.createElement('div');
         bubble.className = 'message-bubble ' + (msg.sender_id === currentUserId ? 'sent' : 'received');
         
@@ -993,7 +1061,8 @@ const MessagesModule=(function(){
     }
 
     async function sendMessage(){
-        const input = document.getElementById('chat-message-input');
+        const prefix = isMainSite ? 'main-' : '';
+        const input = document.getElementById(prefix + 'chat-message-input');
         const content = input.value.trim();
         if(!content || !activeConversationId) return;
 
