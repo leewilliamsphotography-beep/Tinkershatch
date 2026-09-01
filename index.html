@@ -170,14 +170,21 @@
 </div>
 
 <header>
-<div class="music-player">
+<div class="music-player-container">
     <audio id="bg-music" loop>
         <source src="background-music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
     
-    <button id="music-toggle" aria-label="Play background music">
-        <span id="music-icon">🎵</span> <span id="music-text">Play Music</span>
+    <button id="music-toggle" class="music-btn" aria-label="Play background music">
+        <!-- This is the Play Icon -->
+        <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+        </svg>
+        <!-- This is the Pause Icon (hidden by default) -->
+        <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+        </svg>
+        <span id="music-text">Play Music</span>
     </button>
 </div>
     <div class="header-left">
