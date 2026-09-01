@@ -760,18 +760,7 @@ const MessagesModule=(function(){
                     messagingSection.scrollIntoView({ behavior: 'smooth' });
                 });
             }
-       <script>
-    // Show user greeting
-    if(userGreeting && userName){
-        userGreeting.style.display = 'flex';
-        const displayName = user.user_metadata?.full_name || 
-                           user.user_metadata?.name || 
-                           user.email?.split('@')[0] || 
-                           'User';
-        userName.textContent = `Hello, ${displayName}`;
-    }
-}
-</script> <!-- ADD THIS CLOSING TAG HERE -->
+     
         // Load staff members for name display
         await loadStaffMembers();
 
