@@ -536,64 +536,114 @@
 <script src="app.js"></script>
 
 <!-- BULLETPROOF TAB MANAGER & LAYOUT ENFORCER -->
-<script>
-    // 1. Take over tab switching
-    document.addEventListener('click', function(e) {
-        const tabBtn = e.target.closest('.tester-tab-btn');
-        if (tabBtn && tabBtn.dataset.tab) {
-            e.stopPropagation();
-            e.preventDefault();
-            const tabName = tabBtn.dataset.tab;
-            document.querySelectorAll('.tester-tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tester-tab-content').forEach(tab => {
-                tab.classList.remove('active');
-                tab.style.display = 'none';
+    <script src="app.js"></script>
+    
+    <!-- BULLETPROOF TAB MANAGER, LOGOUT & LAYOUT ENFORCER -->
+    <script>
+        // 1. Take over tab switching so app.js doesn't break it
+        document.addEventListener('click', function(e) {
+            const tabBtn = e.target.closest('.tester-tab-btn');
+            if (tabBtn && tabBtn.dataset.tab) {
+                e.stopPropagation();
+                e.preventDefault();
+                const tabName = tabBtn.dataset.tab;
+                document.querySelectorAll('.tester-tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tester-tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                    tab.style.display = 'none';
+                });
+                tabBtn.classList.add('active');
+                const activeTab = document.getElementById(`tab-${tabName}`);
+                if (activeTab) {
+                    activeTab.classList.add('active');
+                    activeTab.style.display = 'block';
+                }
+            }
+        }, true);
+
+        // 2. Intercept Logout Button to ensure it always works
+        document.addEventListener('click', async function(e) {
+            const logoutBtn = e.target.closest('#testerLogoutBtn');
+            if (logoutBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                try {
+                    // Sign out of Supabase directly
+                    if (window.sb) {
+                        await window.sb.auth.signOut();
+                    }
+                } catch (err) {
+                    console.error("Logout error:", err);
+                } finally {
+                    // Force the UI back to the login screen
+                    const menu = document.getElementById('testerMenu');
+                    const login = document.getElementById('testerLogin');
+                    if (menu) menu.style.display = 'none';
+                    if (login) {
+                        login.style.display = 'flex';
+                        login.style.opacity = '1';
+                        login.style.visibility = 'visible';
+                    }
+                }
+            }
+        }, true);
+
+        // 3. Seasonal Themes save to Local Storage
+        document.querySelectorAll('.tester-season-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const season = this.dataset.season;
+                localStorage.setItem('tinkers_season', season);
+                alert(`Seasonal theme set to ${season}. The live site will update on refresh.`);
             });
-            tabBtn.classList.add('active');
-            const activeTab = document.getElementById(`tab-${tabName}`);
-            if (activeTab) {
-                activeTab.classList.add('active');
+        });
+
+        // 4. Force full-screen width and height continuously
+        function enforceFullScreenLayout() {
+            const modal = document.getElementById('testerModal');
+            const content = document.querySelector('.tester-content');
+            const login = document.getElementById('testerLogin');
+            const menu = document.getElementById('testerMenu');
+            
+            if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
+            if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
+            
+            // If login is visible, make sure menu is hidden
+            if (login && (login.style.display === 'flex' || window.getComputedStyle(login).display === 'flex')) {
+                login.style.width = '100%';
+                login.style.height = '100vh';
+                if (menu) menu.style.display = 'none';
+                return; 
+            }
+            
+            // If we are past login, force the menu to be flex and fill the screen
+            if (menu) {
+                menu.style.display = 'flex';
+                menu.style.flexDirection = 'row';
+                menu.style.width = '100%';
+                menu.style.maxWidth = '100%';
+                menu.style.height = '100vh';
+                menu.style.maxHeight = '100vh';
+            }
+            
+            const tabs = document.querySelector('.tester-tabs');
+            if (tabs) { 
+                tabs.style.height = '100vh'; 
+                tabs.style.maxHeight = '100vh'; 
+            }
+            
+            const activeTab = document.querySelector('.tester-tab-content.active');
+            if (activeTab) { 
+                activeTab.style.height = '100vh'; 
+                activeTab.style.maxHeight = '100vh'; 
+                activeTab.style.width = '100%';
+                activeTab.style.maxWidth = '100%';
+                activeTab.style.overflowY = 'auto';
                 activeTab.style.display = 'block';
             }
         }
-    }, true);
-
-    // 2. Seasonal Themes save to Local Storage
-    document.querySelectorAll('.tester-season-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const season = this.dataset.season;
-            localStorage.setItem('tinkers_season', season);
-            alert(`Seasonal theme set to ${season}. The live site will update on refresh.`);
-        });
-    });
-
-    // 3. Layout Enforcer
-    function enforceFullScreenLayout() {
-        const modal = document.getElementById('testerModal');
-        const content = document.querySelector('.tester-content');
-        const login = document.getElementById('testerLogin');
-        const menu = document.getElementById('testerMenu');
-        if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
-        if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
-        if (login && login.style.display !== 'none' && window.getComputedStyle(login).display !== 'none') {
-            login.style.width = '100%'; login.style.height = '100vh'; return; 
-        }
-        if (menu) {
-            menu.style.display = 'flex'; menu.style.flexDirection = 'row';
-            menu.style.width = '100%'; menu.style.maxWidth = '100%';
-            menu.style.height = '100vh'; menu.style.maxHeight = '100vh';
-        }
-        const tabs = document.querySelector('.tester-tabs');
-        if (tabs) { tabs.style.height = '100vh'; tabs.style.maxHeight = '100vh'; }
-        const activeTab = document.querySelector('.tester-tab-content.active');
-        if (activeTab) { 
-            activeTab.style.height = '100vh'; activeTab.style.maxHeight = '100vh'; 
-            activeTab.style.width = '100%'; activeTab.style.maxWidth = '100%';
-            activeTab.style.overflowY = 'auto'; activeTab.style.display = 'block';
-        }
-    }
-    enforceFullScreenLayout();
-    setInterval(enforceFullScreenLayout, 500);
-</script>
+        
+        enforceFullScreenLayout();
+        setInterval(enforceFullScreenLayout, 500);
+    </script>
 </body>
 </html>
