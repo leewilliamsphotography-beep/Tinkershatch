@@ -1468,12 +1468,12 @@ setTimeout(() => {
         { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
         { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
-        { name: "The end of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
+        { name: "The End of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
         { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
     let currentTrack = 0;
 
-    // 2. Inject the CSS (Updated for transparency)
+    // 2. Inject the CSS (Now using classes to swap icons)
     const style = document.createElement('style');
     style.innerHTML = `
         .music-player-container {
@@ -1481,8 +1481,8 @@ setTimeout(() => {
             bottom: 30px;
             right: 30px;
             z-index: 2147483647;
-            background: rgba(255, 255, 255, 0.65); /* Transparent white */
-            backdrop-filter: blur(12px); /* Frosted glass effect */
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 16px;
@@ -1520,14 +1520,14 @@ setTimeout(() => {
         .nav-btn {
             width: 32px;
             height: 32px;
-            background: rgba(255, 255, 255, 0.5); /* Transparent */
+            background: rgba(255, 255, 255, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.6);
             color: #4a5568;
         }
         .play-btn {
             width: 44px;
             height: 44px;
-            background: rgba(45, 55, 72, 0.7); /* Transparent dark */
+            background: rgba(45, 55, 72, 0.7);
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -1536,13 +1536,25 @@ setTimeout(() => {
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             background: rgba(255, 255, 255, 0.8);
         }
-        .play-btn.playing {
-            background: rgba(74, 144, 226, 0.8); /* Transparent soft blue when playing */
+        .play-btn.is-playing {
+            background: rgba(74, 144, 226, 0.8);
         }
+        
+        /* --- NEW ICON SWAPPING LOGIC --- */
+        .play-btn #pause-icon {
+            display: none;
+        }
+        .play-btn.is-playing #play-icon {
+            display: none;
+        }
+        .play-btn.is-playing #pause-icon {
+            display: block;
+        }
+        /* ------------------------------- */
     `;
     document.head.appendChild(style);
 
-    // 3. Create the Button HTML
+    // 3. Create the Button HTML (Removed inline display:none)
     const musicDiv = document.createElement('div');
     musicDiv.className = 'music-player-container';
     musicDiv.innerHTML = `
@@ -1554,7 +1566,7 @@ setTimeout(() => {
             <audio id="bg-music"></audio>
             <button id="music-toggle" class="play-btn" aria-label="Play background music">
                 <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             </button>
             <button id="next-btn" class="nav-btn" aria-label="Next track">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
@@ -1563,11 +1575,9 @@ setTimeout(() => {
     `;
     document.body.appendChild(musicDiv);
 
-    // 4. Add the Logic (Fixed so icons change instantly)
+    // 4. Add the Logic (Now just toggling a CSS class!)
     const music = document.getElementById('bg-music');
     const toggleBtn = document.getElementById('music-toggle');
-    const playIcon = document.getElementById('play-icon');
-    const pauseIcon = document.getElementById('pause-icon');
     const trackName = document.getElementById('track-name');
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
@@ -1580,22 +1590,12 @@ setTimeout(() => {
     }
 
     function playMusic() {
-        // Change icons INSTANTLY
-        toggleBtn.classList.add('playing');
-        playIcon.style.display = 'none';
-        pauseIcon.style.display = 'block';
-        
-        // Play music
+        toggleBtn.classList.add('is-playing');
         music.play().catch(error => console.log("Play prevented:", error));
     }
 
     function pauseMusic() {
-        // Change icons INSTANTLY
-        toggleBtn.classList.remove('playing');
-        playIcon.style.display = 'block';
-        pauseIcon.style.display = 'none';
-        
-        // Pause music
+        toggleBtn.classList.remove('is-playing');
         music.pause();
     }
 
