@@ -1480,7 +1480,7 @@ setTimeout(() => {
         { name: "Spooky season", url: "leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 9, endMonth: 9 },	
 		
         { name: "Cozy Christmas", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
-        { name: "Winter wonderland", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 }
+        { name: "Winter wonderland", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
         
         // Example: Autumn songs for October & November (Months 9 & 10)
         // { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 }
