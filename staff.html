@@ -13,7 +13,6 @@
 <style>
     html, body { height: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
     body { background: #152630; }
-    /* Force modal and content to take up the entire screen */
     .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: block !important; }
     .tester-content { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; flex-direction: column !important; }
     .tester-trigger, .ambient { display: none !important; }
@@ -364,53 +363,59 @@
 
     <script src="app.js"></script>
     
-    <!-- BULLETPROOF LAYOUT & HAVEN TAB ENFORCER -->
+    <!-- BULLETPROOF TAB MANAGER & LAYOUT ENFORCER -->
     <script>
-        // 1. Intercept Haven tab clicks before app.js can break them
+        // 1. Completely take over tab switching so app.js doesn't break it
         document.addEventListener('click', function(e) {
-            const havenBtn = e.target.closest('.tester-tab-btn[data-tab="haven"]');
-            if (havenBtn) {
+            const tabBtn = e.target.closest('.tester-tab-btn');
+            if (tabBtn && tabBtn.dataset.tab) {
                 e.stopPropagation();
                 e.preventDefault();
                 
+                const tabName = tabBtn.dataset.tab;
+                
+                // Hide all tabs and remove active state
+                document.querySelectorAll('.tester-tab-btn').forEach(btn => btn.classList.remove('active'));
                 document.querySelectorAll('.tester-tab-content').forEach(tab => {
                     tab.classList.remove('active');
                     tab.style.display = 'none';
                 });
-                document.querySelectorAll('.tester-tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
                 
-                havenBtn.classList.add('active');
-                const havenTab = document.getElementById('tab-haven');
-                if (havenTab) {
-                    havenTab.classList.add('active');
-                    havenTab.style.display = 'block';
-                    havenTab.style.height = '100%';
-                    havenTab.style.width = '100%';
+                // Activate the clicked tab
+                tabBtn.classList.add('active');
+                const activeTab = document.getElementById(`tab-${tabName}`);
+                if (activeTab) {
+                    activeTab.classList.add('active');
+                    activeTab.style.display = 'block';
                 }
             }
         }, true);
 
-        // 2. Force full-screen width and height continuously to defeat app.js overrides
+        // 2. Make Seasonal Themes save to Local Storage
+        document.querySelectorAll('.tester-season-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const season = this.dataset.season;
+                localStorage.setItem('tinkers_season', season);
+                alert(`Seasonal theme set to ${season}. The live site will update on refresh.`);
+            });
+        });
+
+        // 3. Force full-screen width and height continuously to defeat app.js overrides
         function enforceFullScreenLayout() {
             const modal = document.getElementById('testerModal');
             const content = document.querySelector('.tester-content');
             const login = document.getElementById('testerLogin');
             const menu = document.getElementById('testerMenu');
             
-            // Force modal and content containers to 100% width/height
             if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
             if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
             
-            // If login is visible, ensure it's full screen
             if (login && login.style.display !== 'none' && window.getComputedStyle(login).display !== 'none') {
                 login.style.width = '100%';
                 login.style.height = '100vh';
                 return; 
             }
             
-            // If we are past login, force the menu to be flex and fill the screen entirely
             if (menu) {
                 menu.style.display = 'flex';
                 menu.style.flexDirection = 'row';
@@ -437,7 +442,6 @@
             }
         }
         
-        // Run immediately, and then continuously to fight app.js
         enforceFullScreenLayout();
         setInterval(enforceFullScreenLayout, 500);
     </script>

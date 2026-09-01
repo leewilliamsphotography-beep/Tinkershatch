@@ -777,5 +777,12 @@
     }
     checkStaffAndShowLink();
 </script>
+<script>
+    // Apply Tinkers Hatch Seasonal Theme
+    const season = localStorage.getItem('tinkers_season');
+    if (season && season !== 'auto') {
+        document.body.classList.add(`season-${season}`);
+    }
+</script>
 </body>
 </html>
