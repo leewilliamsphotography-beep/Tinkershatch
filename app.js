@@ -1486,8 +1486,6 @@ setTimeout(() => {
         // { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 }
     ];
 
-    ];
-
     const currentMonth = new Date().getMonth();
     let playlist = [...regularTracks]; 
 
