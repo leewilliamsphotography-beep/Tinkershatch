@@ -764,7 +764,7 @@ const MessagesModule=(function(){
      
         // Load staff members for name display
     
-	   async function loadStaffMembers(){ 
+
 
         // Load existing conversations
         await loadConversations();
