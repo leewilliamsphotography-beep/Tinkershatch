@@ -1461,6 +1461,24 @@ document.addEventListener('DOMContentLoaded', () =>{
       function init() { initReveal(); }
       return { init };
     })();
+	// === FORCE MUSIC PLAYER ONTO SCREEN ===
+setTimeout(() => {
+    const musicDiv = document.createElement('div');
+    musicDiv.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 2147483647; background: red; padding: 20px;';
+    
+    musicDiv.innerHTML = `
+        <audio id="bg-music-test" controls loop>
+            <source src="https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" type="audio/mpeg">
+        </audio>
+        <br><br>
+        <button onclick="alert('Button click works!');" style="padding: 10px; font-size: 20px;">
+            Click Me to Test
+        </button>
+    `;
+    
+    document.body.appendChild(musicDiv);
+}, 2000); // Waits 2 seconds for your app to finish loading
+// === END MUSIC PLAYER ===
     
     PolishModule.init();
 });
