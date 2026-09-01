@@ -93,6 +93,29 @@ const ToastModule=(function(){
         }
     }
     return{init,show};
+	document.addEventListener('DOMContentLoaded', () => {
+    const music = document.getElementById('bg-music');
+    const toggleBtn = document.getElementById('music-toggle');
+    const musicIcon = document.getElementById('music-icon');
+    const musicText = document.getElementById('music-text');
+
+    // Set initial volume (0.5 is 50% - good for background music)
+    music.volume = 0.5; 
+
+    toggleBtn.addEventListener('click', () => {
+        if (music.paused) {
+            // Play music
+            music.play().catch(error => {
+                console.log("Browser prevented audio from playing:", error);
+            });
+            musicIcon.textContent = '⏸️';
+            musicText.textContent = 'Pause Music';
+        } else {
+            // Pause music
+            music.pause();
+            musicIcon.textContent = '🎵';
+            musicText.textContent = 'Play Music';
+        } 
 })();
 
 const SplashModule = (function () {

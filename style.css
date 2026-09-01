@@ -668,3 +668,38 @@ body.bionic-mode #main b {
 #testerMenu {
     display: none !important;
 } 
+/* Styling for the music player container */
+.music-player {
+    position: fixed; /* Keeps it in the same place on the screen */
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Styling for the button */
+#music-toggle {
+    background-color: #ffffff;
+    border: 2px solid #4a90e2; /* Soft blue border */
+    color: #4a90e2;
+    padding: 10px 20px;
+    border-radius: 30px; /* Rounded corners for a friendly look */
+    cursor: pointer;
+    font-size: 16px;
+    font-family: inherit;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Hover effect */
+#music-toggle:hover {
+    background-color: #4a90e2;
+    color: #ffffff;
+}
+
+/* Active effect (when clicking) */
+#music-toggle:active {
+    transform: scale(0.98);
+} 

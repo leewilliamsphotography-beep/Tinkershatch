@@ -505,6 +505,19 @@
             </div>
         </div>
     </div>
+	<!-- Place this inside your <body> tag, e.g., in the footer -->
+<div class="music-player">
+    <!-- The audio element (hidden because we will use a custom button) -->
+    <audio id="bg-music" loop>
+        <source src="background-music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <!-- The button users click to play/pause -->
+    <button id="music-toggle" aria-label="Play background music">
+        <span id="music-icon">🎵</span> <span id="music-text">Play Music</span>
+    </button>
+</div>
 </footer>
 
 <div id="maintenance-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#f59e0b; color:#152630; text-align:center; padding:10px; z-index:9999; font-weight:bold; font-size:0.9rem; box-shadow:0 -2px 10px rgba(0,0,0,0.2);">
