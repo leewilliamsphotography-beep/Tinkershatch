@@ -47,12 +47,7 @@
     }
 
     /* === Dashboard Layout === */
-    #testerMenu { width: 100%; height: 100%; background: var(--cream); display: none; }
-    /* Force flex layout when app.js makes it visible */
-    #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
-        display: flex !important;
-        flex-direction: row !important;
-    }
+    #testerMenu { width: 100%; height: 100%; background: var(--cream); display: none; flex: 1; flex-direction: row; }
     
     /* === Staff Themes === */
     body.staff-dark { background: #111418; }
@@ -89,15 +84,12 @@
 
     /* === Haven Tab Specifics === */
     #tab-haven.tester-tab-content { padding: 0 !important; background: transparent !important; }
-    #tab-haven.tester-tab-content.active { display: flex; }
+    #tab-haven.tester-tab-content.active { display: block; }
     #tab-haven iframe { width: 100%; height: 100%; border: none; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 
     /* === Mobile Responsiveness === */
     @media (max-width: 768px) {
-        #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
-            display: flex !important;
-            flex-direction: column !important;
-        }
+        #testerMenu { flex-direction: column !important; }
         .tester-tabs { width: 100% !important; height: auto !important; flex-direction: row !important; overflow-x: auto !important; padding: 10px !important; border-bottom: 1px solid var(--border) !important; flex-shrink: 0; }
         .tester-tab-btn { white-space: nowrap !important; padding: 10px 14px !important; font-size: 0.85rem !important; }
         .tester-tab-content { padding: 20px !important; height: calc(100% - 50px) !important; }
@@ -142,10 +134,13 @@
                     <button class="tester-tab-btn" data-tab="settings">⚙️ Settings</button>
                 </div>
 
-                <!-- HAVEN TAB (Dummy input prevents app.js from crashing) -->
-                <div id="tab-haven" class="tester-tab-content" style="display: none;">
-                    <input type="hidden" id="havenDummyInput">
-                    <iframe src="https://leewilliamsphotography-beep.github.io/Pulse/" title="Haven Staff Messaging"></iframe>
+                <!-- HAVEN TAB -->
+                <div id="tab-haven" class="tester-tab-content" style="display: none; padding: 0 !important; height: 100% !important; background: transparent !important;">
+                    <iframe 
+                        src="https://leewilliamsphotography-beep.github.io/Pulse/" 
+                        style="width: 100%; height: 100%; border: none; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);"
+                        title="Haven Staff Messaging">
+                    </iframe>
                 </div>
 
                 <div id="tab-photos" class="tester-tab-content active">
@@ -299,6 +294,27 @@
                         <option value="admin">Admin (Full access)</option>
                     </select>
                     <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 16px;">Create Account</button>
+                </div>
+
+                <!-- RESTORED OLD MESSAGES TAB TO PREVENT APP.JS CRASH -->
+                <div id="tab-messages" class="tester-tab-content">
+                    <div id="chat-layout">
+                        <div id="chat-sidebar">
+                            <div id="new-chat-box">
+                                <input type="text" id="chat-recipient-email" class="tester-input" placeholder="Staff email or Group Name" style="margin:0;">
+                                <button id="start-chat-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;">Start</button>
+                            </div>
+                            <div id="conversation-list"></div>
+                        </div>
+                        <div id="chat-window">
+                            <div id="chat-header">Select a conversation</div>
+                            <div id="chat-messages"></div>
+                            <div id="chat-input-box">
+                                <input type="text" id="chat-message-input" class="tester-input" placeholder="Type a message..." style="margin:0;" disabled>
+                                <button id="chat-send-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;" disabled>Send</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="tab-settings" class="tester-tab-content">
