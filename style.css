@@ -722,4 +722,5 @@ body.bionic-mode #main b {
     100% { transform: scale(1); }
 html { scroll-behavior: smooth; } 
 input, select, textarea { font-size: 16px; }
-::selection { background: #6B4423; color: #ffffff; } 
+::selection { background: #6B4423 !important; color: #ffffff !important; }
+::-moz-selection { background: #6B4423 !important; color: #ffffff !important; }
