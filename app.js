@@ -1052,12 +1052,6 @@ const MessagesModule=(function(){
             { conversation_id: newConv.id, user_id: targetUserId }
         ]);
 
-        select.value = '';
-        if(manualInput) manualInput.value = '';
-        ToastModule.show('Chat started!');
-        await loadConversations();
-        openConversation(newConv.id, displayName);
-    }
 
     async function openConversation(convId, displayName){
         activeConversationId = convId;
