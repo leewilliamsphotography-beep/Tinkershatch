@@ -114,7 +114,7 @@ const SplashModule = (function () {
       document.body.style.overflow = 'auto';
     } else {
       document.body.style.overflow = 'hidden';
-    }
+    
 
     enterBtn.addEventListener('click', closeSplash);
     document.querySelectorAll('.splash-shortcut').forEach(btn => {
