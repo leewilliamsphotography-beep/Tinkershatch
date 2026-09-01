@@ -1475,7 +1475,7 @@ setTimeout(() => {
 
     // 2. Create an invisible audio element
     const music = document.createElement('audio');
-    music.loop = false;
+    music.style.display = 'none';
     music.volume = 0.4; // 40% volume
     document.body.appendChild(music);
 
@@ -1498,21 +1498,21 @@ setTimeout(() => {
         music.play().catch(e => console.log("Auto-advance blocked:", e));
     });
 
-    // 5. Start music on first user interaction
+    // 5. Start music on first user interaction (Using 'window' to bypass frameworks)
     function startMusic() {
         music.play().then(() => {
             console.log("Music started successfully!");
             // Remove the listeners so it only triggers once
-            document.body.removeEventListener('click', startMusic);
-            document.body.removeEventListener('touchstart', startMusic);
-            document.body.removeEventListener('keydown', startMusic);
+            window.removeEventListener('click', startMusic);
+            window.removeEventListener('touchstart', startMusic);
+            window.removeEventListener('keydown', startMusic);
         }).catch(e => console.log("Play blocked:", e));
     }
 
-    // Listen for the user's first click, tap, or keypress
-    document.body.addEventListener('click', startMusic);
-    document.body.addEventListener('touchstart', startMusic);
-    document.body.addEventListener('keydown', startMusic);
+    // Listen for the user's first click, tap, or keypress anywhere on the page
+    window.addEventListener('click', startMusic);
+    window.addEventListener('touchstart', startMusic);
+    window.addEventListener('keydown', startMusic);
 
 }, 1500);
 // === END INVISIBLE BACKGROUND MUSIC ===
