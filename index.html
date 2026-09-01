@@ -784,5 +784,27 @@
         document.body.classList.add(`season-${season}`);
     }
 </script>
+<!-- Apply Tinkers Hatch Seasonal Theme -->
+<script>
+    window.addEventListener('load', function() {
+        const season = localStorage.getItem('tinkers_season');
+        if (season) {
+            // Remove any existing seasons first
+            document.body.classList.remove('season-winter', 'season-spring', 'season-summer', 'season-autumn');
+            
+            if (season === 'auto') {
+                // If set to Auto, calculate season based on the month
+                const month = new Date().getMonth(); // 0 = Jan, 11 = Dec
+                if (month === 11 || month === 0 || month === 1) document.body.classList.add('season-winter');
+                else if (month >= 2 && month <= 4) document.body.classList.add('season-spring');
+                else if (month >= 5 && month <= 7) document.body.classList.add('season-summer');
+                else document.body.classList.add('season-autumn');
+            } else {
+                // Apply the specific season chosen in the staff portal
+                document.body.classList.add(`season-${season}`);
+            }
+        }
+    });
+</script>
 </body>
 </html>
