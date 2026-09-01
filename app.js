@@ -760,19 +760,19 @@ const MessagesModule=(function(){
                     messagingSection.scrollIntoView({ behavior: 'smooth' });
                 });
             }
-            
-            // Show user greeting
-            if(userGreeting && userName){
-                userGreeting.style.display = 'flex';
-                // Try to get user's name from metadata or email
-                const displayName = user.user_metadata?.full_name || 
-                                   user.user_metadata?.name || 
-                                   user.email?.split('@')[0] || 
-                                   'User';
-                userName.textContent = `Hello, ${displayName}`;
-            }
-        }
-        </script>
+          
+		  <script>
+    // Show user greeting
+    if(userGreeting && userName){
+        userGreeting.style.display = 'flex';
+        const displayName = user.user_metadata?.full_name || 
+                           user.user_metadata?.name || 
+                           user.email?.split('@')[0] || 
+                           'User';
+        userName.textContent = `Hello, ${displayName}`;
+    }
+}
+</script> 
 		
         // Load staff members for name display
         await loadStaffMembers();
