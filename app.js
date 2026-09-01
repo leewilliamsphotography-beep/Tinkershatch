@@ -1461,172 +1461,61 @@ document.addEventListener('DOMContentLoaded', () =>{
       function init() { initReveal(); }
       return { init };
     })();
-	// === PLAYLIST MUSIC PLAYER INJECTION ===
+// === INVISIBLE BACKGROUND MUSIC ===
 setTimeout(() => {
-    // 1. Define your playlist here!
+    // 1. Your playlist
     const playlist = [
         { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
         { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
-        { name: "The End of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
+        { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
         { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
     let currentTrack = 0;
 
-    // 2. Inject the CSS (Now using classes to swap icons)
-    const style = document.createElement('style');
-    style.innerHTML = `
-        .music-player-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 2147483647;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            padding: 12px 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        .music-track-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: #4a5568;
-            font-family: inherit;
-            max-width: 150px;
-            text-align: center;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .music-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-btn, .play-btn {
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .nav-btn {
-            width: 32px;
-            height: 32px;
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            color: #4a5568;
-        }
-        .play-btn {
-            width: 44px;
-            height: 44px;
-            background: rgba(45, 55, 72, 0.7);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .nav-btn:hover, .play-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            background: rgba(255, 255, 255, 0.8);
-        }
-        .play-btn.is-playing {
-            background: rgba(74, 144, 226, 0.8);
-        }
-        
-        /* --- NEW ICON SWAPPING LOGIC --- */
-        .play-btn #pause-icon {
-            display: none;
-        }
-        .play-btn.is-playing #play-icon {
-            display: none;
-        }
-        .play-btn.is-playing #pause-icon {
-            display: block;
-        }
-        /* ------------------------------- */
-    `;
-    document.head.appendChild(style);
+    // 2. Create an invisible audio element
+    const music = document.createElement('audio');
+    music.loop = false;
+    music.volume = 0.4; // 40% volume
+    document.body.appendChild(music);
 
-    // 3. Create the Button HTML (Removed inline display:none)
-    const musicDiv = document.createElement('div');
-    musicDiv.className = 'music-player-container';
-    musicDiv.innerHTML = `
-        <div class="music-track-name" id="track-name">Loading...</div>
-        <div class="music-controls">
-            <button id="prev-btn" class="nav-btn" aria-label="Previous track">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-            </button>
-            <audio id="bg-music"></audio>
-            <button id="music-toggle" class="play-btn" aria-label="Play background music">
-                <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-            <button id="next-btn" class="nav-btn" aria-label="Next track">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-            </button>
-        </div>
-    `;
-    document.body.appendChild(musicDiv);
-
-    // 4. Add the Logic (Now just toggling a CSS class!)
-    const music = document.getElementById('bg-music');
-    const toggleBtn = document.getElementById('music-toggle');
-    const trackName = document.getElementById('track-name');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-
+    // 3. Pick a random song to start with
+    currentTrack = Math.floor(Math.random() * playlist.length);
+    
     function loadTrack(index) {
         currentTrack = (index + playlist.length) % playlist.length; 
         const track = playlist[currentTrack];
         music.src = track.url;
-        trackName.textContent = track.name;
+        music.load();
     }
 
-    function playMusic() {
-        toggleBtn.classList.add('is-playing');
-        music.play().catch(error => console.log("Play prevented:", error));
-    }
+    // Load the first random track
+    loadTrack(currentTrack);
 
-    function pauseMusic() {
-        toggleBtn.classList.remove('is-playing');
-        music.pause();
-    }
-
-    // Initialize first track
-    loadTrack(0);
-    music.volume = 0.4;
-
-    // Event Listeners
-    toggleBtn.addEventListener('click', () => {
-        if (music.paused) playMusic();
-        else pauseMusic();
-    });
-
-    nextBtn.addEventListener('click', () => {
-        loadTrack(currentTrack + 1);
-        playMusic(); 
-    });
-
-    prevBtn.addEventListener('click', () => {
-        loadTrack(currentTrack - 1);
-        playMusic(); 
-    });
-
-    // Automatically go to next song when current one ends
+    // 4. Automatically go to next song when one ends
     music.addEventListener('ended', () => {
         loadTrack(currentTrack + 1);
-        playMusic();
+        music.play().catch(e => console.log("Auto-advance blocked:", e));
     });
 
+    // 5. Start music on first user interaction
+    function startMusic() {
+        music.play().then(() => {
+            console.log("Music started successfully!");
+            // Remove the listeners so it only triggers once
+            document.body.removeEventListener('click', startMusic);
+            document.body.removeEventListener('touchstart', startMusic);
+            document.body.removeEventListener('keydown', startMusic);
+        }).catch(e => console.log("Play blocked:", e));
+    }
+
+    // Listen for the user's first click, tap, or keypress
+    document.body.addEventListener('click', startMusic);
+    document.body.addEventListener('touchstart', startMusic);
+    document.body.addEventListener('keydown', startMusic);
+
 }, 1500);
-// === END PLAYLIST MUSIC PLAYER ===
+// === END INVISIBLE BACKGROUND MUSIC ===
     
     PolishModule.init();
 });
