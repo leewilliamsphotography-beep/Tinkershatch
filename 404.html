@@ -3,291 +3,333 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lost in the Garden | Tinkers Hatch</title>
-<link rel="stylesheet" href="style.css">
+<title>404 | Lost in the Garden | Tinkers Hatch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <style>
+    /* Fallback Variables (in case style.css isn't loaded on this specific page) */
+    :root {
+        --cream: #FDFCF8;
+        --cream-deep: #F7F4ED;
+        --card: #FFFFFF;
+        --border: #EAE6DC;
+        --bark: #2C2420;
+        --bark-soft: #6B5D52;
+        --terracotta: #C25528;
+        --teal: #2A6F65;
+        --teal-deep: #1F524A;
+        --sage: #8AA68B;
+        --honey: #D4A537;
+        --rose: #D68282;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
     body {
         display: flex;
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-        text-align: center;
         background: var(--cream);
         overflow: hidden;
         position: relative;
         margin: 0;
-    }
-    .container {
-        position: relative;
-        z-index: 10;
-        max-width: 500px;
-        padding: 2rem;
-    }
-    .error-code {
-        font-family: 'Outfit', sans-serif;
-        font-size: clamp(5rem, 20vw, 10rem);
-        font-weight: 800;
-        color: var(--terracotta);
-        line-height: 1;
-        margin-bottom: 1rem;
-        text-shadow: 0 10px 30px rgba(194, 85, 40, 0.2);
-    }
-    .title {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.5rem;
-        font-weight: 700;
+        font-family: 'Plus Jakarta Sans', sans-serif;
         color: var(--bark);
-        margin-bottom: 0.5rem;
-    }
-    .subtitle {
-        color: var(--bark-soft);
-        margin-bottom: 2rem;
-        line-height: 1.6;
-    }
-    
-    /* Teacup Wrapper */
-    .cup-wrapper {
-        position: relative;
-        width: 200px;
-        height: 200px;
-        margin: 0 auto 2rem;
-        cursor: pointer;
-        user-select: none;
-    }
-    .teacup-svg {
-        width: 100%;
-        height: 100%;
-        transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
-        transform-origin: bottom center;
-    }
-    .cup-wrapper:hover .teacup-svg {
-        transform: scale(1.05);
-    }
-    .cup-wrapper.stirring .teacup-svg {
-        animation: stir 0.5s ease-in-out;
-    }
-    @keyframes stir {
-        0%, 100% { transform: rotate(0deg); }
-        25% { transform: rotate(-5deg); }
-        75% { transform: rotate(5deg); }
     }
 
-    /* Speech Bubble */
-    .speech-bubble {
-        position: absolute;
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%) scale(0);
-        background: var(--card);
-        border: 1px solid var(--border);
-        padding: 8px 16px;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--bark);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-        white-space: nowrap;
-        opacity: 0;
-        transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
-        z-index: 20;
-    }
-    .speech-bubble.show {
-        transform: translateX(-50%) scale(1);
-        opacity: 1;
-    }
-    .speech-bubble::after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 50%;
-        transform: translateX(-50%);
-        border-width: 8px 8px 0;
-        border-style: solid;
-        border-color: var(--card) transparent transparent transparent;
-    }
-
-    /* Floating Hearts */
-    .heart {
-        position: absolute;
-        top: 40px;
-        left: 50%;
-        font-size: 1.5rem;
-        color: var(--rose);
-        pointer-events: none;
-        opacity: 0;
-        animation: floatUp 2s ease-out forwards;
-    }
-    @keyframes floatUp {
-        0% { transform: translate(-50%, 0) scale(0.5); opacity: 0; }
-        20% { opacity: 1; transform: translate(-50%, -20px) scale(1); }
-        100% { transform: translate(-50%, -100px) scale(0.8); opacity: 0; }
-    }
-
-    /* Home Button */
-    .home-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--teal);
-        color: #fff;
-        padding: 12px 24px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 700;
-        transition: all 0.3s ease;
-        opacity: 0;
-        transform: translateY(20px);
-        pointer-events: none;
-    }
-    .home-btn.show {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
-    .home-btn:hover {
-        background: var(--teal-deep);
-        transform: translateY(-2px) scale(1.02);
-    }
-
-    /* Background Blobs */
+    /* Ambient Background Elements */
     .bg-blob {
         position: absolute;
         border-radius: 50%;
-        filter: blur(80px);
-        opacity: 0.2;
-        z-index: 1;
+        filter: blur(100px);
+        opacity: 0.15;
+        z-index: 0;
+        pointer-events: none;
     }
-    .blob-1 { width: 300px; height: 300px; background: var(--honey); top: -50px; left: -50px; }
-    .blob-2 { width: 400px; height: 400px; background: var(--sage); bottom: -100px; right: -100px; }
+    .blob-1 { width: 400px; height: 400px; background: var(--sage); top: -100px; left: -100px; }
+    .blob-2 { width: 500px; height: 500px; background: var(--honey); bottom: -150px; right: -150px; }
+
+    .grain {
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        opacity: 0.03;
+        z-index: 1;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Main Card Container */
+    .error-card {
+        position: relative;
+        z-index: 10;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: 0 30px 60px -20px rgba(44, 36, 32, 0.08);
+        max-width: 900px;
+        width: 90%;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        overflow: hidden;
+    }
+
+    /* Content Side */
+    .content-side {
+        padding: 4rem 3.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: left;
+    }
+
+    .label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--cream-deep);
+        color: var(--terracotta);
+        padding: 0.4rem 0.8rem;
+        border-radius: 100px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        width: fit-content;
+        margin-bottom: 2rem;
+    }
+
+    .label::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: var(--terracotta);
+        border-radius: 50%;
+    }
+
+    .error-code {
+        font-family: 'Outfit', sans-serif;
+        font-size: 6rem;
+        font-weight: 800;
+        color: var(--bark);
+        line-height: 1;
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.04em;
+    }
+
+    .error-code span {
+        color: var(--terracotta);
+    }
+
+    .title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--bark);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .subtitle {
+        color: var(--bark-soft);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        margin-bottom: 2.5rem;
+        max-width: 400px;
+    }
+
+    /* Action Buttons */
+    .actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.9rem 1.5rem;
+        border-radius: 10px;
+        text-decoration: none;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-primary {
+        background: var(--teal);
+        color: #fff;
+    }
+
+    .btn-primary:hover {
+        background: var(--teal-deep);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -5px rgba(42, 111, 101, 0.4);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--bark);
+        border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--cream-deep);
+        border-color: var(--bark-soft);
+    }
+
+    /* Illustration Side */
+    .illustration-side {
+        background: var(--cream-deep);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        border-left: 1px solid var(--border);
+    }
+
+    .botanical-svg {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        overflow: visible;
+    }
+
+    /* Subtle animations for the SVG */
+    .leaf {
+        transform-origin: bottom center;
+        animation: sway 6s ease-in-out infinite;
+    }
+    .leaf-1 { animation-delay: 0s; }
+    .leaf-2 { animation-delay: 1.5s; }
+    .leaf-3 { animation-delay: 3s; }
+
+    @keyframes sway {
+        0%, 100% { transform: rotate(-2deg); }
+        50% { transform: rotate(2deg); }
+    }
+
+    .ground {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .error-card {
+            grid-template-columns: 1fr;
+            max-width: 450px;
+        }
+        .illustration-side {
+            padding: 3rem 2rem;
+            border-left: none;
+            border-top: 1px solid var(--border);
+            order: -1; /* Show illustration on top for mobile */
+        }
+        .content-side {
+            padding: 3rem 2rem;
+            text-align: center;
+            align-items: center;
+        }
+        .subtitle {
+            text-align: center;
+        }
+        .actions {
+            justify-content: center;
+        }
+        .error-code {
+            font-size: 4.5rem;
+        }
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+        .leaf, .ground {
+            animation: none;
+        }
+    }
 </style>
 </head>
 <body>
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
+    <div class="grain"></div>
 
-    <div class="container">
-        <div class="error-code">404</div>
-        <h1 class="title">Let's pause for a moment.</h1>
-        <p class="subtitle">We can't seem to find that page. It might be time for a cup of tea. Click the teacup to warm up, and we'll find our way back.</p>
-        
-        <div class="cup-wrapper" id="cupWrapper" role="button" aria-label="Click for a cup of tea">
-            <div class="speech-bubble" id="speechBubble">Pour tea...</div>
+    <main class="error-card">
+        <!-- Text Content -->
+        <div class="content-side">
+            <div class="label">Error 404</div>
+            <div class="error-code">4<span>0</span>4</div>
+            <h1 class="title">Lost in the Garden</h1>
+            <p class="subtitle">It looks like the path you were looking for has overgrown. The page may have been moved, deleted, or never existed at all. Let's get you back to safety.</p>
             
-            <svg class="teacup-svg" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Steam -->
-                <g class="steam-group" opacity="0.6">
-                    <path d="M85 50 C80 40 90 30 85 20" stroke="var(--bark-soft)" stroke-width="3" stroke-linecap="round" fill="none">
-                        <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite" />
-                    </path>
-                    <path d="M100 55 C95 45 105 35 100 25" stroke="var(--bark-soft)" stroke-width="3" stroke-linecap="round" fill="none">
-                        <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite" begin="0.5s" />
-                    </path>
-                    <path d="M115 50 C110 40 120 30 115 20" stroke="var(--bark-soft)" stroke-width="3" stroke-linecap="round" fill="none">
-                        <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite" begin="1s" />
-                    </path>
-                </g>
-
-                <!-- Saucer -->
-                <ellipse cx="100" cy="165" rx="65" ry="12" fill="var(--cream-deep)" stroke="var(--bark-soft)" stroke-width="2.5"/>
-                
-                <!-- Handle -->
-                <path d="M150 110 C175 110 175 140 150 140" stroke="var(--bark-soft)" stroke-width="5" fill="none" stroke-linecap="round"/>
-                <path d="M150 115 C168 115 168 135 150 135" stroke="var(--terracotta)" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.6"/>
-
-                <!-- Cup Body -->
-                <path d="M45 105 C45 150 65 165 100 165 C135 165 155 150 155 105 Z" fill="var(--cream)" stroke="var(--bark-soft)" stroke-width="2.5"/>
-                
-                <!-- Tea Liquid -->
-                <ellipse cx="100" cy="105" rx="55" ry="10" fill="var(--honey)" stroke="var(--bark-soft)" stroke-width="2.5"/>
-                
-                <!-- Teabag String -->
-                <path d="M110 105 L115 130" stroke="var(--bark)" stroke-width="2" stroke-linecap="round"/>
-                <!-- Teabag Tag -->
-                <rect x="110" y="125" width="12" height="14" rx="2" fill="var(--terracotta)" stroke="var(--bark-soft)" stroke-width="1.5"/>
-                <path d="M112 129 L120 135 M120 129 L112 135" stroke="var(--bark)" stroke-width="1" opacity="0.5"/>
-
-                <!-- Cute Smiley Face on Cup -->
-                <circle cx="85" cy="125" r="3" fill="var(--bark)"/>
-                <circle cx="115" cy="125" r="3" fill="var(--bark)"/>
-                <path d="M88 135 Q100 142 112 135" stroke="var(--bark)" stroke-width="2" stroke-linecap="round" fill="none"/>
-                <!-- Cheeks -->
-                <circle cx="75" cy="132" r="4" fill="var(--rose)" opacity="0.3"/>
-                <circle cx="125" cy="132" r="4" fill="var(--rose)" opacity="0.3"/>
-            </svg>
+            <div class="actions">
+                <a href="index.html" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Return Home
+                </a>
+                <button class="btn btn-secondary" onclick="history.back()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    Go Back
+                </button>
+            </div>
         </div>
 
-        <a href="index.html" class="home-btn" id="homeBtn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        <!-- SVG Illustration -->
+        <div class="illustration-side">
+            <svg class="botanical-svg" viewBox="0 0 200 250" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Pot -->
+                <g class="ground">
+                    <path d="M50 140 L60 220 C60 225 65 230 70 230 L130 230 C135 230 140 225 140 220 L150 140 Z" fill="#FFFFFF" stroke="#2C2420" stroke-width="3"/>
+                    <path d="M45 140 L155 140 L155 148 C155 153 150 157 145 157 L55 157 C50 157 45 153 45 148 Z" fill="#2C2420"/>
+                </g>
+
+                <!-- Soil -->
+                <ellipse cx="100" cy="142" rx="48" ry="6" fill="#6B5D52"/>
+
+                <!-- Stems -->
+                <path d="M100 140 C100 120 80 100 85 80" stroke="#2C2420" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M100 140 C100 110 120 90 115 70" stroke="#2C2420" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M100 140 C100 100 100 70 100 50" stroke="#2C2420" stroke-width="2.5" stroke-linecap="round"/>
+
+                <!-- Leaves (Sage Green) -->
+                <!-- Left Leaf -->
+                <g class="leaf leaf-1">
+                    <path d="M85 80 C60 60 40 65 35 80 C32 95 45 105 50 100 C60 95 80 85 85 80 Z" fill="#8AA68B" stroke="#2C2420" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M35 80 C45 85 60 80 85 80" stroke="#2C2420" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                </g>
+
+                <!-- Right Leaf -->
+                <g class="leaf leaf-2">
+                    <path d="M115 70 C140 50 160 55 165 70 C168 85 155 95 150 90 C140 85 120 75 115 70 Z" fill="#8AA68B" stroke="#2C2420" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M165 70 C155 75 140 70 115 70" stroke="#2C2420" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                </g>
+
+                <!-- Top Leaf -->
+                <g class="leaf leaf-3">
+                    <path d="M100 50 C85 20 70 15 60 25 C50 35 55 55 65 55 C80 55 95 55 100 50 Z" fill="#8AA68B" stroke="#2C2420" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M60 25 C75 35 90 40 100 50" stroke="#2C2420" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+                </g>
             </svg>
-            Take me home
-        </a>
-    </div>
-
-    <script>
-        const cupWrapper = document.getElementById('cupWrapper');
-        const speechBubble = document.getElementById('speechBubble');
-        const homeBtn = document.getElementById('homeBtn');
-        let clickCount = 0;
-
-        const phrases = [
-            "Pouring tea...",
-            "Almost ready...",
-            "There you go.",
-            "Warm and cozy?",
-            "Feeling better?",
-            "Let's go home."
-        ];
-
-        cupWrapper.addEventListener('click', (e) => {
-            clickCount++;
-            
-            // Stir animation
-            cupWrapper.classList.add('stirring');
-            setTimeout(() => cupWrapper.classList.remove('stirring'), 500);
-
-            // Spawn floating heart
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = '❤️';
-            // Randomize starting position slightly
-            heart.style.left = `calc(50% + ${(Math.random() * 40 - 20)}px)`;
-            cupWrapper.appendChild(heart);
-            setTimeout(() => heart.remove(), 2000);
-
-            // Update speech bubble
-            let phraseIndex = Math.min(clickCount - 1, phrases.length - 1);
-            speechBubble.textContent = phrases[phraseIndex];
-            speechBubble.classList.add('show');
-            
-            // Hide bubble after a bit (unless fully triggered)
-            clearTimeout(window.bubbleTimeout);
-            window.bubbleTimeout = setTimeout(() => {
-                if (clickCount < 6) {
-                    speechBubble.classList.remove('show');
-                }
-            }, 2000);
-
-            // Easter Egg trigger: 6 clicks
-            if (clickCount >= 6) {
-                speechBubble.textContent = "Let's go home.";
-                homeBtn.classList.add('show');
-            }
-        });
-
-        // Auto-prompt hint after 3 seconds
-        setTimeout(() => {
-            if (clickCount === 0) {
-                speechBubble.textContent = "Pour tea...";
-                speechBubble.classList.add('show');
-                setTimeout(() => {
-                    if (clickCount === 0) speechBubble.classList.remove('show');
-                }, 3000);
-            }
-        }, 3000);
-    </script>
+        </div>
+    </main>
 </body>
 </html>
