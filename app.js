@@ -93,30 +93,6 @@ const ToastModule=(function(){
         }
     }
     return{init,show};
-	document.addEventListener('DOMContentLoaded', () => {
-    const music = document.getElementById('bg-music');
-    const toggleBtn = document.getElementById('music-toggle');
-    const musicIcon = document.getElementById('music-icon');
-    const musicText = document.getElementById('music-text');
-
-    if(music) {
-        music.volume = 0.5; 
-
-        toggleBtn.addEventListener('click', () => {
-            if (music.paused) {
-                music.play().catch(error => {
-                    console.log("Browser prevented audio from playing:", error);
-                });
-                musicIcon.textContent = '⏸️';
-                musicText.textContent = 'Pause Music';
-            } else {
-                music.pause();
-                musicIcon.textContent = '🎵';
-                musicText.textContent = 'Play Music';
-            }
-        });
-    }
-});
 })();
 
 const SplashModule = (function () {
@@ -1487,37 +1463,4 @@ document.addEventListener('DOMContentLoaded', () =>{
     })();
     
     PolishModule.init();
-document.addEventListener('DOMContentLoaded', () => {
-    const music = document.getElementById('bg-music');
-    const toggleBtn = document.getElementById('music-toggle');
-    const playIcon = document.getElementById('play-icon');
-    const pauseIcon = document.getElementById('pause-icon');
-    const musicText = document.getElementById('music-text');
-
-    // If the button isn't on the page, stop running the code.
-    if (!music || !toggleBtn) return;
-
-    // Set volume to 40% (gentle background noise)
-    music.volume = 0.4; 
-
-    toggleBtn.addEventListener('click', () => {
-        if (music.paused) {
-            // Play music
-            music.play().then(() => {
-                toggleBtn.classList.add('playing');
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-                musicText.textContent = 'Pause Music';
-            }).catch(error => {
-                console.log("Browser prevented audio from playing:", error);
-            });
-        } else {
-            // Pause music
-            music.pause();
-            toggleBtn.classList.remove('playing');
-            playIcon.style.display = 'block';
-            pauseIcon.style.display = 'none';
-            musicText.textContent = 'Play Music';
-        }
-    });
 });
