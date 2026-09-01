@@ -11,10 +11,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    html, body { height: 100%; margin: 0; padding: 0; }
-    body { background: #152630; overflow: hidden; }
-    .tester-modal { position: relative !important; opacity: 1 !important; visibility: visible !important; transform: none !important; background: transparent !important; width: 100% !important; height: 100% !important; max-width: 100% !important; display: block !important; }
-    .tester-content { background: transparent !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; max-height: none !important; height: 100% !important; width: 100% !important; display: flex !important; flex-direction: column !important; }
+    html, body { height: 100% !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+    body { background: #152630; }
+    .tester-modal { position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: block !important; }
+    .tester-content { width: 100% !important; height: 100% !important; display: flex !important; flex-direction: column !important; }
     .tester-trigger, .ambient { display: none !important; }
 
     /* === Login Layout === */
@@ -46,8 +46,16 @@
         border: 1px solid rgba(255,255,255,0.2);
     }
 
-    /* === Dashboard Layout === */
-    #testerMenu { width: 100%; height: 100%; background: var(--cream); display: none; flex: 1; flex-direction: row; }
+    /* === Dashboard Layout (Forced Full Screen) === */
+    #testerMenu { width: 100% !important; height: 100% !important; background: var(--cream); display: none; }
+    /* When app.js makes it visible, force it to be flex and fill the screen */
+    #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
+        display: flex !important;
+        flex-direction: row !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+    }
     
     /* === Staff Themes === */
     body.staff-dark { background: #111418; }
@@ -77,19 +85,22 @@
     .tester-tab-btn { background: transparent !important; border: 1px solid transparent !important; text-align: left !important; justify-content: flex-start !important; padding: 12px 16px !important; border-radius: 10px !important; font-weight: 600 !important; font-size: 0.9rem !important; transition: all 0.2s ease !important; white-space: nowrap; }
     .tester-tab-btn.active { background: var(--teal) !important; color: #fff !important; box-shadow: 0 4px 12px -4px rgba(26,163,126,0.5) !important; }
     
-    .tester-tab-content { display: none; flex: 1 !important; height: 100% !important; overflow-y: auto !important; padding: 32px !important; border: none !important; animation: none !important; box-sizing: border-box !important; }
+    .tester-tab-content { display: none; flex: 1 1 0 !important; height: 100% !important; max-height: 100% !important; overflow-y: auto !important; padding: 32px !important; border: none !important; animation: none !important; box-sizing: border-box !important; }
     .tester-tab-content.active { display: block; }
     .tester-tab-content h3 { font-size: 1.3rem !important; margin-bottom: 20px !important; padding-bottom: 12px !important; border-bottom: 2px solid var(--border) !important; color: var(--bark) !important; }
     .tester-divider { margin: 24px 0 !important; }
 
     /* === Haven Tab Specifics === */
-    #tab-haven.tester-tab-content { padding: 0 !important; background: transparent !important; }
+    #tab-haven.tester-tab-content { padding: 0 !important; background: transparent !important; overflow: hidden !important; }
     #tab-haven.tester-tab-content.active { display: block; }
     #tab-haven iframe { width: 100%; height: 100%; border: none; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
 
     /* === Mobile Responsiveness === */
     @media (max-width: 768px) {
-        #testerMenu { flex-direction: column !important; }
+        #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
+            display: flex !important;
+            flex-direction: column !important;
+        }
         .tester-tabs { width: 100% !important; height: auto !important; flex-direction: row !important; overflow-x: auto !important; padding: 10px !important; border-bottom: 1px solid var(--border) !important; flex-shrink: 0; }
         .tester-tab-btn { white-space: nowrap !important; padding: 10px 14px !important; font-size: 0.85rem !important; }
         .tester-tab-content { padding: 20px !important; height: calc(100% - 50px) !important; }
@@ -135,12 +146,8 @@
                 </div>
 
                 <!-- HAVEN TAB -->
-                <div id="tab-haven" class="tester-tab-content" style="display: none; padding: 0 !important; height: 100% !important; background: transparent !important;">
-                    <iframe 
-                        src="https://leewilliamsphotography-beep.github.io/Pulse/" 
-                        style="width: 100%; height: 100%; border: none; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2);"
-                        title="Haven Staff Messaging">
-                    </iframe>
+                <div id="tab-haven" class="tester-tab-content" style="display: none;">
+                    <iframe src="https://leewilliamsphotography-beep.github.io/Pulse/" title="Haven Staff Messaging"></iframe>
                 </div>
 
                 <div id="tab-photos" class="tester-tab-content active">
@@ -366,5 +373,34 @@
     <div id="featuredPrintArea" aria-hidden="true"></div>
 
     <script src="app.js"></script>
+    
+    <!-- BULLETPROOF HAVEN TAB LOADER -->
+    <script>
+        document.addEventListener('click', function(e) {
+            const havenBtn = e.target.closest('.tester-tab-btn[data-tab="haven"]');
+            if (havenBtn) {
+                e.stopPropagation(); // Stop app.js from interfering
+                
+                // 1. Hide all other tabs
+                document.querySelectorAll('.tester-tab-content').forEach(tab => {
+                    tab.classList.remove('active');
+                    tab.style.display = 'none';
+                });
+                
+                // 2. Remove active state from all buttons
+                document.querySelectorAll('.tester-tab-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // 3. Activate the Haven button and Tab
+                havenBtn.classList.add('active');
+                const havenTab = document.getElementById('tab-haven');
+                if (havenTab) {
+                    havenTab.classList.add('active');
+                    havenTab.style.display = 'block';
+                }
+            }
+        }, true); // Use capture phase to intercept before app.js
+    </script>
 </body>
 </html>
