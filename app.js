@@ -743,6 +743,7 @@ const MessagesModule=(function(){
         }
         currentUserId = user.id;
         console.log('Current user ID:', currentUserId);
+	} 
 
         // Show user greeting and messaging button on main site
         if(isMainSite){
@@ -1534,4 +1535,4 @@ setTimeout(() => {
 // === END CUSTOM FEATURES ===
     
     PolishModule.init();
-});
+	});}  
