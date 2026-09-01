@@ -9,441 +9,591 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    html, body { height: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
-    body { background: #152630; }
-    .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: block !important; }
-    .tester-content { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; flex-direction: column !important; }
+    /* ================= DASHBOARD DESIGN SYSTEM ================= */
+    :root {
+        /* Default Dark Theme Variables */
+        --bg: #0F1115;
+        --surface: #181B21;
+        --surface-2: #1F232B;
+        --surface-3: #262B34;
+        --border: #2D333B;
+        --border-soft: #22262E;
+        --fg: #E4E6EA;
+        --muted: #94A3B8;
+        --muted-2: #64748B;
+        --accent: #1AA37E;
+        --accent-hover: #14856A;
+        --accent-soft: rgba(26, 163, 126, 0.1);
+        --danger: #EF4444;
+        --shadow: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+        --radius: 12px;
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Light Theme */
+    body.staff-light {
+        --bg: #F8FAFC;
+        --surface: #FFFFFF;
+        --surface-2: #F1F5F9;
+        --surface-3: #E2E8F0;
+        --border: #E2E8F0;
+        --border-soft: #EFF2F6;
+        --fg: #0F172A;
+        --muted: #64748B;
+        --muted-2: #94A3B8;
+        --accent: #0F766E;
+        --accent-hover: #115E59;
+        --accent-soft: rgba(15, 118, 110, 0.08);
+        --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    }
+
+    /* Warm Theme */
+    body.staff-warm {
+        --bg: #FAF5EB;
+        --surface: #FFFAF0;
+        --surface-2: #F5EDE0;
+        --surface-3: #EBE0CD;
+        --border: #E0D2B6;
+        --border-soft: #EDE4D0;
+        --fg: #3B2A1E;
+        --muted: #6B4A37;
+        --muted-2: #998877;
+        --accent: #A05631;
+        --accent-hover: #7A3F2A;
+        --accent-soft: rgba(160, 86, 49, 0.1);
+        --shadow: 0 4px 6px -1px rgba(59, 42, 30, 0.05), 0 2px 4px -1px rgba(59, 42, 30, 0.03);
+    }
+
+    html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
+    body { background: var(--bg); color: var(--fg); font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s; }
+    .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; }
     .tester-trigger, .ambient { display: none !important; }
 
-    /* === Login Layout === */
+    /* === Login Screen === */
     #testerLogin {
-        background: #152630; color: #fff; width: 100%; height: 100%;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        padding: 2rem; box-sizing: border-box; position: relative; overflow: hidden;
-    }
-    #testerLogin::before {
-        content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-        background: radial-gradient(circle, rgba(26,163,126,0.1) 0%, transparent 60%); pointer-events: none;
+        width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+        background: radial-gradient(circle at top left, var(--accent-soft), transparent 40%), var(--bg);
+        position: relative; overflow: hidden;
     }
     .login-box {
-        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-        padding: 32px; border-radius: 16px; max-width: 400px; width: 100%;
-        backdrop-filter: blur(10px); position: relative; z-index: 1; box-sizing: border-box;
+        background: var(--surface); border: 1px solid var(--border); padding: 40px;
+        border-radius: 24px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        position: relative; z-index: 10;
     }
-    #testerLogin h3 { font-size: 1.6rem !important; margin-bottom: 8px !important; color: #fff !important; }
-    #testerLogin p { color: rgba(255,255,255,0.6) !important; margin-bottom: 24px !important; font-size: .9rem; }
-    #testerLogin .tester-input { background: rgba(255,255,255,0.1) !important; border: 1px solid rgba(255,255,255,0.2) !important; color: #fff !important; margin-bottom: 12px !important; }
-    #testerLogin .tester-input::placeholder { color: rgba(255,255,255,0.4); }
-    #testerLogin .tester-btn { width: 100%; padding: 12px; font-size: 1rem; margin-top: 8px; background: var(--teal); }
+    .login-box h3 { margin: 0 0 4px 0; font-size: 1.75rem; font-weight: 700; color: var(--fg); }
+    .login-box p { margin: 0 0 32px 0; color: var(--muted); font-size: 0.95rem; }
     #testerCloseBtn {
-        position: fixed; top: 16px; right: 16px; z-index: 100;
-        background: rgba(255,255,255,0.1); color: #fff;
-        width: 36px; height: 36px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        text-decoration: none; font-size: 1.3rem; line-height: 1;
-        border: 1px solid rgba(255,255,255,0.2);
+        position: fixed; top: 24px; right: 24px; z-index: 100; width: 44px; height: 44px;
+        background: var(--surface); border: 1px solid var(--border); border-radius: 50%; color: var(--fg);
+        display: flex; align-items: center; justify-content: center; text-decoration: none;
+        font-size: 1.5rem; box-shadow: var(--shadow); transition: var(--transition);
     }
+    #testerCloseBtn:hover { background: var(--surface-2); transform: scale(1.05); }
 
     /* === Dashboard Layout === */
-    #testerMenu { width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; background: var(--cream); display: none; flex-direction: row; }
-    
-    /* === Staff Themes === */
-    body.staff-dark { background: #111418; }
-    body.staff-dark .tester-tabs { background: #1B2026 !important; border-right: 1px solid #2D333B !important; }
-    body.staff-dark .tester-tab-btn { color: rgba(255,255,255,0.6) !important; }
-    body.staff-dark .tester-tab-btn:hover { background: rgba(255,255,255,0.08) !important; color: #fff !important; }
-    body.staff-dark .tester-tab-content { background: #111418 !important; color: #E0E6EA; }
-    body.staff-dark .tester-tab-content h3 { color: #E0E6EA !important; border-bottom: 2px solid #2D333B !important; }
-    body.staff-dark .tester-input { background: #1B2026 !important; border-color: #2D333B !important; color: #fff !important; }
-    body.staff-dark .admin-film-item { background: #1B2026 !important; border-color: #2D333B !important; color: #fff !important; }
-    
-    body.staff-light { background: #F4F2EE; }
-    body.staff-light .tester-tabs { background: #FFFFFF !important; border-right: 1px solid #E6E2D6 !important; }
-    body.staff-light .tester-tab-btn { color: #4A5C66 !important; }
-    body.staff-light .tester-tab-btn:hover { background: #F4F2EE !important; color: #152630 !important; }
-    body.staff-light .tester-tab-content { background: #F4F2EE !important; color: #152630; }
-    
-    body.staff-warm { background: #FAF5EB; }
-    body.staff-warm .tester-tabs { background: #3B2E25 !important; border-right: 1px solid #E0D2B6 !important; }
-    body.staff-warm .tester-tab-btn { color: rgba(250, 245, 235, 0.6) !important; }
-    body.staff-warm .tester-tab-btn:hover { background: rgba(255,255,255,0.08) !important; color: #FAF5EB !important; }
-    body.staff-warm .tester-tab-content { background: #FAF5EB !important; color: #3B2E25; }
-    body.staff-warm .tester-input { background: #FFFAF0 !important; border-color: #E0D2B6 !important; color: #3B2E25 !important; }
+    #testerMenu { width: 100%; height: 100%; display: none; background: var(--bg); }
+    #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
+        display: flex !important; flex-direction: row !important;
+    }
 
-    /* === Sidebar Navigation === */
-    .tester-tabs { padding: 16px 12px !important; display: flex !important; flex-direction: column !important; gap: 4px !important; width: 240px !important; height: 100% !important; max-height: 100% !important; overflow-y: auto !important; flex-shrink: 0 !important; box-sizing: border-box !important; }
-    .tester-tab-btn { background: transparent !important; border: 1px solid transparent !important; text-align: left !important; justify-content: flex-start !important; padding: 12px 16px !important; border-radius: 10px !important; font-weight: 600 !important; font-size: 0.9rem !important; transition: all 0.2s ease !important; white-space: nowrap; }
-    .tester-tab-btn.active { background: var(--teal) !important; color: #fff !important; box-shadow: 0 4px 12px -4px rgba(26,163,126,0.5) !important; }
-    
-    .tester-tab-content { display: none; flex: 1 !important; height: 100% !important; max-height: 100% !important; width: 100% !important; overflow-y: auto !important; padding: 32px !important; border: none !important; animation: none !important; box-sizing: border-box !important; }
+    /* === Sidebar === */
+    .tester-tabs {
+        width: 260px; height: 100%; background: var(--surface); border-right: 1px solid var(--border);
+        display: flex !important; flex-direction: column !important; padding: 24px 16px !important;
+        gap: 4px !important; box-sizing: border-box !important; flex-shrink: 0 !important; overflow-y: auto !important;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 24px 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+    .brand-logo { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; }
+    .brand-name { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
+    .brand-sub { font-size: 0.75rem; color: var(--muted-2); letter-spacing: 1px; text-transform: uppercase; }
+
+    .tester-tab-btn {
+        background: transparent !important; border: 1px solid transparent !important;
+        text-align: left !important; display: flex; align-items: center; gap: 12px;
+        padding: 12px 16px !important; border-radius: var(--radius) !important;
+        color: var(--muted) !important; font-family: inherit !important; font-size: 0.9rem !important;
+        font-weight: 500 !important; cursor: pointer; transition: var(--transition) !important; white-space: nowrap;
+    }
+    .tester-tab-btn:hover { background: var(--surface-2) !important; color: var(--fg) !important; }
+    .tester-tab-btn.active { background: var(--accent-soft) !important; color: var(--accent) !important; font-weight: 600 !important; }
+    .tester-tab-btn.active svg { color: var(--accent); }
+    .tester-tab-btn svg { width: 20px; height: 20px; stroke: currentColor; flex-shrink: 0; }
+
+    /* === Main Content === */
+    .tester-content { flex: 1; height: 100%; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+    .tester-tab-content {
+        display: none; flex: 1; height: 100%; overflow-y: auto; padding: 40px !important;
+        box-sizing: border-box !important; animation: none !important; border: none !important;
+    }
     .tester-tab-content.active { display: block; }
-    .tester-tab-content h3 { font-size: 1.3rem !important; margin-bottom: 20px !important; padding-bottom: 12px !important; border-bottom: 2px solid var(--border) !important; color: var(--bark) !important; }
-    .tester-divider { margin: 24px 0 !important; }
+    
+    .admin-header { margin-bottom: 32px; }
+    .admin-header h3 { margin: 0 0 4px 0; font-size: 1.5rem; font-weight: 700; color: var(--fg); border: none !important; padding: 0 !important; }
+    .admin-header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
 
-    /* === Haven Tab Specifics === */
-    #tab-haven.tester-tab-content { padding: 0 !important; background: transparent !important; overflow: hidden !important; }
-    #tab-haven.tester-tab-content.active { display: block; }
-    #tab-haven iframe { width: 100%; height: 100%; border: none; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+    .admin-card {
+        background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow);
+    }
+    .admin-card h4 { margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: var(--fg); display: flex; align-items: center; gap: 8px; }
 
-    /* === Mobile Responsiveness === */
+    /* === Form Elements === */
+    .tester-input {
+        background: var(--surface-2) !important; border: 1px solid var(--border) !important; color: var(--fg) !important;
+        border-radius: 8px !important; padding: 12px 16px !important; font-size: 0.9rem !important;
+        font-family: inherit !important; transition: var(--transition) !important; width: 100%; box-sizing: border-box !important;
+    }
+    .tester-input:focus { outline: none; border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important; }
+    .tester-input::placeholder { color: var(--muted-2); }
+    select.tester-input { cursor: pointer; }
+    textarea.tester-input { resize: vertical; min-height: 80px; font-family: inherit; }
+    label.admin-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .tester-btn {
+        background: var(--surface-2); color: var(--fg); border: 1px solid var(--border);
+        padding: 10px 18px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+        cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .tester-btn:hover { background: var(--surface-3); border-color: var(--muted-2); }
+    .tester-btn[style*="background:var(--teal-deep)"], .tester-btn[style*="background: var(--teal-deep)"] {
+        background: var(--accent) !important; color: #fff !important; border: none !important;
+    }
+    .tester-btn[style*="background:var(--teal-deep)"]:hover { background: var(--accent-hover) !important; transform: translateY(-1px); }
+    .tester-btn[style*="background:var(--terracotta)"] { background: #EF4444 !important; color: #fff !important; border: none !important; }
+    .tester-btn[style*="background:var(--bark-soft)"] { background: var(--surface-3) !important; }
+    .tester-btn[style*="background:var(--bark)"] { background: var(--fg) !important; color: var(--bg) !important; }
+    
+    .tester-divider { margin: 32px 0 !important; border: none; border-top: 1px solid var(--border-soft); height: 0; }
+    .space-y-3 > * + * { margin-top: 12px; }
+    .flex { display: flex; }
+    .gap-2 { gap: 8px; }
+    .mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; } .mb-8 { margin-bottom: 32px; } .mb-3 { margin-bottom: 12px; }
+    .max-h-60 { max-height: 240px; } .overflow-y-auto { overflow-y: auto; }
+    .text-left { text-align: left; } .w-full { width: 100%; }
+    .staff-theme-btn.active { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent) !important; }
+    .tester-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+    .tester-season-btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--fg); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: var(--transition); }
+    .tester-season-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* === Haven Tab === */
+    #tab-haven.tester-tab-content { padding: 0 !important; background: var(--bg) !important; }
+    #tab-haven iframe { width: 100%; height: 100%; border: none; }
+
+    /* === Mobile === */
     @media (max-width: 768px) {
-        #testerMenu { flex-direction: column !important; }
-        .tester-tabs { width: 100% !important; height: auto !important; flex-direction: row !important; overflow-x: auto !important; padding: 10px !important; border-bottom: 1px solid var(--border) !important; flex-shrink: 0; }
+        #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
+            flex-direction: column !important;
+        }
+        .tester-tabs { width: 100% !important; height: auto !important; flex-direction: row !important; overflow-x: auto !important; padding: 12px !important; border-bottom: 1px solid var(--border) !important; }
+        .brand { display: none; }
         .tester-tab-btn { white-space: nowrap !important; padding: 10px 14px !important; font-size: 0.85rem !important; }
         .tester-tab-content { padding: 20px !important; height: calc(100% - 50px) !important; }
-        #testerCloseBtn { top: 10px; right: 10px; width: 32px; height: 32px; font-size: 1.1rem; }
     }
 </style>
 </head>
 <body>
 
-    <div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Staff Portal">
-        <div class="tester-content">
-            <a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">&times;</a>
-            
-            <!-- LOGIN VIEW -->
-            <div id="testerLogin">
-                <div class="login-box">
-                    <h3 class="display font-extrabold text-xl">Staff Portal</h3>
-                    <p style="font-size:.95rem;">Enter your credentials to access the dashboard.</p>
+<div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Staff Portal">
+    <div class="tester-content">
+        <a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">&times;</a>
+        
+        <!-- LOGIN VIEW -->
+        <div id="testerLogin">
+            <div class="login-box">
+                <h3>Staff Portal</h3>
+                <p>Enter your credentials to access the dashboard.</p>
+                <div style="display: flex; flex-direction: column; gap: 16px;">
                     <input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email">
                     <input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password">
-                    <button id="testerLoginBtn" class="tester-btn">Log In</button>
+                    <button id="testerLoginBtn" class="tester-btn" style="background: var(--accent); color: #fff; padding: 14px; margin-top: 8px;">Log In</button>
                     <div id="testerError" class="tester-error"></div>
                 </div>
             </div>
+        </div>
 
-            <!-- DASHBOARD VIEW -->
-            <div id="testerMenu" style="display:none;">
-                <div class="tester-tabs">
-                    <button class="tester-tab-btn" data-tab="haven">💬 Haven</button>
-                    <button class="tester-tab-btn active" data-tab="photos">📷 Photos</button>
-                    <button class="tester-tab-btn" data-tab="events">📅 Events</button>
-                    <button class="tester-tab-btn" data-tab="menu">🍽️ Menu</button>
-                    <button class="tester-tab-btn" data-tab="wilf">🐾 Wilf</button>
-                    <button class="tester-tab-btn" data-tab="updates">📝 Updates</button>
-                    <button class="tester-tab-btn" data-tab="films">🎬 Films</button>
-                    <button class="tester-tab-btn" data-tab="community">🌟 Community</button>
-                    <button class="tester-tab-btn" data-tab="celebrations">🎉 Celebrations</button>
-                    <button class="tester-tab-btn" data-tab="featured">📢 Featured</button>
-                    <button class="tester-tab-btn" data-tab="enquiries">✉️ Enquiries</button>
-                    <button class="tester-tab-btn" data-tab="briefing">⏰ Briefing</button>
-                    <button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none;">👥 Staff</button>
-                    <button class="tester-tab-btn" data-tab="settings">⚙️ Settings</button>
+        <!-- DASHBOARD VIEW -->
+        <div id="testerMenu" style="display:none;">
+            <div class="tester-tabs">
+                <div class="brand">
+                    <div class="brand-logo">TH</div>
+                    <div>
+                        <div class="brand-name">Tinkers Hatch</div>
+                        <div class="brand-sub">Staff Portal</div>
+                    </div>
                 </div>
 
-                <!-- HAVEN TAB -->
-                <div id="tab-haven" class="tester-tab-content" style="display: none;">
-                    <iframe src="https://leewilliamsphotography-beep.github.io/Pulse/" title="Haven Staff Messaging"></iframe>
-                </div>
+                <button class="tester-tab-btn" data-tab="haven">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                    Haven Messaging
+                </button>
+                <button class="tester-tab-btn active" data-tab="photos">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Photos
+                </button>
+                <button class="tester-tab-btn" data-tab="events">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    Events
+                </button>
+                <button class="tester-tab-btn" data-tab="menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                    Menu
+                </button>
+                <button class="tester-tab-btn" data-tab="wilf">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.32 4.46 16.84A3.5 3.5 0 0 1 2 13.5V13a3 3 0 0 1 3-3z"/></svg>
+                    Wilf
+                </button>
+                <button class="tester-tab-btn" data-tab="updates">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Updates
+                </button>
+                <button class="tester-tab-btn" data-tab="films">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                    Films
+                </button>
+                <button class="tester-tab-btn" data-tab="community">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>
+                    Community
+                </button>
+                <button class="tester-tab-btn" data-tab="celebrations">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    Celebrations
+                </button>
+                <button class="tester-tab-btn" data-tab="featured">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    Featured
+                </button>
+                <button class="tester-tab-btn" data-tab="enquiries">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Enquiries
+                </button>
+                <button class="tester-tab-btn" data-tab="briefing">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Briefing
+                </button>
+                <button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+                    Staff
+                </button>
+                <button class="tester-tab-btn" data-tab="settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    Settings
+                </button>
+            </div>
 
-                <div id="tab-photos" class="tester-tab-content active">
-                    <h3 class="display font-extrabold text-xl">Gallery Manager</h3>
-                    <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="padding:10px;">
-                    <input type="text" id="photoCaptionInput" class="tester-input" placeholder="Caption (e.g., Margaret's roses)" style="margin-top: 8px;">
-                    <button id="uploadPhotoBtn" class="tester-btn" style="background:var(--teal-deep);">Upload Photo</button>
+            <!-- HAVEN TAB -->
+            <div id="tab-haven" class="tester-tab-content" style="display: none;">
+                <iframe src="https://leewilliamsphotography-beep.github.io/Pulse/" title="Haven Staff Messaging"></iframe>
+            </div>
+
+            <div id="tab-photos" class="tester-tab-content active">
+                <div class="admin-header"><h3>Gallery Manager</h3><p>Upload new photos for the website gallery.</p></div>
+                <div class="admin-card">
+                    <h4>📤 Upload New Photo</h4>
+                    <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="margin-bottom: 16px;">
+                    <label class="admin-label">Caption</label>
+                    <input type="text" id="photoCaptionInput" class="tester-input" placeholder="e.g., Margaret's roses" style="margin-bottom: 16px;">
+                    <button id="uploadPhotoBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Upload Photo</button>
+                </div>
+                <div class="admin-card">
+                    <h4>Manage Existing</h4>
                     <div id="adminPhotoContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-events" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Events Manager</h3>
-                    <input type="text" id="newEventTitle" class="tester-input" placeholder="Event Title (e.g., Coffee Morning)">
-                    <input type="date" id="newEventDate" class="tester-input" style="margin-top: 8px;">
-                    <textarea id="newEventDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:60px;"></textarea>
-                    <button id="addEventBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Add Event</button>
+            <div id="tab-events" class="tester-tab-content">
+                <div class="admin-header"><h3>Events Manager</h3><p>Add upcoming events to the calendar.</p></div>
+                <div class="admin-card">
+                    <h4>➕ Add New Event</h4>
+                    <label class="admin-label">Event Title</label>
+                    <input type="text" id="newEventTitle" class="tester-input" placeholder="Coffee Morning" style="margin-bottom: 16px;">
+                    <label class="admin-label">Date</label>
+                    <input type="date" id="newEventDate" class="tester-input" style="margin-bottom: 16px;">
+                    <label class="admin-label">Description</label>
+                    <textarea id="newEventDesc" class="tester-input" placeholder="Short description..."></textarea>
+                    <button id="addEventBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Add Event</button>
+                </div>
+                <div class="admin-card">
+                    <h4>Manage Events</h4>
                     <div id="adminEventContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-menu" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Weekly Menu Manager</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Update the weekly dinners. Changes save instantly to the website.</p>
+            <div id="tab-menu" class="tester-tab-content">
+                <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save instantly to the website.</p></div>
+                <div class="admin-card">
                     <div id="adminMenuContainer" class="space-y-4 text-left"></div>
-                    <button id="saveMenuBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 24px;">Save Weekly Menu</button>
+                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 24px;">Save Weekly Menu</button>
                 </div>
+            </div>
 
-                <div id="tab-wilf" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Wilf Status & Blog</h3>
-                    <button id="wilfToggleBtn" class="tester-btn" style="background:var(--terracotta);">Toggle Wilf Status</button>
-                    <hr class="tester-divider">
-                    <h3 class="display font-extrabold text-xl">Wilf's Blog Manager</h3>
-                    <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title (e.g., A day in the garden)">
-                    <textarea id="newWilfBlogContent" class="film-review" placeholder="Write Wilf's adventure here..." style="width:100%;margin-top:8px;min-height:100px;"></textarea>
-                    <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL (leave blank if none)" style="margin-top:8px;">
-                    <button id="addWilfBlogBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Post Blog</button>
+            <div id="tab-wilf" class="tester-tab-content">
+                <div class="admin-header"><h3>Wilf Status & Blog</h3><p>Update Wilf's status and post blog entries.</p></div>
+                <div class="admin-card">
+                    <h4>Status</h4>
+                    <button id="wilfToggleBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Toggle Wilf Status</button>
+                </div>
+                <div class="admin-card">
+                    <h4>📝 New Blog Post</h4>
+                    <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title" style="margin-bottom: 16px;">
+                    <textarea id="newWilfBlogContent" class="tester-input" placeholder="Write Wilf's adventure here..." style="min-height: 120px; margin-bottom: 16px;"></textarea>
+                    <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL" style="margin-bottom: 16px;">
+                    <button id="addWilfBlogBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Post Blog</button>
+                </div>
+                <div class="admin-card">
+                    <h4>Manage Blogs</h4>
                     <div id="adminWilfBlogContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-updates" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">App Updates Manager</h3>
-                    <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title (e.g., New Photos)">
-                    <textarea id="newUpdateContent" class="film-review" placeholder="What's the new update?" style="width:100%;margin-top:8px;min-height:80px;"></textarea>
-                    <button id="addUpdateBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Post Update</button>
+            <div id="tab-updates" class="tester-tab-content">
+                <div class="admin-header"><h3>App Updates Manager</h3><p>Post updates to keep staff informed.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title" style="margin-bottom: 16px;">
+                    <textarea id="newUpdateContent" class="tester-input" placeholder="What's the new update?"></textarea>
+                    <button id="addUpdateBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Post Update</button>
+                </div>
+                <div class="admin-card">
                     <div id="adminUpdateContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-films" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Film Night Admin</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="newFilmTitle" class="tester-input" style="margin-top:0;flex:1;" placeholder="Enter new film...">
-                        <button id="addFilmBtn" class="tester-btn" style="margin-top:0;width:auto;padding:12px 20px;">Add</button>
+            <div id="tab-films" class="tester-tab-content">
+                <div class="admin-header"><h3>Film Night Admin</h3><p>Add films to the voting list.</p></div>
+                <div class="admin-card">
+                    <div class="flex gap-2" style="align-items: center;">
+                        <input type="text" id="newFilmTitle" class="tester-input" style="flex:1;" placeholder="Enter new film...">
+                        <button id="addFilmBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Add</button>
                     </div>
+                </div>
+                <div class="admin-card">
                     <div id="adminFilmContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-community" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Community Spotlight Manager</h3>
-                    <input type="text" id="newCommunityTitle" class="tester-input" placeholder="Title (e.g., Baking together)">
-                    <input type="text" id="newCommunityImg" class="tester-input" placeholder="Image URL (leave blank if none)" style="margin-top: 8px;">
-                    <textarea id="newCommunityDesc" class="film-review" placeholder="Share a short story about the community..." style="width:100%;margin-top:8px;min-height:100px;"></textarea>
-                    <button id="addCommunityBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Post Spotlight</button>
+            <div id="tab-community" class="tester-tab-content">
+                <div class="admin-header"><h3>Community Spotlight Manager</h3><p>Share short stories about the community.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newCommunityTitle" class="tester-input" placeholder="Title" style="margin-bottom: 16px;">
+                    <input type="text" id="newCommunityImg" class="tester-input" placeholder="Image URL (optional)" style="margin-bottom: 16px;">
+                    <textarea id="newCommunityDesc" class="tester-input" placeholder="Share a short story..."></textarea>
+                    <button id="addCommunityBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Post Spotlight</button>
+                </div>
+                <div class="admin-card">
                     <div id="adminCommunityContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-celebrations" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Add Celebration</h3>
-                    <input type="text" id="newCelebName" class="tester-input" placeholder="Name (e.g., Margaret)">
-                    <select id="newCelebType" class="tester-input" style="margin-top: 8px;">
+            <div id="tab-celebrations" class="tester-tab-content">
+                <div class="admin-header"><h3>Add Celebration</h3><p>Add birthdays and anniversaries.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newCelebName" class="tester-input" placeholder="Name" style="margin-bottom: 16px;">
+                    <select id="newCelebType" class="tester-input" style="margin-bottom: 16px;">
                         <option value="Birthday">Birthday</option>
                         <option value="Anniversary">Anniversary</option>
                     </select>
-                    <div class="flex gap-2" style="margin-top: 8px;">
+                    <div class="flex gap-2" style="margin-bottom: 16px;">
                         <select id="newCelebMonth" class="tester-input" style="flex:1;">
                             <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option>
                             <option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option>
                             <option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
                         </select>
-                        <input type="number" id="newCelebDay" class="tester-input" min="1" max="31" placeholder="Day (1-31)" style="flex:1;">
+                        <input type="number" id="newCelebDay" class="tester-input" min="1" max="31" placeholder="Day" style="flex:1;">
                     </div>
-                    <button id="addCelebBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 12px;">Add Celebration</button>
-                    <hr class="tester-divider">
-                    <h3 class="display font-extrabold text-xl">Manage Celebrations</h3>
+                    <button id="addCelebBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Add Celebration</button>
+                </div>
+                <div class="admin-card">
+                    <h4>Manage Celebrations</h4>
                     <div id="adminCelebContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-featured" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Featured Events Manager</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Add "Save the Date" banners for family events. They appear on the live site instantly.</p>
-                    <input type="text" id="newFeaturedTitle" class="tester-input" placeholder="Event Title (e.g., Summer Fete)">
-                    <input type="text" id="newFeaturedDate" class="tester-input" placeholder="Date (e.g., August 28th)" style="margin-top: 8px;">
-                    <textarea id="newFeaturedDesc" class="film-review" placeholder="Short description..." style="margin-top:8px;min-height:80px;"></textarea>
-                    <div class="flex gap-2" style="margin-top: 8px;">
+            <div id="tab-featured" class="tester-tab-content">
+                <div class="admin-header"><h3>Featured Events Manager</h3><p>Add "Save the Date" banners for family events.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newFeaturedTitle" class="tester-input" placeholder="Event Title" style="margin-bottom: 16px;">
+                    <input type="text" id="newFeaturedDate" class="tester-input" placeholder="Date (e.g., August 28th)" style="margin-bottom: 16px;">
+                    <textarea id="newFeaturedDesc" class="tester-input" placeholder="Short description..."></textarea>
+                    <div class="flex gap-2" style="margin-top: 16px; margin-bottom: 16px;">
                         <select id="newFeaturedIcon" class="tester-input" style="flex:1;">
-                            <option value="🎉">🎉 Party / Celebration</option>
-                            <option value="☀️">☀️ Summer / Sun</option>
-                            <option value="🍂">🍂 Autumn / Harvest</option>
-                            <option value="❄️">❄️ Winter / Snow</option>
-                            <option value="🌸">🌸 Spring / Flowers</option>
-                            <option value="🎄">🎄 Christmas</option>
-                            <option value="🎁">🎁 Gift / Fete</option>
-                            <option value="❤️">❤️ Valentine's</option>
-                            <option value="🐰">🐰 Easter</option>
-                            <option value="🎯">🎯 Target / Games</option>
-                            <option value="☕">☕ Coffee / Tea</option>
-                            <option value="🍰">🍰 Cake / Baking</option>
-                            <option value="🎵">🎵 Music</option>
-                            <option value="🌟">🌟 Star</option>
+                            <option value="🎉">🎉 Party</option><option value="☀️">☀️ Summer</option><option value="🍂">🍂 Autumn</option>
+                            <option value="❄️">❄️ Winter</option><option value="🌸">🌸 Spring</option><option value="🎄">🎄 Christmas</option>
                         </select>
                         <select id="newFeaturedColor" class="tester-input" style="flex:1;">
-                            <option value="linear-gradient(135deg, #A87816, #C25528)">Default (Warm)</option>
-                            <option value="linear-gradient(135deg, #1AA37E, #14856A)">Teal (Calm)</option>
-                            <option value="linear-gradient(135deg, #7CA890, #4E8A43)">Spring (Garden)</option>
-                            <option value="linear-gradient(135deg, #F2C200, #D9A521)">Summer (Sunny)</option>
-                            <option value="linear-gradient(135deg, #C25528, #A63A5A)">Autumn (Harvest)</option>
-                            <option value="linear-gradient(135deg, #C0392B, #1F6E43)">Festive (Christmas)</option>
-                            <option value="linear-gradient(135deg, #A63A5A, #E0526E)">Valentine's (Love)</option>
-                            <option value="linear-gradient(135deg, #9B8BC4, #7CA890)">Easter (Pastel)</option>
+                            <option value="linear-gradient(135deg, #A87816, #C25528)">Default</option><option value="linear-gradient(135deg, #1AA37E, #14856A)">Teal</option>
+                            <option value="linear-gradient(135deg, #C0392B, #1F6E43)">Festive</option>
                         </select>
                     </div>
-                    <div class="flex gap-2" style="margin-top: 16px;">
-                        <button id="addFeaturedBtn" class="tester-btn" style="background:var(--teal-deep); flex: 1;">Add Featured Event</button>
-                        <button id="cancelEditFeaturedBtn" class="tester-btn" style="background:var(--bark-soft); display: none;">Cancel</button>
+                    <div class="flex gap-2">
+                        <button id="addFeaturedBtn" class="tester-btn" style="background: var(--accent); color: #fff; flex: 1;">Add Event</button>
+                        <button id="cancelEditFeaturedBtn" class="tester-btn" style="display: none;">Cancel</button>
                     </div>
-                    <hr class="tester-divider">
-                    <button id="printFeaturedPostersBtn" class="tester-btn" style="background:var(--bark); width: 100%; margin-top: 16px;">🖨️ Print All as A4 Posters</button>
-                    <hr class="tester-divider">
+                </div>
+                <div class="admin-card">
+                    <button id="printFeaturedPostersBtn" class="tester-btn w-full" style="margin-bottom: 16px;">🖨️ Print All as A4 Posters</button>
                     <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-enquiries" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Contact Form Enquiries</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Messages submitted by visitors on the Visit page.</p>
+            <div id="tab-enquiries" class="tester-tab-content">
+                <div class="admin-header"><h3>Contact Form Enquiries</h3><p>Messages submitted by visitors.</p></div>
+                <div class="admin-card">
                     <div id="adminEnquiriesContainer" class="space-y-4 text-left"></div>
                 </div>
+            </div>
 
-                <div id="tab-briefing" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Daily Briefing</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Update the message that appears at the very top of the website for families today.</p>
-                    <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk at 2pm.">
-                    <button id="saveBriefingBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 16px;">Save Briefing</button>
+            <div id="tab-briefing" class="tester-tab-content">
+                <div class="admin-header"><h3>Daily Briefing</h3><p>Update the message at the top of the website.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk.">
+                    <button id="saveBriefingBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Save Briefing</button>
                 </div>
+            </div>
 
-                <div id="tab-staff" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Staff Creation Panel</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Create a new account for a staff member. They will be able to log in immediately.</p>
-                    <input type="email" id="newStaffEmail" class="tester-input" placeholder="New staff email">
-                    <input type="password" id="newStaffPass" class="tester-input" placeholder="Temporary password" style="margin-top: 8px;">
-                    <select id="newStaffRole" class="tester-input" style="margin-top: 8px;">
+            <div id="tab-staff" class="tester-tab-content">
+                <div class="admin-header"><h3>Staff Creation Panel</h3><p>Create a new account for a staff member.</p></div>
+                <div class="admin-card">
+                    <input type="email" id="newStaffEmail" class="tester-input" placeholder="New staff email" style="margin-bottom: 16px;">
+                    <input type="password" id="newStaffPass" class="tester-input" placeholder="Temporary password" style="margin-bottom: 16px;">
+                    <select id="newStaffRole" class="tester-input" style="margin-bottom: 16px;">
                         <option value="staff">Standard Staff</option>
                         <option value="chef">Chef (Menu access)</option>
                         <option value="admin">Admin (Full access)</option>
                     </select>
-                    <button id="createStaffBtn" class="tester-btn" style="background:var(--teal-deep); margin-top: 16px;">Create Account</button>
+                    <button id="createStaffBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Create Account</button>
                 </div>
+            </div>
 
-                <!-- OLD MESSAGES TAB TO PREVENT APP.JS CRASH -->
-                <div id="tab-messages" class="tester-tab-content">
-                    <div id="chat-layout">
-                        <div id="chat-sidebar">
-                            <div id="new-chat-box">
-                                <input type="text" id="chat-recipient-email" class="tester-input" placeholder="Staff email or Group Name" style="margin:0;">
-                                <button id="start-chat-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;">Start</button>
-                            </div>
-                            <div id="conversation-list"></div>
+            <!-- OLD MESSAGES TAB TO PREVENT APP.JS CRASH -->
+            <div id="tab-messages" class="tester-tab-content">
+                <div id="chat-layout">
+                    <div id="chat-sidebar">
+                        <div id="new-chat-box">
+                            <input type="text" id="chat-recipient-email" class="tester-input" placeholder="Staff email or Group Name">
+                            <button id="start-chat-btn" class="tester-btn" style="background: var(--accent); color: #fff;">Start</button>
                         </div>
-                        <div id="chat-window">
-                            <div id="chat-header">Select a conversation</div>
-                            <div id="chat-messages"></div>
-                            <div id="chat-input-box">
-                                <input type="text" id="chat-message-input" class="tester-input" placeholder="Type a message..." style="margin:0;" disabled>
-                                <button id="chat-send-btn" class="tester-btn" style="width:auto; margin:0; padding: 10px 16px;" disabled>Send</button>
-                            </div>
+                        <div id="conversation-list"></div>
+                    </div>
+                    <div id="chat-window">
+                        <div id="chat-header">Select a conversation</div>
+                        <div id="chat-messages"></div>
+                        <div id="chat-input-box">
+                            <input type="text" id="chat-message-input" class="tester-input" placeholder="Type a message..." disabled>
+                            <button id="chat-send-btn" class="tester-btn" style="background: var(--accent); color: #fff;" disabled>Send</button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div id="tab-settings" class="tester-tab-content">
-                    <h3 class="display font-extrabold text-xl">Dashboard Appearance</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-bottom:24px">Choose a theme for the staff portal. This is saved to your specific account.</p>
+            <div id="tab-settings" class="tester-tab-content">
+                <div class="admin-header"><h3>Dashboard Appearance</h3><p>Choose a theme for the staff portal.</p></div>
+                <div class="admin-card">
                     <div class="flex gap-2 mb-8">
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-dark" style="flex:1; background:#1B2026; color:#fff;">Dark</button>
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-light" style="flex:1; background:#F4F2EE; color:#152630; border:1px solid #E6E2D6;">Light</button>
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-warm" style="flex:1; background:#3B2E25; color:#FAF5EB;">Warm</button>
+                        <button class="tester-btn staff-theme-btn" data-theme="staff-dark" style="flex:1; background: #1B2026; color: #fff;">Dark</button>
+                        <button class="tester-btn staff-theme-btn" data-theme="staff-light" style="flex:1; background: #F4F2EE; color: #152630; border: 1px solid #E6E2D6;">Light</button>
+                        <button class="tester-btn staff-theme-btn" data-theme="staff-warm" style="flex:1; background: #3B2E25; color: #FAF5EB;">Warm</button>
                     </div>
-                    <hr class="tester-divider">
-
-                    <div id="adminOnlyThemes" style="display: none;">
-                        <h3 class="display font-extrabold text-xl">Seasonal Themes (Live Site)</h3>
-                        <div class="tester-grid">
-                            <button class="tester-season-btn" data-season="winter">Winter</button>
-                            <button class="tester-season-btn" data-season="spring">Spring</button>
-                            <button class="tester-season-btn" data-season="summer">Summer</button>
-                            <button class="tester-season-btn" data-season="autumn">Autumn</button>
-                            <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
-                        </div>
-                        <hr class="tester-divider">
-                    </div>
-
-                    <h3 class="display font-extrabold text-xl">Layout Customizer</h3>
-                    <div id="layoutContainer" class="space-y-2 mt-4 max-h-40 overflow-y-auto text-left"></div>
-                    <button id="resetLayoutBtn" class="tester-btn" style="background:var(--bark-soft);margin-top:16px;">Reset Layout</button>
-                    
-                    <hr class="tester-divider">
-                    
-                    <h3 class="display font-extrabold text-xl">Live Broadcast</h3>
-                    <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message..." style="margin-top:8px;" aria-label="Broadcast Message">
-                    <button id="broadcastBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Broadcast Message</button>
-                    
-                    <hr class="tester-divider">
-                    
-                    <h3 class="display font-extrabold text-xl">Maintenance Mode</h3>
-                    <p style="font-size:.9rem;color:var(--bark-soft);margin-top:8px">Display a banner on the live site letting visitors know updates are underway.</p>
-                    <button id="toggleMaintenanceBtn" class="tester-btn" style="background:var(--terracotta); margin-top: 8px;">Toggle Maintenance Banner</button>
-
-                    <hr class="tester-divider">
-                    <button id="testerLogoutBtn" class="tester-btn" style="background:var(--terracotta); width: 100%;">Log Out</button>
                 </div>
+
+                <div class="admin-header" style="margin-top: 32px;"><h3>Seasonal Themes (Live Site)</h3><p>Change the season on the main website.</p></div>
+                <div class="admin-card" id="adminOnlyThemes">
+                    <div class="tester-grid">
+                        <button class="tester-season-btn" data-season="winter">Winter</button>
+                        <button class="tester-season-btn" data-season="spring">Spring</button>
+                        <button class="tester-season-btn" data-season="summer">Summer</button>
+                        <button class="tester-season-btn" data-season="autumn">Autumn</button>
+                        <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
+                    </div>
+                </div>
+
+                <div class="admin-header" style="margin-top: 32px;"><h3>Layout Customizer</h3><p>Drag to reorder the website sections.</p></div>
+                <div class="admin-card">
+                    <div id="layoutContainer" class="space-y-2 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                    <button id="resetLayoutBtn" class="tester-btn" style="margin-top:16px;">Reset Layout</button>
+                </div>
+                
+                <div class="admin-header" style="margin-top: 32px;"><h3>Live Broadcast</h3><p>Send a push notification to all app users.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message...">
+                    <button id="broadcastBtn" class="tester-btn" style="background: #EF4444; color: #fff; margin-top: 16px;">Broadcast Message</button>
+                </div>
+                
+                <div class="admin-header" style="margin-top: 32px;"><h3>Maintenance Mode</h3><p>Display a banner on the live site.</p></div>
+                <div class="admin-card">
+                    <button id="toggleMaintenanceBtn" class="tester-btn" style="background: #EF4444; color: #fff;">Toggle Maintenance Banner</button>
+                </div>
+
+                <hr class="tester-divider">
+                <button id="testerLogoutBtn" class="tester-btn w-full" style="background: #EF4444; color: #fff;">Log Out</button>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Hidden container for printing A4 Featured Posters -->
-    <div id="featuredPrintArea" aria-hidden="true"></div>
+<div id="featuredPrintArea" aria-hidden="true"></div>
 
-    <script src="app.js"></script>
-    
-    <!-- BULLETPROOF TAB MANAGER & LAYOUT ENFORCER -->
-    <script>
-        // 1. Completely take over tab switching so app.js doesn't break it
-        document.addEventListener('click', function(e) {
-            const tabBtn = e.target.closest('.tester-tab-btn');
-            if (tabBtn && tabBtn.dataset.tab) {
-                e.stopPropagation();
-                e.preventDefault();
-                
-                const tabName = tabBtn.dataset.tab;
-                
-                // Hide all tabs and remove active state
-                document.querySelectorAll('.tester-tab-btn').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tester-tab-content').forEach(tab => {
-                    tab.classList.remove('active');
-                    tab.style.display = 'none';
-                });
-                
-                // Activate the clicked tab
-                tabBtn.classList.add('active');
-                const activeTab = document.getElementById(`tab-${tabName}`);
-                if (activeTab) {
-                    activeTab.classList.add('active');
-                    activeTab.style.display = 'block';
-                }
-            }
-        }, true);
+<script src="app.js"></script>
 
-        // 2. Make Seasonal Themes save to Local Storage
-        document.querySelectorAll('.tester-season-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const season = this.dataset.season;
-                localStorage.setItem('tinkers_season', season);
-                alert(`Seasonal theme set to ${season}. The live site will update on refresh.`);
+<!-- BULLETPROOF TAB MANAGER & LAYOUT ENFORCER -->
+<script>
+    // 1. Take over tab switching
+    document.addEventListener('click', function(e) {
+        const tabBtn = e.target.closest('.tester-tab-btn');
+        if (tabBtn && tabBtn.dataset.tab) {
+            e.stopPropagation();
+            e.preventDefault();
+            const tabName = tabBtn.dataset.tab;
+            document.querySelectorAll('.tester-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tester-tab-content').forEach(tab => {
+                tab.classList.remove('active');
+                tab.style.display = 'none';
             });
-        });
-
-        // 3. Force full-screen width and height continuously to defeat app.js overrides
-        function enforceFullScreenLayout() {
-            const modal = document.getElementById('testerModal');
-            const content = document.querySelector('.tester-content');
-            const login = document.getElementById('testerLogin');
-            const menu = document.getElementById('testerMenu');
-            
-            if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
-            if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
-            
-            if (login && login.style.display !== 'none' && window.getComputedStyle(login).display !== 'none') {
-                login.style.width = '100%';
-                login.style.height = '100vh';
-                return; 
-            }
-            
-            if (menu) {
-                menu.style.display = 'flex';
-                menu.style.flexDirection = 'row';
-                menu.style.width = '100%';
-                menu.style.maxWidth = '100%';
-                menu.style.height = '100vh';
-                menu.style.maxHeight = '100vh';
-            }
-            
-            const tabs = document.querySelector('.tester-tabs');
-            if (tabs) { 
-                tabs.style.height = '100vh'; 
-                tabs.style.maxHeight = '100vh'; 
-            }
-            
-            const activeTab = document.querySelector('.tester-tab-content.active');
-            if (activeTab) { 
-                activeTab.style.height = '100vh'; 
-                activeTab.style.maxHeight = '100vh'; 
-                activeTab.style.width = '100%';
-                activeTab.style.maxWidth = '100%';
-                activeTab.style.overflowY = 'auto';
+            tabBtn.classList.add('active');
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            if (activeTab) {
+                activeTab.classList.add('active');
                 activeTab.style.display = 'block';
             }
         }
-        
-        enforceFullScreenLayout();
-        setInterval(enforceFullScreenLayout, 500);
-    </script>
+    }, true);
+
+    // 2. Seasonal Themes save to Local Storage
+    document.querySelectorAll('.tester-season-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const season = this.dataset.season;
+            localStorage.setItem('tinkers_season', season);
+            alert(`Seasonal theme set to ${season}. The live site will update on refresh.`);
+        });
+    });
+
+    // 3. Layout Enforcer
+    function enforceFullScreenLayout() {
+        const modal = document.getElementById('testerModal');
+        const content = document.querySelector('.tester-content');
+        const login = document.getElementById('testerLogin');
+        const menu = document.getElementById('testerMenu');
+        if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
+        if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
+        if (login && login.style.display !== 'none' && window.getComputedStyle(login).display !== 'none') {
+            login.style.width = '100%'; login.style.height = '100vh'; return; 
+        }
+        if (menu) {
+            menu.style.display = 'flex'; menu.style.flexDirection = 'row';
+            menu.style.width = '100%'; menu.style.maxWidth = '100%';
+            menu.style.height = '100vh'; menu.style.maxHeight = '100vh';
+        }
+        const tabs = document.querySelector('.tester-tabs');
+        if (tabs) { tabs.style.height = '100vh'; tabs.style.maxHeight = '100vh'; }
+        const activeTab = document.querySelector('.tester-tab-content.active');
+        if (activeTab) { 
+            activeTab.style.height = '100vh'; activeTab.style.maxHeight = '100vh'; 
+            activeTab.style.width = '100%'; activeTab.style.maxWidth = '100%';
+            activeTab.style.overflowY = 'auto'; activeTab.style.display = 'block';
+        }
+    }
+    enforceFullScreenLayout();
+    setInterval(enforceFullScreenLayout, 500);
+</script>
 </body>
 </html>
