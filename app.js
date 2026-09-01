@@ -763,7 +763,8 @@ const MessagesModule=(function(){
             }
      
         // Load staff members for name display
-        await loadStaffMembers();
+async funcion loadStaffMembers (){        
+	   await loadStaffMembers();
 
         // Load existing conversations
         await loadConversations();
