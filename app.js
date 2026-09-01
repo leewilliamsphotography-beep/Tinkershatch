@@ -125,7 +125,7 @@ const SplashModule = (function () {
       });
     });
     const versionTag = document.getElementById('version-tag');
-    if (versionTag) versionTag.textContent = 'Version 3.0.0';
+    if (versionTag) versionTag.textContent = 'Version 3.5';
   }
   return { init };
 })();
