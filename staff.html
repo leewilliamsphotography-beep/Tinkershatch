@@ -11,10 +11,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    html, body { height: 100% !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
+    html, body { height: 100% !important; width: 100% !important; margin: 0 !important; padding: 0 !important; overflow: hidden !important; }
     body { background: #152630; }
-    .tester-modal { position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: block !important; }
-    .tester-content { width: 100% !important; height: 100% !important; display: flex !important; flex-direction: column !important; }
+    /* Force modal and content to take up the entire screen */
+    .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: block !important; }
+    .tester-content { width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; flex-direction: column !important; }
     .tester-trigger, .ambient { display: none !important; }
 
     /* === Login Layout === */
@@ -47,7 +48,7 @@
     }
 
     /* === Dashboard Layout === */
-    #testerMenu { width: 100% !important; height: 100% !important; background: var(--cream); display: none; flex-direction: row; }
+    #testerMenu { width: 100% !important; max-width: 100% !important; height: 100% !important; max-height: 100% !important; background: var(--cream); display: none; flex-direction: row; }
     
     /* === Staff Themes === */
     body.staff-dark { background: #111418; }
@@ -73,11 +74,11 @@
     body.staff-warm .tester-input { background: #FFFAF0 !important; border-color: #E0D2B6 !important; color: #3B2E25 !important; }
 
     /* === Sidebar Navigation === */
-    .tester-tabs { padding: 16px 12px !important; display: flex !important; flex-direction: column !important; gap: 4px !important; width: 240px !important; height: 100% !important; overflow-y: auto !important; flex-shrink: 0 !important; box-sizing: border-box !important; }
+    .tester-tabs { padding: 16px 12px !important; display: flex !important; flex-direction: column !important; gap: 4px !important; width: 240px !important; height: 100% !important; max-height: 100% !important; overflow-y: auto !important; flex-shrink: 0 !important; box-sizing: border-box !important; }
     .tester-tab-btn { background: transparent !important; border: 1px solid transparent !important; text-align: left !important; justify-content: flex-start !important; padding: 12px 16px !important; border-radius: 10px !important; font-weight: 600 !important; font-size: 0.9rem !important; transition: all 0.2s ease !important; white-space: nowrap; }
     .tester-tab-btn.active { background: var(--teal) !important; color: #fff !important; box-shadow: 0 4px 12px -4px rgba(26,163,126,0.5) !important; }
     
-    .tester-tab-content { display: none; flex: 1 !important; height: 100% !important; overflow-y: auto !important; padding: 32px !important; border: none !important; animation: none !important; box-sizing: border-box !important; }
+    .tester-tab-content { display: none; flex: 1 !important; height: 100% !important; max-height: 100% !important; width: 100% !important; overflow-y: auto !important; padding: 32px !important; border: none !important; animation: none !important; box-sizing: border-box !important; }
     .tester-tab-content.active { display: block; }
     .tester-tab-content h3 { font-size: 1.3rem !important; margin-bottom: 20px !important; padding-bottom: 12px !important; border-bottom: 2px solid var(--border) !important; color: var(--bark) !important; }
     .tester-divider { margin: 24px 0 !important; }
@@ -386,29 +387,37 @@
                     havenTab.classList.add('active');
                     havenTab.style.display = 'block';
                     havenTab.style.height = '100%';
+                    havenTab.style.width = '100%';
                 }
             }
         }, true);
 
-        // 2. Force full-screen layout every 500ms to defeat app.js height overrides
+        // 2. Force full-screen width and height continuously to defeat app.js overrides
         function enforceFullScreenLayout() {
+            const modal = document.getElementById('testerModal');
+            const content = document.querySelector('.tester-content');
             const login = document.getElementById('testerLogin');
             const menu = document.getElementById('testerMenu');
             
-            // If login is visible, ensure it's full screen and menu is hidden
+            // Force modal and content containers to 100% width/height
+            if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
+            if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
+            
+            // If login is visible, ensure it's full screen
             if (login && login.style.display !== 'none' && window.getComputedStyle(login).display !== 'none') {
+                login.style.width = '100%';
                 login.style.height = '100vh';
-                if (menu) menu.style.display = 'none';
                 return; 
             }
             
-            // If we are past login, force the menu to be flex and full height
+            // If we are past login, force the menu to be flex and fill the screen entirely
             if (menu) {
                 menu.style.display = 'flex';
                 menu.style.flexDirection = 'row';
+                menu.style.width = '100%';
+                menu.style.maxWidth = '100%';
                 menu.style.height = '100vh';
                 menu.style.maxHeight = '100vh';
-                menu.style.width = '100%';
             }
             
             const tabs = document.querySelector('.tester-tabs');
@@ -421,6 +430,8 @@
             if (activeTab) { 
                 activeTab.style.height = '100vh'; 
                 activeTab.style.maxHeight = '100vh'; 
+                activeTab.style.width = '100%';
+                activeTab.style.maxWidth = '100%';
                 activeTab.style.overflowY = 'auto';
                 activeTab.style.display = 'block';
             }
