@@ -1464,12 +1464,12 @@ document.addEventListener('DOMContentLoaded', () =>{
 	// === PLAYLIST MUSIC PLAYER INJECTION ===
 setTimeout(() => {
     // 1. Define your playlist here! Add as many as you want.
-    const playlist = [
+       const playlist = [
         { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
         { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
-		{ name: "Let the word fade", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
-		{ name: "As time goes on", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" },
+        { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
+        { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
     let currentTrack = 0;
 
