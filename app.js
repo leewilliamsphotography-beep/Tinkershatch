@@ -773,10 +773,30 @@ const MessagesModule=(function(){
             }
         }
         
+        // Load staff members for name display
+        await loadStaffMembers();
+
+        // Load existing conversations
+        await loadConversations();
+
+        // Setup Realtime listener
+        if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
+        realtimeChannel = supabaseClient.channel('public:messages')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+                if(payload.new.conversation_id === activeConversationId){
+                    appendMessage(payload.new);
+                }
+                loadConversations(); // Update sidebar preview
+            })
+            .subscribe();
+
+        // Setup UI listeners based on which site we're on
+        setupUIListeners();
+        
         console.log('MessagesModule initialized successfully');
     }
     
-    async function updateUserGreeting(user){
+    function updateUserGreeting(user){
         const userGreeting = document.getElementById('userGreeting');
         const userName = document.getElementById('userName');
         
@@ -793,31 +813,8 @@ const MessagesModule=(function(){
             }
         }
     }
-    async function initMessagesModule() { 
-    // Load staff members for name display
-    await loadStaffMembers();
 
-    // Load existing conversations
-    await loadConversations();
-
-    // Setup Realtime listener
-    if(realtimeChannel) supabaseClient.removeChannel(realtimeChannel);
-    realtimeChannel = supabaseClient.channel('public:messages')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
-            if(payload.new.conversation_id === activeConversationId){
-                appendMessage(payload.new);
-            }
-            loadConversations(); // Update sidebar preview
-        })
-        .subscribe();
-
-    // Setup UI listeners based on which site we're on
-        setupUIListeners();
-        
-        console.log('MessagesModule initialized successfully');
-    } //
-
-async function setupUIListeners(){
+    function setupUIListeners(){
         const prefix = isMainSite ? 'main-' : '';
         
         const startBtn = document.getElementById(prefix + 'start-chat-btn');
@@ -891,7 +888,7 @@ async function setupUIListeners(){
         }
     }
 
-    async function populateStaffDropdown(){
+    function populateStaffDropdown(){
         const prefix = isMainSite ? 'main-' : '';
         const select = document.getElementById(prefix + 'chat-recipient-select');
         if(!select) {
@@ -928,12 +925,12 @@ async function setupUIListeners(){
         }
     }
 
-    async function getStaffNameById(userId){
+    function getStaffNameById(userId){
         const staff = staffMembers.find(s => s.id === userId);
         return staff ? (staff.name || staff.full_name || staff.email) : null;
     }
 
-   async function getStaffNameByEmail(email){
+    function getStaffNameByEmail(email){
         const staff = staffMembers.find(s => s.email === email);
         return staff ? (staff.name || staff.full_name || staff.email) : email;
     }
@@ -1435,7 +1432,7 @@ const TesterModule=(function(){
     return{init};
 })();
 
-document.addEventListener('DOMContentLoaded',=>{
+document.addEventListener('DOMContentLoaded', () =>{
 	MessagesModule.init();
     LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();AuthModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
     
