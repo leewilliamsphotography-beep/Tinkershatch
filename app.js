@@ -760,8 +760,7 @@ const MessagesModule=(function(){
                     messagingSection.scrollIntoView({ behavior: 'smooth' });
                 });
             }
-          
-		  <script>
+       <script>
     // Show user greeting
     if(userGreeting && userName){
         userGreeting.style.display = 'flex';
@@ -772,7 +771,8 @@ const MessagesModule=(function(){
         userName.textContent = `Hello, ${displayName}`;
     }
 }
-</script> 
+</script> <!-- ADD THIS CLOSING TAG HERE -->
+
 		
         // Load staff members for name display
         await loadStaffMembers();
