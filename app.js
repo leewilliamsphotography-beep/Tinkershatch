@@ -1465,9 +1465,9 @@ document.addEventListener('DOMContentLoaded', () =>{
 setTimeout(() => {
     // 1. Define your playlist here! Add as many as you want.
     const playlist = [
-        { name: "Peaceful Piano", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
-        { name: "Gentle Acoustic", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
-        { name: "Warm Ambient", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" }
+        { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
+        { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
+        { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" }
     ];
     let currentTrack = 0;
 
