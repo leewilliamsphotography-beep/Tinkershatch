@@ -1461,25 +1461,52 @@ document.addEventListener('DOMContentLoaded', () =>{
       function init() { initReveal(); }
       return { init };
     })();
-// === INVISIBLE BACKGROUND MUSIC ===
+// === INVISIBLE BACKGROUND MUSIC (SEASONAL) ===
 setTimeout(() => {
-    // 1. Your playlist
-    const playlist = [
+    // 1. Regular tracks (play all year round)
+    const regularTracks = [
         { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
         { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
         { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
+
+    // 2. Seasonal tracks (Only play in specific months)
+    // JavaScript Months: 0=Jan, 1=Feb, 2=Mar, 3=Apr, 4=May, 5=Jun, 6=Jul, 7=Aug, 8=Sep, 9=Oct, 10=Nov, 11=Dec
+    const seasonalTracks = [
+        // Example: Christmas songs for December (Month 11)
+		        { name: "Cozy Christmas", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
+        { name: "Autumn arrival", url: "leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 8, endMonth:  10},
+        { name: "Spooky season", url: "leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 9, endMonth: 9 },	
+		
+        { name: "Cozy Christmas", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
+        { name: "Winter wonderland", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 }
+        
+        // Example: Autumn songs for October & November (Months 9 & 10)
+        // { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 }
+    ];
+
+    // 3. Build the playlist based on the current month
+    const currentMonth = new Date().getMonth();
+    let playlist = [...regularTracks]; // Start with the regular songs
+
+    // Check if any seasonal songs should be added
+    seasonalTracks.forEach(track => {
+        if (currentMonth >= track.startMonth && currentMonth <= track.endMonth) {
+            playlist.push(track); // Add the seasonal song to the mix!
+        }
+    });
+
     let currentTrack = 0;
 
-    // 2. Create an invisible audio element
+    // 4. Create an invisible audio element
     const music = document.createElement('audio');
     music.style.display = 'none';
     music.volume = 0.4; // 40% volume
     document.body.appendChild(music);
 
-    // 3. Pick a random song to start with
+    // 5. Pick a random song to start with
     currentTrack = Math.floor(Math.random() * playlist.length);
     
     function loadTrack(index) {
@@ -1492,24 +1519,22 @@ setTimeout(() => {
     // Load the first random track
     loadTrack(currentTrack);
 
-    // 4. Automatically go to next song when one ends
+    // 6. Automatically go to next song when one ends
     music.addEventListener('ended', () => {
         loadTrack(currentTrack + 1);
         music.play().catch(e => console.log("Auto-advance blocked:", e));
     });
 
-    // 5. Start music on first user interaction (Using 'window' to bypass frameworks)
+    // 7. Start music on first user interaction
     function startMusic() {
         music.play().then(() => {
             console.log("Music started successfully!");
-            // Remove the listeners so it only triggers once
             window.removeEventListener('click', startMusic);
             window.removeEventListener('touchstart', startMusic);
             window.removeEventListener('keydown', startMusic);
         }).catch(e => console.log("Play blocked:", e));
     }
 
-    // Listen for the user's first click, tap, or keypress anywhere on the page
     window.addEventListener('click', startMusic);
     window.addEventListener('touchstart', startMusic);
     window.addEventListener('keydown', startMusic);
