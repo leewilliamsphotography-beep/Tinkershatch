@@ -1120,7 +1120,7 @@ const MessagesModule=(function(){
     }
 
     return { init };
-})();
+	
 
 const AuthModule=(function(){
     function init(){
