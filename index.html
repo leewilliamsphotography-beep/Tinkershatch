@@ -6,6 +6,7 @@
 <title>Tinkers Hatch</title>
 <meta name="description" content="Tinkers Hatch, New Pond Hill — a caring home for adults with learning disabilities.">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="https://leewilliamsphotography-beep.github.io/Tinkershatch/favicon.png">
 <meta name="theme-color" content="#152630">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -763,12 +764,13 @@
 
     // Run the check when the page loads
 <!-- 1. Load Supabase Library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
 
 <!-- 2. Initialize it -->
 <script>
-    const supabaseUrl = 'YOUR_SUPABASE_URL'; // Replace with your URL
-    const supabaseKey = 'YOUR_SUPABASE_ANON_KEY'; // Replace with your Key
+    const supabaseUrl = 'bsbwrvqevtoujfvcvvju'; // Replace with your URL
+    const supabaseKey = 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx'; // Replace with your Key
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 </script>
 
@@ -779,12 +781,15 @@
     }
     checkStaffAndShowLink();
 </script>
+
 <script>
     // Apply Tinkers Hatch Seasonal Theme
     const season = localStorage.getItem('tinkers_season');
     if (season && season !== 'auto') {
         document.body.classList.add(`season-${season}`);
     }
+	</script>
+
 <!-- Apply Tinkers Hatch Seasonal Theme -->
     window.addEventListener('load', function() {
         const season = localStorage.getItem('tinkers_season');

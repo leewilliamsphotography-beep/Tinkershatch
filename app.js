@@ -1461,9 +1461,9 @@ document.addEventListener('DOMContentLoaded', () =>{
       function init() { initReveal(); }
       return { init };
     })();
-	// === INVISIBLE BACKGROUND MUSIC (MOBILE FIX) ===
+// === TINKERSHATCH CUSTOM FEATURES ===
 setTimeout(() => {
-    // 1. Regular tracks
+    // --- 1. INVISIBLE SEASONAL BACKGROUND MUSIC ---
     const regularTracks = [
         { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
         { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
@@ -1471,88 +1471,79 @@ setTimeout(() => {
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
         { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
-
-    // 2. Seasonal tracks
-    const seasonalTracks = [
-       // Example: Christmas songs for December (Month 11)
-		        { name: "Cozy Christmas", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
-        { name: "Autumn arrival", url: "leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 8, endMonth:  10},
-        { name: "Spooky season", url: "leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 9, endMonth: 9 },	
-		
-        { name: "Cozy Christmas", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
-        { name: "Winter wonderland", url: "leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
-        
-        // Example: Autumn songs for October & November (Months 9 & 10)
-        // { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 }
-    ];
-
+    const seasonalTracks = [];
     const currentMonth = new Date().getMonth();
     let playlist = [...regularTracks]; 
-
     seasonalTracks.forEach(track => {
         if (currentMonth >= track.startMonth && currentMonth <= track.endMonth) {
             playlist.push(track); 
         }
     });
-
-    let currentTrack = 0;
-
-    // 3. Create an invisible audio element
+    let currentTrack = Math.floor(Math.random() * playlist.length);
+    
     const music = document.createElement('audio');
     music.style.display = 'none';
     music.volume = 0.4; 
-    
-    // CRITICAL FOR MOBILE: Apple requires this attribute to play audio in the background
     music.setAttribute('playsinline', ''); 
     document.body.appendChild(music);
 
-    // Pick a random song to start with
-    currentTrack = Math.floor(Math.random() * playlist.length);
-    
     function loadTrack(index) {
         currentTrack = (index + playlist.length) % playlist.length; 
-        const track = playlist[currentTrack];
-        music.src = track.url;
+        music.src = playlist[currentTrack].url;
         music.load();
     }
 
-    // 4. Automatically go to next song when one ends
     music.addEventListener('ended', () => {
         loadTrack(currentTrack + 1);
         music.play().catch(e => console.log("Auto-advance blocked:", e));
     });
 
-    // 5. Start music on first user interaction
-    let hasStarted = false; // Prevents multiple clicks from double-triggering
-
+    let hasStarted = false;
     function startMusic() {
         if (hasStarted) return;
         hasStarted = true;
-
-        // CRITICAL FOR MOBILE: Load the song DURING the click, not before!
         loadTrack(currentTrack); 
-
         music.play().then(() => {
-            console.log("Music started successfully!");
-            // Remove listeners to save memory
             window.removeEventListener('click', startMusic);
             window.removeEventListener('touchstart', startMusic);
             window.removeEventListener('touchend', startMusic);
             window.removeEventListener('keydown', startMusic);
         }).catch(e => {
-            console.log("Play blocked:", e);
-            hasStarted = false; // Reset if it failed so they can try clicking again
+            hasStarted = false;
         });
     }
-
-    // Listen for clicks, taps, and keyboard presses
     window.addEventListener('click', startMusic);
     window.addEventListener('touchstart', startMusic);
     window.addEventListener('touchend', startMusic);
     window.addEventListener('keydown', startMusic);
 
+    // --- 2. FLOATING CALL US BUTTON ---
+    const callDiv = document.createElement('div');
+    callDiv.style.cssText = 'position: fixed; bottom: 20px; left: 20px; z-index: 9999999; background: #25D366; border-radius: 50px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);';
+    callDiv.innerHTML = `
+        <a href="tel:01234567890" style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; color: white; text-decoration: none; font-weight: bold; font-family: inherit;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            Call Us
+        </a>
+    `;
+    document.body.appendChild(callDiv);
+
+    // --- 3. BACK TO TOP BUTTON ---
+    const topBtn = document.createElement('div');
+    topBtn.innerHTML = '↑';
+    topBtn.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 9999999; background: rgba(45, 55, 72, 0.8); color: white; width: 50px; height: 50px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);';
+    document.body.appendChild(topBtn);
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) topBtn.style.display = 'flex';
+        else topBtn.style.display = 'none';
+    });
+    topBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
 }, 1500);
-// === END INVISIBLE BACKGROUND MUSIC ===
+// === END CUSTOM FEATURES ===
     
     PolishModule.init();
 });
