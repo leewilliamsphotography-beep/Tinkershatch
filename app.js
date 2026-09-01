@@ -1463,8 +1463,8 @@ document.addEventListener('DOMContentLoaded', () =>{
     })();
 	// === PLAYLIST MUSIC PLAYER INJECTION ===
 setTimeout(() => {
-    // 1. Define your playlist here! Add as many as you want.
-       const playlist = [
+    // 1. Define your playlist here!
+    const playlist = [
         { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
         { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
@@ -1473,7 +1473,7 @@ setTimeout(() => {
     ];
     let currentTrack = 0;
 
-    // 2. Inject the CSS
+    // 2. Inject the CSS (Updated for transparency)
     const style = document.createElement('style');
     style.innerHTML = `
         .music-player-container {
@@ -1481,10 +1481,12 @@ setTimeout(() => {
             bottom: 30px;
             right: 30px;
             z-index: 2147483647;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.65); /* Transparent white */
+            backdrop-filter: blur(12px); /* Frosted glass effect */
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
             border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
             padding: 12px 16px;
             display: flex;
             flex-direction: column;
@@ -1508,9 +1510,6 @@ setTimeout(() => {
             gap: 8px;
         }
         .nav-btn, .play-btn {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            color: #4a5568;
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -1521,20 +1520,24 @@ setTimeout(() => {
         .nav-btn {
             width: 32px;
             height: 32px;
+            background: rgba(255, 255, 255, 0.5); /* Transparent */
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: #4a5568;
         }
         .play-btn {
             width: 44px;
             height: 44px;
-            background: #2d3748;
+            background: rgba(45, 55, 72, 0.7); /* Transparent dark */
             color: #ffffff;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .nav-btn:hover, .play-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.8);
         }
         .play-btn.playing {
-            background: #4a90e2; /* Soft blue when playing */
+            background: rgba(74, 144, 226, 0.8); /* Transparent soft blue when playing */
         }
     `;
     document.head.appendChild(style);
@@ -1560,7 +1563,7 @@ setTimeout(() => {
     `;
     document.body.appendChild(musicDiv);
 
-    // 4. Add the Logic
+    // 4. Add the Logic (Fixed so icons change instantly)
     const music = document.getElementById('bg-music');
     const toggleBtn = document.getElementById('music-toggle');
     const playIcon = document.getElementById('play-icon');
@@ -1570,25 +1573,30 @@ setTimeout(() => {
     const nextBtn = document.getElementById('next-btn');
 
     function loadTrack(index) {
-        currentTrack = (index + playlist.length) % playlist.length; // Loops back to start if at end
+        currentTrack = (index + playlist.length) % playlist.length; 
         const track = playlist[currentTrack];
         music.src = track.url;
         trackName.textContent = track.name;
     }
 
     function playMusic() {
-        music.play().then(() => {
-            toggleBtn.classList.add('playing');
-            playIcon.style.display = 'none';
-            pauseIcon.style.display = 'block';
-        }).catch(error => console.log("Play prevented:", error));
+        // Change icons INSTANTLY
+        toggleBtn.classList.add('playing');
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+        
+        // Play music
+        music.play().catch(error => console.log("Play prevented:", error));
     }
 
     function pauseMusic() {
-        music.pause();
+        // Change icons INSTANTLY
         toggleBtn.classList.remove('playing');
         playIcon.style.display = 'block';
         pauseIcon.style.display = 'none';
+        
+        // Pause music
+        music.pause();
     }
 
     // Initialize first track
@@ -1603,12 +1611,12 @@ setTimeout(() => {
 
     nextBtn.addEventListener('click', () => {
         loadTrack(currentTrack + 1);
-        playMusic(); // Auto-play the next song
+        playMusic(); 
     });
 
     prevBtn.addEventListener('click', () => {
         loadTrack(currentTrack - 1);
-        playMusic(); // Auto-play the previous song
+        playMusic(); 
     });
 
     // Automatically go to next song when current one ends
