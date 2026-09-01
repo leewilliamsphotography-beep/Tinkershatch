@@ -1461,24 +1461,107 @@ document.addEventListener('DOMContentLoaded', () =>{
       function init() { initReveal(); }
       return { init };
     })();
-	// === FORCE MUSIC PLAYER ONTO SCREEN ===
+	// === PREMIUM MUSIC PLAYER INJECTION ===
 setTimeout(() => {
+    // 1. Inject the CSS Styling
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .music-player-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 2147483647;
+        }
+        .music-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 12px 24px 12px 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            color: #4a5568;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        .music-btn:hover {
+            background: #f7fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+            color: #2d3748;
+        }
+        .music-btn.playing {
+            background: #2d3748;
+            color: #ffffff;
+        }
+        .music-btn.playing:hover {
+            background: #1a202c;
+        }
+        .music-btn.playing #pause-icon {
+            animation: music-pulse 2s infinite;
+        }
+        @keyframes music-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // 2. Create the Button HTML
     const musicDiv = document.createElement('div');
-    musicDiv.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 2147483647; background: red; padding: 20px;';
-    
+    musicDiv.className = 'music-player-container';
     musicDiv.innerHTML = `
-        <audio id="bg-music-test" controls loop>
+        <audio id="bg-music" loop>
             <source src="https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" type="audio/mpeg">
         </audio>
-        <br><br>
-        <button onclick="alert('Button click works!');" style="padding: 10px; font-size: 20px;">
-            Click Me to Test
+        <button id="music-toggle" class="music-btn" aria-label="Play background music">
+            <svg id="play-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            <svg id="pause-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+            <span id="music-text">Play Music</span>
         </button>
     `;
-    
     document.body.appendChild(musicDiv);
-}, 2000); // Waits 2 seconds for your app to finish loading
-// === END MUSIC PLAYER ===
+
+    // 3. Add the Click Logic
+    const music = document.getElementById('bg-music');
+    const toggleBtn = document.getElementById('music-toggle');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const musicText = document.getElementById('music-text');
+
+    if (music) {
+        music.volume = 0.4; // 40% volume
+
+        toggleBtn.addEventListener('click', () => {
+            if (music.paused) {
+                music.play().then(() => {
+                    toggleBtn.classList.add('playing');
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                    musicText.textContent = 'Pause Music';
+                }).catch(error => {
+                    console.log("Audio play prevented:", error);
+                });
+            } else {
+                music.pause();
+                toggleBtn.classList.remove('playing');
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                musicText.textContent = 'Play Music';
+            }
+        });
+    }
+}, 1500); // Waits 1.5 seconds for your app to finish loading
+// === END PREMIUM MUSIC PLAYER ===
     
     PolishModule.init();
 });
