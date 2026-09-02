@@ -692,17 +692,47 @@ const HapticModule=(function(){ function init(){ document.body.addEventListener(
 const BionicModule=(function(){ function toggle(state){ const b=document.body; if(state==='on')b.classList.add('bionic-mode'); else b.classList.remove('bionic-mode'); safeSet('th-bionic',state); document.querySelectorAll('.bionic-btn').forEach(btn=>{ btn.setAttribute('aria-pressed',btn.dataset.bionic===state); }); if(state==='on'){ applyBionic(); } else { removeBionic(); } } function applyBionic(){ const elements=document.querySelectorAll('#main p, #main h1, #main h2, #main h3, #main li, #main summary'); elements.forEach(el=>{ if(el.dataset.bioniced) return; let html=el.innerHTML; if(html.includes('<')) return; const words=html.split(/(\s+)/); let newHtml=''; words.forEach(word=>{ if(word.trim().length>1){ const half=Math.ceil(word.length/2); newHtml+=`<b>${word.substring(0,half)}</b>${word.substring(half)}`; } else { newHtml+=word; } }); el.innerHTML=newHtml; el.dataset.bioniced='true'; }); } function removeBionic(){ const elements=document.querySelectorAll('[data-bioniced="true"]'); elements.forEach(el=>{ el.querySelectorAll('b').forEach(b=>{ const text=document.createTextNode(b.textContent); b.parentNode.replaceChild(text,b); }); el.normalize(); delete el.dataset.bioniced; }); } function init(){ const btns=document.querySelectorAll('.bionic-btn'); if(!btns.length) return; let s=safeGet('th-bionic')||'off'; if(s==='on'){ setTimeout(()=>toggle('on'),1000); } btns.forEach(btn=>btn.addEventListener('click',()=>toggle(btn.dataset.bionic))); } return{init}; })();
 const NextSectionModule=(function(){ let sections=[]; function init(){ const btn=document.getElementById('nextSectionBtn'); if(!btn) return; const navDots=document.querySelectorAll('.side-dot'); sections=Array.from(navDots).map(dot=>{ const id=dot.getAttribute('href').replace('#',''); return document.getElementById(id); }).filter(Boolean); let ticking=false; function update(){ const scrollPos=window.scrollY+(window.innerHeight*0.5); let nextIndex=-1; for(let i=0;i<sections.length;i++){ if(sections[i].offsetTop<=scrollPos){ if(i<sections.length-1&&sections[i+1].offsetTop>scrollPos){ nextIndex=i+1; break; } } } if(nextIndex!==-1){ const nextSection=sections[nextIndex]; const title=nextSection.querySelector('h2')?.innerText||nextSection.id.replace(/-/g,' '); btn.innerHTML=`<span>Next: ${title}</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M12 5v14M5 12l7 7 7-7"/></svg>`; btn.classList.add('show'); btn.onclick=()=>nextSection.scrollIntoView({behavior:'smooth'}); } else { btn.classList.remove('show'); } ticking=false; } window.addEventListener('scroll',()=>{ if(!ticking){ window.requestAnimationFrame(update); ticking=true; } },{passive:true}); } return{init}; })();
 
-const StaffModule=(function(){
+const StaffModule = (function(){
     async function createAccount(){
-        const email=document.getElementById('newStaffEmail').value.trim();
-        const pass=document.getElementById('newStaffPass').value;
-        const role=document.getElementById('newStaffRole').value;
-        if(!email||!pass){ ToastModule.show('Email and password are required.'); return; }
-        if(pass.length<6){ ToastModule.show('Password must be at least 6 characters.'); return; }
+        const email = document.getElementById('newStaffEmail').value.trim();
+        const pass = document.getElementById('newStaffPass').value;
+        const role = document.getElementById('newStaffRole').value;
+        
+        if(!email || !pass){ 
+            ToastModule.show('Email and password are required.'); 
+            return; 
+        }
+        if(pass.length < 6){ 
+            ToastModule.show('Password must be at least 6 characters.'); 
+            return; 
+        }
+        
         ToastModule.show('Creating account...');
-        try {
-         
-    })();
+        
+        try { 
+            // ADD YOUR ASYNC CODE HERE (e.g., fetch API call to create the account)
+            
+            // Example of what should be here:
+            // const response = await fetch('/api/create-staff', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ email, pass, role })
+            // });
+            
+            ToastModule.show('Account created successfully!'); // Success message
+            
+        } catch (error) {
+            console.error('Error creating account:', error);
+            ToastModule.show('An error occurred while creating the account.');
+        }
+    }
+
+    // Return the public methods so they can be accessed outside the module
+    return {
+        createAccount: createAccount
+    };
+    
+})(); // <-- Don't forget these closing parentheses to invoke the function
             const { data, error } = await tempClient.auth.signUp({ 
                 email: email, password: pass,
                 options: { data: { role: role } }
