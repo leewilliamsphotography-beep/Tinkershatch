@@ -722,7 +722,7 @@ body.bionic-mode #main b {
     100% { transform: scale(1); }
 html { scroll-behavior: smooth; } 
 input, select, textarea { font-size: 16px; }
-::selection { background: #6B4423 !important; color: #ffffff !important; }
+}::selection { background: #6B4423 !important; color: #ffffff !important; } 
 ::-moz-selection { background: #6B4423 !important; color: #ffffff !important; }
 body { padding-bottom: 100px !important; }
 body { padding-top: 100px !important; }
@@ -749,4 +749,5 @@ a, button, input[type="submit"], input[type="button"], .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
 }
