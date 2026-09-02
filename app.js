@@ -807,30 +807,6 @@ const MessagesModule=(function(){
             }
         }
     }
-        // ... your updateUserGreeting function is above ...
-
-    // 1. Check if a user is already logged in when the page loads
-    async function checkInitialUser() {
-        if (session) {
-            UserGreeting(session.user); // <--- THIS calls your function!
-            messagesmodule(session.user); // Load messages for the logged-in user
-        }
-    }
-    checkInitialUser();
-
-    // 2. Listen for login/logout events
-        if (session) {
-            UserGreeting(session.user); // <--- THIS calls your function!
-        } else
-            messagesmodule(null)
-
-            
-            
-            {
-                UserGreeting(null); // Logs out, hides the greeting
-        }
-    });
-
     function setupUIListeners(){
         const prefix = isMainSite ? 'main-' : '';
         
@@ -1147,13 +1123,14 @@ const MessagesModule=(function(){
             input.value = content; // Restore text
         }
     }
+  return { init }; 
 
-    return { init };
 })();
 
 const AuthModule=(function(){
     function init(){
         // Listen for auth state changes to update user greeting on main site
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if(event === 'SIGNED_IN' && session?.user){
                 const userGreeting = document.getElementById('userGreeting');
                 const userName = document.getElementById('userName');
@@ -1172,7 +1149,7 @@ const AuthModule=(function(){
                     userGreeting.style.display = 'none';
                 }
             }
-    
+        });
     }
     return { init };
 })();
