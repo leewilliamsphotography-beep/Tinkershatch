@@ -1451,6 +1451,26 @@ document.addEventListener('DOMContentLoaded', () =>{
       function init() { initReveal(); }
       return { init };
     })();
+// === OPEN/CLOSED INDICATOR ===
+setTimeout(() => {
+    const statusDiv = document.createElement('div');
+    const now = new Date();
+    const hour = now.getHours();
+    // Open 8am to 8pm (Change these numbers to your hours)
+    const isOpen = hour >= 8 && hour < 20; 
+
+    if(isOpen) {
+        statusDiv.innerHTML = '🟢 We are Open';
+        statusDiv.style.background = 'rgba(37, 211, 102, 0.9)';
+    } else {
+        statusDiv.innerHTML = '🔴 We are Closed';
+        statusDiv.style.background = 'rgba(235, 87, 87, 0.9)';
+    }
+
+    statusDiv.style.cssText += 'position: fixed; top: 20px; right: 20px; z-index: 9999999; color: white; padding: 8px 16px; border-radius: 50px; font-size: 14px; font-weight: bold; font-family: inherit; box-shadow: 0 4px 10px rgba(0,0,0,0.1);';
+    document.body.appendChild(statusDiv);
+}, 1500);
+// === END OPEN/CLOSED INDICATOR === 
 // === TINKERSHATCH CUSTOM FEATURES ===
 setTimeout(() => {
     // --- 1. INVISIBLE SEASONAL BACKGROUND MUSIC ---
