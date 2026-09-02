@@ -1156,7 +1156,6 @@ const MessagesModule=(function(){
 const AuthModule=(function(){
     function init(){
         // Listen for auth state changes to update user greeting on main site
-        supabaseClient.auth.onAuthStateChange((event, session) => {
             if(event === 'SIGNED_IN' && session?.user){
                 const userGreeting = document.getElementById('userGreeting');
                 const userName = document.getElementById('userName');
@@ -1175,7 +1174,7 @@ const AuthModule=(function(){
                     userGreeting.style.display = 'none';
                 }
             }
-        });
+    
     }
     return { init };
 })();
@@ -1238,7 +1237,6 @@ const TesterModule=(function(){
             loginBtn.textContent='Log In';
             loginBtn.disabled=false;
             
-            const{data:{session}}=await supabaseClient.auth.getSession();
             const user=session?.user;
             const userRole=user?.user_metadata?.role;
             
