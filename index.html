@@ -765,17 +765,26 @@
     // Run the check when the page loads
 <!-- 1. Load Supabase Library -->
 </script>
- <script>
+<script>
+    // 1. Define your elements first (replace with your actual HTML IDs)
+    const userGreeting = document.getElementById('userGreeting');
+    const userName = document.getElementById('userName');
+
     // Show user greeting
-    if(userGreeting && userName){
-        userGreeting.style.display = 'flex';
-        const displayName = user.user_metadata?.full_name || 
-                           user.user_metadata?.name || 
-                           user.email?.split('@')[0] || 
+    // 2. Make sure 'user' is also checked here to prevent crashes
+    if(userGreeting && userName && typeof user !== 'undefined' && user){
+        
+        userGreeting.style.display = 'flex'; 
+        
+        // 3. Add '?.' to 'user' so it doesn't crash if user is null
+        const displayName = user?.user_metadata?.full_name || 
+                           user?.user_metadata?.name || 
+                           user?.email?.split('@')[0] || 
                            'User';
+                           
         userName.textContent = `Hello, ${displayName}`;
     } 
-</script> <!-- ADD THIS CLOSING TAG HERE -->
+</script>
  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 </script>
 
