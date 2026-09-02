@@ -811,7 +811,6 @@ const MessagesModule=(function(){
 
     // 1. Check if a user is already logged in when the page loads
     async function checkInitialUser() {
-        const { data: { session } } = await supabase.auth.getSession();
         if (session) {
             UserGreeting(session.user); // <--- THIS calls your function!
             messagesmodule(session.user); // Load messages for the logged-in user
@@ -820,7 +819,6 @@ const MessagesModule=(function(){
     checkInitialUser();
 
     // 2. Listen for login/logout events
-    supabase.auth.onAuthStateChange((event, session) => {
         if (session) {
             UserGreeting(session.user); // <--- THIS calls your function!
         } else
