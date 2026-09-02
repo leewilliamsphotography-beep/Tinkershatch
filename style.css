@@ -731,3 +731,22 @@ body { padding-top: 100px !important; }
 ::-webkit-scrollbar-track { background: #f1f1f1; }
 ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; border: 3px solid #f1f1f1; }
 ::-webkit-scrollbar-thumb:hover { background: #555; } 
+/* Make paragraphs easier to read */
+p { 
+    max-width: 70ch; /* Limits lines to about 70 characters */
+    line-height: 1.6; /* Adds a little breathing room between lines */
+}
+/* High contrast focus ring for keyboard users */
+a:focus, button:focus, input:focus, select:focus, textarea:focus {
+    outline: 3px solid #4a90e2 !important;
+    outline-offset: 2px !important;
+    border-radius: 4px;
+} 
+/* Force all buttons and links to be easy to tap */
+a, button, input[type="submit"], input[type="button"], .btn {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
