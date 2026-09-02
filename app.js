@@ -790,7 +790,7 @@ const MessagesModule=(function(){
         console.log('MessagesModule initialized successfully');
     }
     
-    function updateUserGreeting(user){
+    function UserGreeting(user){
         const userGreeting = document.getElementById('userGreeting');
         const userName = document.getElementById('userName');
         
@@ -813,7 +813,7 @@ const MessagesModule=(function(){
     async function checkInitialUser() {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) {
-            updateUserGreeting(session.user); // <--- THIS calls your function!
+            UserGreeting(session.user); // <--- THIS calls your function!
         }
     }
     checkInitialUser();
@@ -821,9 +821,9 @@ const MessagesModule=(function(){
     // 2. Listen for login/logout events
     supabase.auth.onAuthStateChange((event, session) => {
         if (session) {
-            updateUserGreeting(session.user); // <--- THIS calls your function!
+            UserGreeting(session.user); // <--- THIS calls your function!
         } else {
-            updateUserGreeting(null); // Logs out, hides the greeting
+                UserGreeting(null); // Logs out, hides the greeting
         }
     });
 
