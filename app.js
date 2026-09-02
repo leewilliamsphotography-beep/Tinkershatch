@@ -754,12 +754,14 @@ const MessagesModule=(function(){
             if(messagingSection){
                 messagingSection.style.display = 'block';
             }
-            if(messagingBtn){
+           if(messagingBtn){
                 messagingBtn.style.display = 'flex';
                 messagingBtn.addEventListener('click', () => {
                     messagingSection.scrollIntoView({ behavior: 'smooth' });
                 });
             }
+        } 
+
       
         // Load staff members for name display
         await loadStaffMembers();
