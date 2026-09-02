@@ -746,7 +746,15 @@ const MessagesModule=(function(){
             const messagingBtn = document.getElementById('staffMessagingBtn');
             const userGreeting = document.getElementById('userGreeting');
             const userName = document.getElementById('userName');
-            
+            if (userGreeting && userName && user){   
+                userGreeting.style.display = 'flex';
+                const displayName = user.user_metadata?.full_name ||    
+                                 user.user_metadata?.name ||    
+                                    user.email?.split('@')[0] ||
+                                    'User';
+                userName.textContent = `Hello, ${displayName}`;
+            }
+
             if(messagingSection){
                 messagingSection.style.display = 'block';
             }
