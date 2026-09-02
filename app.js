@@ -743,7 +743,6 @@ const MessagesModule=(function(){
         }
         currentUserId = user.id;
         console.log('Current user ID:', currentUserId);
-	} 
 
         // Show user greeting and messaging button on main site
         if(isMainSite){
@@ -761,10 +760,9 @@ const MessagesModule=(function(){
                     messagingSection.scrollIntoView({ behavior: 'smooth' });
                 });
             }
-     
+      
         // Load staff members for name display
-    
-
+        await loadStaffMembers();
 
         // Load existing conversations
         await loadConversations();
@@ -1052,6 +1050,12 @@ const MessagesModule=(function(){
             { conversation_id: newConv.id, user_id: targetUserId }
         ]);
 
+        select.value = '';
+        if(manualInput) manualInput.value = '';
+        ToastModule.show('Chat started!');
+        await loadConversations();
+        openConversation(newConv.id, displayName);
+    }
 
     async function openConversation(convId, displayName){
         activeConversationId = convId;
@@ -1116,7 +1120,7 @@ const MessagesModule=(function(){
     }
 
     return { init };
-	
+})();
 
 const AuthModule=(function(){
     function init(){
@@ -1529,5 +1533,5 @@ setTimeout(() => {
 }, 1500);
 // === END CUSTOM FEATURES ===
     
-    PolishModule.init();
-	});}  
+        PolishModule.init();
+    });
