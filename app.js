@@ -1461,16 +1461,16 @@ setTimeout(() => {
 
     if(isOpen) {
         statusDiv.innerHTML = '🟢 We are Open';
-        statusDiv.style.background = 'rgba(37, 211, 102, 0.9)';
+        // Softened green with transparency
+        statusDiv.style.background = 'rgba(37, 211, 102, 0.6)'; 
     } else {
         statusDiv.innerHTML = '🔴 We are Closed';
-        statusDiv.style.background = 'rgba(235, 87, 87, 0.9)';
+        // Softened red with transparency
+        statusDiv.style.background = 'rgba(235, 87, 87, 0.6)'; 
     }
 
-    statusDiv.style.cssText += 'position: fixed; top: 20px; right: 20px; z-index: 9999999; color: white; padding: 8px 16px; border-radius: 50px; font-size: 14px; font-weight: bold; font-family: inherit; box-shadow: 0 4px 10px rgba(0,0,0,0.1);';
-    document.body.appendChild(statusDiv);
-}, 1500);
-// === END OPEN/CLOSED INDICATOR === 
+    // Added frosted glass blur and a subtle white border
+    statusDiv.style.cssText += 'position: fixed; bottom
 // === TINKERSHATCH CUSTOM FEATURES ===
 setTimeout(() => {
     // --- 1. INVISIBLE SEASONAL BACKGROUND MUSIC ---
