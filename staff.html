@@ -85,15 +85,40 @@
     .login-box h3 { margin: 0 0 4px 0; font-size: 1.75rem; font-weight: 700; color: var(--fg); }
     .login-box p { margin: 0 0 32px 0; color: var(--muted); font-size: 0.95rem; }
     #testerCloseBtn {
-        position: fixed; top: 24px; right: 24px; z-index: 100; width: 44px; height: 44px;
-        background: var(--surface); border: 1px solid var(--border); border-radius: 50%; color: var(--fg);
-        display: flex; align-items: center; justify-content: center; text-decoration: none;
-        font-size: 1.5rem; box-shadow: var(--shadow); transition: var(--transition);
-    }
+    position: fixed; 
+    top: 24px; 
+    right: 24px; 
+    z-index: 100; 
+    width: 44px; 
+    height: 44px;
+    background: var(--surface); 
+    border: 1px solid var(--border); 
+    border-radius: 50%; 
+    color: var(--fg);
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    text-decoration: none;
+    font-size: 1.5rem; 
+    box-shadow: var(--shadow); 
+    transition: var(--transition);
+    
+    /* --- ADD THESE 3 LINES --- */
+    padding: 0;        /* Removes default button padding */
+    line-height: 1;    /* Removes extra text space above/below */
+    cursor: pointer;   /* Makes it feel like a clickable button */
+}
+
+/* If you are using an SVG or Image icon inside, add this */
+#testerCloseBtn svg, #testerCloseBtn img {
+    display: block;
+    width: 20px; /* Adjust as needed */
+    height: 20px; /* Adjust as needed */
+}
     #testerCloseBtn:hover { background: var(--surface-2); transform: scale(1.05); }
 
     /* === Dashboard Layout === */
-    #testerMenu { width: 95%; height: 95%; display: none; background: var(--bg); }
+    #testerMenu { width: 95%; height: %; display: none; background: var(--bg); }
     #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
         display: flex !important; flex-direction: row !important;
     }
