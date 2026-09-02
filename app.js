@@ -702,7 +702,7 @@ const StaffModule=(function(){
         ToastModule.show('Creating account...');
         try {
          
-            );
+    })();
             const { data, error } = await tempClient.auth.signUp({ 
                 email: email, password: pass,
                 options: { data: { role: role } }
