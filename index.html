@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Add this line to load the Supabase library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -765,27 +768,48 @@
     // Run the check when the page loads
 <!-- 1. Load Supabase Library -->
 </script>
-<script>
-    // 1. Define your elements first (replace with your actual HTML IDs)
-    const userGreeting = document.getElementById('userGreeting');
-    const userName = document.getElementById('userName');
+<script type="module">
+    // 1. INITIALIZATION (Replace with your actual keys!)
+    const supabaseUrl = 'https://bsbwrvqevtoujfvcvvju.supabase.co';
+    const supabaseKey = 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Show user greeting
-    // 2. Make sure 'user' is also checked here to prevent crashes
-    if(userGreeting && userName && typeof user !== 'undefined' && user){
+    // 2. YOUR FUNCTION
+    function updateUserGreeting(user){
+        const userGreeting = document.getElementById('userGreeting');
+        const userName = document.getElementById('userName');
         
-        userGreeting.style.display = 'flex'; 
-        
-        // 3. Add '?.' to 'user' so it doesn't crash if user is null
-        const displayName = user?.user_metadata?.full_name || 
-                           user?.user_metadata?.name || 
-                           user?.email?.split('@')[0] || 
-                           'User';
-                           
-        userName.textContent = `Hello, ${displayName}`;
-    } 
-</script>
- src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        if(userGreeting && userName){
+            if(user){
+                userGreeting.style.display = 'flex';
+                const displayName = user.user_metadata?.full_name || 
+                                   user.user_metadata?.name || 
+                                   user.email?.split('@')[0] || 
+                                   'User';
+                userName.textContent = `Hello, ${displayName}`;
+            } else {
+                userGreeting.style.display = 'none';
+            }
+        }
+    }
+
+    // 3. CHECK INITIAL USER (Fixes the error you just got)
+    async function checkInitialUser() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            updateUserGreeting(session.user);
+        }
+    }
+    checkInitialUser();
+
+    // 4. LISTEN FOR LOGIN/LOGOUT
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (session) {
+            updateUserGreeting(session.user);
+        } else {
+            updateUserGreeting(null);
+        }
+    });
 </script>
 
 <!-- 2. Initialize it -->
