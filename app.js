@@ -2,7 +2,7 @@
 // Only register Service Worker on the main site, NOT on staff.html or bingo
 if ('serviceWorker' in navigator && !window.location.pathname.endsWith('staff.html') && !window.location.pathname.includes('bingo')) { 
     window.addEventListener('load', () => { 
-        navigator.serviceWorker.register('sw.js').catch(err => ('SW registration failed: ', err)); 
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err)); 
     }); 
 }
 let supabaseClient = null;if (window.supabase) { supabaseClient = window.supabase.createClient('https://bsbwrvqevtoujfvcvvju.supabase.co', 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx');}
@@ -701,10 +701,7 @@ const StaffModule=(function(){
         if(pass.length<6){ ToastModule.show('Password must be at least 6 characters.'); return; }
         ToastModule.show('Creating account...');
         try {
-            const tempClient = supabase.createClient(
-                'https://bsbwrvqevtoujfvcvvju.supabase.co', 
-                'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx',
-                { auth: { storageKey: 'th-temp-signup-key' } }
+         
             );
             const { data, error } = await tempClient.auth.signUp({ 
                 email: email, password: pass,
@@ -734,15 +731,15 @@ const MessagesModule=(function(){
         // Check if we're on main site or staff portal
         isMainSite = document.getElementById('staff-messaging') !== null;
         
-        ('MessagesModule init - isMainSite:', isMainSite);
+        console.log('MessagesModule init - isMainSite:', isMainSite);
         
         const { data: { user } } = await supabaseClient.auth.getUser();
         if(!user) {
-            ('No authenticated user found');
+            console.log('No authenticated user found');
             return;
         }
         currentUserId = user.id;
-        ('Current user ID:', currentUserId);
+        console.log('Current user ID:', currentUserId);
 
         // Show user greeting and messaging button on main site
         if(isMainSite){
@@ -783,7 +780,7 @@ const MessagesModule=(function(){
         // Setup UI listeners based on which site we're on
         setupUIListeners();
         
-        ('MessagesModule initialized successfully');
+        console.log('MessagesModule initialized successfully');
     }
     
     function updateUserGreeting(user){
@@ -838,18 +835,18 @@ const MessagesModule=(function(){
                 .eq('is_active', true);
             
             if(!staffError && staffData && staffData.length > 0){
-                ('Loaded staff members from staff table:', staffData);
+                console.log('Loaded staff members from staff table:', staffData);
                 staffMembers = staffData;
                 populateStaffDropdown();
             } else {
-                ('No staff table or no data, error:', staffError);
+                console.log('No staff table or no data, error:', staffError);
                 // Try to get all users from the profiles table (if it exists)
                 const { data: profilesData, error: profilesError } = await supabaseClient
                     .from('profiles')
                     .select('id, email, full_name');
                 
                 if(!profilesError && profilesData && profilesData.length > 0){
-                    ('Loaded profiles:', profilesData);
+                    console.log('Loaded profiles:', profilesData);
                     staffMembers = profilesData.map(p => ({
                         id: p.id,
                         email: p.email,
@@ -857,7 +854,7 @@ const MessagesModule=(function(){
                     }));
                     populateStaffDropdown();
                 } else {
-                    ('No profiles table either, error:', profilesError);
+                    console.log('No profiles table either, error:', profilesError);
                     // As a fallback, add the current user so they can at least see themselves
                     if(currentUserId){
                         staffMembers = [{
@@ -882,18 +879,18 @@ const MessagesModule=(function(){
         const prefix = isMainSite ? 'main-' : '';
         const select = document.getElementById(prefix + 'chat-recipient-select');
         if(!select) {
-            ('Dropdown element not found with prefix:', prefix);
+            console.log('Dropdown element not found with prefix:', prefix);
             return;
         }
         
-        ('Populating dropdown with staff members:', staffMembers.length);
-        ('Current user ID:', currentUserId);
+        console.log('Populating dropdown with staff members:', staffMembers.length);
+        console.log('Current user ID:', currentUserId);
         
         select.innerHTML = '<option value="">Select staff member...</option>';
         
         let addedCount = 0;
         staffMembers.forEach(staff => {
-            ('Checking staff member:', staff);
+            console.log('Checking staff member:', staff);
             if(staff.id !== currentUserId){
                 const option = document.createElement('option');
                 option.value = staff.email;
@@ -903,7 +900,7 @@ const MessagesModule=(function(){
             }
         });
         
-        ('Added', addedCount, 'staff members to dropdown');
+        console.log('Added', addedCount, 'staff members to dropdown');
         
         // If no staff members available, show message
         if(addedCount === 0){
@@ -1518,7 +1515,7 @@ setTimeout(() => {
 
     music.addEventListener('ended', () => {
         loadTrack(currentTrack + 1);
-        music.play().catch(e => ("Auto-advance blocked:", e));
+        music.play().catch(e => console.log("Auto-advance blocked:", e));
     });
 
     let hasStarted = false;
