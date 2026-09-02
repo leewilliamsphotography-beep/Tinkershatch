@@ -1456,7 +1456,7 @@ setTimeout(() => {
     const statusDiv = document.createElement('div');
     const now = new Date();
     const hour = now.getHours();
-    const isOpen = hour >= 8 && hour < 20; 
+    const isOpen = hour >= 9 && hour < 17; 
 
     if(isOpen) {
         statusDiv.innerHTML = '🟢 We are Open';
