@@ -799,6 +799,25 @@ const MessagesModule=(function(){
             }
         }
     }
+        // ... your updateUserGreeting function is above ...
+
+    // 1. Check if a user is already logged in when the page loads
+    async function checkInitialUser() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            updateUserGreeting(session.user); // <--- THIS calls your function!
+        }
+    }
+    checkInitialUser();
+
+    // 2. Listen for login/logout events
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (session) {
+            updateUserGreeting(session.user); // <--- THIS calls your function!
+        } else {
+            updateUserGreeting(null); // Logs out, hides the greeting
+        }
+    });
 
     function setupUIListeners(){
         const prefix = isMainSite ? 'main-' : '';
