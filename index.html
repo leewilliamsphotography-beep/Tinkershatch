@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tinkers Hatch</title>
@@ -732,7 +733,7 @@
 <!-- Hidden container for printing A4 Featured Posters -->
 <div id="featuredPrintArea" aria-hidden="true"></div>
 <!-- Code Splitting: JavaScript is now in app.js -->
-<script src="app.js"></script>
+<script src="app.js" defer></script>
 <script>
     // We wrap this in an async function so we can use 'await'
     async function checkStaffAndShowLink() {
