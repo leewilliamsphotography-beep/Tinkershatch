@@ -1464,12 +1464,21 @@ setTimeout(() => {
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
         { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
-    const seasonalTracks = [];
+        const seasonalTracks = [
+        // --- CHRISTMAS SONGS (Play in December) ---
+        { name: "Cozy Christmas Jazz", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
+        { name: "Silent Night Piano", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
+        
+        // --- AUTUMN SONGS (Play in October & November) ---
+        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 }
+        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/halloweene1.mp3", startMonth: 10, endMonth: 10 },
+    ];
     const currentMonth = new Date().getMonth();
     let playlist = [...regularTracks]; 
     seasonalTracks.forEach(track => {
         if (currentMonth >= track.startMonth && currentMonth <= track.endMonth) {
             playlist.push(track); 
+            
         }
     });
     let currentTrack = Math.floor(Math.random() * playlist.length);

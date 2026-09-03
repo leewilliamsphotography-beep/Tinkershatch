@@ -118,6 +118,8 @@
     .brand-name { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
     .brand-sub { font-size: 0.7rem; color: var(--muted-2); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
 
+    .sidebar-spacer { flex-grow: 1; }
+
     .tester-tab-btn {
         background: transparent !important; border: 1px solid transparent !important;
         text-align: left !important; display: flex; align-items: center; gap: 12px;
@@ -202,11 +204,15 @@
     .photo-drop-zone {
         border: 2px dashed var(--border); padding: 32px; text-align: center; border-radius: var(--radius);
         cursor: pointer; transition: var(--transition); margin-bottom: 16px; color: var(--muted);
-        background: var(--surface-2);
+        background: var(--surface-2); display: flex; flex-direction: column; align-items: center; gap: 8px;
     }
     .photo-drop-zone:hover, .photo-drop-zone.dragover {
         border-color: var(--accent); color: var(--accent); background: var(--accent-soft);
     }
+    .photo-preview-img { max-width: 100%; max-height: 150px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
+
+    /* === Empty States === */
+    .empty-state-msg { text-align: center; padding: 32px 16px; color: var(--muted-2); font-size: 0.9rem; font-style: italic; }
 
     /* === Haven Tab === */
     #tab-haven.tester-tab-content { padding: 0 !important; background: var(--bg) !important; }
@@ -270,7 +276,6 @@
             <div class="tester-tabs">
                 <div class="brand">
                     <div class="brand-logo">
-                        <!-- Minimalist Haven 'H' Logo -->
                         <svg viewBox="0 0 24 24"><path d="M7 4v16M17 4v16M7 12h10"/></svg>
                     </div>
                     <div>
@@ -335,6 +340,12 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                     Settings
                 </button>
+
+                <div class="sidebar-spacer"></div>
+                <button id="themeQuickToggle" class="tester-tab-btn" style="border-top: 1px solid var(--border-soft); border-radius: 0; margin-top: 16px;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    Toggle Theme
+                </button>
             </div> 
             
             <div id="tab-haven" class="tester-tab-content" style="display: none;">
@@ -346,7 +357,7 @@
                 <div class="admin-card">
                     <h4>📤 Upload New Photo</h4>
                     <div id="photoDropZone" class="photo-drop-zone">
-                        Drag & drop photo here<br>or click to select
+                        <span id="photoDropText">Drag & drop photo here<br>or click to select</span>
                     </div>
                     <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="display: none; margin-bottom: 16px;">
                     <label class="admin-label">Caption</label>
@@ -378,10 +389,11 @@
             </div>
 
             <div id="tab-menu" class="tester-tab-content">
-                <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save instantly to the website.</p></div>
+                <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save automatically when you click away.</p></div>
                 <div class="admin-card">
                     <div id="adminMenuContainer" class="space-y-4 text-left"></div>
-                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 24px;">Save Weekly Menu</button>
+                    <!-- Hidden save button that auto-save will trigger -->
+                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 24px; display: none;">Save Weekly Menu</button>
                 </div>
             </div>
 
@@ -585,6 +597,16 @@
 <script src="app.js"></script>
 
 <script>
+    // 0. Override native alert() to use our sleek Toast system globally
+    const nativeAlert = window.alert;
+    window.alert = function(message) {
+        if (typeof message === 'string' && message.length > 0) {
+            showToast(message);
+        } else {
+            nativeAlert(message);
+        }
+    };
+
     // 1. Take over tab switching so app.js doesn't break it
     document.addEventListener('click', function(e) {
         const tabBtn = e.target.closest('.tester-tab-btn');
@@ -606,6 +628,9 @@
             
             const tabs = document.querySelector('.tester-tabs');
             if (tabs) tabs.classList.remove('mobile-open');
+            
+            // Save last opened tab
+            localStorage.setItem('haven_active_tab', tabName);
         }
     }, true);
 
@@ -669,9 +694,19 @@
         });
     });
 
-    // 6. Drag & Drop Photo Upload Logic
+    // 6. Drag & Drop Photo Upload Logic with Thumbnail Preview
     const dropZone = document.getElementById('photoDropZone');
     const fileInput = document.getElementById('photoUploadInput');
+    
+    function handleFile(file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            dropZone.innerHTML = `<img src="${e.target.result}" class="photo-preview-img"><span style="font-size: 0.8rem; color: var(--muted);">Click to change</span>`;
+        };
+        reader.readAsDataURL(file);
+    }
+
     if (dropZone && fileInput) {
         dropZone.addEventListener('click', () => fileInput.click());
         ['dragenter', 'dragover'].forEach(eventName => {
@@ -683,13 +718,11 @@
         dropZone.addEventListener('drop', (e) => {
             if (e.dataTransfer.files.length) {
                 fileInput.files = e.dataTransfer.files;
-                dropZone.innerHTML = `📄 ${e.dataTransfer.files[0].name}<br><span style="font-size: 0.8rem; color: var(--muted);">Click to change</span>`;
+                handleFile(e.dataTransfer.files[0]);
             }
         });
         fileInput.addEventListener('change', () => {
-            if (fileInput.files.length) {
-                dropZone.innerHTML = `📄 ${fileInput.files[0].name}<br><span style="font-size: 0.8rem; color: var(--muted);">Click to change</span>`;
-            }
+            if (fileInput.files.length) handleFile(fileInput.files[0]);
         });
     }
 
@@ -697,7 +730,7 @@
     document.addEventListener('input', function(e) {
         if (e.target.id === 'enquirySearchInput') {
             const searchTerm = e.target.value.toLowerCase();
-            const enquiries = document.querySelectorAll('#adminEnquiriesContainer > div');
+            const enquiries = document.querySelectorAll('#adminEnquiriesContainer > div:not(.empty-state-msg)');
             enquiries.forEach(item => {
                 const text = item.textContent ? item.textContent.toLowerCase() : '';
                 item.style.display = text.includes(searchTerm) ? 'block' : 'none';
@@ -731,7 +764,7 @@
     enforceFullScreenLayout();
     window.addEventListener('resize', enforceFullScreenLayout);
 
-    // 10. Haven Portal Theme Switcher (Bulletproof Observer Method)
+    // 10. Haven Portal Theme Switcher (Observer Method + Quick Toggle)
     function applyHavenTheme(themeName) {
         document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
         document.body.classList.add(themeName);
@@ -747,6 +780,12 @@
         card.addEventListener('click', function() { applyHavenTheme(this.dataset.theme); });
     });
 
+    // Quick Theme Toggle Button in Sidebar
+    document.getElementById('themeQuickToggle').addEventListener('click', function() {
+        const isDark = document.body.classList.contains('staff-dark');
+        applyHavenTheme(isDark ? 'staff-light' : 'staff-dark');
+    });
+
     // Observer to prevent app.js from overriding the user's chosen theme on load
     const bodyObserver = new MutationObserver(() => {
         const savedTheme = localStorage.getItem('haven_portal_theme') || 'staff-dark';
@@ -760,6 +799,57 @@
     // Load saved theme on startup
     const initialTheme = localStorage.getItem('haven_portal_theme') || 'staff-dark';
     applyHavenTheme(initialTheme);
+
+    // 11. Restore Last Opened Tab on Page Load
+    const lastTab = localStorage.getItem('haven_active_tab');
+    if (lastTab) {
+        const btn = document.querySelector(`.tester-tab-btn[data-tab="${lastTab}"]`);
+        if (btn) btn.click(); // Simulate click to trigger tab switch logic
+    }
+
+    // 12. Friendly Empty States Observer
+    function setupEmptyStateObserver(containerId, message) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const observer = new MutationObserver(() => {
+            const realChildren = Array.from(container.children).filter(c => !c.classList.contains('empty-state-msg'));
+            let emptyMsg = container.querySelector('.empty-state-msg');
+            
+            if (realChildren.length === 0) {
+                if (!emptyMsg) {
+                    emptyMsg = document.createElement('div');
+                    emptyMsg.className = 'empty-state-msg';
+                    emptyMsg.innerHTML = message;
+                    container.appendChild(emptyMsg);
+                }
+            } else {
+                if (emptyMsg) emptyMsg.remove();
+            }
+        });
+        observer.observe(container, { childList: true });
+    }
+
+    setupEmptyStateObserver('adminEnquiriesContainer', '📭 No new enquiries! Time for a cup of tea. ☕');
+    setupEmptyStateObserver('adminEventContainer', '📅 No upcoming events scheduled.');
+    setupEmptyStateObserver('adminPhotoContainer', '🖼️ No photos uploaded yet.');
+    setupEmptyStateObserver('adminWilfBlogContainer', '📝 No blog posts yet.');
+    setupEmptyStateObserver('adminUpdateContainer', '🔔 No updates posted.');
+    setupEmptyStateObserver('adminFilmContainer', '🎬 No films in the voting list.');
+    setupEmptyStateObserver('adminCommunityContainer', '🏘️ No community spotlights yet.');
+    setupEmptyStateObserver('adminCelebContainer', '🎉 No upcoming celebrations.');
+
+    // 13. Auto-Save Weekly Menu on Blur
+    const menuContainer = document.getElementById('adminMenuContainer');
+    const saveMenuBtn = document.getElementById('saveMenuBtn');
+    if (menuContainer && saveMenuBtn) {
+        menuContainer.addEventListener('blur', (e) => {
+            if (e.target.matches('input, textarea')) {
+                showToast('Saving menu...');
+                saveMenuBtn.click(); // Programmatically click the hidden save button
+            }
+        }, true);
+    }
 </script>
 </body>
 </html>
