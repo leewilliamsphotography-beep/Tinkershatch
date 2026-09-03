@@ -218,7 +218,7 @@
     #tab-haven.tester-tab-content { padding: 0 !important; background: var(--bg) !important; }
     #tab-haven iframe { width: 100%; height: 100%; border: none; }
 
-    /* === Mobile Navigation === */
+       /* === Mobile Navigation === */
     #mobileNavToggle {
         display: none; position: absolute; top: 16px; left: 16px; z-index: 200;
         background: var(--surface); border: 1px solid var(--border); color: var(--fg);
@@ -226,20 +226,30 @@
     }
     @media (max-width: 768px) {
         #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
-            flex-direction: column !important; position: relative;
+            flex-direction: column !important;
+            position: relative;
+            height: 100%;
         }
         #mobileNavToggle { display: block; }
         .tester-tabs {
-            display: none; width: 100% !important; height: auto !important; flex-direction: column !important;
-            position: absolute; top: 0; left: 0; height: 100vh !important; z-index: 150;
+            display: none; width: 100% !important; height: 100% !important; flex-direction: column !important;
+            position: absolute; top: 0; left: 0; z-index: 150;
             box-shadow: 4px 0 15px rgba(0,0,0,0.2); padding-top: 70px !important;
         }
         .tester-tabs.mobile-open { display: flex !important; }
         .brand { display: flex; }
         .tester-tab-btn { white-space: nowrap !important; padding: 12px 16px !important; font-size: 0.9rem !important; }
-        .tester-tab-content { padding: 70px 20px 20px 20px !important; height: 100% !important; }
+        .tester-tab-content { 
+            padding: 70px 20px 20px 20px !important; 
+            height: 100%; 
+            width: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        /* Fix Haven iframe on mobile */
+        #tab-haven.tester-tab-content { padding: 60px 0 0 0 !important; }
+        #tab-haven iframe { height: calc(100% - 60px); width: 100%; }
     }
-
     /* === Toast Notifications === */
     #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
     .toast {
@@ -774,21 +784,16 @@
         });
     }
 
-    // 9. Layout Enforcement
+        // 9. Layout Enforcement (Pure CSS approach to prevent mobile bugs)
     function enforceFullScreenLayout() {
-        const modal = document.getElementById('testerModal');
-        const content = document.querySelector('.tester-content');
         const login = document.getElementById('testerLogin');
         const menu = document.getElementById('testerMenu');
-        if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
-        if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
+        // If login is visible, ensure menu is hidden
         if (login && (login.style.display === 'flex' || window.getComputedStyle(login).display === 'flex')) {
-            login.style.width = '100%'; login.style.height = '100vh'; if (menu) menu.style.display = 'none'; return; 
+            if (menu) menu.style.display = 'none';
         }
-        if (menu) { menu.style.display = 'flex'; menu.style.flexDirection = 'row'; menu.style.width = '100%'; menu.style.maxWidth = '100%'; menu.style.height = '100vh'; menu.style.maxHeight = '100vh'; }
     }
     enforceFullScreenLayout();
-    window.addEventListener('resize', enforceFullScreenLayout);
 
     // 10. Haven Portal Theme Switcher (Observer Method + Quick Toggle)
     function applyHavenTheme(themeName) {
