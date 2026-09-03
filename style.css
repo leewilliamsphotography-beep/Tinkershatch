@@ -878,31 +878,32 @@ header {
     box-shadow: none !important;
     backdrop-filter: none !important;
 }
-}
 /* === Sleek Header & Slide-Out Panel === */
 header {
     position: fixed;
-    top: 30px;
+    top: 30px; /* Sits right below the time/date bar */
     left: 0;
     right: 0;
     z-index: 50;
     padding: 0 !important;
     pointer-events: none;
-    background: color-mix(in srgb, var(--cream) 75%, transparent);
+    /* THIS LINE BRINGS THE WHITE BAR BACK */
+    background: color-mix(in srgb, var(--cream) 85%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    box-shadow: 0 4px 20px -10px rgba(0,0,0,0.1);
 }
 
 .header-inner {
-    max-width: 100%; /* Changed from 1200px to 100% to span the whole screen */
-    margin: 0; /* Removed auto centering */
-    padding: 16px 32px; /* 32px padding keeps it off the very edge but still far left */
+    max-width: 100%;
+    margin: 0;
+    padding: 16px 32px; /* Keeps the logo off the very edge of the screen */
     display: flex;
     align-items: center;
     justify-content: space-between;
     pointer-events: auto;
-}  
+}
+
 .brand-logo {
     display: flex;
     align-items: center;
@@ -910,8 +911,13 @@ header {
     text-decoration: none;
     color: var(--bark);
 }
-.brand-icon { color: var(--teal); transition: transform 0.3s ease; }
-.brand-logo:hover .brand-icon { transform: scale(1.1) rotate(-5deg); }
+.brand-icon { 
+    color: var(--teal); 
+    transition: transform 0.3s ease; 
+}
+.brand-logo:hover .brand-icon { 
+    transform: scale(1.1) rotate(-5deg); 
+}
 .brand-name {
     font-family: 'Outfit', sans-serif;
     font-weight: 800;
