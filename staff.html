@@ -71,18 +71,19 @@
     .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; }
     .tester-trigger, .ambient { display: none !important; }
 
-    /* === Login Screen === */
+        /* === Login Screen === */
     #testerLogin {
         width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
         background: radial-gradient(circle at 0% 0%, var(--accent-soft), transparent 40%), 
                     radial-gradient(circle at 100% 100%, var(--accent-soft), transparent 40%), 
                     var(--bg);
-        position: relative; overflow: hidden;
+        position: relative; 
+        overflow-y: auto; /* Allows scrolling if keyboard pushes content up */
     }
     .login-box {
-        background: var(--surface); border: 1px solid var(--border); padding: 48px;
+        background: var(--surface); border: 1px solid var(--border); padding: 40px;
         border-radius: 24px; width: 100%; max-width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        position: relative; z-index: 10;
+        position: relative; z-index: 10; margin: auto; /* Centers it perfectly when scrolling */
     }
     .login-box h3 { margin: 0 0 8px 0; font-size: 1.85rem; font-weight: 700; color: var(--fg); }
     .login-box p { margin: 0 0 32px 0; color: var(--muted); font-size: 0.95rem; }
@@ -224,11 +225,16 @@
         background: var(--surface); border: 1px solid var(--border); color: var(--fg);
         padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 600;
     }
-    @media (max-width: 768px) {
+        @media (max-width: 768px) {
+        /* Add this line at the very top of this block */
+        .login-box { padding: 32px 24px; margin: 16px; }
+        
         #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
             flex-direction: column !important;
             position: relative;
             height: 100%;
+        }
+        /* ... rest of your mobile CSS ... */
         }
         #mobileNavToggle { display: block; }
         .tester-tabs {

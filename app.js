@@ -1528,22 +1528,7 @@ setTimeout(() => {
     window.addEventListener('click', startMusic);
     window.addEventListener('touchstart', startMusic);
     window.addEventListener('touchend', startMusic);
-    window.addEventListener('keydown', startMusic);
-
-    // --- 3. BACK TO TOP BUTTON ---
-    const topBtn = document.createElement('div');
-    topBtn.innerHTML = '↑';
-    topBtn.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 9999999; background: rgba(45, 55, 72, 0.8); color: white; width: 50px; height: 50px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);';
-    document.body.appendChild(topBtn);
-
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) topBtn.style.display = 'flex';
-        else topBtn.style.display = 'none';
-    });
-    topBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
+    window.addEventListener('keydown', startMusic)
 }, 1500);
     // --- 4. LIVE WEATHER EFFECTS ---
     const weatherFx = document.getElementById('weather-fx');
