@@ -782,6 +782,7 @@ header {
     gap: 10px;
     text-decoration: none;
     color: var(--bark);
+    margin-right: auto; /* This forces the logo to the far left */
 }
 .brand-icon {
     color: var(--teal);

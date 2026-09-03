@@ -171,8 +171,8 @@
 <div id="menuBackdrop" class="menu-backdrop"></div>
 
 <div id="hamburgerMenu" class="menu-panel">
-    <button id="menuCloseBtn" class="menu-close-btn" aria-label="Close Menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+<button id="a11yToggle" style="display: none;" aria-expanded="true" aria-controls="a11yContent"></button>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
 
     <div class="menu-section">
@@ -1229,33 +1229,41 @@
         }
     });
 </script>
-// Hamburger Menu Logic
-document.addEventListener('DOMContentLoaded', () => {
-    const menuBtn = document.getElementById('menuToggle');
-    const closeBtn = document.getElementById('menuCloseBtn');
-    const panel = document.getElementById('hamburgerMenu');
-    const backdrop = document.getElementById('menuBackdrop');
+<script>
+    (function() {
+        // Wait until the DOM is fully loaded before trying to find elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.getElementById('menuToggle');
+            const closeBtn = document.getElementById('menuCloseBtn');
+            const panel = document.getElementById('hamburgerMenu');
+            const backdrop = document.getElementById('menuBackdrop');
 
-    function openMenu() {
-        panel.classList.add('open');
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden'; // Prevent background scroll
-    }
+            // Only run if the menu actually exists on this page
+            if (!menuBtn || !panel) return;
 
-    function closeMenu() {
-        panel.classList.remove('open');
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-    }
+            function openMenu() {
+                panel.classList.add('open');
+                if(backdrop) backdrop.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
 
-    if(menuBtn) menuBtn.addEventListener('click', openMenu);
-    if(closeBtn) closeBtn.addEventListener('click', closeMenu);
-    if(backdrop) backdrop.addEventListener('click', closeMenu);
-    
-    // Close menu when a link is clicked
-    document.querySelectorAll('#hamburgerMenu .quick-jump-link').forEach(link => {
-        link.addEventListener('click', closeMenu);
-    });
-});
+            function closeMenu() {
+                panel.classList.remove('open');
+                if(backdrop) backdrop.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            menuBtn.addEventListener('click', openMenu);
+            if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+            if(backdrop) backdrop.addEventListener('click', closeMenu);
+            
+            // Close menu when a link inside it is clicked
+            const menuLinks = panel.querySelectorAll('a');
+            menuLinks.forEach(function(link) {
+                link.addEventListener('click', closeMenu);
+            });
+        });} 
+    )();
+</script>
 </body>
-</html>
+</html> 
