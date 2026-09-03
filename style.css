@@ -782,7 +782,7 @@ header {
     gap: 10px;
     text-decoration: none;
     color: var(--bark);
-    margin-right: auto; /* This forces the logo to the far left */
+}
 }
 .brand-icon {
     color: var(--teal);
@@ -895,15 +895,14 @@ header {
 }
 
 .header-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px 24px;
+    max-width: 100%; /* Changed from 1200px to 100% to span the whole screen */
+    margin: 0; /* Removed auto centering */
+    padding: 16px 32px; /* 32px padding keeps it off the very edge but still far left */
     display: flex;
     align-items: center;
     justify-content: space-between;
     pointer-events: auto;
-}
-
+}  
 .brand-logo {
     display: flex;
     align-items: center;
