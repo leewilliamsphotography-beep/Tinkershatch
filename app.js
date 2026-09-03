@@ -1462,7 +1462,7 @@ setTimeout(() => {
         { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
-        { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" },
+        { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
         const seasonalTracks = [
         // --- CHRISTMAS SONGS (Play in December) ---
@@ -1470,18 +1470,9 @@ setTimeout(() => {
         { name: "Silent Night Piano", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
         
         // --- AUTUMN SONGS (Play in October & November) ---
-        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 },
-        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/halloweene1.mp3", startMonth: 10, endMonth: 10 },
-        // --- PITCH & SPEED RANDOMIZER ---
-    // 0.9715 is exactly -0.5 semitones, 1.029 is exactly +0.5 semitones
-    function applyRandomPitch(audioElement) {
-        if (!audioElement) return;
-        const min = 0.9715;
-        const max = 1.029;
-        const newRate = (Math.random() * (max - min) + min).toFixed(4);
-        audioElement.playbackRate = parseFloat(newRate);
-        console.log("Playing track at relative pitch/speed: " + newRate);
-    } 
+        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 }
+        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 10, endMonth: 10 },
+
     ];
     const currentMonth = new Date().getMonth();
     let playlist = [...regularTracks]; 
@@ -1498,16 +1489,10 @@ setTimeout(() => {
     music.volume = 0.4; 
     music.setAttribute('playsinline', ''); 
     document.body.appendChild(music);
-        // Randomize pitch every time the track ends/loops
-    audioElement.addEventListener('ended', function() {
-        applyRandomPitch(audioElement); // Set new pitch for next play
-        // If you have manual loop logic, call your play function here, e.g., playNextTrack();
-    });
 
     function loadTrack(index) {
         currentTrack = (index + playlist.length) % playlist.length; 
         music.src = playlist[currentTrack].url;
-        applyRandomPitch(audioElement);
         music.load();
     }
 
