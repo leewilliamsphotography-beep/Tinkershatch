@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Staff Portal | Tinkers Hatch</title>
+<title>Haven Portal | Tinkers Hatch</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,62 +11,61 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    /* ================= DASHBOARD DESIGN SYSTEM ================= */
+    /* ================= HAVEN PORTAL DESIGN SYSTEM ================= */
     :root {
-        /* Default Dark Theme Variables */
-        --bg: #0F1115;
-        --surface: #181B21;
-        --surface-2: #1F232B;
-        --surface-3: #262B34;
-        --border: #2D333B;
-        --border-soft: #22262E;
-        --fg: #E4E6EA;
+        /* Default: Haven Midnight */
+        --bg: #0B0E14;
+        --surface: #141821;
+        --surface-2: #1C212C;
+        --surface-3: #242B38;
+        --border: #2A303C;
+        --border-soft: #20242E;
+        --fg: #E6EAF0;
         --muted: #94A3B8;
         --muted-2: #64748B;
-        --accent: #1AA37E;
-        --accent-hover: #14856A;
-        --accent-soft: rgba(26, 163, 126, 0.1);
+        --accent: #3DDDC8;       /* Calm Haven Teal */
+        --accent-hover: #2BBFA8;
+        --accent-soft: rgba(61, 221, 200, 0.1);
         --danger: #EF4444;
-        --shadow: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
-        --radius: 12px;
-        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        --shadow: 0 10px 20px -5px rgba(0,0,0,0.4), 0 4px 8px -2px rgba(0,0,0,0.2);
+        --radius: 14px;
+        --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Light Theme */
+    /* Theme: Haven Daylight */
     body.staff-light {
-        --bg: #F8FAFC;
+        --bg: #F4F7FA;
         --surface: #FFFFFF;
-        --surface-2: #F1F5F9;
+        --surface-2: #EDF1F6;
         --surface-3: #E2E8F0;
-        --border: #E2E8F0;
+        --border: #DCE3EA;
         --border-soft: #EFF2F6;
         --fg: #0F172A;
         --muted: #64748B;
         --muted-2: #94A3B8;
-        --accent: #0F766E;
-        --accent-hover: #115E59;
-        --accent-soft: rgba(15, 118, 110, 0.08);
-        --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+        --accent: #0E8C7A;
+        --accent-hover: #0A6B5D;
+        --accent-soft: rgba(14, 140, 122, 0.08);
+        --shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.06), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
     }
 
-    /* Warm Theme */
+    /* Theme: Haven Hearth */
     body.staff-warm {
-        --bg: #FAF5EB;
-        --surface: #FFFAF0;
-        --surface-2: #F5EDE0;
+        --bg: #FBF7F0;
+        --surface: #FFFFFF;
+        --surface-2: #F5EFE3;
         --surface-3: #EBE0CD;
-        --border: #E0D2B6;
-        --border-soft: #EDE4D0;
+        --border: #E5DCC9;
+        --border-soft: #F0E9DA;
         --fg: #3B2A1E;
-        --muted: #6B4A37;
+        --muted: #7A6452;
         --muted-2: #998877;
-        --accent: #A05631;
-        --accent-hover: #7A3F2A;
-        --accent-soft: rgba(160, 86, 49, 0.1);
-        --shadow: 0 4px 6px -1px rgba(59, 42, 30, 0.05), 0 2px 4px -1px rgba(59, 42, 30, 0.03);
+        --accent: #C2683C;
+        --accent-hover: #A0522F;
+        --accent-soft: rgba(194, 104, 60, 0.1);
+        --shadow: 0 10px 20px -5px rgba(59, 42, 30, 0.06), 0 4px 8px -2px rgba(59, 42, 30, 0.03);
     }
 
-    /* FIXED: Changed 80% to 100% to prevent empty screen space */
     html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; }
     body { background: var(--bg); color: var(--fg); font-family: 'Plus Jakarta Sans', sans-serif; transition: background 0.3s, color 0.3s; }
     .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; }
@@ -75,43 +74,26 @@
     /* === Login Screen === */
     #testerLogin {
         width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-        background: radial-gradient(circle at top left, var(--accent-soft), transparent 40%), var(--bg);
+        background: radial-gradient(circle at 0% 0%, var(--accent-soft), transparent 40%), 
+                    radial-gradient(circle at 100% 100%, var(--accent-soft), transparent 40%), 
+                    var(--bg);
         position: relative; overflow: hidden;
     }
     .login-box {
-        background: var(--surface); border: 1px solid var(--border); padding: 40px;
-        border-radius: 24px; width: 100%; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        background: var(--surface); border: 1px solid var(--border); padding: 48px;
+        border-radius: 24px; width: 100%; max-width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
         position: relative; z-index: 10;
     }
-    .login-box h3 { margin: 0 0 4px 0; font-size: 1.75rem; font-weight: 700; color: var(--fg); }
+    .login-box h3 { margin: 0 0 8px 0; font-size: 1.85rem; font-weight: 700; color: var(--fg); }
     .login-box p { margin: 0 0 32px 0; color: var(--muted); font-size: 0.95rem; }
     #testerCloseBtn {
-        position: fixed; 
-        top: 24px; 
-        right: 24px; 
-        z-index: 100; 
-        width: 44px; 
-        height: 44px;
-        background: var(--surface); 
-        border: 1px solid var(--border); 
-        border-radius: 50%; 
-        color: var(--fg);
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        text-decoration: none;
-        font-size: 1.5rem; 
-        box-shadow: var(--shadow); 
-        transition: var(--transition);
-        padding: 0; 
-        line-height: 1; 
-        cursor: pointer; 
+        position: fixed; top: 24px; right: 24px; z-index: 100; width: 44px; height: 44px;
+        background: var(--surface); border: 1px solid var(--border); border-radius: 50%; color: var(--fg);
+        display: flex; align-items: center; justify-content: center; text-decoration: none;
+        font-size: 1.5rem; box-shadow: var(--shadow); transition: var(--transition);
+        padding: 0; line-height: 1; cursor: pointer; 
     }
-    #testerCloseBtn svg, #testerCloseBtn img {
-        display: block;
-        width: 20px; 
-        height: 20px; 
-    }
+    #testerCloseBtn svg, #testerCloseBtn img { display: block; width: 20px; height: 20px; }
     #testerCloseBtn:hover { background: var(--surface-2); transform: scale(1.05); }
 
     /* === Dashboard Layout === */
@@ -127,9 +109,9 @@
         gap: 4px !important; box-sizing: border-box !important; flex-shrink: 0 !important; overflow-y: auto !important;
     }
     .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 24px 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
-    .brand-logo { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; }
+    .brand-logo { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px var(--accent-soft); }
     .brand-name { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
-    .brand-sub { font-size: 0.75rem; color: var(--muted-2); letter-spacing: 1px; text-transform: uppercase; }
+    .brand-sub { font-size: 0.7rem; color: var(--muted-2); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
 
     .tester-tab-btn {
         background: transparent !important; border: 1px solid transparent !important;
@@ -164,25 +146,25 @@
     /* === Form Elements === */
     .tester-input {
         background: var(--surface-2) !important; border: 1px solid var(--border) !important; color: var(--fg) !important;
-        border-radius: 8px !important; padding: 12px 16px !important; font-size: 0.9rem !important;
+        border-radius: 10px !important; padding: 12px 16px !important; font-size: 0.9rem !important;
         font-family: inherit !important; transition: var(--transition) !important; width: 100%; box-sizing: border-box !important;
     }
     .tester-input:focus { outline: none; border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important; }
     .tester-input::placeholder { color: var(--muted-2); }
     select.tester-input { cursor: pointer; }
     textarea.tester-input { resize: vertical; min-height: 80px; font-family: inherit; }
-    label.admin-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    label.admin-label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 
     .tester-btn {
         background: var(--surface-2); color: var(--fg); border: 1px solid var(--border);
-        padding: 10px 18px; border-radius: 8px; font-family: inherit; font-size: 0.9rem; font-weight: 600;
+        padding: 10px 18px; border-radius: 10px; font-family: inherit; font-size: 0.9rem; font-weight: 600;
         cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .tester-btn:hover { background: var(--surface-3); border-color: var(--muted-2); }
+    .tester-btn:hover { background: var(--surface-3); border-color: var(--muted-2); transform: translateY(-1px); }
     .tester-btn[style*="background:var(--teal-deep)"], .tester-btn[style*="background: var(--teal-deep)"] {
-        background: var(--accent) !important; color: #fff !important; border: none !important;
+        background: var(--accent) !important; color: #0B0E14 !important; border: none !important;
     }
-    .tester-btn[style*="background:var(--teal-deep)"]:hover { background: var(--accent-hover) !important; transform: translateY(-1px); }
+    .tester-btn[style*="background:var(--teal-deep)"]:hover { background: var(--accent-hover) !important; color: #fff !important; }
     .tester-btn[style*="background:var(--terracotta)"] { background: #EF4444 !important; color: #fff !important; border: none !important; }
     .tester-btn[style*="background:var(--bark-soft)"] { background: var(--surface-3) !important; }
     .tester-btn[style*="background:var(--bark)"] { background: var(--fg) !important; color: var(--bg) !important; }
@@ -194,6 +176,18 @@
     .mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; } .mb-8 { margin-bottom: 32px; } .mb-3 { margin-bottom: 12px; }
     .max-h-60 { max-height: 240px; } .overflow-y-auto { overflow-y: auto; }
     .text-left { text-align: left; } .w-full { width: 100%; }
+
+    /* === Theme Selector Cards === */
+    .theme-card {
+        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; 
+        padding: 16px 12px; border: 2px solid var(--border); border-radius: var(--radius); 
+        cursor: pointer; transition: var(--transition); background: var(--surface-2);
+    }
+    .theme-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .theme-card.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .theme-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .theme-card span { font-size: 0.8rem; font-weight: 600; }
+
     .staff-theme-btn.active { box-shadow: 0 0 0 2px var(--accent); border-color: var(--accent) !important; }
     .tester-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
     .tester-season-btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--fg); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: var(--transition); }
@@ -213,7 +207,7 @@
     #tab-haven.tester-tab-content { padding: 0 !important; background: var(--bg) !important; }
     #tab-haven iframe { width: 100%; height: 100%; border: none; }
 
-    /* === Mobile Navigation (Hamburger Menu) === */
+    /* === Mobile Navigation === */
     #mobileNavToggle {
         display: none; position: absolute; top: 16px; left: 16px; z-index: 200;
         background: var(--surface); border: 1px solid var(--border); color: var(--fg);
@@ -221,8 +215,7 @@
     }
     @media (max-width: 768px) {
         #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
-            flex-direction: column !important;
-            position: relative;
+            flex-direction: column !important; position: relative;
         }
         #mobileNavToggle { display: block; }
         .tester-tabs {
@@ -240,28 +233,27 @@
     #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; }
     .toast {
         background: var(--surface); color: var(--fg); border: 1px solid var(--border); border-left: 4px solid var(--accent);
-        padding: 16px 24px; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        padding: 16px 24px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         opacity: 0; transform: translateX(100%); transition: all 0.3s ease;
         min-width: 250px; font-size: 0.9rem; font-weight: 500;
     }
     .toast.show { opacity: 1; transform: translateX(0); }
 </style>
 </head>
-<body>
-<div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Staff Portal">
+<body class="staff-dark">
+<div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Haven Portal">
     <div class="tester-content">
         <a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">&times;</a>
         
         <!-- LOGIN VIEW -->
         <div id="testerLogin">
             <div class="login-box">
-                <h3>Staff Portal</h3>
+                <h3>Haven Portal</h3>
                 <p>Enter your credentials to access the dashboard.</p>
-                <!-- FIXED: Added missing 16px to gap -->
                 <div style="display: flex; flex-direction: column; gap: 16px;">
                     <input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email">
                     <input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password">
-                    <button id="testerLoginBtn" class="tester-btn" style="background: var(--accent); color: #fff; padding: 14px; margin-top: 8px;">Log In</button>
+                    <button id="testerLoginBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; padding: 14px; margin-top: 8px;">Log In</button>
                     <div id="testerError" class="tester-error"></div>
                 </div>
             </div>
@@ -275,7 +267,7 @@
                     <div class="brand-logo">TH</div>
                     <div>
                         <div class="brand-name">Tinkers Hatch</div>
-                        <div class="brand-sub">Staff Portal</div>
+                        <div class="brand-sub">Haven Portal</div>
                     </div>
                 </div>
 
@@ -337,24 +329,21 @@
                 </button>
             </div> 
             
-            <!-- HAVEN TAB -->
             <div id="tab-haven" class="tester-tab-content" style="display: none;">
                 <iframe src="https://leewilliamsphotography-beep.github.io/Pulse/" title="Haven Staff Messaging"></iframe>
             </div>
 
-            <!-- PHOTOS TAB -->
             <div id="tab-photos" class="tester-tab-content active">
                 <div class="admin-header"><h3>Gallery Manager</h3><p>Upload new photos for the website gallery.</p></div>
                 <div class="admin-card">
                     <h4>📤 Upload New Photo</h4>
-                    <!-- ADDED: Drag & Drop Zone -->
                     <div id="photoDropZone" class="photo-drop-zone">
                         Drag & drop photo here<br>or click to select
                     </div>
                     <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="display: none; margin-bottom: 16px;">
                     <label class="admin-label">Caption</label>
                     <input type="text" id="photoCaptionInput" class="tester-input" placeholder="e.g., Margaret's roses" style="margin-bottom: 16px;">
-                    <button id="uploadPhotoBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Upload Photo</button>
+                    <button id="uploadPhotoBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Upload Photo</button>
                 </div>
                 <div class="admin-card">
                     <h4>Manage Existing</h4>
@@ -362,7 +351,6 @@
                 </div>
             </div>
 
-            <!-- EVENTS TAB -->
             <div id="tab-events" class="tester-tab-content">
                 <div class="admin-header"><h3>Events Manager</h3><p>Add upcoming events to the calendar.</p></div>
                 <div class="admin-card">
@@ -373,7 +361,7 @@
                     <input type="date" id="newEventDate" class="tester-input" style="margin-bottom: 16px;">
                     <label class="admin-label">Description</label>
                     <textarea id="newEventDesc" class="tester-input" placeholder="Short description..."></textarea>
-                    <button id="addEventBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Add Event</button>
+                    <button id="addEventBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Add Event</button>
                 </div>
                 <div class="admin-card">
                     <h4>Manage Events</h4>
@@ -381,28 +369,26 @@
                 </div>
             </div>
 
-            <!-- MENU TAB -->
             <div id="tab-menu" class="tester-tab-content">
                 <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save instantly to the website.</p></div>
                 <div class="admin-card">
                     <div id="adminMenuContainer" class="space-y-4 text-left"></div>
-                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 24px;">Save Weekly Menu</button>
+                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 24px;">Save Weekly Menu</button>
                 </div>
             </div>
 
-            <!-- WILF TAB -->
             <div id="tab-wilf" class="tester-tab-content">
                 <div class="admin-header"><h3>Wilf Status & Blog</h3><p>Update Wilf's status and post blog entries.</p></div>
                 <div class="admin-card">
                     <h4>Status</h4>
-                    <button id="wilfToggleBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Toggle Wilf Status</button>
+                    <button id="wilfToggleBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Toggle Wilf Status</button>
                 </div>
                 <div class="admin-card">
                     <h4>📝 New Blog Post</h4>
                     <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title" style="margin-bottom: 16px;">
                     <textarea id="newWilfBlogContent" class="tester-input" placeholder="Write Wilf's adventure here..." style="min-height: 120px; margin-bottom: 16px;"></textarea>
                     <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL" style="margin-bottom: 16px;">
-                    <button id="addWilfBlogBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Post Blog</button>
+                    <button id="addWilfBlogBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Post Blog</button>
                 </div>
                 <div class="admin-card">
                     <h4>Manage Blogs</h4>
@@ -410,26 +396,24 @@
                 </div>
             </div>
 
-            <!-- UPDATES TAB -->
             <div id="tab-updates" class="tester-tab-content">
                 <div class="admin-header"><h3>App Updates Manager</h3><p>Post updates to keep staff informed.</p></div>
                 <div class="admin-card">
                     <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title" style="margin-bottom: 16px;">
                     <textarea id="newUpdateContent" class="tester-input" placeholder="What's the new update?"></textarea>
-                    <button id="addUpdateBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Post Update</button>
+                    <button id="addUpdateBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Post Update</button>
                 </div>
                 <div class="admin-card">
                     <div id="adminUpdateContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
             </div>
 
-            <!-- FILMS TAB -->
             <div id="tab-films" class="tester-tab-content">
                 <div class="admin-header"><h3>Film Night Admin</h3><p>Add films to the voting list.</p></div>
                 <div class="admin-card">
                     <div class="flex gap-2" style="align-items: center;">
                         <input type="text" id="newFilmTitle" class="tester-input" style="flex:1;" placeholder="Enter new film...">
-                        <button id="addFilmBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Add</button>
+                        <button id="addFilmBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Add</button>
                     </div>
                 </div>
                 <div class="admin-card">
@@ -437,21 +421,19 @@
                 </div>
             </div>
 
-            <!-- COMMUNITY TAB -->
             <div id="tab-community" class="tester-tab-content">
                 <div class="admin-header"><h3>Community Spotlight Manager</h3><p>Share short stories about the community.</p></div>
                 <div class="admin-card">
                     <input type="text" id="newCommunityTitle" class="tester-input" placeholder="Title" style="margin-bottom: 16px;">
                     <input type="text" id="newCommunityImg" class="tester-input" placeholder="Image URL (optional)" style="margin-bottom: 16px;">
                     <textarea id="newCommunityDesc" class="tester-input" placeholder="Share a short story..."></textarea>
-                    <button id="addCommunityBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Post Spotlight</button>
+                    <button id="addCommunityBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Post Spotlight</button>
                 </div>
                 <div class="admin-card">
                     <div id="adminCommunityContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div>
                 </div>
             </div>
 
-            <!-- CELEBRATIONS TAB -->
             <div id="tab-celebrations" class="tester-tab-content">
                 <div class="admin-header"><h3>Add Celebration</h3><p>Add birthdays and anniversaries.</p></div>
                 <div class="admin-card">
@@ -468,7 +450,7 @@
                         </select>
                         <input type="number" id="newCelebDay" class="tester-input" min="1" max="31" placeholder="Day" style="flex:1;">
                     </div>
-                    <button id="addCelebBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Add Celebration</button>
+                    <button id="addCelebBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Add Celebration</button>
                 </div>
                 <div class="admin-card">
                     <h4>Manage Celebrations</h4>
@@ -476,7 +458,6 @@
                 </div>
             </div>
 
-            <!-- FEATURED TAB -->
             <div id="tab-featured" class="tester-tab-content">
                 <div class="admin-header"><h3>Featured Events Manager</h3><p>Add "Save the Date" banners for family events.</p></div>
                 <div class="admin-card">
@@ -494,7 +475,7 @@
                         </select>
                     </div>
                     <div class="flex gap-2">
-                        <button id="addFeaturedBtn" class="tester-btn" style="background: var(--accent); color: #fff; flex: 1;">Add Event</button>
+                        <button id="addFeaturedBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; flex: 1;">Add Event</button>
                         <button id="cancelEditFeaturedBtn" class="tester-btn" style="display: none;">Cancel</button>
                     </div>
                 </div>
@@ -504,26 +485,22 @@
                 </div>
             </div>
 
-            <!-- ENQUIRIES TAB -->
             <div id="tab-enquiries" class="tester-tab-content">
                 <div class="admin-header"><h3>Contact Form Enquiries</h3><p>Messages submitted by visitors.</p></div>
                 <div class="admin-card">
-                    <!-- ADDED: Search Input -->
                     <input type="text" id="enquirySearchInput" class="tester-input" placeholder="Search enquiries by name or message..." style="margin-bottom: 24px;">
                     <div id="adminEnquiriesContainer" class="space-y-4 text-left"></div>
                 </div>
             </div>
 
-            <!-- BRIEFING TAB -->
             <div id="tab-briefing" class="tester-tab-content">
                 <div class="admin-header"><h3>Daily Briefing</h3><p>Update the message at the top of the website.</p></div>
                 <div class="admin-card">
                     <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk.">
-                    <button id="saveBriefingBtn" class="tester-btn" style="background: var(--accent); color: #fff; margin-top: 16px;">Save Briefing</button>
+                    <button id="saveBriefingBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Save Briefing</button>
                 </div>
             </div>
 
-            <!-- STAFF TAB -->
             <div id="tab-staff" class="tester-tab-content">
                 <div class="admin-header"><h3>Staff Creation Panel</h3><p>Create a new account for a staff member.</p></div>
                 <div class="admin-card">
@@ -534,21 +511,28 @@
                         <option value="chef">Chef (Menu access)</option>
                         <option value="admin">Admin (Full access)</option>
                     </select>
-                    <button id="createStaffBtn" class="tester-btn" style="background: var(--accent); color: #fff;">Create Account</button>
+                    <button id="createStaffBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Create Account</button>
                 </div>
             </div>
 
-            <!-- CLEANED UP: Old messages tab content removed to declutter, empty div kept to prevent app.js crash -->
             <div id="tab-messages" class="tester-tab-content" style="display: none;"></div>
 
-            <!-- SETTINGS TAB -->
             <div id="tab-settings" class="tester-tab-content">
-                <div class="admin-header"><h3>Dashboard Appearance</h3><p>Choose a theme for the staff portal.</p></div>
+                <div class="admin-header"><h3>Haven Portal Appearance</h3><p>Choose a theme for your staff dashboard.</p></div>
                 <div class="admin-card">
                     <div class="flex gap-2 mb-8">
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-dark" style="flex:1; background: #1B2026; color: #fff;">Dark</button>
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-light" style="flex:1; background: #F4F2EE; color: #152630; border: 1px solid #E6E2D6;">Light</button>
-                        <button class="tester-btn staff-theme-btn" data-theme="staff-warm" style="flex:1; background: #3B2E25; color: #FAF5EB;">Warm</button>
+                        <div class="theme-card" data-theme="staff-dark">
+                            <div class="theme-swatch" style="background: #141821; border-color: #3DDDC8;"></div>
+                            <span>Haven Midnight</span>
+                        </div>
+                        <div class="theme-card" data-theme="staff-light">
+                            <div class="theme-swatch" style="background: #FFFFFF; border-color: #0E8C7A;"></div>
+                            <span>Haven Daylight</span>
+                        </div>
+                        <div class="theme-card" data-theme="staff-warm">
+                            <div class="theme-swatch" style="background: #FBF7F0; border-color: #C2683C;"></div>
+                            <span>Haven Hearth</span>
+                        </div>
                     </div>
                 </div>
 
@@ -587,12 +571,11 @@
     </div>
 </div>
 
-<!-- ADDED: Toast Notification Container -->
 <div id="toast-container"></div>
 <div id="featuredPrintArea" aria-hidden="true"></div>
 
-<!-- REMOVED: Duplicate script tag -->
 <script src="app.js"></script>
+
 <script>
     // 1. Take over tab switching so app.js doesn't break it
     document.addEventListener('click', function(e) {
@@ -677,7 +660,7 @@
         }, 3500);
     }
 
-    // 5. Seasonal Themes save to Local Storage (Updated to use Toast)
+    // 5. Seasonal Themes save to Local Storage
     document.querySelectorAll('.tester-season-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const season = this.dataset.season;
@@ -751,7 +734,7 @@
         });
     }
 
-    // 9. Cleaned up Layout enforcement: Run once on load and on resize (No more setInterval polling)
+    // 9. Cleaned up Layout enforcement
     function enforceFullScreenLayout() {
         const modal = document.getElementById('testerModal');
         const content = document.querySelector('.tester-content');
@@ -788,7 +771,6 @@
         const email = user.email;
         const namePart = email.split('@')[0];
         
-        // Format into a readable name (e.g., "john.doe" -> "John Doe", "jane-doe" -> "Jane Doe")
         let displayName = namePart.replace(/[._-]/g, ' ');
         displayName = displayName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         
@@ -797,13 +779,11 @@
         
         if (brandName) brandName.textContent = displayName;
         if (brandLogo) {
-            // Get initials (e.g., "John Doe" -> "JD")
             const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             brandLogo.textContent = initials;
         }
     }
 
-    // Listen for Supabase Auth state to update the name when logged in
     function initAuthListener() {
         if (window.sb && window.sb.auth) {
             window.sb.auth.onAuthStateChange((event, session) => {
@@ -811,16 +791,39 @@
                     updateUserBrand(session.user);
                 }
             });
-            // Also check immediately in case they are already logged in when the page loads
             window.sb.auth.getUser().then(({ data: { user } }) => {
                 if (user) updateUserBrand(user);
             });
         } else {
-            // If Supabase isn't loaded yet, wait 500ms and try again
             setTimeout(initAuthListener, 500);
         }
     }
     initAuthListener();
+
+    // 11. Haven Portal Theme Switcher
+    function applyHavenTheme(themeName) {
+        document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
+        document.body.classList.add(themeName);
+        localStorage.setItem('haven_portal_theme', themeName);
+        
+        document.querySelectorAll('.theme-card').forEach(card => {
+            if (card.dataset.theme === themeName) {
+                card.classList.add('active');
+            } else {
+                card.classList.remove('active');
+            }
+        });
+    }
+
+    document.querySelectorAll('.theme-card').forEach(card => {
+        card.addEventListener('click', function() {
+            applyHavenTheme(this.dataset.theme);
+        });
+    });
+
+    // Load saved theme on startup
+    const savedTheme = localStorage.getItem('haven_portal_theme') || 'staff-dark';
+    applyHavenTheme(savedTheme);
 </script>
 </body>
 </html>
