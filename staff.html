@@ -109,7 +109,12 @@
         gap: 4px !important; box-sizing: border-box !important; flex-shrink: 0 !important; overflow-y: auto !important;
     }
     .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 24px 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
-    .brand-logo { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 14px; box-shadow: 0 4px 12px var(--accent-soft); }
+    .brand-logo { 
+        width: 36px; height: 36px; background: var(--accent); border-radius: 10px; 
+        display: flex; align-items: center; justify-content: center; 
+        box-shadow: 0 4px 12px var(--accent-soft); 
+    }
+    .brand-logo svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
     .brand-name { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
     .brand-sub { font-size: 0.7rem; color: var(--muted-2); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
 
@@ -264,10 +269,13 @@
             <button id="mobileNavToggle">☰ Menu</button>
             <div class="tester-tabs">
                 <div class="brand">
-                    <div class="brand-logo">TH</div>
+                    <div class="brand-logo">
+                        <!-- Minimalist Haven 'H' Logo -->
+                        <svg viewBox="0 0 24 24"><path d="M7 4v16M17 4v16M7 12h10"/></svg>
+                    </div>
                     <div>
-                        <div class="brand-name">Tinkers Hatch</div>
-                        <div class="brand-sub">Haven Portal</div>
+                        <div class="brand-name">Haven Portal</div>
+                        <div class="brand-sub">Staff Dashboard</div>
                     </div>
                 </div>
 
@@ -324,7 +332,7 @@
                     Staff
                 </button>
                 <button class="tester-tab-btn" data-tab="settings">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1-2-2 2 2 0 0 1 2-2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                     Settings
                 </button>
             </div> 
@@ -521,7 +529,6 @@
                 <div class="admin-header"><h3>Haven Portal Appearance</h3><p>Choose a theme for your staff dashboard.</p></div>
                 <div class="admin-card">
                     <div class="flex gap-2 mb-8">
-                        <!-- Added staff-theme-btn class so app.js doesn't break -->
                         <div class="theme-card staff-theme-btn" data-theme="staff-dark">
                             <div class="theme-swatch" style="background: #141821; border-color: #3DDDC8;"></div>
                             <span>Haven Midnight</span>
@@ -724,59 +731,7 @@
     enforceFullScreenLayout();
     window.addEventListener('resize', enforceFullScreenLayout);
 
-    // 10. Update Branding with First Name Only (Bulletproof Observer Method)
-    function extractFirstName(text) {
-        if (!text) return 'Tinkers Hatch';
-        let base = text;
-        if (base.includes('@')) base = base.split('@')[0]; // Strip @email.com
-        const parts = base.split(/[._\-\s]/); // Split by dot, underscore, hyphen, space
-        if (parts.length > 0 && parts[0]) {
-            return parts[0].charAt(0).toUpperCase() + parts[0].slice(1).toLowerCase();
-        }
-        return base.charAt(0).toUpperCase() + base.slice(1).toLowerCase();
-    }
-
-    const brandNameEl = document.querySelector('.brand-name');
-    const brandLogoEl = document.querySelector('.brand-logo');
-
-    function updateBrandName() {
-        if (!brandNameEl) return;
-        const currentText = brandNameEl.textContent;
-        // If app.js sets it to an email or "first.last", we intercept and fix it
-        if (currentText.includes('@') || currentText.includes('.') || currentText.includes('_') || currentText.includes('-')) {
-            const firstName = extractFirstName(currentText);
-            if (brandNameEl.textContent !== firstName) {
-                brandNameEl.textContent = firstName;
-                if (brandLogoEl) brandLogoEl.textContent = firstName.substring(0, 2).toUpperCase();
-            }
-        }
-    }
-
-    // Run immediately
-    updateBrandName();
-
-    // Observe the brand name element. If app.js overwrites it, we instantly format it back to just the first name
-    if (brandNameEl) {
-        const nameObserver = new MutationObserver(() => { updateBrandName(); });
-        nameObserver.observe(brandNameEl, { childList: true, characterData: true, subtree: true });
-    }
-
-    // Also intercept login button to trigger the name update immediately
-    const loginBtn = document.getElementById('testerLoginBtn');
-    if (loginBtn) {
-        loginBtn.addEventListener('click', function() {
-            const emailInput = document.getElementById('testerEmail');
-            if (emailInput && emailInput.value) {
-                const firstName = extractFirstName(emailInput.value);
-                setTimeout(() => {
-                    if (brandNameEl) brandNameEl.textContent = firstName;
-                    if (brandLogoEl) brandLogoEl.textContent = firstName.substring(0, 2).toUpperCase();
-                }, 500);
-            }
-        });
-    }
-
-    // 11. Haven Portal Theme Switcher (Bulletproof Observer Method)
+    // 10. Haven Portal Theme Switcher (Bulletproof Observer Method)
     function applyHavenTheme(themeName) {
         document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
         document.body.classList.add(themeName);
