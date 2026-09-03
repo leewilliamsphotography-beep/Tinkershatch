@@ -607,8 +607,20 @@
 <div id="toast-container"></div>
 <div id="featuredPrintArea" aria-hidden="true"></div>
 
+<!-- BLOCK APP.JS FROM PLAYING SITE MUSIC -->
+<script>
+    // We intercept the browser's play function BEFORE app.js loads
+    const originalPlay = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function() {
+        // If the audio element is our Haven ambient track, allow it
+        if (this.id === 'havenAmbientAudio') {
+            return originalPlay.apply(this, arguments);
+        }
+        // If it's any other audio element (from app.js), silently block it
+        return Promise.resolve();
+    };
+</script>
 <script src="app.js"></script>
-
 <script>
     // 0. Override native alert() to use our sleek Toast system globally
     const nativeAlert = window.alert;
@@ -866,7 +878,7 @@
 
     // 14. Background Music Toggle Logic
     const musicToggleBtn = document.getElementById('musicToggleBtn');
-    const bgMusic = document.getElementById('havenAmbientAudio'); // Target our specific audio element
+    const bgMusic = document.getElementById('havenAmbientAudio'); // Ensure ID matches
     const musicIconPlay = document.getElementById('musicIconPlay');
     const musicIconPause = document.getElementById('musicIconPause');
     const musicToggleText = document.getElementById('musicToggleText');
@@ -874,33 +886,15 @@
     if (musicToggleBtn && bgMusic) {
         musicToggleBtn.addEventListener('click', function() {
             if (bgMusic.paused) {
-                // 1. Forcefully pause ALL other audio elements on the page (stops app.js music)
+                // Pause any other audio elements just to be safe
                 document.querySelectorAll('audio').forEach(audio => {
                     if (audio.id !== 'havenAmbientAudio') {
                         audio.pause();
-                        audio.currentTime = 0; // Rewind it too
+                        audio.currentTime = 0;
                     }
                 });
 
-                // 2. Play our ambient track
-                bgMusic.play().then(() => {
-                    musicIconPlay.style.display = 'none';
-                    musicIconPause.style.display = 'block';
-                    musicToggleText.textContent = 'Pause Ambient Music';
-                }).catch(err => {
-                    showToast('Could not play audio: Make sure ambient.mp3 exists in your folder.');
-                });
-            } else {
-                bgMusic.pause();
-                musicIconPlay.style.display = 'block';
-                musicIconPause.style.display = 'none';
-                musicToggleText.textContent = 'Play Ambient Music';
-            }
-        });
-    }
-    if (musicToggleBtn && bgMusic) {
-        musicToggleBtn.addEventListener('click', function() {
-            if (bgMusic.paused) {
+                // Play our ambient track (this will bypass our block because of the ID check)
                 bgMusic.play().then(() => {
                     musicIconPlay.style.display = 'none';
                     musicIconPause.style.display = 'block';
