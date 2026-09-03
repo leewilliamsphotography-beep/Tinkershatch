@@ -750,4 +750,130 @@ a, button, input[type="submit"], input[type="button"], .btn {
     align-items: center;
     justify-content: center;
 }
+/* === Professional Header Redesign === */
+header {
+    position: fixed;
+    top: 30px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 0 !important;
+    pointer-events: none;
+    background: color-mix(in srgb, var(--cream) 80%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+}
+
+.header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    pointer-events: auto;
+}
+
+/* Brand / Logo */
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--bark);
+    flex-shrink: 0;
+}
+.brand-icon {
+    color: var(--teal);
+}
+.brand-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+/* Header Button Bases */
+.header-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: color-mix(in srgb, var(--card) 60%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--bark-soft);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-height: 40px;
+}
+
+.header-icon-btn:hover {
+    background: var(--cream-deep);
+    color: var(--teal);
+    border-color: var(--teal);
+    transform: translateY(-1px);
+}
+
+.header-icon-btn.active {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal-deep);
+}
+
+/* Left Navigation Group */
+.header-nav-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Right Action Buttons Group */
+.header-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px;
+    background: color-mix(in srgb, var(--cream-deep) 50%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.header-nav-right .header-icon-btn {
+    background: transparent;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+/* Responsive: Hide text labels on smaller screens */
+@media (max-width: 768px) {
+    .btn-label {
+        display: none;
+    }
+    .header-icon-btn {
+        padding: 10px;
+    }
+    .brand-name {
+        display: none;
+    }
+    .header-inner {
+        padding: 12px 16px;
+        gap: 12px;
+    }
+}
+
+/* Ensure Dropdowns align nicely with new buttons */
+.a11y-content {
+    top: 55px !important;
+}
+
+/* Remove old conflicting header rules */
+.header-left, .header-right {
+    display: contents !important;
+}
 }

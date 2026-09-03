@@ -151,16 +151,26 @@
     <button class="lightbox-nav-btn lightbox-next" id="lightboxNext" aria-label="Next image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
     <div id="lightboxCounter" class="lightbox-counter">1 / 29</div>
 </div>
-
-<!-- Refined Header with forced inline spacing -->
-<header style="backdrop-filter: blur(12px); background: rgba(255,255,255,0.9); box-shadow: 0 1px 0 rgba(0,0,0,0.05);">
-    <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex items-center justify-between h-24">
+<!-- Completely Redesigned Professional Header -->
+<header>
+    <div class="header-inner">
         
-        <!-- Left side icons: forced gap of 56px -->
-        <div class="header-left" style="display: flex; align-items: center; gap: 56px;">
+        <!-- Brand / Logo -->
+        <a href="#main" class="brand-logo">
+            <svg viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="brand-icon">
+                <path d="M3 12l13-9 13 9v15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <path d="M9 22V12h6v10"></path>
+                <path d="M15 22V12h6v10"></path>
+            </svg>
+            <span class="brand-name">Tinkers Hatch</span>
+        </a>
+
+        <!-- Left Navigation Utilities -->
+        <div class="header-nav-left">
             <div class="a11y-dropdown">
-                <button id="a11yToggle" class="read-aloud-btn" aria-expanded="false" aria-controls="a11yContent" aria-label="Accessibility Options">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <button id="a11yToggle" class="header-icon-btn" aria-expanded="false" aria-controls="a11yContent" aria-label="Accessibility Options">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <span class="btn-label">Accessibility</span>
                 </button>
                 <div class="a11y-content" id="a11yContent">
                     <div class="a11y-group"><label class="a11y-label">Text Size</label><div class="a11y-btn-group"><button class="menu-btn font-btn" data-size="xs" aria-pressed="false">XS</button><button class="menu-btn font-btn" data-size="sm" aria-pressed="false">S</button><button class="menu-btn font-btn" data-size="md" aria-pressed="true">M</button><button class="menu-btn font-btn" data-size="lg" aria-pressed="false">L</button><button class="menu-btn font-btn" data-size="bold" aria-pressed="false">Bold</button></div></div>
@@ -172,8 +182,9 @@
             </div>
             
             <div class="a11y-dropdown">
-                <button id="quickJumpToggle" class="read-aloud-btn" aria-expanded="false" aria-controls="quickJumpContent" aria-label="Quick Navigation">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                <button id="quickJumpToggle" class="header-icon-btn" aria-expanded="false" aria-controls="quickJumpContent" aria-label="Quick Navigation">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    <span class="btn-label">Jump to</span>
                 </button>
                 <div class="a11y-content" id="quickJumpContent" style="width: 220px; padding: 8px;">
                     <div class="a11y-group" style="gap: 0;">
@@ -186,19 +197,21 @@
             </div>
         </div>
 
-        <a href="#main" class="hidden md:block text-2xl font-extrabold display tracking-tight" style="color: var(--bark); text-decoration: none;">Tinkers Hatch</a>
-
-        <!-- Right side buttons: forced gap of 48px -->
-        <div class="header-right" style="display: flex; align-items: center; gap: 48px;">
-            <button id="sensoryFloatBtn" class="read-aloud-btn" aria-label="Start Sensory Mode" title="Calm Mode">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity="0.5"/><circle cx="12" cy="12" r="11" opacity="0.2"/></svg>
+        <!-- Right Action Buttons -->
+        <div class="header-nav-right">
+            <button id="sensoryFloatBtn" class="header-icon-btn" aria-label="Start Sensory Mode" title="Calm Mode">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7" opacity="0.5"/><circle cx="12" cy="12" r="11" opacity="0.2"/></svg>
             </button>
-            <button id="notifBtn" class="read-aloud-btn" aria-label="Enable Push Notifications" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
-            <button id="readAloudBtn" class="read-aloud-btn" aria-label="Read page aloud" aria-pressed="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+            <button id="notifBtn" class="header-icon-btn" aria-label="Enable Push Notifications" aria-pressed="false">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </button>
+            <button id="readAloudBtn" class="header-icon-btn" aria-label="Read page aloud" aria-pressed="false">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+            </button>
         </div>
+
     </div>
 </header>
-
 <button id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top of page" title="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 <button id="nextSectionBtn" class="next-section-btn" aria-label="Go to next section" style="display:none;"></button>
 <div class="ambient" aria-hidden="true" data-parallax="-0.25" data-pt="fixed"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
