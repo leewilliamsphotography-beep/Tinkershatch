@@ -1464,7 +1464,7 @@ setTimeout(() => {
         { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
         { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
     ];
-        const seasonalTracks = [
+    const seasonalTracks = [
         // --- CHRISTMAS SONGS (Play in December) ---
         { name: "Cozy Christmas Jazz", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
         { name: "Silent Night Piano", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
@@ -1472,14 +1472,13 @@ setTimeout(() => {
         // --- AUTUMN SONGS (Play in October & November) ---
         { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 },
         { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 10, endMonth: 10 },
-
     ];
+
     const currentMonth = new Date().getMonth();
     let playlist = [...regularTracks]; 
     seasonalTracks.forEach(track => {
         if (currentMonth >= track.startMonth && currentMonth <= track.endMonth) {
             playlist.push(track); 
-            
         }
     });
     let currentTrack = Math.floor(Math.random() * playlist.length);
@@ -1490,6 +1489,15 @@ setTimeout(() => {
     music.setAttribute('playsinline', ''); 
     document.body.appendChild(music);
 
+    // --- PITCH & SPEED RANDOMIZER ---
+    // 0.9715 is exactly -0.5 semitones, 1.0293 is exactly +0.5 semitones
+    function applyRandomPitch() {
+        const minPitch = 0.9715;
+        const maxPitch = 1.0293;
+        music.playbackRate = (Math.random() * (maxPitch - minPitch) + minPitch);
+        console.log("Music playing at relative pitch: " + music.playbackRate);
+    }
+
     function loadTrack(index) {
         currentTrack = (index + playlist.length) % playlist.length; 
         music.src = playlist[currentTrack].url;
@@ -1498,6 +1506,7 @@ setTimeout(() => {
 
     music.addEventListener('ended', () => {
         loadTrack(currentTrack + 1);
+        applyRandomPitch(); // Apply new pitch before playing next track
         music.play().catch(e => console.log("Auto-advance blocked:", e));
     });
 
@@ -1506,6 +1515,7 @@ setTimeout(() => {
         if (hasStarted) return;
         hasStarted = true;
         loadTrack(currentTrack); 
+        applyRandomPitch(); // Apply pitch on the very first play
         music.play().then(() => {
             window.removeEventListener('click', startMusic);
             window.removeEventListener('touchstart', startMusic);
