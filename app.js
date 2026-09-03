@@ -1453,39 +1453,7 @@ document.addEventListener('DOMContentLoaded', () =>{
       function init() { initReveal(); }
       return { init };
     })();
-// === OPEN/CLOSED INDICATOR ===
-setTimeout(() => {
-    const statusDiv = document.createElement('div');
-    const now = new Date();
-    const hour = now.getHours();
-    const isOpen = hour >= 9 && hour < 17; 
 
-    if(isOpen) {
-        statusDiv.innerHTML = '🟢 We are Open';
-        statusDiv.style.backgroundColor = 'rgba(37, 211, 102, 0.6)';
-    } else {
-        statusDiv.innerHTML = '🔴 We are Closed';
-        statusDiv.style.backgroundColor = 'rgba(235, 87, 87, 0.6)';
-    }
-
-    // Applying styles individually to prevent line-break errors
-    statusDiv.style.position = 'fixed';
-    statusDiv.style.bottom = '80px';
-    statusDiv.style.right = '20px';
-    statusDiv.style.zIndex = '9999999';
-    statusDiv.style.color = 'white';
-    statusDiv.style.padding = '8px 16px';
-    statusDiv.style.borderRadius = '50px';
-    statusDiv.style.fontSize = '14px';
-    statusDiv.style.fontWeight = 'bold';
-    statusDiv.style.boxShadow = '0 4px 10px rgba(0,0,0,0.05)';
-    statusDiv.style.backdropFilter = 'blur(12px)';
-    statusDiv.style.webkitBackdropFilter = 'blur(12px)';
-    statusDiv.style.border = '1px solid rgba(255, 255, 255, 0.4)';
-    
-    document.body.appendChild(statusDiv);
-}, 1500);
-// === END OPEN/CLOSED INDICATOR ===
 // === TINKERSHATCH CUSTOM FEATURES ===
 setTimeout(() => {
     // --- 1. INVISIBLE SEASONAL BACKGROUND MUSIC ---
