@@ -28,4 +28,16 @@
       "purpose": "maskable"
     }
   ]
+
+,
+  "name": "Haven Word Search",
+  "short_name": "Haven",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#6366f1",
+  "description": "A calm, accessible word search puzzle with daily challenges.",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
 }
