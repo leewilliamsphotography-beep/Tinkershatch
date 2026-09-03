@@ -1545,6 +1545,76 @@ setTimeout(() => {
     });
 
 }, 1500);
+    // --- 4. LIVE WEATHER EFFECTS ---
+    const weatherFx = document.getElementById('weather-fx');
+    let currentWeatherCondition = '';
+
+    function spawnWeatherEffect(type, count) {
+        weatherFx.innerHTML = ''; // Clear old effects
+        for (let i = 0; i < count; i++) {
+            const el = document.createElement('div');
+            el.className = `weather-el ${type}`;
+            
+            // Randomize positions and speeds for a natural look
+            if (type === 'rain') {
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+                el.style.opacity = Math.random() * 0.4 + 0.3;
+            } else if (type === 'snow') {
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                el.style.opacity = Math.random() * 0.6 + 0.4;
+                const size = Math.random() * 4 + 2;
+                el.style.width = size + 'px';
+                el.style.height = size + 'px';
+            } else if (type === 'fog') {
+                el.style.top = Math.random() * 100 + 'vh';
+                el.style.animationDuration = (Math.random() * 20 + 20) + 's';
+                el.style.animationDelay = Math.random() * -20 + 's';
+            } else if (type === 'sunbeam') {
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.animationDuration = (Math.random() * 8 + 8) + 's';
+                el.style.animationDelay = Math.random() * -8 + 's';
+            }
+            weatherFx.appendChild(el);
+        }
+    }
+
+    async function updateWeatherFX() {
+        try {
+            // Open-Meteo API for East Sussex (TN21 0LX approx: 50.96 lat, 0.21 lon)
+            const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.96&longitude=0.21&current=weather_code');
+            const data = await res.json();
+            const code = data.current.weather_code;
+            
+            let newCondition = 'clear';
+            if (code === 0) newCondition = 'clear';
+            else if (code >= 1 && code <= 3) newCondition = 'cloudy';
+            else if (code >= 45 && code <= 48) newCondition = 'fog';
+            else if (code >= 51 && code <= 67) newCondition = 'rain';
+            else if (code >= 71 && code <= 77) newCondition = 'snow';
+            else if (code >= 80 && code <= 82) newCondition = 'rain';
+            else if (code >= 85 && code <= 86) newCondition = 'snow';
+            
+            // Only update the DOM if the weather actually changed
+            if (newCondition !== currentWeatherCondition) {
+                currentWeatherCondition = newCondition;
+                console.log("Weather updated to:", newCondition);
+                
+                if (newCondition === 'rain') spawnWeatherEffect('rain', 80);
+                else if (newCondition === 'snow') spawnWeatherEffect('snow', 50);
+                else if (newCondition === 'fog') spawnWeatherEffect('fog', 10);
+                else if (newCondition === 'clear') spawnWeatherEffect('sunbeam', 15);
+                else if (newCondition === 'cloudy') spawnWeatherEffect('fog', 4); // Light haze for cloudy
+            }
+        } catch (e) {
+            console.log("Weather FX offline or blocked.");
+        }
+    }
+
+    // Run immediately, then check every 30 minutes
+    updateWeatherFX();
+    setInterval(updateWeatherFX, 1800000);
 // === END CUSTOM FEATURES ===
     
         PolishModule.init();

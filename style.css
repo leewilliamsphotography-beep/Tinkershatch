@@ -1075,3 +1075,73 @@ header {
     width: auto !important; 
     height: auto !important; 
 }
+/* === Live Weather Effects === */
+.weather-fx {
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* Keeps it behind the content but above the solid background */
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* Rain Effect */
+.weather-el.rain {
+    position: absolute;
+    top: -10%;
+    background: rgba(174, 194, 224, 0.5);
+    width: 1.5px;
+    height: 60px;
+    animation: rainfall linear infinite;
+}
+@keyframes rainfall {
+    0% { transform: translateY(0) translateX(0); }
+    100% { transform: translateY(120vh) translateX(-20px); }
+}
+
+/* Snow Effect */
+.weather-el.snow {
+    position: absolute;
+    top: -5%;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+    box-shadow: 0 0 5px rgba(255,255,255,0.8);
+    animation: snowfall linear infinite;
+}
+@keyframes snowfall {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); }
+    100% { transform: translateY(110vh) translateX(40px) rotate(360deg); }
+}
+
+/* Fog Effect */
+.weather-el.fog {
+    position: absolute;
+    left: -50%;
+    width: 200%;
+    height: 150px;
+    background: radial-gradient(ellipse at center, rgba(200, 210, 220, 0.4) 0%, transparent 70%);
+    animation: fogdrift linear infinite;
+}
+@keyframes fogdrift {
+    0% { transform: translateX(-100%) translateY(0); }
+    100% { transform: translateX(100%) translateY(0); }
+}
+
+/* Sunbeams Effect */
+.weather-el.sunbeam {
+    position: absolute;
+    bottom: -20%;
+    background: rgba(255, 215, 0, 0.15);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    filter: blur(40px);
+    animation: sunray linear infinite;
+}
+@keyframes sunray {
+    0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+    20% { opacity: 0.6; }
+    80% { opacity: 0.6; }
+    100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
+}
