@@ -596,7 +596,6 @@
                 activeTab.style.display = 'block';
             }
             
-            // Close mobile menu on tab select
             const tabs = document.querySelector('.tester-tabs');
             if (tabs) tabs.classList.remove('mobile-open');
         }
@@ -608,31 +607,34 @@
         if (logoutBtn) {
             e.preventDefault();
             e.stopPropagation();
+            
+            // Attempt to clear Supabase session from localStorage directly just in case app.js fails
             try {
-                if (window.sb) {
-                    await window.sb.auth.signOut();
-                }
-            } catch (err) {
-                console.error("Logout error:", err);
-            } finally {
-                const menu = document.getElementById('testerMenu');
-                const login = document.getElementById('testerLogin');
-                if (menu) menu.style.display = 'none';
-                if (login) {
-                    login.style.display = 'flex';
-                    login.style.opacity = '1';
-                    login.style.visibility = 'visible';
-                }
-                // Reset the brand name on logout
-                const brandName = document.querySelector('.brand-name');
-                const brandLogo = document.querySelector('.brand-logo');
-                if (brandName) brandName.textContent = 'Tinkers Hatch';
-                if (brandLogo) brandLogo.textContent = 'TH';
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+            } catch (err) {}
+
+            const menu = document.getElementById('testerMenu');
+            const login = document.getElementById('testerLogin');
+            if (menu) menu.style.display = 'none';
+            if (login) {
+                login.style.display = 'flex';
+                login.style.opacity = '1';
+                login.style.visibility = 'visible';
             }
+            
+            // Reset the brand name on logout
+            const brandName = document.querySelector('.brand-name');
+            const brandLogo = document.querySelector('.brand-logo');
+            if (brandName) brandName.textContent = 'Tinkers Hatch';
+            if (brandLogo) brandLogo.textContent = 'TH';
         }
     }, true);
 
-    // 3. Intercept Delete Buttons for Confirmation (Safety check)
+    // 3. Intercept Delete Buttons for Confirmation
     document.addEventListener('click', function(e) {
         const target = e.target.closest('button');
         if (target && (target.innerText.toLowerCase().includes('delete') || (target.getAttribute('onclick') && target.getAttribute('onclick').toLowerCase().includes('delete')))) {
@@ -653,7 +655,6 @@
         container.appendChild(toast);
         
         setTimeout(() => toast.classList.add('show'), 10);
-        
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
@@ -764,13 +765,11 @@
     enforceFullScreenLayout();
     window.addEventListener('resize', enforceFullScreenLayout);
 
-    // 10. Update Branding with Logged-In User's Name
-    function updateUserBrand(user) {
-        if (!user || !user.email) return;
+    // 10. Update Branding with Logged-In User's Name (Foolproof method)
+    function updateUserBrand(email) {
+        if (!email) return;
         
-        const email = user.email;
         const namePart = email.split('@')[0];
-        
         let displayName = namePart.replace(/[._-]/g, ' ');
         displayName = displayName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
         
@@ -784,21 +783,68 @@
         }
     }
 
-    function initAuthListener() {
-        if (window.sb && window.sb.auth) {
-            window.sb.auth.onAuthStateChange((event, session) => {
-                if (session && session.user) {
-                    updateUserBrand(session.user);
-                }
-            });
-            window.sb.auth.getUser().then(({ data: { user } }) => {
-                if (user) updateUserBrand(user);
-            });
-        } else {
-            setTimeout(initAuthListener, 500);
+    // Function to try and extract email from Supabase localStorage
+    function getEmailFromStorage() {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+                try {
+                    const sessionStr = localStorage.getItem(key);
+                    if (!sessionStr) continue;
+                    const session = JSON.parse(sessionStr);
+                    if (session && session.user && session.user.email) {
+                        return session.user.email;
+                    }
+                } catch (e) {}
+            }
         }
+        return null;
     }
-    initAuthListener();
+
+    // 1. Try to load on page load (handles page refreshes)
+    const savedEmail = getEmailFromStorage();
+    if (savedEmail) updateUserBrand(savedEmail);
+
+    // 2. Intercept login button click (handles fresh logins)
+    const loginBtn = document.getElementById('testerLoginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', function() {
+            // Grab the email immediately before app.js potentially clears the input
+            const emailInput = document.getElementById('testerEmail');
+            const enteredEmail = emailInput ? emailInput.value : null;
+            
+            // Wait a second for app.js to process the login and show the dashboard
+            setTimeout(() => {
+                if (enteredEmail) {
+                    updateUserBrand(enteredEmail);
+                } else {
+                    // Fallback: check localStorage again in case app.js saved it
+                    const storedEmail = getEmailFromStorage();
+                    if (storedEmail) updateUserBrand(storedEmail);
+                }
+            }, 1000); 
+        });
+    }
+
+    // 3. Watch for menu visibility (Fallback safety net)
+    const observer = new MutationObserver(() => {
+        const menu = document.getElementById('testerMenu');
+        if (menu && (menu.style.display === 'flex' || menu.style.display === 'block')) {
+            const storedEmail = getEmailFromStorage();
+            if (storedEmail) updateUserBrand(storedEmail);
+        } else if (menu && menu.style.display === 'none') {
+            // Reset branding if logged out
+            const brandName = document.querySelector('.brand-name');
+            const brandLogo = document.querySelector('.brand-logo');
+            if (brandName) brandName.textContent = 'Tinkers Hatch';
+            if (brandLogo) brandLogo.textContent = 'TH';
+        }
+    });
+
+    const targetNode = document.getElementById('testerMenu');
+    if (targetNode) {
+        observer.observe(targetNode, { attributes: true, attributeFilter: ['style', 'class'] });
+    }
 
     // 11. Haven Portal Theme Switcher
     function applyHavenTheme(themeName) {
