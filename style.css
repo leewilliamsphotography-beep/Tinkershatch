@@ -878,3 +878,194 @@ header {
     backdrop-filter: none !important;
 }
 }
+/* === Sleek Header & Slide-Out Panel === */
+header {
+    position: fixed;
+    top: 30px;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 0 !important;
+    pointer-events: none;
+    background: color-mix(in srgb, var(--cream) 75%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+.header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: auto;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--bark);
+}
+.brand-icon { color: var(--teal); transition: transform 0.3s ease; }
+.brand-logo:hover .brand-icon { transform: scale(1.1) rotate(-5deg); }
+.brand-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+}
+
+.top-nav-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--bark-soft);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
+}
+.top-nav-btn:hover {
+    background: color-mix(in srgb, var(--card) 80%, transparent);
+    color: var(--teal);
+    border-color: var(--border);
+}
+.top-nav-btn.active {
+    background: var(--teal);
+    color: #fff;
+    border-color: var(--teal-deep);
+}
+
+/* === Panel Backdrop === */
+.menu-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.menu-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* === Slide-Out Panel === */
+.menu-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 380px;
+    max-width: 85vw;
+    background: color-mix(in srgb, var(--cream) 92%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+    z-index: 100;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow-y: auto;
+    padding: 80px 32px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.menu-panel.open {
+    transform: translateX(0);
+}
+
+.menu-close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: transparent;
+    border: none;
+    color: var(--bark-soft);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.menu-close-btn:hover { background: var(--cream-deep); color: var(--terracotta); }
+
+.menu-heading {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--bark-soft);
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+/* Quick Jump Links in Panel */
+.menu-panel .quick-jump-link {
+    display: block;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background: var(--cream-deep);
+    color: var(--bark);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.menu-panel .quick-jump-link:hover {
+    background: var(--teal);
+    color: #fff;
+    transform: translateX(-4px);
+}
+
+/* Force Accessibility Settings to be static inside the panel */
+.menu-panel .a11y-content {
+    position: static !important;
+    display: flex !important;
+    opacity: 1 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    gap: 16px !important;
+}
+
+/* Action Buttons in Panel */
+.menu-actions {
+    display: flex;
+    gap: 12px;
+}
+.menu-actions .top-nav-btn {
+    flex: 1;
+    height: 52px;
+    background: var(--cream-deep);
+    border: 1px solid var(--border);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 640px) {
+    .brand-name { display: none; }
+    .header-inner { padding: 12px 16px; }
+}
+
+/* Clean up old conflicting CSS */
+.header-left, .header-right, .header-nav, .header-divider { display: none !important; }
+.read-aloud-btn { 
+    display: flex !important; 
+    background: transparent !important; 
+    border: none !important; 
+    box-shadow: none !important; 
+    backdrop-filter: none !important; 
+    width: auto !important; 
+    height: auto !important; 
+}
