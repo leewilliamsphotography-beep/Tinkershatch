@@ -342,7 +342,21 @@
                 </button>
 
                 <div class="sidebar-spacer"></div>
-                <button id="themeQuickToggle" class="tester-tab-btn" style="border-top: 1px solid var(--border-soft); border-radius: 0; margin-top: 16px;">
+                
+                <!-- Music Toggle Button -->
+                <button id="musicToggleBtn" class="tester-tab-btn" style="border-top: 1px solid var(--border-soft); border-radius: 0; margin-bottom: 8px;">
+                    <svg id="musicIconPlay" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                    <svg id="musicIconPause" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                    <span id="musicToggleText">Play Ambient Music</span>
+                </button>
+                
+                <!-- Hidden Audio Element -->
+                <audio id="bgMusic" loop>
+                    <!-- MAKE SURE YOU HAVE A FILE NAMED ambient.mp3 IN YOUR FOLDER -->
+                    <source src="ambient.mp3" type="audio/mpeg">
+                </audio>
+
+                <button id="themeQuickToggle" class="tester-tab-btn" style="border-radius: 0;">
                     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     Toggle Theme
                 </button>
@@ -392,7 +406,6 @@
                 <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save automatically when you click away.</p></div>
                 <div class="admin-card">
                     <div id="adminMenuContainer" class="space-y-4 text-left"></div>
-                    <!-- Hidden save button that auto-save will trigger -->
                     <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 24px; display: none;">Save Weekly Menu</button>
                 </div>
             </div>
@@ -846,9 +859,35 @@
         menuContainer.addEventListener('blur', (e) => {
             if (e.target.matches('input, textarea')) {
                 showToast('Saving menu...');
-                saveMenuBtn.click(); // Programmatically click the hidden save button
+                saveMenuBtn.click();
             }
         }, true);
+    }
+
+    // 14. Background Music Toggle Logic
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    const musicIconPlay = document.getElementById('musicIconPlay');
+    const musicIconPause = document.getElementById('musicIconPause');
+    const musicToggleText = document.getElementById('musicToggleText');
+
+    if (musicToggleBtn && bgMusic) {
+        musicToggleBtn.addEventListener('click', function() {
+            if (bgMusic.paused) {
+                bgMusic.play().then(() => {
+                    musicIconPlay.style.display = 'none';
+                    musicIconPause.style.display = 'block';
+                    musicToggleText.textContent = 'Pause Ambient Music';
+                }).catch(err => {
+                    showToast('Could not play audio: Make sure ambient.mp3 exists in your folder.');
+                });
+            } else {
+                bgMusic.pause();
+                musicIconPlay.style.display = 'block';
+                musicIconPause.style.display = 'none';
+                musicToggleText.textContent = 'Play Ambient Music';
+            }
+        });
     }
 </script>
 </body>
