@@ -1242,3 +1242,27 @@ body, main, section {
     max-width: 100vw;
     overflow-x: hidden;
 }
+/* === FIX: Seasonal & Weather Effects Visibility === */
+/* Brings the effects to the front so they are visible over the content */
+#seasonal-bg, 
+#weather-fx {
+    z-index: 45 !important; /* Sits above content, but below the menu (z-index 90) */
+    pointer-events: none !important; /* Ensures you can still click through the particles */
+}
+
+/* === FIX: Mobile Clock Fit === */
+@media (max-width: 768px) {
+    #time-date-bar {
+        padding: 0 10px !important; /* Reduce padding to give the text more room */
+        justify-content: center !important;
+        height: 32px !important; /* Slightly taller to prevent text clipping */
+    }
+    #liveTimeDate {
+        font-size: 0.72rem !important; /* Smaller font size for small screens */
+        white-space: nowrap !important; /* Forces the time/date to stay on one single line */
+        overflow: hidden !important;
+        text-overflow: ellipsis !important; /* Adds ... if it ever gets too long */
+        max-width: 95vw !important;
+        text-align: center !important;
+    }
+}
