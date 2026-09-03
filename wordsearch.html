@@ -3,24 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tinker's Word Search</title>
+<meta name="description" content="Haven Word Search — a calm, accessible word search puzzle with generative background music.">
+<title>Haven Word Search</title>
+<script>
+  /* Set theme before first paint to avoid a flash of the wrong theme */
+  try {
+    var t = localStorage.getItem('haven-theme');
+    if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = t;
+  } catch (e) { document.documentElement.dataset.theme = 'light'; }
+</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
+    color-scheme: light;
     --bg: #f8fafc;
     --surface: #ffffff;
     --text: #0f172a;
     --text-muted: #64748b;
     --border: #e2e8f0;
+    --well: #f1f5f9;
     --primary: #6366f1;
-    --primary-hover: #4f46e5;
+    --primary-solid: #6366f1;
+    --primary-solid-hover: #4f46e5;
     --primary-light: #eef2ff;
     --accent: #ec4899;
     --success: #10b981;
     --danger: #ef4444;
+    --focus: #4f46e5;
+    --header-bg: rgba(255,255,255,0.8);
+    --overlay: rgba(15,23,42,0.6);
+    --toast-bg: #0f172a;
+    --toast-fg: #ffffff;
+    --glow-a: rgba(99,102,241,0.05);
+    --glow-b: rgba(236,72,153,0.05);
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0b1220;
+    --surface: #131c30;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: #27334d;
+    --well: #1b2540;
+    --primary: #818cf8;
+    --primary-solid: #4f46e5;
+    --primary-solid-hover: #6366f1;
+    --primary-light: rgba(129,140,248,0.16);
+    --accent: #f472b6;
+    --success: #34d399;
+    --danger: #f87171;
+    --focus: #a5b4fc;
+    --header-bg: rgba(11,18,32,0.8);
+    --overlay: rgba(2,6,23,0.7);
+    --toast-bg: #f1f5f9;
+    --toast-fg: #0f172a;
+    --glow-a: rgba(99,102,241,0.10);
+    --glow-b: rgba(236,72,153,0.08);
   }
 
   * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
@@ -30,15 +73,16 @@
     background: var(--bg);
     color: var(--text);
     font-family: 'Inter', system-ui, sans-serif;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
-      radial-gradient(at 98% 1%, rgba(236, 72, 153, 0.05) 0px, transparent 50%);
+    background-image:
+      radial-gradient(at 0% 0%, var(--glow-a) 0px, transparent 50%),
+      radial-gradient(at 98% 1%, var(--glow-b) 0px, transparent 50%);
+    background-attachment: fixed;
     min-height: 100vh;
   }
+  body.modal-open { overflow: hidden; }
 
   .font-display { font-family: 'Space Grotesk', sans-serif; }
 
-  /* Modern Cards */
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -46,14 +90,15 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
   }
 
-  /* Grid cells */
   .grid-table {
     display: grid;
     gap: 4px;
+    width: min(560px, 100%);
     user-select: none;
     -webkit-user-select: none;
     touch-action: none;
   }
+  .grid-row { display: contents; }
 
   .cell {
     aspect-ratio: 1;
@@ -73,38 +118,30 @@
     padding: 0;
     line-height: 1;
   }
-
-  .cell:hover:not(.found) {
+  .cell:hover:not(.found):not(.selected) {
     background: var(--primary-light);
     color: var(--primary);
     border-color: var(--primary);
   }
-
   .cell.selected {
-    background: var(--primary) !important;
+    background: var(--primary-solid) !important;
     color: #ffffff !important;
-    border-color: var(--primary-hover);
+    border-color: var(--primary-solid-hover);
     transform: scale(1.05);
     z-index: 2;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
-
   .cell.found {
     background: var(--found-color, rgba(16, 185, 129, 0.15));
     color: var(--text);
     border-color: var(--found-border, var(--success));
   }
-
-  .cell.hint-flash {
-    animation: hintPulse 1.2s ease;
-  }
-
+  .cell.hint-flash { animation: hintPulse 1.2s ease; }
   @keyframes hintPulse {
     0%, 100% { background: var(--bg); transform: scale(1); }
     50% { background: var(--accent); color: #fff; transform: scale(1.15); box-shadow: 0 0 15px rgba(236, 72, 153, 0.5); }
   }
 
-  /* Buttons */
   .btn {
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -117,20 +154,18 @@
     white-space: nowrap;
     border: none;
   }
-
   .btn-primary {
-    background: var(--primary);
+    background: var(--primary-solid);
     color: #ffffff;
     padding: 0.6rem 1.2rem;
     box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
   }
   .btn-primary:hover {
-    background: var(--primary-hover);
+    background: var(--primary-solid-hover);
     transform: translateY(-1px);
     box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
   }
   .btn-primary:active { transform: translateY(0); }
-
   .btn-ghost {
     background: var(--surface);
     color: var(--text);
@@ -138,15 +173,10 @@
     border: 1px solid var(--border);
   }
   .btn-ghost:hover { background: var(--bg); border-color: var(--text-muted); }
-
-  .btn-home {
-    background: transparent;
-    color: var(--text-muted);
-    padding: 0.6rem 1rem;
-  }
+  .btn-home { background: transparent; color: var(--text-muted); padding: 0.6rem 1rem; }
   .btn-home:hover { color: var(--text); background: var(--bg); }
+  #musicBtn[aria-pressed="true"] { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
 
-  /* Pills & Chips */
   .pill {
     padding: 0.4rem 0.9rem;
     border-radius: 999px;
@@ -157,13 +187,10 @@
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text-muted);
+    font-family: 'Inter', sans-serif;
   }
   .pill:hover { border-color: var(--primary); color: var(--primary); }
-  .pill.active {
-    background: var(--primary);
-    color: #ffffff;
-    border-color: var(--primary);
-  }
+  .pill.active { background: var(--primary-solid); color: #ffffff; border-color: var(--primary-solid); }
 
   .chip {
     display: inline-flex;
@@ -178,13 +205,13 @@
     cursor: pointer;
     transition: all 0.2s ease;
     color: var(--text);
+    font-family: 'Inter', sans-serif;
   }
   .chip .dot { width: 10px; height: 10px; border-radius: 50%; }
-  .chip.active { background: #ffffff; border-color: var(--text); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+  .chip.active { background: var(--surface); border-color: var(--text); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
   .chip:not(.active) { opacity: 0.5; }
   .chip:not(.active):hover { opacity: 0.8; }
 
-  /* Word List */
   .word-item {
     display: flex;
     align-items: center;
@@ -207,10 +234,7 @@
     align-items: center;
     justify-content: center;
   }
-  .word-item.found {
-    color: var(--text-muted);
-    background: var(--bg);
-  }
+  .word-item.found { color: var(--text-muted); background: var(--bg); }
   .word-item.found .check {
     background: var(--word-color, var(--success));
     border-color: var(--word-color, var(--success));
@@ -246,27 +270,24 @@
   }
   .cat-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  /* Stats */
   .stat-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
   .stat-value { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.75rem; color: var(--text); line-height: 1.1; }
 
-  /* Focus */
-  .cell:focus-visible, button:focus-visible, [tabindex]:focus-visible {
-    outline: 2px solid var(--primary);
+  .cell:focus-visible, button:focus-visible, [tabindex]:focus-visible, a:focus-visible, summary:focus-visible {
+    outline: 2px solid var(--focus);
     outline-offset: 2px;
   }
   .skip-link {
     position: absolute; top: -100px; left: 1rem;
-    background: var(--primary); color: #fff; padding: 0.6rem 1.2rem;
+    background: var(--primary-solid); color: #fff; padding: 0.6rem 1.2rem;
     border-radius: 8px; z-index: 100; font-weight: 500; transition: top 0.2s;
   }
   .skip-link:focus { top: 1rem; }
 
-  /* Toast */
   .toast {
     position: fixed; bottom: 2rem; left: 50%;
     transform: translateX(-50%) translateY(120px);
-    background: var(--text); color: #fff;
+    background: var(--toast-bg); color: var(--toast-fg);
     padding: 0.8rem 1.5rem; border-radius: 999px; font-weight: 500;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -275,9 +296,8 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
   .toast .toast-mark { width: 8px; height: 8px; border-radius: 50%; background: var(--success); }
 
-  /* Modal */
   .modal-backdrop {
-    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+    position: fixed; inset: 0; background: var(--overlay);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     z-index: 150; display: flex; align-items: center; justify-content: center;
     padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.3s;
@@ -292,11 +312,8 @@
   }
   .modal-backdrop.show .modal { transform: scale(1); }
 
-  .confetti {
-    position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 160; opacity: 0;
-  }
+  .confetti { position: fixed; width: 10px; height: 10px; pointer-events: none; z-index: 160; opacity: 0; }
 
-  /* Accordion */
   details.howto { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.25rem; }
   details.howto summary {
     cursor: pointer; font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.1rem;
@@ -312,6 +329,20 @@
 
   .grid-table.selecting .cell { cursor: grabbing; }
   kbd { background: var(--bg); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); font-family: 'Space Grotesk', monospace; font-size: 0.85em; }
+
+  /* Remap hardcoded Tailwind utilities in dark theme */
+  [data-theme="dark"] .text-slate-900 { color: #f1f5f9; }
+  [data-theme="dark"] .text-slate-600 { color: #cbd5e1; }
+  [data-theme="dark"] .text-slate-500 { color: var(--text-muted); }
+  [data-theme="dark"] .text-slate-400 { color: #8ea0b8; }
+  [data-theme="dark"] .text-slate-300 { color: #64748b; }
+  [data-theme="dark"] .text-indigo-500 { color: var(--primary); }
+  [data-theme="dark"] .bg-white\/80 { background: var(--header-bg); }
+  [data-theme="dark"] .bg-slate-50,
+  [data-theme="dark"] .bg-slate-100 { background: var(--well); }
+  [data-theme="dark"] .bg-indigo-500 { background: var(--primary-solid); }
+  [data-theme="dark"] .border-slate-200,
+  [data-theme="dark"] .border-slate-100 { border-color: var(--border); }
 </style>
 </head>
 <body>
@@ -319,15 +350,15 @@
 <a href="#puzzle" class="skip-link">Skip to puzzle</a>
 
 <div id="toast" class="toast" role="status" aria-live="polite">
-  <span class="toast-mark"></span>
+  <span class="toast-mark" aria-hidden="true"></span>
   <span id="toastText">Found!</span>
 </div>
 
-<div id="winModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+<div id="winModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="winTitle" aria-describedby="winDesc">
   <div class="modal">
     <div class="font-display text-sm tracking-widest uppercase text-indigo-500 font-bold">Puzzle Complete</div>
     <h2 id="winTitle" class="font-display text-4xl font-bold mt-2 mb-2 text-slate-900">Well done!</h2>
-    <p class="text-sm mb-8 text-slate-500">You've found every word. Ready for another round?</p>
+    <p id="winDesc" class="text-sm mb-8 text-slate-500">You've found every word. Ready for another round?</p>
     <div class="grid grid-cols-2 gap-4 mb-8">
       <div class="bg-slate-50 rounded-xl p-4">
         <div class="stat-label">Time</div>
@@ -339,8 +370,8 @@
       </div>
     </div>
     <div class="flex gap-3 justify-center">
-      <button class="btn btn-primary" onclick="newPuzzle()">New Puzzle</button>
-      <button class="btn btn-ghost" onclick="closeWinModal()">Close</button>
+      <button type="button" id="winNewBtn" class="btn btn-primary" onclick="newPuzzle()">New Puzzle</button>
+      <button type="button" class="btn btn-ghost" onclick="closeWinModal()">Close</button>
     </div>
   </div>
 </div>
@@ -349,33 +380,41 @@
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4 flex-wrap">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center text-white shadow-md shadow-indigo-200">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </div>
-      <div>
-        <h1 class="font-display text-xl sm:text-2xl font-bold leading-none text-slate-900">Tinker's Word Search</h1>
-        <p class="text-xs text-slate-500 mt-1">UK, Sussex & Botanical Edition</p>
-      </div>
+      <h1 class="font-display text-xl sm:text-2xl font-bold leading-none text-slate-900">Haven Word Search</h1>
     </div>
-    <div class="flex items-center gap-2">
-      <a href="index.html" class="btn btn-home text-sm">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        Home
-      </a>
-      <button class="btn btn-ghost text-sm" onclick="showHint()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 3 6 1 1 1 2 1 3h6c0-1 0-2 1-3 1-1 3-3 3-6a7 7 0 0 0-7-7Z"/></svg>
+    <div class="flex items-center gap-2 flex-wrap">
+      <div class="flex items-center gap-1.5" role="group" aria-label="Colour theme">
+        <button type="button" class="pill" data-theme-choice="light" aria-pressed="false">Light</button>
+        <button type="button" class="pill" data-theme-choice="system" aria-pressed="true">Auto</button>
+        <button type="button" class="pill" data-theme-choice="dark" aria-pressed="false">Dark</button>
+      </div>
+      <button type="button" id="musicBtn" class="btn btn-ghost text-sm" aria-pressed="false">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+        </svg>
+        Music
+      </button>
+      <button type="button" class="btn btn-ghost text-sm" onclick="showHint()" aria-keyshortcuts="h">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-7 7c0 3 2 5 3 6 1 1 1 2 1 3h6c0-1 0-2 1-3 1-1 3-3 3-6a7 7 0 0 0-7-7Z"/></svg>
         Hint
       </button>
-      <button class="btn btn-primary text-sm" onclick="newPuzzle()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 14.85-6.85L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-14.85 6.85L3 16"/><path d="M3 21v-5h5"/></svg>
+      <button type="button" class="btn btn-primary text-sm" onclick="newPuzzle()" aria-keyshortcuts="n">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 14.85-6.85L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-14.85 6.85L3 16"/><path d="M3 21v-5h5"/></svg>
         New Puzzle
       </button>
+      <a href="index.html" class="btn btn-home text-sm">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Home
+      </a>
     </div>
   </div>
 </header>
 
-<main id="puzzle" class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+<main id="puzzle" tabindex="-1" class="max-w-6xl mx-auto px-4 sm:px-6 py-8">
 
   <section class="card p-6 mb-6">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
@@ -390,15 +429,16 @@
       <div class="col-span-2 sm:col-span-1">
         <span class="stat-label">Difficulty</span>
         <div class="flex gap-2 mt-2 flex-wrap">
-          <button class="pill" data-diff="Gentle">Gentle</button>
-          <button class="pill active" data-diff="Classic">Classic</button>
-          <button class="pill" data-diff="Challenging">Hardy</button>
+          <button type="button" class="pill" data-diff="Gentle" aria-pressed="false">Gentle</button>
+          <button type="button" class="pill" data-diff="Classic" aria-pressed="true">Classic</button>
+          <button type="button" class="pill" data-diff="Challenging" aria-pressed="false">Hardy</button>
         </div>
       </div>
       <div class="col-span-2 sm:col-span-1">
         <span class="stat-label">Progress</span>
         <div class="mt-3 h-2.5 rounded-full overflow-hidden bg-slate-100">
-          <div id="progressBar" class="h-full transition-all duration-500 bg-indigo-500 rounded-full" style="width: 0%;"></div>
+          <div id="progressBar" role="progressbar" aria-label="Words found" aria-valuemin="0" aria-valuemax="0" aria-valuenow="0"
+               class="h-full transition-all duration-500 bg-indigo-500 rounded-full" style="width: 0%;"></div>
         </div>
       </div>
     </div>
@@ -407,7 +447,7 @@
   <section class="mb-6">
     <div class="flex items-baseline justify-between mb-4 flex-wrap gap-2">
       <h2 class="font-display text-lg font-semibold text-slate-900">Themes</h2>
-      <span class="text-xs text-slate-500">Toggle categories on or off</span>
+      <span class="text-xs text-slate-500">Toggle word categories on or off</span>
     </div>
     <div id="categoryChips" class="flex flex-wrap gap-2"></div>
   </section>
@@ -423,13 +463,13 @@
       </div>
       <div class="mt-6 pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
         <span>Horizontal, vertical, diagonal — forwards or backwards.</span>
-        <button class="btn btn-ghost text-xs" style="padding: 0.35rem 0.8rem;" onclick="newPuzzle()">Regenerate</button>
+        <button type="button" class="btn btn-ghost text-xs" style="padding: 0.35rem 0.8rem;" onclick="newPuzzle()">Regenerate</button>
       </div>
     </section>
 
-    <aside class="card p-6">
+    <aside class="card p-6" aria-labelledby="wordListHeading">
       <div class="flex items-center justify-between mb-4">
-        <h2 class="font-display text-xl font-bold text-slate-900">Word List</h2>
+        <h2 id="wordListHeading" class="font-display text-xl font-bold text-slate-900">Word List</h2>
         <span class="text-xs text-slate-500 font-medium" id="remainingLabel">0 left</span>
       </div>
       <div id="wordList" class="space-y-1"></div>
@@ -440,21 +480,35 @@
     <details class="howto">
       <summary>How to play</summary>
       <div class="mt-4 text-sm space-y-3 text-slate-600 leading-relaxed">
-        <p><strong class="text-slate-900">Selecting words:</strong> Click and drag across letters, or tap the first letter then tap the last letter of the word. Words can run in any of eight directions — including backwards.</p>
-        <p><strong class="text-slate-900">Keyboard:</strong> Tab to move between cells. Press <kbd>Enter</kbd> to start a selection, use arrow keys to extend in a straight line, then press <kbd>Enter</kbd> again to confirm.</p>
-        <p><strong class="text-slate-900">Themes:</strong> Words come from East Sussex places, broader British culture, garden flowers, and everyday British things.</p>
+        <p><strong class="text-slate-900">Selecting words:</strong> Click and drag across letters, or tap the first letter then tap the last letter of a word. Words can run in any of eight directions — including backwards.</p>
+        <p><strong class="text-slate-900">Keyboard:</strong> Tab into the grid, then use the arrow keys to move between letters. Press <kbd>Enter</kbd> to start a selection, extend it with the arrow keys, then press <kbd>Enter</kbd> again to confirm. <kbd>Esc</kbd> cancels a selection.</p>
+        <p><strong class="text-slate-900">Word themes:</strong> Words come from East Sussex places, broader British culture, garden flowers, and everyday British things.</p>
         <p><strong class="text-slate-900">Difficulty:</strong> <em>Gentle</em> offers a 12×12 grid with 8 words. <em>Classic</em> is 15×15 with 12 words. <em>Hardy</em> is 18×18 with 16 words.</p>
+        <p><strong class="text-slate-900">Appearance &amp; sound:</strong> Use the Light / Auto / Dark buttons to change the colour theme. Background music is generated live in your browser and is off by default — toggle it with the Music button.</p>
       </div>
     </details>
   </section>
 
   <footer class="mt-12 pt-8 text-center text-sm text-slate-400 border-t border-slate-100">
-    <p>Tinker's Word Search — A randomly generated puzzle.</p>
-    <p class="mt-2 text-xs">Press <kbd>N</kbd> for a new puzzle · <kbd>H</kbd> for a hint</p>
+    <p>Haven Word Search — A randomly generated puzzle.</p>
+    <p class="mt-2 text-xs">Press <kbd>N</kbd> for a new puzzle · <kbd>H</kbd> for a hint · <kbd>Esc</kbd> cancels a selection</p>
   </footer>
 </main>
 
 <script>
+  'use strict';
+
+  /* ---------- Helpers ---------- */
+  const $ = (id) => document.getElementById(id);
+  const mem = {};
+  const storage = {
+    get(k) { try { return localStorage.getItem(k); } catch (e) { return k in mem ? mem[k] : null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } }
+  };
+  const prefersReducedMotion = () =>
+    window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Data ---------- */
   const WORD_BANK = {
     'East Sussex': {
       color: '#6366f1',
@@ -474,7 +528,6 @@
     }
   };
 
-  // Modern pastel/vibrant colors for found words
   const FOUND_COLORS = [
     { bg: 'rgba(99, 102, 241, 0.15)', border: '#6366f1' },
     { bg: 'rgba(236, 72, 153, 0.15)', border: '#ec4899' },
@@ -490,51 +543,266 @@
   const DIRECTIONS = [[0, 1], [0, -1], [1, 0], [-1, 0], [1, 1], [1, -1], [-1, 1], [-1, -1]];
 
   const state = {
-    grid: [], placedWords: [], foundWords: new Set(), wordColors: {}, selectedCells: [],
-    startCell: null, currentCell: null, isSelecting: false, startTime: null, timerInterval: null,
+    grid: [], placedWords: [], foundWords: new Set(), wordColors: {},
+    selectedCells: [], startCell: null, currentCell: null, isSelecting: false,
+    tapStart: null, selEpoch: 0,
+    startTime: null, timerInterval: null,
     difficulty: 'Classic', activeCategories: new Set(Object.keys(WORD_BANK)),
-    size: 15, colorIndex: 0, completed: false, cellElements: []
+    size: 15, colorIndex: 0, completed: false,
+    cellElements: [], rove: null, lastFocus: null
   };
 
-  function generatePuzzle() {
-    const config = DIFFICULTY[state.difficulty];
-    state.size = config.size;
-    let pool = [];
+  /* ---------- Generative background music (Web Audio) ---------- */
+  const Music = (() => {
+    const VOLUME = 0.5;                 // overall loudness (0–1)
+    const CHORDS = [                    // Am7 → Fmaj7 → C/G → G  (midi notes)
+      [57, 60, 64, 67], [53, 57, 60, 64], [55, 60, 64, 67], [55, 59, 62, 67]
+    ];
+    const SCALE = [69, 72, 74, 76, 79, 81, 84]; // A minor pentatonic, for plucks
+    const mtf = (m) => 440 * Math.pow(2, (m - 69) / 12);
+
+    let ctx = null, master = null, delay = null, timer = null;
+    let running = false, chordIdx = 0, nextPad = 0, nextPluck = 0;
+
+    function ensure() {
+      if (ctx) return true;
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      try {
+        ctx = new AC();
+        master = ctx.createGain();
+        master.gain.value = 0;
+        const comp = ctx.createDynamicsCompressor();
+        comp.threshold.value = -24;
+        comp.ratio.value = 12;
+        master.connect(comp);
+        comp.connect(ctx.destination);
+        delay = ctx.createDelay(1.5);
+        delay.delayTime.value = 0.45;
+        const fb = ctx.createGain(); fb.gain.value = 0.32;
+        const wet = ctx.createGain(); wet.gain.value = 0.22;
+        delay.connect(fb); fb.connect(delay);
+        delay.connect(wet); wet.connect(master);
+        return true;
+      } catch (err) { ctx = null; return false; }
+    }
+
+    function pad(t, chord) {
+      const lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass';
+      lp.frequency.value = 750;
+      lp.connect(master);
+      chord.forEach((m) => {
+        [-4, 4].forEach((det) => {
+          const o = ctx.createOscillator();
+          o.type = 'triangle';
+          o.frequency.value = mtf(m);
+          o.detune.value = det;
+          const g = ctx.createGain();
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(0.045, t + 3);
+          g.gain.setValueAtTime(0.045, t + 12);
+          g.gain.linearRampToValueAtTime(0, t + 16);
+          o.connect(g); g.connect(lp);
+          o.start(t); o.stop(t + 16.2);
+        });
+      });
+    }
+
+    function pluck(t) {
+      const m = SCALE[Math.floor(Math.random() * SCALE.length)];
+      const o = ctx.createOscillator();
+      o.type = 'sine';
+      o.frequency.value = mtf(m);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.09, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6);
+      o.connect(g); g.connect(master); g.connect(delay);
+      o.start(t); o.stop(t + 1.7);
+    }
+
+    function tick() {
+      const now = ctx.currentTime;
+      // Resync after suspend (e.g. tab was hidden) to avoid a scheduling burst
+      if (nextPad < now) nextPad = now + 0.15;
+      if (nextPluck < now) nextPluck = now + 1;
+      const ahead = now + 1.5;
+      while (nextPad < ahead) { pad(nextPad, CHORDS[chordIdx++ % CHORDS.length]); nextPad += 13; }
+      while (nextPluck < ahead) { pluck(nextPluck); nextPluck += 1.8 + Math.random() * 3.2; }
+    }
+
+    function start() {
+      if (!ensure()) return false;
+      if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+      running = true;
+      nextPad = ctx.currentTime + 0.15;
+      nextPluck = ctx.currentTime + 2.5;
+      clearInterval(timer);
+      timer = setInterval(tick, 300);
+      tick();
+      const now = ctx.currentTime;
+      master.gain.cancelScheduledValues(now);
+      master.gain.setValueAtTime(master.gain.value, now);
+      master.gain.linearRampToValueAtTime(VOLUME, now + 1.5);
+      return true;
+    }
+
+    function stop() {
+      running = false;
+      clearInterval(timer); timer = null;
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      master.gain.cancelScheduledValues(now);
+      master.gain.setValueAtTime(master.gain.value, now);
+      master.gain.linearRampToValueAtTime(0, now + 0.6);
+      setTimeout(() => {
+        if (!running && ctx && ctx.state === 'running') ctx.suspend().catch(() => {});
+      }, 700);
+    }
+
+    // Pause silently while the tab is hidden (saves battery, avoids stutter)
+    document.addEventListener('visibilitychange', () => {
+      if (!ctx) return;
+      if (document.hidden) ctx.suspend().catch(() => {});
+      else if (running) ctx.resume().catch(() => {});
+    });
+
+    return {
+      start, stop,
+      isPlaying: () => running
+    };
+  })();
+
+  function setMusicUI(on) {
+    const b = $('musicBtn');
+    if (b) b.setAttribute('aria-pressed', String(on));
+  }
+
+  function bindMusic() {
+    const b = $('musicBtn');
+    if (!b) return;
+    b.addEventListener('click', () => {
+      try {
+        if (Music.isPlaying()) { Music.stop(); setMusicUI(false); storage.set('haven-music', 'off'); }
+        else if (Music.start()) { setMusicUI(true); storage.set('haven-music', 'on'); }
+        else showToast('Audio is not supported in this browser');
+      } catch (err) {
+        showToast('Audio could not start');
+      }
+    });
+  }
+
+  /* If music was on last time, start it on the user's first interaction
+     (browsers block audio until a gesture). */
+  function armMusic() {
+    if (storage.get('haven-music') !== 'on') return;
+    const go = (e) => {
+      if (e && e.target && e.target.closest && e.target.closest('#musicBtn')) return;
+      window.removeEventListener('pointerdown', go);
+      window.removeEventListener('keydown', go);
+      if (!Music.isPlaying() && Music.start()) setMusicUI(true);
+    };
+    window.addEventListener('pointerdown', go);
+    window.addEventListener('keydown', go);
+  }
+
+  /* ---------- Theme ---------- */
+  let theme = storage.get('haven-theme') || 'system';
+  const themeMq = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyTheme() {
+    const effective = theme === 'system' ? (themeMq.matches ? 'dark' : 'light') : theme;
+    document.documentElement.dataset.theme = effective;
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) { meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta); }
+    meta.content = effective === 'dark' ? '#0b1220' : '#f8fafc';
+    document.querySelectorAll('[data-theme-choice]').forEach((b) => {
+      const on = b.dataset.themeChoice === theme;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+  }
+
+  function bindThemeButtons() {
+    document.querySelectorAll('[data-theme-choice]').forEach((b) => {
+      b.addEventListener('click', () => {
+        theme = b.dataset.themeChoice;
+        storage.set('haven-theme', theme);
+        applyTheme();
+      });
+    });
+    const onChange = () => { if (theme === 'system') applyTheme(); };
+    if (themeMq.addEventListener) themeMq.addEventListener('change', onChange);
+    else if (themeMq.addListener) themeMq.addListener(onChange);
+  }
+
+  /* ---------- Puzzle generation ---------- */
+  function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+  }
+
+  function buildPool() {
+    const seen = new Set();
+    const pool = [];
     for (const cat of state.activeCategories) {
       for (const w of WORD_BANK[cat].words) {
+        if (seen.has(w)) continue;   // no duplicates across categories
+        seen.add(w);
         if (w.length <= state.size) pool.push({ word: w, category: cat });
       }
     }
-    for (let i = pool.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [pool[i], pool[j]] = [pool[j], pool[i]];
-    }
-    let selected = pool.slice(0, config.count);
-    selected.sort((a, b) => b.word.length - a.word.length);
+    return pool;
+  }
 
+  function tryPlace(selected) {
     const grid = Array.from({ length: state.size }, () => Array.from({ length: state.size }, () => null));
-    const placedWords = [];
-
+    const placed = [];
     for (const { word, category } of selected) {
-      let placed = false;
-      for (let attempt = 0; attempt < 250 && !placed; attempt++) {
+      for (let attempt = 0; attempt < 250; attempt++) {
         const dir = DIRECTIONS[Math.floor(Math.random() * DIRECTIONS.length)];
         const row = Math.floor(Math.random() * state.size);
         const col = Math.floor(Math.random() * state.size);
         if (canPlace(grid, word, row, col, dir)) {
           placeWord(grid, word, row, col, dir);
-          placedWords.push({ word, category, row, col, dir, cells: getCells(word, row, col, dir) });
-          placed = true;
+          placed.push({ word, category, row, col, dir, cells: getCells(word, row, col, dir) });
+          break;
         }
       }
     }
+    return { grid, placed };
+  }
+
+  function generatePuzzle() {
+    const config = DIFFICULTY[state.difficulty];
+    state.size = config.size;
+    const pool = buildPool();
+    shuffle(pool);
+    const wanted = pool.slice(0, Math.min(config.count, pool.length));
+    wanted.sort((a, b) => b.word.length - a.word.length);
+
+    // Retry a few times and keep the attempt that placed the most words
+    let best = null;
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const res = tryPlace(wanted);
+      if (!best || res.placed.length > best.placed.length) best = res;
+      if (best.placed.length === wanted.length) break;
+    }
+    if (best.placed.length < wanted.length) {
+      console.warn(`Could only place ${best.placed.length}/${wanted.length} words.`);
+    }
+
     for (let r = 0; r < state.size; r++) {
       for (let c = 0; c < state.size; c++) {
-        if (!grid[r][c]) grid[r][c] = String.fromCharCode(65 + Math.floor(Math.random() * 26));
+        if (!best.grid[r][c]) best.grid[r][c] = String.fromCharCode(65 + Math.floor(Math.random() * 26));
       }
     }
-    state.grid = grid;
-    state.placedWords = placedWords;
+
+    state.grid = best.grid;
+    state.placedWords = best.placed;
     state.foundWords = new Set();
     state.wordColors = {};
     state.colorIndex = 0;
@@ -543,9 +811,12 @@
     state.startCell = null;
     state.currentCell = null;
     state.isSelecting = false;
+    state.tapStart = null;
+    state.selEpoch++;
     if (state.timerInterval) clearInterval(state.timerInterval);
+    state.timerInterval = null;
     state.startTime = null;
-    document.getElementById('timer').textContent = '00:00';
+    $('timer').textContent = '00:00';
   }
 
   function canPlace(grid, word, row, col, dir) {
@@ -571,51 +842,76 @@
     return cells;
   }
 
+  /* ---------- Rendering ---------- */
   function renderGrid() {
-    const gridEl = document.getElementById('grid');
+    const gridEl = $('grid');
     gridEl.innerHTML = '';
-    gridEl.style.gridTemplateColumns = `repeat(${state.size}, 1fr)`;
-    const containerWidth = Math.min(560, window.innerWidth - 80);
-    gridEl.style.width = containerWidth + 'px';
-    gridEl.style.maxWidth = '100%';
+    gridEl.style.gridTemplateColumns = `repeat(${state.size}, minmax(0, 1fr))`;
+    gridEl.setAttribute('aria-label', `Haven Word Search, ${state.size} by ${state.size} grid`);
     state.cellElements = Array.from({ length: state.size }, () => []);
 
+    const frag = document.createDocumentFragment();
     for (let r = 0; r < state.size; r++) {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'grid-row';
+      rowEl.setAttribute('role', 'row');
       for (let c = 0; c < state.size; c++) {
         const cell = document.createElement('button');
+        cell.type = 'button';
         cell.className = 'cell';
         cell.textContent = state.grid[r][c];
         cell.dataset.row = r;
         cell.dataset.col = c;
         cell.setAttribute('role', 'gridcell');
+        cell.setAttribute('aria-selected', 'false');
         cell.setAttribute('aria-label', `Row ${r + 1}, column ${c + 1}, letter ${state.grid[r][c]}`);
         cell.tabIndex = -1;
-        cell.addEventListener('mousedown', (e) => { e.preventDefault(); startSelection(r, c); cell.focus(); });
-        cell.addEventListener('mouseenter', () => { if (state.isSelecting) updateSelection(r, c); });
-        cell.addEventListener('touchstart', (e) => { e.preventDefault(); startSelection(r, c); }, { passive: false });
-        cell.addEventListener('click', (e) => {
-          if (!state.isSelecting && !state.justFinishedDrag) handleTap(r, c);
-          state.justFinishedDrag = false;
-        });
-        gridEl.appendChild(cell);
+        rowEl.appendChild(cell);
         state.cellElements[r][c] = cell;
       }
+      frag.appendChild(rowEl);
     }
-    gridEl.addEventListener('touchmove', (e) => {
-      if (!state.isSelecting) return;
-      e.preventDefault();
-      const touch = e.touches[0];
-      const el = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (el && el.classList.contains('cell')) {
-        const r = parseInt(el.dataset.row);
-        const c = parseInt(el.dataset.col);
-        updateSelection(r, c);
+    gridEl.appendChild(frag);
+
+    // Restore keyboard focus to the same cell after a re-render
+    const f = state.lastFocus;
+    if (f && f.row < state.size && f.col < state.size && state.cellElements[f.row][f.col]) {
+      setRoving(f.row, f.col);
+      state.cellElements[f.row][f.col].focus();
+    } else {
+      setRoving(0, 0);
+    }
+    applyFoundStyles();
+  }
+
+  function setRoving(row, col) {
+    if (state.rove) {
+      const prev = state.cellElements[state.rove.row]?.[state.rove.col];
+      if (prev) prev.tabIndex = -1;
+    }
+    const next = state.cellElements[row]?.[col];
+    if (next) next.tabIndex = 0;
+    state.rove = { row, col };
+  }
+
+  function applyFoundStyles() {
+    for (const p of state.placedWords) {
+      if (!state.foundWords.has(p.word)) continue;
+      const cp = state.wordColors[p.word];
+      if (!cp) continue;
+      for (const { row, col } of p.cells) {
+        const cell = state.cellElements[row]?.[col];
+        if (cell) {
+          cell.classList.add('found');
+          cell.style.setProperty('--found-color', cp.bg);
+          cell.style.setProperty('--found-border', cp.border);
+        }
       }
-    }, { passive: false });
+    }
   }
 
   function renderWordList() {
-    const listEl = document.getElementById('wordList');
+    const listEl = $('wordList');
     listEl.innerHTML = '';
     const byCategory = {};
     for (const placed of state.placedWords) {
@@ -623,45 +919,47 @@
       byCategory[placed.category].push(placed);
     }
     for (const cat of Object.keys(byCategory)) byCategory[cat].sort((a, b) => a.word.localeCompare(b.word));
-    let totalWords = state.placedWords.length;
-    let foundCount = 0;
 
+    let foundCount = 0;
     for (const cat of Object.keys(WORD_BANK)) {
       if (!byCategory[cat]) continue;
       const catColor = WORD_BANK[cat].color;
       const label = document.createElement('div');
       label.className = 'cat-label';
-      label.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${catColor};"></span>${cat}`;
+      label.innerHTML = `<span aria-hidden="true" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${catColor};"></span>${cat}`;
       listEl.appendChild(label);
 
       for (const placed of byCategory[cat]) {
+        const isFound = state.foundWords.has(placed.word);
+        if (isFound) foundCount++;
         const item = document.createElement('div');
-        item.className = 'word-item';
+        item.className = 'word-item' + (isFound ? ' found' : '');
         item.dataset.word = placed.word;
-        item.innerHTML = `<span class="check"></span><span class="word-text">${placed.word}</span>`;
-        if (state.foundWords.has(placed.word)) {
-          item.classList.add('found');
-          item.style.setProperty('--word-color', state.wordColors[placed.word]?.border);
-          foundCount++;
-        }
+        item.setAttribute('aria-label', `${placed.word}${isFound ? ' — found' : ''}`);
+        item.innerHTML = `<span class="check" aria-hidden="true"></span><span class="word-text">${placed.word}</span>`;
+        if (isFound) item.style.setProperty('--word-color', state.wordColors[placed.word]?.border);
         listEl.appendChild(item);
       }
     }
-    document.getElementById('foundCount').textContent = foundCount;
-    document.getElementById('totalCount').textContent = totalWords;
-    document.getElementById('remainingLabel').textContent = `${totalWords - foundCount} left`;
-    const progress = totalWords > 0 ? (foundCount / totalWords) * 100 : 0;
-    document.getElementById('progressBar').style.width = progress + '%';
+    const total = state.placedWords.length;
+    $('foundCount').textContent = foundCount;
+    $('totalCount').textContent = total;
+    $('remainingLabel').textContent = `${total - foundCount} left`;
+    const bar = $('progressBar');
+    bar.setAttribute('aria-valuemax', String(total));
+    bar.setAttribute('aria-valuenow', String(foundCount));
+    bar.style.width = (total > 0 ? (foundCount / total) * 100 : 0) + '%';
   }
 
   function renderCategoryChips() {
-    const chipsEl = document.getElementById('categoryChips');
+    const chipsEl = $('categoryChips');
     chipsEl.innerHTML = '';
     for (const cat of Object.keys(WORD_BANK)) {
       const chip = document.createElement('button');
+      chip.type = 'button';
       chip.className = 'chip' + (state.activeCategories.has(cat) ? ' active' : '');
-      chip.innerHTML = `<span class="dot" style="background:${WORD_BANK[cat].color};"></span>${cat}`;
-      chip.setAttribute('aria-pressed', state.activeCategories.has(cat));
+      chip.innerHTML = `<span class="dot" aria-hidden="true" style="background:${WORD_BANK[cat].color};"></span>${cat}`;
+      chip.setAttribute('aria-pressed', String(state.activeCategories.has(cat)));
       chip.addEventListener('click', () => {
         if (state.activeCategories.has(cat) && state.activeCategories.size === 1) {
           showToast('At least one theme required');
@@ -676,13 +974,16 @@
     }
   }
 
+  /* ---------- Selection ---------- */
   function startSelection(row, col) {
+    state.selEpoch++;
     state.isSelecting = true;
     state.startCell = { row, col };
     state.currentCell = { row, col };
     state.selectedCells = [{ row, col }];
-    document.getElementById('grid').classList.add('selecting');
+    $('grid').classList.add('selecting');
     startTimer();
+    setRoving(row, col);
     renderSelection();
   }
 
@@ -712,66 +1013,83 @@
   function renderSelection() {
     for (let r = 0; r < state.size; r++) {
       for (let c = 0; c < state.size; c++) {
-        const cell = state.cellElements[r][c];
-        if (cell) cell.classList.remove('selected');
+        const cell = state.cellElements[r]?.[c];
+        if (!cell) continue;
+        const on = state.selectedCells.some((s) => s.row === r && s.col === c);
+        cell.classList.toggle('selected', on);
+        if (cell.getAttribute('aria-selected') !== String(on)) cell.setAttribute('aria-selected', String(on));
       }
     }
-    for (const { row, col } of state.selectedCells) {
-      const cell = state.cellElements[row]?.[col];
-      if (cell) cell.classList.add('selected');
-    }
+  }
+
+  function clearSelectionSoon() {
+    const epoch = state.selEpoch;
+    setTimeout(() => {
+      if (epoch === state.selEpoch && !state.isSelecting) {
+        state.selectedCells = [];
+        state.startCell = null;
+        state.currentCell = null;
+        renderSelection();
+      }
+    }, 180);
   }
 
   function endSelection() {
     if (!state.isSelecting) return;
     state.isSelecting = false;
-    document.getElementById('grid').classList.remove('selecting');
+    $('grid').classList.remove('selecting');
+
     if (state.selectedCells.length >= 2) {
+      state.tapStart = null;          // a drag cancels any pending tap anchor
       validateSelection();
-    } else if (state.selectedCells.length === 1) {
-      state.tapStart = state.startCell;
-      state.justFinishedDrag = true;
-      setTimeout(() => { if (state.tapStart && !state.isSelecting) renderSelection(); }, 50);
-      return;
+      clearSelectionSoon();
+    } else if (state.selectedCells.length === 1 && state.startCell) {
+      handleTapEnd(state.startCell);
+    } else {
+      clearSelectionSoon();
     }
-    setTimeout(() => {
-      state.selectedCells = [];
-      state.startCell = null;
-      state.currentCell = null;
-      renderSelection();
-    }, 150);
-    state.justFinishedDrag = true;
   }
 
-  function handleTap(row, col) {
-    if (!state.tapStart) {
-      state.tapStart = { row, col };
-      state.selectedCells = [{ row, col }];
-      renderSelection();
-    } else {
-      const cells = getLineCells(state.tapStart, { row, col });
-      if (cells && cells.length >= 2) {
-        state.selectedCells = cells;
-        state.startCell = state.tapStart;
+  /* Tap-tap selection: tap first letter, tap last letter */
+  function handleTapEnd(cell) {
+    const pending = state.tapStart;
+    if (pending && pending.row === cell.row && pending.col === cell.col) {
+      state.tapStart = null;          // tapped the same cell again → cancel
+      clearSelectionSoon();
+      return;
+    }
+    if (pending) {
+      const line = getLineCells(pending, cell);
+      if (line && line.length >= 2) {
+        state.selectedCells = line;
+        state.startCell = pending;
         renderSelection();
         validateSelection();
         state.tapStart = null;
-        setTimeout(() => { state.selectedCells = []; state.startCell = null; renderSelection(); }, 200);
-      } else if (row === state.tapStart.row && col === state.tapStart.col) {
-        state.tapStart = null;
-        state.selectedCells = [];
-        renderSelection();
-      } else {
-        state.tapStart = { row, col };
-        state.selectedCells = [{ row, col }];
-        renderSelection();
+        clearSelectionSoon();
+        return;
       }
     }
+    // First tap (or non-straight second tap) → become/replace the anchor
+    state.tapStart = { row: cell.row, col: cell.col };
+    state.selectedCells = [{ row: cell.row, col: cell.col }];
+    renderSelection();
+  }
+
+  function cancelSelection() {
+    state.selEpoch++;
+    state.isSelecting = false;
+    state.tapStart = null;
+    state.selectedCells = [];
+    state.startCell = null;
+    state.currentCell = null;
+    $('grid').classList.remove('selecting');
+    renderSelection();
   }
 
   function validateSelection() {
     if (state.selectedCells.length < 2) return;
-    const word = state.selectedCells.map(c => state.grid[c.row][c.col]).join('');
+    const word = state.selectedCells.map((c) => state.grid[c.row][c.col]).join('');
     const reversed = word.split('').reverse().join('');
     for (const placed of state.placedWords) {
       if (state.foundWords.has(placed.word)) continue;
@@ -797,6 +1115,7 @@
     }, 200);
   }
 
+  /* ---------- Found words / timer ---------- */
   function markWordFound(placed) {
     state.foundWords.add(placed.word);
     const colorPair = FOUND_COLORS[state.colorIndex % FOUND_COLORS.length];
@@ -805,24 +1124,29 @@
 
     for (const { row, col } of placed.cells) {
       const cell = state.cellElements[row]?.[col];
-      if (cell) { 
-        cell.classList.add('found'); 
-        cell.style.setProperty('--found-color', colorPair.bg); 
-        cell.style.setProperty('--found-border', colorPair.border); 
+      if (cell) {
+        cell.classList.add('found');
+        cell.style.setProperty('--found-color', colorPair.bg);
+        cell.style.setProperty('--found-border', colorPair.border);
       }
     }
     const item = document.querySelector(`.word-item[data-word="${placed.word}"]`);
     if (item) {
       item.classList.add('found', 'just-found');
+      item.setAttribute('aria-label', `${placed.word} — found`);
       item.style.setProperty('--word-color', colorPair.border);
       setTimeout(() => item.classList.remove('just-found'), 600);
     }
     showToast(`Found: ${placed.word}`);
+
     const foundCount = state.foundWords.size;
     const total = state.placedWords.length;
-    document.getElementById('foundCount').textContent = foundCount;
-    document.getElementById('remainingLabel').textContent = `${total - foundCount} left`;
-    document.getElementById('progressBar').style.width = (foundCount / total * 100) + '%';
+    $('foundCount').textContent = foundCount;
+    $('remainingLabel').textContent = `${total - foundCount} left`;
+    const bar = $('progressBar');
+    bar.setAttribute('aria-valuenow', String(foundCount));
+    bar.style.width = (foundCount / total * 100) + '%';
+
     if (foundCount === total) {
       state.completed = true;
       setTimeout(showWinModal, 600);
@@ -839,12 +1163,15 @@
     const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
     const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
     const secs = (elapsed % 60).toString().padStart(2, '0');
-    document.getElementById('timer').textContent = `${mins}:${secs}`;
+    $('timer').textContent = `${mins}:${secs}`;
   }
-  function stopTimer() { if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; } }
+  function stopTimer() {
+    if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; }
+  }
 
   function showHint() {
-    const unfound = state.placedWords.filter(p => !state.foundWords.has(p.word));
+    startTimer();
+    const unfound = state.placedWords.filter((p) => !state.foundWords.has(p.word));
     if (unfound.length === 0) { showToast('All words found!'); return; }
     const target = unfound[Math.floor(Math.random() * unfound.length)];
     const cellIdx = Math.floor(Math.random() * target.cells.length);
@@ -853,30 +1180,40 @@
     if (cell) {
       cell.classList.add('hint-flash');
       setTimeout(() => cell.classList.remove('hint-flash'), 1200);
-      showToast(`Hint revealed`);
+      showToast('Hint revealed');
     }
   }
 
+  /* ---------- Toast / win modal ---------- */
   let toastTimeout;
   function showToast(message) {
-    const toast = document.getElementById('toast');
-    const text = document.getElementById('toastText');
-    text.textContent = message;
+    const toast = $('toast');
+    $('toastText').textContent = message;
     toast.classList.add('show');
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => toast.classList.remove('show'), 2200);
   }
 
+  let lastFocused = null;
   function showWinModal() {
     stopTimer();
-    document.getElementById('winTime').textContent = document.getElementById('timer').textContent;
-    document.getElementById('winCount').textContent = state.placedWords.length;
-    document.getElementById('winModal').classList.add('show');
+    $('winTime').textContent = $('timer').textContent;
+    $('winCount').textContent = state.placedWords.length;
+    lastFocused = document.activeElement;
+    $('winModal').classList.add('show');
+    document.body.classList.add('modal-open');
+    setTimeout(() => $('winNewBtn').focus(), 60);
     spawnConfetti();
   }
-  function closeWinModal() { document.getElementById('winModal').classList.remove('show'); }
+  function closeWinModal() {
+    $('winModal').classList.remove('show');
+    document.body.classList.remove('modal-open');
+    if (lastFocused && document.contains(lastFocused)) lastFocused.focus();
+    lastFocused = null;
+  }
 
   function spawnConfetti() {
+    if (prefersReducedMotion()) return;
     const colors = ['#6366f1', '#ec4899', '#10b981', '#f59e0b', '#06b6d4'];
     for (let i = 0; i < 40; i++) {
       const petal = document.createElement('div');
@@ -889,39 +1226,116 @@
       const duration = 2000 + Math.random() * 2000;
       const drift = (Math.random() - 0.5) * 300;
       petal.animate([
-        { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+        { transform: 'translate(0, 0) rotate(0deg)', opacity: 1 },
         { transform: `translate(${drift}px, 100vh) rotate(${Math.random() * 720}deg)`, opacity: 0 }
       ], { duration, easing: 'cubic-bezier(0.4, 0, 0.6, 1)' }).onfinish = () => petal.remove();
     }
   }
 
+  /* ---------- Top-level actions ---------- */
   function newPuzzle() {
     closeWinModal();
     stopTimer();
     generatePuzzle();
     renderGrid();
     renderWordList();
-    state.selectedCells = [];
+    renderSelection();
+  }
+
+  /* ---------- Event setup (attached ONCE) ---------- */
+  function setupPointer() {
+    const gridEl = $('grid');
+
+    gridEl.addEventListener('focusin', (e) => {
+      const cell = e.target.closest('.cell');
+      if (cell) state.lastFocus = { row: +cell.dataset.row, col: +cell.dataset.col };
+    });
+
+    gridEl.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    if (window.PointerEvent) {
+      gridEl.addEventListener('pointerdown', (e) => {
+        const cell = e.target.closest('.cell');
+        if (!cell || state.isSelecting) return;
+        e.preventDefault();
+        try { gridEl.setPointerCapture(e.pointerId); } catch (err) {}
+        cell.focus();
+        startSelection(+cell.dataset.row, +cell.dataset.col);
+      });
+      gridEl.addEventListener('pointermove', (e) => {
+        if (!state.isSelecting) return;
+        const el = document.elementFromPoint(e.clientX, e.clientY);
+        if (el && el.classList.contains('cell')) updateSelection(+el.dataset.row, +el.dataset.col);
+      });
+      const finish = () => { if (state.isSelecting) endSelection(); };
+      gridEl.addEventListener('pointerup', finish);
+      window.addEventListener('pointerup', finish);          // safety net
+      gridEl.addEventListener('pointercancel', () => cancelSelection());
+    } else {
+      // Fallback for very old browsers without Pointer Events
+      gridEl.addEventListener('mousedown', (e) => {
+        const cell = e.target.closest('.cell');
+        if (!cell) return;
+        e.preventDefault();
+        cell.focus();
+        startSelection(+cell.dataset.row, +cell.dataset.col);
+      });
+      gridEl.addEventListener('mouseover', (e) => {
+        if (!state.isSelecting) return;
+        const cell = e.target.closest('.cell');
+        if (cell) updateSelection(+cell.dataset.row, +cell.dataset.col);
+      });
+      gridEl.addEventListener('touchstart', (e) => {
+        const cell = e.target.closest('.cell');
+        if (!cell) return;
+        e.preventDefault();
+        startSelection(+cell.dataset.row, +cell.dataset.col);
+      }, { passive: false });
+      gridEl.addEventListener('touchmove', (e) => {
+        if (!state.isSelecting) return;
+        e.preventDefault();
+        const t = e.touches[0];
+        const el = document.elementFromPoint(t.clientX, t.clientY);
+        if (el && el.classList.contains('cell')) updateSelection(+el.dataset.row, +el.dataset.col);
+      }, { passive: false });
+      const finish = () => { if (state.isSelecting) endSelection(); };
+      window.addEventListener('mouseup', finish);
+      window.addEventListener('touchend', finish);
+    }
+  }
+
+  function isEditable(t) {
+    return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
   }
 
   function setupKeyboard() {
     document.addEventListener('keydown', (e) => {
-      if ((e.key === 'n' || e.key === 'N') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') { e.preventDefault(); newPuzzle(); return; }
-      if ((e.key === 'h' || e.key === 'H') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') { e.preventDefault(); showHint(); return; }
-      if (e.key === 'Escape') {
-        if (document.getElementById('winModal').classList.contains('show')) { closeWinModal(); return; }
-        state.selectedCells = []; state.startCell = null; state.tapStart = null; renderSelection();
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (isEditable(e.target)) return;
+
+      const modalOpen = $('winModal').classList.contains('show');
+      if (modalOpen) {
+        if (e.key === 'Escape') { e.preventDefault(); closeWinModal(); }
+        return;                                   // modal trap handles Tab
       }
+
+      const k = e.key.toLowerCase();
+      if (k === 'n') { e.preventDefault(); newPuzzle(); return; }
+      if (k === 'h') { e.preventDefault(); showHint(); return; }
+      if (k === 'escape') { cancelSelection(); return; }
+
       const cell = e.target.closest('.cell');
       if (!cell) return;
-      const row = parseInt(cell.dataset.row);
-      const col = parseInt(cell.dataset.col);
+      const row = parseInt(cell.dataset.row, 10);
+      const col = parseInt(cell.dataset.col, 10);
+
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         if (!state.isSelecting) startSelection(row, col);
         else endSelection();
         return;
       }
+
       if (e.key.startsWith('Arrow')) {
         e.preventDefault();
         let newRow = row, newCol = col;
@@ -929,65 +1343,73 @@
         else if (e.key === 'ArrowDown') newRow = Math.min(state.size - 1, row + 1);
         else if (e.key === 'ArrowLeft') newCol = Math.max(0, col - 1);
         else if (e.key === 'ArrowRight') newCol = Math.min(state.size - 1, col + 1);
+
         if (state.isSelecting && state.startCell) {
           const dr = newRow - state.startCell.row;
           const dc = newCol - state.startCell.col;
-          const isStraight = (dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc));
+          const isStraight = dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc);
           if (!isStraight) {
             if (Math.abs(dr) >= Math.abs(dc)) newCol = state.startCell.col;
             else newRow = state.startCell.row;
           }
-          const targetCell = state.cellElements[newRow]?.[newCol];
-          if (targetCell) { targetCell.focus(); updateSelection(newRow, newCol); }
-        } else {
-          const targetCell = state.cellElements[newRow]?.[newCol];
-          if (targetCell) targetCell.focus();
+        }
+        const targetCell = state.cellElements[newRow]?.[newCol];
+        if (targetCell) {
+          setRoving(newRow, newCol);
+          targetCell.focus();
+          if (state.isSelecting && state.startCell) updateSelection(newRow, newCol);
         }
       }
     });
-    document.addEventListener('mouseup', () => { if (state.isSelecting) endSelection(); });
-    document.addEventListener('touchend', () => { if (state.isSelecting) endSelection(); });
   }
 
   function setupDifficulty() {
-    document.querySelectorAll('.pill').forEach(pill => {
-      pill.addEventListener('click', () => {
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        state.difficulty = pill.dataset.diff;
-        newPuzzle();
-      });
+    const pills = document.querySelectorAll('[data-diff]');
+    const sync = () => pills.forEach((p) => {
+      const on = p.dataset.diff === state.difficulty;
+      p.classList.toggle('active', on);
+      p.setAttribute('aria-pressed', String(on));
+    });
+    pills.forEach((p) => p.addEventListener('click', () => {
+      state.difficulty = p.dataset.diff;
+      sync();
+      newPuzzle();
+    }));
+    sync();
+  }
+
+  /* Focus trap inside the win modal */
+  function setupModalTrap() {
+    $('winModal').addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const focusables = $('winModal').querySelectorAll('button');
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     });
   }
 
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      renderGrid();
-      for (const placed of state.placedWords) {
-        if (state.foundWords.has(placed.word)) {
-          const colorPair = state.wordColors[placed.word];
-          for (const { row, col } of placed.cells) {
-            const cell = state.cellElements[row]?.[col];
-            if (cell) { 
-              cell.classList.add('found'); 
-              cell.style.setProperty('--found-color', colorPair.bg); 
-              cell.style.setProperty('--found-border', colorPair.border); 
-            }
-          }
-        }
-      }
-    }, 200);
-  });
-
+  /* ---------- Init ---------- */
   function init() {
+    applyTheme();
+    bindThemeButtons();
+    bindMusic();
     renderCategoryChips();
     setupDifficulty();
+    setupPointer();
     setupKeyboard();
+    setupModalTrap();
     newPuzzle();
+    armMusic();
   }
-  init();
+
+  try {
+    init();
+  } catch (err) {
+    console.error('Failed to initialise Haven Word Search:', err);
+  }
 </script>
 
 </body>
