@@ -1307,5 +1307,55 @@
         });} 
     )();
 </script>
+<script>
+    (function() {
+        const audio = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
+        const musicText = document.getElementById('music-text');
+
+        if (!audio || !musicBtn) return;
+
+        // Function to apply a random +/- 0.5 semitone shift
+        function randomizeTrack() {
+            // 0.9715 is exactly -0.5 semitones, 1.029 is exactly +0.5 semitones
+            const min = 0.9715;
+            const max = 1.029;
+            const randomRate = (Math.random() * (max - min) + min).toFixed(4);
+            
+            audio.playbackRate = parseFloat(randomRate);
+            console.log("Playing at relative pitch/speed: " + randomRate);
+        }
+
+        // When the song ends, randomize the pitch/speed and play again
+        audio.addEventListener('ended', function() {
+            randomizeTrack();
+            audio.play(); // Manually loop so the new playbackRate applies immediately
+        });
+
+        // Play/Pause button logic
+        musicBtn.addEventListener('click', function() {
+            if (audio.paused) {
+                // Apply a random pitch the first time they hit play
+                randomizeTrack();
+                
+                // Play (Browsers may block autoplay, so we catch errors)
+                audio.play().catch(err => console.log("Autoplay blocked until user interacts."));
+                
+                musicBtn.classList.add('playing');
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+                musicText.textContent = 'Pause Music';
+            } else {
+                audio.pause();
+                musicBtn.classList.remove('playing');
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                musicText.textContent = 'Play Music';
+            }
+        });
+    })();
+</script>
 </body>
 </html> 
