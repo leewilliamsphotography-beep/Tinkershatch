@@ -1470,7 +1470,7 @@ setTimeout(() => {
         { name: "Silent Night Piano", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
         
         // --- AUTUMN SONGS (Play in October & November) ---
-        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 }
+        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 },
         { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 10, endMonth: 10 },
 
     ];
