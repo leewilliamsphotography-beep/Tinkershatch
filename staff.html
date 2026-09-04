@@ -208,7 +208,34 @@
         border-color: var(--accent); color: var(--accent); background: var(--accent-soft);
     }
     .photo-preview-img { max-width: 100%; max-height: 150px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
-
+    /* === Photo List Thumbnails === */
+    #adminPhotoContainer > div {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 8px !important;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+    }
+    #adminPhotoContainer img {
+        width: 50px !important;
+        height: 50px !important;
+        object-fit: cover !important;
+        border-radius: 8px !important;
+        flex-shrink: 0;
+        background: var(--surface-3);
+    }
+    #adminPhotoContainer span, #adminPhotoContainer .caption {
+        flex: 1;
+        font-size: 0.9rem;
+        color: var(--fg);
+        word-break: break-all;
+    }
+    #adminPhotoContainer button {
+        flex-shrink: 0;
+        margin: 0 !important;
+    }
     /* === Empty States === */
     .empty-state-msg { text-align: center; padding: 32px 16px; color: var(--muted-2); font-size: 0.9rem; font-style: italic; }
 
@@ -903,7 +930,33 @@
         const btn = document.querySelector(`.tester-tab-btn[data-tab="${lastTab}"]`);
         if (btn) btn.click();
     }
-
+    // 10.5 Photo Thumbnails Layout Enforcer
+    function enforcePhotoThumbnailLayout() {
+        const photoContainer = document.getElementById('adminPhotoContainer');
+        if (!photoContainer) return;
+        
+        const items = photoContainer.querySelectorAll('div:not(.empty-state-msg)');
+        items.forEach(item => {
+            // Ensure flex layout is applied even if app.js overrides it
+            item.style.display = 'flex';
+            item.style.alignItems = 'center';
+            item.style.gap = '12px';
+            
+            // If app.js rendered an image, make sure it has a thumbnail class
+            const img = item.querySelector('img');
+            if (img && !img.classList.contains('photo-thumb')) {
+                img.classList.add('photo-thumb');
+            }
+        });
+    }
+    
+    // Run on load and whenever the photo container changes
+    const photoObserver = new MutationObserver(enforcePhotoThumbnailLayout);
+    const photoContainer = document.getElementById('adminPhotoContainer');
+    if (photoContainer) {
+        enforcePhotoThumbnailLayout();
+        photoObserver.observe(photoContainer, { childList: true, subtree: true });
+    }
     // 11. Friendly Empty States Observer
     function setupEmptyStateObserver(containerId, message) {
         const container = document.getElementById(containerId);
