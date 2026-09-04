@@ -1461,7 +1461,14 @@ document.addEventListener('DOMContentLoaded', () =>{
 
 // === TINKERSHATCH CUSTOM FEATURES ===
 setTimeout(() => {
-    
+        // --- 0. SPLASH SCREEN DISMISS ---
+    const splashScreen = document.getElementById('splash-screen');
+    const enterAppBtn = document.getElementById('enterAppBtn');
+    if (enterAppBtn && splashScreen) {
+        enterAppBtn.addEventListener('click', () => {
+            splashScreen.classList.add('hidden');
+        });
+    }
     // --- 1. INVISIBLE SEASONAL BACKGROUND MUSIC ---
     const regularTracks = [
         { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
