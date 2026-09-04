@@ -57,7 +57,7 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Lexend:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/open-dyslexic" rel="stylesheet">
 
     <!-- Tailwind & Supabase -->
@@ -152,7 +152,7 @@
 <!-- Refined Splash Screen -->
 <div id="splash-screen">
     <div class="splash-content">
-        <h1 class="display font-extrabold tracking-tight" style="font-size:clamp(2rem, 5vw, 3.5rem); color:var(--bark); line-height:1.1;">Welcome to Tinkers Hatch</h1>
+                    <h1 class="hero-title display font-extrabold leading-[1.1] mb-6 tracking-tight" style="font-size:clamp(2.5rem,6vw,4.5rem);color:var(--bark);">Welcome to<br><span class="magic-text">Tinkers Hatch</span></h1>
         <p style="color:var(--bark-soft); max-width: 500px; margin: 0 auto 2rem;">A caring home for adults with learning disabilities. Where every person is known by name, supported with dignity, and celebrated for who they are.</p>
         
         <div class="card p-8" style="max-width: 480px; width: 100%; border-radius: 16px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);">
@@ -324,7 +324,7 @@
     <section class="relative pt-16 pb-24 sm:pt-24 sm:pb-32 overflow-hidden">
         <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10 text-center">
             <span class="tag mb-6 inline-flex items-center gap-2 mx-auto"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6.2 4.5 2.4 7.5L12 17l-6.2 4.5 2.4-7.5L2 9.5h7.5z"/></svg>A place to grow, belong, and thrive</span>
-            <h1 class="display font-extrabold leading-[1.1] mb-6 tracking-tight" style="font-size:clamp(2.5rem,6vw,4.5rem);color:var(--bark)">Welcome to<br><span style="color:var(--teal)">Tinkers Hatch</span></h1>
+            <h1 class="hero-title display font-extrabold leading-[1.1] mb-6 tracking-tight" style="font-size:clamp(2rem,8vw,4.5rem);color:var(--bark);">Welcome to<br><span class="glow-text">Tinkers Hatch</span></h1>
             <p class="text-lg sm:text-xl mb-10 max-w-2xl mx-auto" style="color:var(--bark-soft);line-height:1.7">A warm and caring home for adults with learning disabilities. Where every person is known by name, supported with dignity, and celebrated for who they are.</p>
             <div class="flex flex-col sm:flex-row gap-4 mb-12 justify-center">
                 <a href="#visit" class="btn btn-primary"><span>Plan a Visit</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 12h14M13 5l7 7-7 7"/></svg></a>
@@ -428,16 +428,246 @@
                 <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">Activities shaped by the people who live here.</h2>
                 <p class="text-lg" style="color:var(--bark-soft); line-height: 1.7;">Our weekly programme is built around what residents enjoy and want to try. Some activities are calm, some are lively — all are optional, all are welcoming.</p>
             </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal">
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal">
+                
+                <!-- Gardening -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
-                    <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
-                        <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M32 14C32 14 28 20 24 22C20 24 18 22 18 22C18 22 20 28 24 30C28 32 32 30 32 30C32 30 36 32 40 30C44 28 46 22 46 22C46 22 44 24 40 22C36 20 32 14 32 14Z" stroke="var(--sage)" stroke-width="2" stroke-linejoin="round"/>
-                            <path d="M32 14V30" stroke="var(--sage)" stroke-width="2"/>
-                            <path d="M16 32H48L44 52H20L16 32Z" stroke="var(--terracotta)" stroke-width="2" stroke-linejoin="round"/>
-                            <path d="M24 40H40" stroke="var(--terracotta)" stroke-width="2" stroke-linecap="round"/>
+                    <div class="img-wrap h-40 flex items-center justify-center" style="background: radial-gradient(circle at center, var(--cream) 0%, var(--cream-deep) 100%);">
+                        <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Sun -->
+                            <circle cx="80" cy="25" r="10" fill="var(--honey)" opacity="0.8"/>
+                            <circle cx="80" cy="25" r="15" stroke="var(--honey)" stroke-width="1.5" stroke-opacity="0.3"/>
+                            <!-- Leaves -->
+                            <path d="M50 65 C 35 55 30 50 40 40 C 45 45 48 55 50 65 Z" fill="var(--sage)"/>
+                            <path d="M50 65 C 65 55 70 50 60 40 C 55 45 52 55 50 65 Z" fill="var(--teal)"/>
+                            <path d="M50 65 C 50 50 50 45 50 35 C 52 40 52 55 50 65 Z" fill="var(--teal-deep)"/>
+                            <!-- Stem -->
+                            <rect x="47" y="55" width="6" height="15" rx="3" fill="var(--sage)"/>
+                            <!-- Pot -->
+                            <path d="M30 70 L 70 70 L 65 88 L 35 88 Z" fill="var(--terracotta)"/>
+                            <rect x="28" y="66" width="44" height="6" rx="3" fill="var(--terracotta)"/>
+                            <path d="M35 88 L 65 88" stroke="#9B4820" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                     </div>
+                    <div class="p-6">
+                        <div class="tag mb-3">Outdoor</div>
+                        <h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Gardening & Growing</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">Our vegetable patch, polytunnel, and flower beds. We grow food we eat and flowers we share.</p>
+                    </div>
+                </article>
+
+                <!-- Art -->
+                <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap h-40 flex items-center justify-center" style="background: radial-gradient(circle at center, var(--cream) 0%, var(--cream-deep) 100%);">
+                        <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Easel -->
+                            <path d="M45 90 L 50 50 L 55 90" stroke="var(--honey)" stroke-width="3" stroke-linecap="round"/>
+                            <!-- Canvas -->
+                            <rect x="32" y="25" width="36" height="28" rx="2" fill="var(--cream)" stroke="var(--bark)" stroke-width="1.5"/>
+                            <!-- Paintings on Canvas -->
+                            <path d="M36 45 L 42 38 L 48 45 L 54 35 L 60 45" stroke="var(--sage)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="40" cy="30" r="2.5" fill="var(--rose)"/>
+                            <circle cx="48" cy="28" r="2.5" fill="var(--teal)"/>
+                            <!-- Palette -->
+                            <path d="M65 60 C 82 60 85 75 78 78 C 76 79 74 78 72 79 C 70 80 71 82 70 83 C 65 88 55 82 55 72 C 55 65 60 60 65 60 Z" fill="var(--bark)"/>
+                            <circle cx="62" cy="66" r="2.5" fill="var(--honey)"/>
+                            <circle cx="68" cy="68" r="2.5" fill="var(--terracotta)"/>
+                            <circle cx="74" cy="66" r="2.5" fill="var(--sage)"/>
+                            <!-- Brush -->
+                            <rect x="75" y="35" width="3" height="20" rx="1.5" transform="rotate(25 76 45)" fill="var(--terracotta)"/>
+                            <ellipse cx="80" cy="32" rx="3" ry="6" transform="rotate(25 80 32)" fill="var(--honey)"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="tag mb-3">Creative</div>
+                        <h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Art & Crafting</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">Painting, pottery, weaving, and seasonal crafts. We exhibit our work locally each year.</p>
+                    </div>
+                </article>
+
+                <!-- Cooking -->
+                <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap h-40 flex items-center justify-center" style="background: radial-gradient(circle at center, var(--cream) 0%, var(--cream-deep) 100%);">
+                        <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Steam -->
+                            <path d="M40 20 Q 45 25 40 30 Q 35 35 40 40" stroke="var(--sky-deep)" stroke-width="3" stroke-linecap="round" fill="none"/>
+                            <path d="M55 15 Q 60 20 55 25 Q 50 30 55 35" stroke="var(--sky-deep)" stroke-width="3" stroke-linecap="round" fill="none"/>
+                            <!-- Pot -->
+                            <path d="M25 45 L 75 45 L 70 75 L 30 75 Z" fill="var(--bark-soft)"/>
+                            <rect x="22" y="40" width="56" height="8" rx="4" fill="var(--bark)"/>
+                            <!-- Handles -->
+                            <rect x="12" y="48" width="12" height="5" rx="2.5" fill="var(--bark)"/>
+                            <rect x="76" y="48" width="12" height="5" rx="2.5" fill="var(--bark)"/>
+                            <!-- Soup -->
+                            <ellipse cx="50" cy="45" rx="25" ry="4" fill="var(--terracotta)"/>
+                            <!-- Spoon -->
+                            <ellipse cx="75" cy="30" rx="5" ry="8" fill="var(--honey)" transform="rotate(15 75 30)"/>
+                            <rect x="73" y="35" width="4" height="25" rx="2" transform="rotate(15 74 47)" fill="var(--honey)"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="tag mb-3">Kitchen</div>
+                        <h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Cooking & Baking</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">Weekly cookery sessions. We make bread, soups, cakes, and dishes from family recipes.</p>
+                    </div>
+                </article>
+
+                <!-- Music -->
+                <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap h-40 flex items-center justify-center" style="background: radial-gradient(circle at center, var(--cream) 0%, var(--cream-deep) 100%);">
+                        <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Guitar Body -->
+                            <circle cx="50" cy="65" r="28" fill="var(--honey)"/>
+                            <!-- Soundhole -->
+                            <circle cx="50" cy="65" r="10" fill="var(--bark)"/>
+                            <!-- Neck -->
+                            <rect x="45" y="10" width="10" height="45" rx="2" fill="var(--terracotta)"/>
+                            <!-- Headstock -->
+                            <rect x="42" y="5" width="16" height="10" rx="2" fill="var(--bark)"/>
+                            <!-- Strings -->
+                            <line x1="48" y1="15" x2="48" y2="65" stroke="var(--cream)" stroke-width="1"/>
+                            <line x1="52" y1="15" x2="52" y2="65" stroke="var(--cream)" stroke-width="1"/>
+                            <!-- Notes -->
+                            <circle cx="78" cy="25" r="4" fill="var(--teal)"/>
+                            <rect x="81" y="10" width="2.5" height="15" fill="var(--teal)"/>
+                            <circle cx="88" cy="40" r="3.5" fill="var(--rose)"/>
+                            <rect x="90.5" y="28" width="2.5" height="12" fill="var(--rose)"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="tag mb-3">Music</div>
+                        <h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Music & Singing</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">A weekly music group, visiting musicians, and the occasional disco. No experience needed.</p>
+                    </div>
+                </article>
+
+                <!-- Reading -->
+                <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap h-40 flex items-center justify-center" style="background: radial-gradient(circle at center, var(--cream) 0%, var(--cream-deep) 100%);">
+                        <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Book Cover -->
+                            <path d="M20 30 L 50 35 L 80 30 L 80 75 L 50 80 L 20 75 Z" fill="var(--teal)"/>
+                            <!-- Pages -->
+                            <path d="M50 35 L 50 80" stroke="var(--bark)" stroke-width="1.5"/>
+                            <path d="M22 32 L 48 37 V 78 L 22 73 Z" fill="var(--cream)"/>
+                            <path d="M52 37 L 78 32 V 73 L 52 78 Z" fill="var(--cream)"/>
+                            <!-- Lines -->
+                            <path d="M25 38 H 45 M 25 43 H 42" stroke="var(--border)" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M55 38 H 75 M 55 43 H 72" stroke="var(--border)" stroke-width="2" stroke-linecap="round"/>
+                            <!-- Teacup -->
+                            <path d="M35 60 L 45 60 L 44 70 L 36 70 Z" fill="var(--cream)" stroke="var(--bark)" stroke-width="1.5"/>
+                            <path d="M45 62 Q 50 62 50 65 Q 50 68 45 68" stroke="var(--bark)" stroke-width="1.5" fill="none"/>
+                            <path d="M38 55 Q 42 50 38 45" stroke="var(--sky-deep)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="tag mb-3">Quiet</div>
+                        <h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Reading & Stories</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">Audiobooks, shared reading groups, and quiet time in the library.</p>
+                    </div>
+                </article>
+
+                <!-- Outings -->
+                <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap h-40 flex items-center justify-center" style="background: radial-gradient(circle at center, var(--cream) 0%, var(--cream-deep) 100%);">
+                        <svg width="140" height="140" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Hills -->
+                            <path d="M0 80 Q 30 65 50 80 T 100 80 V 100 H 0 Z" fill="var(--sage)"/>
+                            <!-- Sun -->
+                            <circle cx="80" cy="25" r="10" fill="var(--honey)" opacity="0.8"/>
+                            <!-- Car Body -->
+                            <path d="M25 75 L 30 60 L 65 60 L 70 75 Z" fill="var(--terracotta)"/>
+                            <rect x="20" y="75" width="55" height="10" rx="5" fill="var(--terracotta)"/>
+                            <!-- Windows -->
+                            <path d="M35 60 L 40 50 L 60 50 L 65 60 Z" fill="var(--sky)"/>
+                            <line x1="50" y1="50" x2="50" y2="60" stroke="var(--terracotta)" stroke-width="2"/>
+                            <!-- Wheels -->
+                            <circle cx="35" cy="85" r="7" fill="var(--bark)"/>
+                            <circle cx="35" cy="85" r="2.5" fill="var(--cream)"/>
+                            <circle cx="65" cy="85" r="7" fill="var(--bark)"/>
+                            <circle cx="65" cy="85" r="2.5" fill="var(--cream)"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <div class="tag mb-3">Out & About</div>
+                        <h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Local Outings</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.6;">Market days, café trips, the local cinema, woodland walks, and the annual seaside visit.</p>
+                    </div>
+                </article>
+
+                <!-- Film Night Feature Card -->
+                <a href="#film-night" class="activity-card feature-card lg:col-span-3 overflow-hidden rounded-2xl shadow-md bg-white flex flex-col sm:flex-row" style="border-radius: 20px; text-decoration:none;color:inherit; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap sm:w-1/4 h-40 sm:h-auto flex items-center justify-center" style="background: radial-gradient(circle at center, var(--cream) 0%, var(--cream-deep) 100%);">
+                        <svg width="120" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Clapperboard Top -->
+                            <rect x="15" y="25" width="70" height="12" rx="2" fill="var(--bark)"/>
+                            <path d="M15 30 L 25 25 M 25 30 L 35 25 M 35 30 L 45 25 M 45 30 L 55 25 M 55 30 L 65 25 M 65 30 L 75 25" stroke="var(--cream)" stroke-width="2"/>
+                            <!-- Bottom -->
+                            <rect x="15" y="37" width="70" height="40" rx="2" fill="var(--cream)" stroke="var(--bark)" stroke-width="2"/>
+                            <!-- Play Button -->
+                            <path d="M45 50 L 60 57 L 45 64 Z" fill="var(--terracotta)"/>
+                        </svg>
+                    </div>
+                    <div class="p-8 flex flex-col justify-center">
+                        <div class="tag mb-3">Entertainment</div>
+                        <h3 class="display font-extrabold text-2xl mb-3" style="color:var(--bark)">Film Night</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.7;">We watch everything from beloved classics to new releases. The film sessions happen every 2 weeks and have proved to be a popular relaxed evening activity for the clients. <strong style="color:var(--teal); display:block; margin-top:12px;">See our film list & reviews below!</strong></p>
+                    </div>
+                </a>
+
+                <!-- Bingo Game Card -->
+                <a href="bingo/" class="activity-card feature-card lg:col-span-3 overflow-hidden rounded-2xl shadow-md bg-white flex flex-col sm:flex-row" style="border-radius: 20px; text-decoration:none;color:inherit; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap sm:w-1/4 h-40 sm:h-auto flex items-center justify-center" style="background: linear-gradient(135deg, var(--teal), var(--teal-deep));">
+                        <svg width="150" height="90" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="180" height="100" rx="12" fill="#FFFFFF" opacity="0.95"/>
+                            <rect x="20" y="20" width="36" height="36" rx="6" fill="var(--terracotta)"/>
+                            <rect x="64" y="20" width="36" height="36" rx="6" fill="var(--terracotta)"/>
+                            <rect x="108" y="20" width="36" height="36" rx="6" fill="var(--terracotta)"/>
+                            <rect x="152" y="20" width="36" height="36" rx="6" fill="var(--terracotta)"/>
+                            <rect x="20" y="64" width="36" height="36" rx="6" fill="var(--terracotta)" opacity="0.3"/>
+                            <rect x="64" y="64" width="36" height="36" rx="6" fill="var(--terracotta)"/>
+                            <rect x="108" y="64" width="36" height="36" rx="6" fill="var(--terracotta)" opacity="0.3"/>
+                            <rect x="152" y="64" width="36" height="36" rx="6" fill="var(--terracotta)"/>
+                            <circle cx="38" cy="38" r="6" fill="#FFFFFF"/>
+                            <circle cx="82" cy="38" r="6" fill="#FFFFFF"/>
+                            <circle cx="126" cy="38" r="6" fill="#FFFFFF"/>
+                            <circle cx="170" cy="38" r="6" fill="#FFFFFF"/>
+                            <circle cx="82" cy="82" r="6" fill="#FFFFFF"/>
+                            <circle cx="170" cy="82" r="6" fill="#FFFFFF"/>
+                        </svg>
+                    </div>
+                    <div class="p-8 flex flex-col justify-center">
+                        <div class="tag mb-3">Fun & Games</div>
+                        <h3 class="display font-extrabold text-2xl mb-3" style="color:var(--bark)">🂠 Play Online Bingo</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.7;">A game for everyone! Tap to play a round of interactive Bingo with us. <strong style="color:var(--teal); display:block; margin-top:12px;">Tap here to start playing! 🎲</strong></p>
+                    </div>
+                </a>
+
+                <!-- Word Search Game Card -->
+                <a href="wordsearch.html" class="activity-card feature-card lg:col-span-3 overflow-hidden rounded-2xl shadow-md bg-white flex flex-col sm:flex-row" style="border-radius: 20px; text-decoration:none;color:inherit; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
+                    <div class="img-wrap sm:w-1/4 h-40 sm:h-auto flex items-center justify-center" style="background: linear-gradient(135deg, var(--honey), var(--terracotta));">
+                        <svg width="150" height="90" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of a word search grid">
+                            <rect x="10" y="10" width="180" height="100" rx="12" fill="#FFFFFF" opacity="0.95"/>
+                            <text x="30" y="40" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#1AA37E" text-anchor="middle">W</text>
+                            <text x="70" y="40" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#1AA37E" text-anchor="middle">O</text>
+                            <text x="110" y="40" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#C25528" text-anchor="middle">R</text>
+                            <text x="150" y="40" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#1AA37E" text-anchor="middle">D</text>
+                            <text x="30" y="75" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#1AA37E" text-anchor="middle">S</text>
+                            <text x="70" y="75" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#C25528" text-anchor="middle">E</text>
+                            <text x="110" y="75" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#C25528" text-anchor="middle">A</text>
+                            <text x="150" y="75" font-family="Outfit, sans-serif" font-size="18" font-weight="800" fill="#1AA37E" text-anchor="middle">T</text>
+                            <circle cx="70" cy="68" r="14" fill="none" stroke="#A87816" stroke-width="3" opacity="0.7"/>
+                            <circle cx="110" cy="68" r="14" fill="none" stroke="#A87816" stroke-width="3" opacity="0.7"/>
+                            <circle cx="110" cy="35" r="14" fill="none" stroke="#A87816" stroke-width="3" opacity="0.7"/>
+                        </svg>
+                    </div>
+                    <div class="p-8 flex flex-col justify-center">
+                        <div class="tag mb-3">Fun & Games</div>
+                        <h3 class="display font-extrabold text-2xl mb-3" style="color:var(--bark)">🔍 Play Word Search</h3>
+                        <p class="text-sm" style="color:var(--bark-soft); line-height: 1.7;">A gentle brain workout. Find the hidden words in our interactive word search. <strong style="color:var(--teal); display:block; margin-top:12px;">Tap here to start playing! 🧩</strong></p>
+                    </div>
+                </a>
+            </div>
                     <div class="p-6">
                         <div class="tag mb-3">Outdoor</div>
                         <h3 class="display font-extrabold text-lg mb-2" style="color:var(--bark)">Gardening & Growing</h3>
@@ -916,7 +1146,27 @@
             <div id="weatherWidget" class="weather-widget reveal" role="status" aria-live="polite">
                 <div class="weather-loading">Checking the garden weather...</div>
             </div>
-
+            <!-- Live Traffic Widget -->
+            <div class="card p-6 rounded-2xl shadow-sm mb-8 reveal">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="display font-extrabold text-lg" style="color:var(--bark)">Live Local Traffic</h3>
+                        <p class="text-sm" style="color:var(--bark-soft);">Check the roads around New Pond Hill before you travel.</p>
+                    </div>
+                    <div class="flex items-center gap-2 px-3 py-1 rounded-full" style="background: var(--cream-deep); border: 1px solid var(--border);">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                        </span>
+                        <span class="text-xs font-bold" style="color:var(--bark);">LIVE</span>
+                    </div>
+                </div>
+                
+                <a href="https://www.google.com/maps/@50.96,0.21,12z/data=!5m1!1e1" target="_blank" rel="noopener noreferrer" class="btn btn-primary w-full sm:w-auto" style="background: var(--bark); border: 1px solid var(--bark);">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a1 1 0 0 0-.92.6L3 11v5h3m-3 0h3m10 0v2a1 1 0 1 1-2 0v-2M9 16v2a1 1 0 1 1-2 0v-2"/></svg>
+                    Check Live Traffic
+                </a>
+            </div>
             <div class="grid lg:grid-cols-2 gap-12 items-stretch">
                 <div class="flex flex-col gap-8 reveal">
                     <div class="space-y-6">

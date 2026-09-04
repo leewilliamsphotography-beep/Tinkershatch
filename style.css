@@ -809,10 +809,10 @@ header {
     transform: scale(1.1) rotate(-5deg);
 }
 .brand-name {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 800;
-    font-size: 1.4rem;
-    letter-spacing: -0.02em;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    letter-spacing: 0.5px; /* Bubbly fonts look best with a tiny bit of spacing */
 }
 
 /* Right Nav Group */
@@ -1262,15 +1262,16 @@ header {
     }
 }
 
-/* 7. Typography scaling for comfortable reading on small screens */
-@media (max-width: 640px) {
-    h1, h2, h3 {
-        line-height: 1.15 !important;
-    }
-    p {
-        font-size: 0.95rem !important;
-    }
-}
+/* Typography */
+html{transition:font-size .3s ease}
+html.th-text-xs{font-size:14px!important}
+html.th-text-sm{font-size:15px!important}
+html.th-text-md{font-size:17px!important}
+html.th-text-lg{font-size:20px!important}
+html.th-text-bold{font-size:22px!important}
+body.th-text-bold p,body.th-text-bold h1,body.th-text-bold h2,body.th-text-bold h3,body.th-text-bold h4,body.th-text-bold li,body.th-text-bold a,body.th-text-bold span,body.th-text-bold div{font-weight:700!important}
+body{font-family:'Lexend',system-ui,sans-serif;color:var(--bark);line-height:1.8;transition:background-color .4s ease,color .4s ease}
+.display{font-family:'Poppins',system-ui,sans-serif;letter-spacing:-.02em}
 
 /* 8. Prevent horizontal scrolling caused by long URLs or wide tables */
 body, main, section {
@@ -1428,4 +1429,116 @@ body, main, section {
     .back-to-top-btn { display: none !important; }
     /* Add padding so content isn't hidden behind the bar */
     body { padding-bottom: 64px !important; }
+}
+/* === CUTE WEATHER WIDGET === */
+.weather-widget {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.weather-widget:hover { 
+    transform: translateY(-3px); 
+    box-shadow: var(--shadow-hover); 
+    border-color: var(--teal); 
+}
+.weather-icon {
+    font-size: 4rem; /* Big icon */
+    line-height: 1;
+    animation: weather-bounce 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+@keyframes weather-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+.weather-text h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    color: var(--bark);
+    font-size: 1.2rem;
+    margin-bottom: 4px;
+}
+.weather-text p {
+    color: var(--bark-soft);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+.weather-loading {
+    color: var(--bark-soft);
+    font-style: italic;
+    font-size: 1rem;
+}
+
+/* Mobile fix for weather widget */
+@media (max-width: 640px) {
+    .weather-widget {
+        padding: 20px;
+        gap: 16px;
+    }
+    .weather-icon {
+        font-size: 3rem;
+    }
+}
+/* === FORCED BUBBLY LOGO FONT === */
+.brand-name {
+    font-family: 'Fredoka', sans-serif !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Force the Hero Title */
+h1.display, 
+h1.brand-name {
+    font-family: 'Fredoka', sans-serif !important;
+}
+
+/* Force the Splash Screen Title */
+#splash-screen h1 {
+    font-family: 'Fredoka', sans-serif !important;
+    font-weight: 700 !important;
+}
+
+/* Force the Footer SVG Logo to use the bubbly font */
+footer text {
+    font-family: 'Fredoka', sans-serif !important;
+}
+/* === HERO TEXT SPECIAL EFFECTS === */
+
+/* 1. Gentle Floating Animation for the whole title */
+.hero-title {
+    animation: gentle-float 6s ease-in-out infinite;
+}
+@keyframes gentle-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* 2. Glowing Pulse Effect (100% Mobile Safe) */
+.glow-text {
+    color: var(--teal);
+    animation: glow-pulse 3.5s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+    0%, 100% { 
+        text-shadow: 0 0 5px rgba(14, 140, 108, 0.2), 0 0 10px rgba(14, 140, 108, 0.1);
+    }
+    50% { 
+        text-shadow: 0 0 15px rgba(14, 140, 108, 0.5), 0 0 30px rgba(14, 140, 108, 0.3);
+    }
+}
+
+/* High Contrast Mode Fix */
+body.theme-high-contrast .glow-text {
+    color: var(--teal) !important;
+    text-shadow: none !important;
+    animation: none !important;
 }
