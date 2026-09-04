@@ -1565,7 +1565,7 @@ setTimeout(() => {
         }
     }
 
-    async function updateWeatherFX() {
+    async function     async function updateWeatherFX() {
         try {
             // Open-Meteo API for East Sussex (TN21 0LX approx: 50.96 lat, 0.21 lon)
             const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.96&longitude=0.21&current=weather_code');
@@ -1586,11 +1586,35 @@ setTimeout(() => {
                 currentWeatherCondition = newCondition;
                 console.log("Weather updated to:", newCondition);
                 
-                if (newCondition === 'rain') spawnWeatherEffect('rain', 80);
-                else if (newCondition === 'snow') spawnWeatherEffect('snow', 50);
-                else if (newCondition === 'fog') spawnWeatherEffect('fog', 10);
-                else if (newCondition === 'clear') spawnWeatherEffect('sunbeam', 15);
-                else if (newCondition === 'cloudy') spawnWeatherEffect('fog', 4); // Light haze for cloudy
+                // Dynamically calculate particle count based on screen width
+                // For every 1000px of width, add X amount of particles
+                const screenWidth = window.innerWidth;
+                const widthFactor = Math.max(1, screenWidth / 1000);
+
+                let count = 0;
+                let type = '';
+                
+                if (newCondition === 'rain') {
+                    type = 'rain';
+                    count = Math.floor(40 * widthFactor); // 40 per 1000px
+                } else if (newCondition === 'snow') {
+                    type = 'snow';
+                    count = Math.floor(25 * widthFactor); // 25 per 1000px
+                } else if (newCondition === 'fog') {
+                    type = 'fog';
+                    count = Math.floor(8 * widthFactor);  // 8 per 1000px
+                } else if (newCondition === 'clear') {
+                    type = 'sunbeam';
+                    count = Math.floor(8 * widthFactor);   // 8 per 1000px
+                } else if (newCondition === 'cloudy') {
+                    type = 'fog';
+                    count = Math.floor(4 * widthFactor);  // 4 per 1000px
+                }
+
+                // Cap at 300 particles so we don't crash a 4K monitor
+                count = Math.min(count, 300);
+
+                spawnWeatherEffect(type, count);
             }
         } catch (e) {
             console.log("Weather FX offline or blocked.");

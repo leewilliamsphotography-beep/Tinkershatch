@@ -1083,7 +1083,6 @@ header {
     pointer-events: none;
     overflow: hidden;
 }
-
 /* Rain Effect */
 .weather-el.rain {
     position: absolute;
@@ -1112,6 +1111,25 @@ header {
 @keyframes snowfall {
     0% { transform: translateY(0) translateX(0) rotate(0deg); }
     100% { transform: translateY(110vh) translateX(40px) rotate(360deg); }
+}
+
+/* Desktop Depth Enhancements */
+@media (min-width: 1024px) {
+    /* Makes every 3rd raindrop a background drop (slower, blurry, transparent) */
+    .weather-el.rain:nth-child(3n) {
+        filter: blur(1.5px);
+        opacity: 0.3;
+        height: 40px;
+        animation-duration: calc(var(--duration, 1s) * 1.5); /* Slower fall */
+    }
+    
+    /* Makes every 4th snowflake a background flake */
+    .weather-el.snow:nth-child(4n) {
+        filter: blur(2px);
+        opacity: 0.4;
+        width: 4px;
+        height: 4px;
+    }
 }
 
 /* Fog Effect */
