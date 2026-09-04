@@ -1539,32 +1539,34 @@ setTimeout(() => {
     const weatherFx = document.getElementById('weather-fx');
     let currentWeatherCondition = '';
 
-    function spawnWeatherEffect(type, count) {
+    function     function spawnWeatherEffect(type, count) {
         weatherFx.innerHTML = ''; // Clear old effects
         for (let i = 0; i < count; i++) {
             const el = document.createElement('div');
             el.className = `weather-el ${type}`;
             
-            // Randomize positions and speeds for a natural look
+            // Randomize positions and speeds for a natural, subtle look
             if (type === 'rain') {
                 el.style.left = Math.random() * 100 + 'vw';
-                el.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
-                el.style.opacity = Math.random() * 0.4 + 0.3;
+                el.style.animationDuration = (Math.random() * 0.5 + 0.8) + 's'; // Slowed down slightly
+                el.style.opacity = Math.random() * 0.2 + 0.1; // Much lower opacity (0.1 to 0.3)
             } else if (type === 'snow') {
                 el.style.left = Math.random() * 100 + 'vw';
-                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                el.style.opacity = Math.random() * 0.6 + 0.4;
-                const size = Math.random() * 4 + 2;
+                el.style.animationDuration = (Math.random() * 5 + 8) + 's'; // Slower fall (8s to 13s)
+                el.style.opacity = Math.random() * 0.4 + 0.2; // Lower opacity (0.2 to 0.6)
+                const size = Math.random() * 3 + 1; // Smaller flakes (1px to 4px)
                 el.style.width = size + 'px';
                 el.style.height = size + 'px';
             } else if (type === 'fog') {
                 el.style.top = Math.random() * 100 + 'vh';
                 el.style.animationDuration = (Math.random() * 20 + 20) + 's';
                 el.style.animationDelay = Math.random() * -20 + 's';
+                el.style.opacity = Math.random() * 0.2 + 0.1; // Added subtle opacity for fog
             } else if (type === 'sunbeam') {
                 el.style.left = Math.random() * 100 + 'vw';
                 el.style.animationDuration = (Math.random() * 8 + 8) + 's';
                 el.style.animationDelay = Math.random() * -8 + 's';
+                el.style.opacity = Math.random() * 0.2 + 0.1; // Added subtle opacity for sunbeams
             }
             weatherFx.appendChild(el);
         }
@@ -1600,23 +1602,23 @@ setTimeout(() => {
                 
                 if (newCondition === 'rain') {
                     type = 'rain';
-                    count = Math.floor(40 * widthFactor); // 40 per 1000px
+                    count = Math.floor(15 * widthFactor); // Reduced from 40 to 15 per 1000px
                 } else if (newCondition === 'snow') {
                     type = 'snow';
-                    count = Math.floor(25 * widthFactor); // 25 per 1000px
+                    count = Math.floor(10 * widthFactor); // Reduced from 25 to 10 per 1000px
                 } else if (newCondition === 'fog') {
                     type = 'fog';
-                    count = Math.floor(8 * widthFactor);  // 8 per 1000px
+                    count = Math.floor(4 * widthFactor);  // Reduced from 8 to 4 per 1000px
                 } else if (newCondition === 'clear') {
                     type = 'sunbeam';
-                    count = Math.floor(8 * widthFactor);  // 8 per 1000px
+                    count = Math.floor(4 * widthFactor);  // Reduced from 8 to 4 per 1000px
                 } else if (newCondition === 'cloudy') {
                     type = 'fog';
-                    count = Math.floor(4 * widthFactor);  // 4 per 1000px
+                    count = Math.floor(2 * widthFactor);  // Reduced from 4 to 2 per 1000px
                 }
 
-                // Cap at 300 particles so we don't crash a 4K monitor
-                count = Math.min(count, 300);
+                // Cap at 100 particles so it stays subtle and performant
+                count = Math.min(count, 100);
 
                 spawnWeatherEffect(type, count);
             }
@@ -1624,7 +1626,6 @@ setTimeout(() => {
             console.log("Weather FX offline or blocked.");
         }
     }
-
     // Run immediately, then check every 30 minutes
     updateWeatherFX();
     setInterval(updateWeatherFX, 1800000);
