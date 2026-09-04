@@ -149,6 +149,7 @@
     <a href="#values" class="side-dot" title="Our Values" style="--dot-color: #FF9800;"><span class="nav-label">Our Values</span></a>
     <a href="#activities" class="side-dot" title="Activities" style="--dot-color: #F2C200;"><span class="nav-label">Activities</span></a>
     <a href="#day" class="side-dot" title="A Day With Us" style="--dot-color: #9C27B0;"><span class="nav-label">A Day With Us</span></a>
+    <a href="#menu" class="side-dot" title="What's Cooking?" style="--dot-color: #FF9800;"><span class="nav-label">What's Cooking?</span></a>
     <a href="#events" class="side-dot" title="Events" style="--dot-color: #3F51B5;"><span class="nav-label">Events</span></a>
     <a href="#film-night" class="side-dot" title="Entertainment" style="--dot-color: #F2C200;"><span class="nav-label">Entertainment</span></a>
     <a href="#celebrations" class="side-dot" title="Celebrations" style="--dot-color: #E91E63;"><span class="nav-label">Celebrations</span></a>
@@ -159,7 +160,6 @@
     <a href="#faq" class="side-dot" title="FAQ" style="--dot-color: #00BCD4;"><span class="nav-label">FAQ</span></a>
     <a href="#visit" class="side-dot" title="Visit" style="--dot-color: #E91E63;"><span class="nav-label">Visit</span></a>
 </nav>
-
 <div id="time-date-bar">
     <div style="display:flex; align-items:center; gap: 10px;">
         <span id="liveTimeDate">Loading current time...</span>
@@ -581,6 +581,18 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+    <!-- Refined Menu Section (Restored) -->
+    <section id="menu" class="py-24" style="background:var(--cream)">
+        <div class="max-w-5xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                <span class="tag mb-4 inline-flex">Freshly Prepared</span>
+                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">What's Cooking?</h2>
+                <p class="text-lg" style="color:var(--bark-soft)">Our chef, Joe, prepares fresh, seasonal meals every day. Here's a look at what's on the menu this week.</p>
+                <div id="menuFreshnessBadge" class="freshness-badge" style="display:none;"></div>
+            </div>
+            <div id="menuContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
         </div>
     </section>
 
