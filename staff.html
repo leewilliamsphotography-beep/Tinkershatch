@@ -695,9 +695,20 @@
         }
     }, true);
 
-    // 4. Toast Notification Function
+      // 4. Toast Notification Function (Bulletproof)
     function showToast(message) {
-        const container = document.getElementById('toast-container');
+        let container = document.getElementById('toast-container');
+        // If the container doesn't exist yet, create it on the fly so app.js doesn't crash
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.position = 'fixed';
+            container.style.bottom = '24px';
+            container.style.right = '24px';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
+        }
+        
         const toast = document.createElement('div');
         toast.className = 'toast';
         toast.textContent = message;
@@ -780,18 +791,17 @@
         });
     }
 
-       // 9. Layout Enforcement (Bulletproof for Desktop & Mobile)
+           // 9. Layout Enforcement (Bulletproof for Desktop & Mobile)
     function enforceFullScreenLayout() {
         const modal = document.getElementById('testerModal');
         const content = document.querySelector('.tester-content');
         const login = document.getElementById('testerLogin');
         const menu = document.getElementById('testerMenu');
         
-        // Force modal and content to fill the screen completely
         if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
         if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
         
-        // Handle Login vs Menu visibility
+        // If login is visible, make sure menu is hidden
         if (login && (login.style.display === 'flex' || window.getComputedStyle(login).display === 'flex')) {
             login.style.width = '100%'; 
             login.style.height = '100%'; 
@@ -799,8 +809,10 @@
             return; 
         }
         
+        // If we are past login, force the menu to act like a dashboard row
         if (menu) {
             menu.style.display = 'flex';
+            menu.style.flexDirection = 'row';
             menu.style.width = '100%';
             menu.style.maxWidth = '100%';
             menu.style.height = '100%';
@@ -808,6 +820,10 @@
         }
     }
     
+    enforceFullScreenLayout();
+    // Restore the interval to ensure app.js state changes don't break the layout
+    setInterval(enforceFullScreenLayout, 500); 
+    window.addEventListener('resize', enforceFullScreenLayout);
     enforceFullScreenLayout();
     window.addEventListener('resize', enforceFullScreenLayout);
 
