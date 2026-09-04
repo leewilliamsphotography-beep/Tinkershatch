@@ -1346,7 +1346,7 @@ body, main, section {
 /* === Next Chapter Floating Pill === */
 .next-chapter-pill {
     position: fixed;
-    bottom: 32px;
+    bottom: 88px; /* Sits above the mobile bar by default */
     left: 50%;
     transform: translateX(-50%) translateY(100px);
     background: var(--bark);
@@ -1362,10 +1362,11 @@ body, main, section {
     gap: 10px;
     cursor: pointer;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    z-index: 45;
+    z-index: 999; /* Forced to the very top so it always shows */
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s cubic-bezier(.34,1.56,.64,1);
+    max-width: 90vw;
 }
 .next-chapter-pill.show {
     opacity: 0.95;
@@ -1384,15 +1385,15 @@ body, main, section {
     bottom: 0;
     left: 0;
     right: 0;
-    height: 64px;
-    background: color-mix(in srgb, var(--cream) 85%, transparent);
+    height: 70px;
+    background: color-mix(in srgb, var(--cream) 90%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid var(--border);
-    display: none; /* Hidden on desktop */
+    display: none; 
     justify-content: space-around;
     align-items: center;
-    z-index: 50;
+    z-index: 998;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
 }
 .mbn-btn {
@@ -1415,6 +1416,25 @@ body, main, section {
 .mbn-btn:hover, .mbn-btn:active { color: var(--teal); }
 .mbn-call { color: var(--terracotta); }
 
+/* === Desktop Adjustments === */
+@media (min-width: 769px) {
+    .next-chapter-pill {
+        bottom: 32px; /* Drops to normal bottom on desktop */
+    }
+}
+
+/* === Mobile Adjustments === */
+@media (max-width: 768px) {
+    .mobile-bottom-nav { display: flex !important; }
+    body { padding-bottom: 80px !important; }
+    
+    /* FORCIBLY HIDE ALL OLD BACK TO TOP BUTTONS ON MOBILE */
+    .back-to-top-btn, 
+    #backToTopBtn, 
+    #topBtn { 
+        display: none !important; 
+    }
+}
 /* === Responsive Adjustments === */
 @media (max-width: 768px) {
     .mobile-bottom-nav { 

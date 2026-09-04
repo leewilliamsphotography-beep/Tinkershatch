@@ -1279,70 +1279,6 @@
     });
 </script>
 <script>
-    (function() {
-        // Wait until the DOM is fully loaded before trying to find elements
-        document.addEventListener('DOMContentLoaded', function() {
-            const menuBtn = document.getElementById('menuToggle');
-            const closeBtn = document.getElementById('menuCloseBtn');
-            const panel = document.getElementById('hamburgerMenu');
-            const backdrop = document.getElementById('menuBackdrop');
-
-            // Only run if the menu actually exists on this page
-            if (!menuBtn || !panel) return;
-
-            function openMenu() {
-                panel.classList.add('open');
-                if(backdrop) backdrop.classList.add('open');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeMenu() {
-                panel.classList.remove('open');
-                if(backdrop) backdrop.classList.remove('open');
-                document.body.style.overflow = '';
-            }
-
-            menuBtn.addEventListener('click', openMenu);
-            if(closeBtn) closeBtn.addEventListener('click', closeMenu);
-            if(backdrop) backdrop.addEventListener('click', closeMenu);
-            
-            // Close menu when a link inside it is clicked
-            const menuLinks = panel.querySelectorAll('a');
-            menuLinks.forEach(function(link) {
-                link.addEventListener('click', closeMenu);
-            });
-        });} 
-    )();
-</script>
-<script>
-    (function() {
-        // 0.9715 is -0.5 semitones, 1.029 is +0.5 semitones
-        function getRandomPitch() {
-            const min = 0.9715;
-            const max = 1.029;
-            return parseFloat((Math.random() * (max - min) + min).toFixed(4));
-        }
-
-        // Intercept the native play function
-        const originalPlay = window.HTMLMediaElement.prototype.play;
-        window.HTMLMediaElement.prototype.play = function() {
-            if (this.tagName === 'AUDIO') {
-                this.playbackRate = getRandomPitch();
-            }
-            return originalPlay.apply(this, arguments);
-        };
-
-        // Also listen for the 'playing' event to catch autoplay or loops
-        document.addEventListener('playing', function(e) {
-            if (e.target.tagName === 'AUDIO') {
-                e.target.playbackRate = getRandomPitch();
-            }
-        }, true);
-
-        console.log("Aggressive background audio pitch randomizer loaded.");
-    })();
-</script>
-<script>
 document.addEventListener('DOMContentLoaded', function() {
     const nextBtn = document.getElementById('nextChapterBtn');
     const nextText = document.getElementById('nextChapterText');
@@ -1353,14 +1289,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const winH = window.innerHeight;
         const scrollY = window.scrollY;
         
-        // Hide if at the very top of the page (Hero section)
-        if (scrollY < winH * 0.5) {
+        // Hide if at the very top of the page
+        if (scrollY < winH * 0.3) {
             nextBtn.classList.remove('show');
             return;
         }
 
         let currentSectionIndex = -1;
-        // Find which section is currently passing the middle of the screen
         sections.forEach((sec, index) => {
             const rect = sec.getBoundingClientRect();
             if (rect.top <= winH * 0.5) {
@@ -1391,7 +1326,95 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.addEventListener('scroll', updateNextChapter);
-    window.addEventListener('resize', updateNextChapter);
+    updateNextChapter(); // Run once on load
+
+    nextBtn.addEventListener('click', function() {
+        if (nextText.textContent.includes("Back to Top")) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            let currentSectionIndex = -1;
+            const winH = window.innerHeight;
+            sections.forEach((sec, index) => {
+                const rect = sec.getBoundingClientRect();
+                if (rect.top <= winH * 0.5) {
+                    currentSectionIndex = index;
+                }
+            });
+            if (currentSectionIndex !== -1 && currentSectionIndex < sections.length - 1) {
+                sections[currentSectionIndex + 1].scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+
+    // --- Mobile Bottom Bar Logic ---
+    const mbnMenu = document.getElementById('mbnMenu');
+    const mbnHome = document.getElementById('mbnHome');
+    const menuPanel = document.getElementById('hamburgerMenu');
+    const menuBackdrop = document.getElementById('menuBackdrop');
+
+    if (mbnMenu) {
+        mbnMenu.addEventListener('click', function() {
+            if(menuPanel) menuPanel.classList.add('open');
+            if(menuBackdrop) menuBackdrop.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    if (mbnHome) {
+        mbnHome.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const nextBtn = document.getElementById('nextChapterBtn');
+    const nextText = document.getElementById('nextChapterText');
+    const nextArrow = document.getElementById('nextChapterArrow');
+    const sections = document.querySelectorAll('main section[id]');
+
+    function updateNextChapter() {
+        const winH = window.innerHeight;
+        const scrollY = window.scrollY;
+        
+        // Hide if at the very top of the page
+        if (scrollY < winH * 0.3) {
+            nextBtn.classList.remove('show');
+            return;
+        }
+
+        let currentSectionIndex = -1;
+        sections.forEach((sec, index) => {
+            const rect = sec.getBoundingClientRect();
+            if (rect.top <= winH * 0.5) {
+                currentSectionIndex = index;
+            }
+        });
+
+        // If we are in the last section, change to "Back to Top"
+        if (currentSectionIndex === sections.length - 1) {
+            nextText.textContent = "Back to Top";
+            nextArrow.innerHTML = '<path d="M12 19V5M5 12l7-7 7 7"></path>';
+            nextBtn.classList.add('show');
+            return;
+        }
+
+        // If we are in a valid section, show the next one
+        if (currentSectionIndex !== -1) {
+            const nextSection = sections[currentSectionIndex + 1];
+            let nextTitle = nextSection.querySelector('h2') ? nextSection.querySelector('h2').innerText : nextSection.id;
+            if (nextTitle.length > 25) nextTitle = nextTitle.substring(0, 22) + "...";
+            
+            nextText.textContent = "Next: " + nextTitle;
+            nextArrow.innerHTML = '<path d="M5 12h14M12 5l7 7-7 7"></path>';
+            nextBtn.classList.add('show');
+        } else {
+            nextBtn.classList.remove('show');
+        }
+    }
+
+    window.addEventListener('scroll', updateNextChapter);
+    updateNextChapter(); // Run once on load
 
     nextBtn.addEventListener('click', function() {
         if (nextText.textContent.includes("Back to Top")) {
