@@ -273,6 +273,20 @@
     }
 
     @media (max-width: 768px) {
+                /* Mobile Login Fix */
+        #testerLogin {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            height: auto; /* Allow it to grow */
+            min-height: 100%;
+            align-items: flex-start; /* Push login box to the top */
+            padding-top: 15vh; /* Push it down slightly from the top edge */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .login-box {
+            margin-bottom: 40px; /* Give space at the bottom to scroll up */
+        }
         #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
             flex-direction: column !important; position: relative;
             height: 100%; width: 100%;
@@ -361,7 +375,6 @@
     <div class="tester-content">
         <div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Haven Portal">
     <div class="tester-content">
-        <!-- ADD THIS LINE RIGHT HERE -->
         <div id="staff-seasonal-fx"></div>
         
         <a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">
@@ -370,13 +383,7 @@
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
         </a>
-        <!-- ... rest of login and menu ... -->
-<a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-    </svg>
-</a>        
+        
         <!-- LOGIN VIEW -->
         <div id="testerLogin">
             <div class="login-box">
