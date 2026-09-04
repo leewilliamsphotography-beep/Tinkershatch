@@ -297,3 +297,80 @@ section[id]{scroll-margin-top:110px;padding-top:6rem;padding-bottom:6rem}
     .menu-panel { max-width: 100vw; width: 100vw; }
     .brand-name { display: none; }
 }
+/* === LIGHTBOX / PHOTO CAROUSEL === */
+.lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,12,15,.98);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s ease, visibility .3s ease;
+    perspective: 1500px;
+}
+.lightbox-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+.lightbox-img {
+    max-width: 90vw;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,.6);
+    cursor: pointer;
+    backface-visibility: hidden;
+    transform-origin: center center;
+}
+.lightbox-close, .lightbox-nav-btn {
+    position: absolute;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.15);
+    color: #fff;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background-color .3s ease, border-color .3s ease, transform .3s ease;
+    cursor: pointer;
+    z-index: 2002;
+}
+.lightbox-close { top: 24px; right: 24px; }
+.lightbox-nav-btn { top: 50%; transform: translateY(-50%); z-index: 2001; }
+.lightbox-prev { left: 24px; }
+.lightbox-next { right: 24px; }
+.lightbox-close:hover, .lightbox-nav-btn:hover {
+    background: var(--teal);
+    border-color: var(--teal);
+    transform: scale(1.1) translateY(-50%);
+}
+.lightbox-close:hover { transform: scale(1.1); }
+.lightbox-counter {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: rgba(0,0,0,.6);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Mobile adjustments for lightbox */
+@media (max-width: 768px) {
+    .lightbox-nav-btn { width: 40px; height: 40px; }
+    .lightbox-close { top: 16px; right: 16px; width: 40px; height: 40px; }
+}
