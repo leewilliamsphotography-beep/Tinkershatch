@@ -68,6 +68,79 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- NEW THEMES (CSS & JS) -->
+<style>
+    /* === BULLETPROOF THEME VARIABLES === */
+    /* Redefining all themes here guarantees they work flawlessly */
+    body.theme-light{--cream:#FAFAF8;--cream-deep:#F0EDE8;--bark:#1A2C38;--bark-soft:#5A6B75;--sky:#EFF2F4;--sky-deep:#DCE2E5;--card:#FFFFFF;--border:#E5E2DD;--teal:#0E8C6C;--teal-deep:#097156;--terracotta:#C5632E;--honey:#B8862A;--rose:#A8455C;--sage:#8CB59F;--shadow:0 10px 40px -10px rgba(26, 44, 56, 0.06);--shadow-hover:0 20px 50px -15px rgba(26, 44, 56, 0.12)}
+    body.theme-dark{--cream:#111418;--cream-deep:#1B2026;--bark:#E0E6EA;--bark-soft:#94A3B8;--sky:#1B2026;--sky-deep:#111418;--card:#1B2026;--border:#2D333B;--teal:#0E8C6C;--teal-deep:#097156;--terracotta:#C5632E;--honey:#B8862A;--rose:#A8455C;--sage:#8CB59F;--shadow:0 4px 20px -4px rgba(0,0,0,.2);--shadow-hover:0 12px 30px -8px rgba(0,0,0,.4)}
+    body.theme-warm{--cream:#FAF5EB;--cream-deep:#EDE3CC;--bark:#3B2E25;--bark-soft:#6B5544;--sky:#EFE5D2;--sky-deep:#E5D8BD;--card:#FFFAF0;--border:#E0D2B6;--teal:#0E8C6C;--teal-deep:#097156;--terracotta:#C5632E;--honey:#B8862A;--rose:#A8455C;--sage:#8CB59F;--shadow:0 4px 20px -4px rgba(59,46,37,.08);--shadow-hover:0 12px 30px -8px rgba(59,46,37,.12)}
+    body.theme-soft{--cream:#F8FAFC;--cream-deep:#E2E8F0;--bark:#1E293B;--bark-soft:#475569;--sky:#EFF6FF;--sky-deep:#DBEAFE;--card:#FFF;--border:#CBD5E1;--teal:#0E8C6C;--teal-deep:#097156;--terracotta:#C5632E;--honey:#B8862A;--rose:#A8455C;--sage:#8CB59F;--shadow:0 4px 20px -4px rgba(30,41,59,.05);--shadow-hover:0 12px 30px -8px rgba(30,41,59,.1)}
+    body.theme-high-contrast{--cream:#000;--cream-deep:#000;--bark:#FFF;--bark-soft:#FFF;--sky:#000;--sky-deep:#000;--card:#000;--border:#FFF;--teal:#FFFF00;--teal-deep:#FFFF00;--terracotta:#00FF00;--honey:#FFFF00;--rose:#FF00FF;--sage:#00FFFF;--shadow:none;--shadow-hover:none}
+    
+    /* New Themes */
+    body.theme-ocean{--cream:#04101a;--cream-deep:#0a1c2a;--bark:#e6f0fa;--bark-soft:#8da3b8;--sky:#0a1c2a;--sky-deep:#04101a;--card:#0f2438;--border:#1c3a4f;--teal:#00d4aa;--teal-deep:#00b894;--terracotta:#facc15;--honey:#00a8ff;--rose:#00d4aa;--sage:#1c3a4f;--shadow:0 4px 20px -4px rgba(0,0,0,.4);--shadow-hover:0 12px 30px -8px rgba(0,0,0,.6)}
+    body.theme-ember{--cream:#120505;--cream-deep:#1e0d0d;--bark:#fbeaea;--bark-soft:#b8a0a0;--sky:#1e0d0d;--sky-deep:#120505;--card:#2a1414;--border:#4a2424;--teal:#ff5c5c;--teal-deep:#ff3838;--terracotta:#ff9d5c;--honey:#ffcc5c;--rose:#ff5c5c;--sage:#4a2424;--shadow:0 4px 20px -4px rgba(0,0,0,.4);--shadow-hover:0 12px 30px -8px rgba(0,0,0,.6)}
+    body.theme-cyber{--cream:#050a08;--cream-deep:#0a1410;--bark:#e6f0ea;--bark-soft:#8da3b8;--sky:#0a1410;--sky-deep:#050a08;--card:#0f1f18;--border:#1c3a2c;--teal:#00ff88;--teal-deep:#00cc66;--terracotta:#00ffcc;--honey:#facc15;--rose:#00ff88;--sage:#1c3a2c;--shadow:0 4px 20px -4px rgba(0,0,0,.4);--shadow-hover:0 12px 30px -8px rgba(0,0,0,.6)}
+    body.theme-rose{--cream:#120a10;--cream-deep:#1e0d18;--bark:#fbe6f0;--bark-soft:#b8a0b0;--sky:#1e0d18;--sky-deep:#120a10;--card:#2a1422;--border:#4a2438;--teal:#ff4f8b;--teal-deep:#e0306a;--terracotta:#ff8fab;--honey:#a78bfa;--rose:#ff4f8b;--sage:#4a2438;--shadow:0 4px 20px -4px rgba(0,0,0,.4);--shadow-hover:0 12px 30px -8px rgba(0,0,0,.6)}
+    body.theme-sand{--cream:#faf3e8;--cream-deep:#f5ede0;--bark:#2e2418;--bark-soft:#88785a;--sky:#f5ede0;--sky-deep:#ebe0cd;--card:#ffffff;--border:#e0d4bc;--teal:#d97706;--teal-deep:#b45309;--terracotta:#0284c7;--honey:#65a30d;--rose:#d97706;--sage:#88785a;--shadow:0 4px 20px -4px rgba(46,36,24,.05);--shadow-hover:0 12px 30px -8px rgba(46,36,24,.1)}
+
+    /* Theme Button Colors in Menu */
+    .theme-btn[data-theme="ocean"] { --btn-bg: #04101a; --btn-text: #00d4aa; }
+    .theme-btn[data-theme="ember"] { --btn-bg: #2a1414; --btn-text: #ff5c5c; }
+    .theme-btn[data-theme="cyber"] { --btn-bg: #0a1410; --btn-text: #00ff88; }
+    .theme-btn[data-theme="rose"] { --btn-bg: #2a1422; --btn-text: #ff4f8b; }
+    .theme-btn[data-theme="sand"] { --btn-bg: #f5ede0; --btn-text: #d97706; }
+    .a11y-themes { grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)) !important; gap: 8px; }
+
+    /* === UNIVERSAL AUTO-CONTRAST FIXES === */
+    /* Force #whats-new (Quiet Cove) to auto-contrast for ALL themes */
+    #whats-new { background: linear-gradient(135deg, var(--cream-deep), var(--cream)) !important; color: var(--bark) !important; }
+    #whats-new h2, #whats-new p, #whats-new li, #whats-new h3, #whats-new .text-white { color: var(--bark) !important; }
+    #whats-new svg { stroke: var(--bark) !important; fill: var(--bark) !important; }
+    #whats-new .tag { background: rgba(0,0,0,0.1) !important; color: var(--bark) !important; border-color: rgba(0,0,0,0.2) !important; }
+    #whats-new .ambient-btn { background: rgba(0,0,0,0.05) !important; color: var(--bark) !important; border-color: rgba(0,0,0,0.2) !important; }
+
+    /* Force Footer to auto-contrast for ALL themes */
+    footer, footer p, footer a, footer span, footer div { color: color-mix(in srgb, var(--cream) 75%, transparent) !important; }
+    footer h3, footer .display { color: var(--cream) !important; }
+</style>
+
+<script>
+    // Bulletproof Theme Switcher
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('.theme-btn');
+        if (!btn) return;
+        
+        const theme = btn.dataset.theme;
+        const body = document.body;
+        
+        // Remove ALL theme classes to prevent conflicts
+        const allThemes = ['theme-dark', 'theme-warm', 'theme-soft', 'theme-high-contrast', 'theme-ocean', 'theme-ember', 'theme-cyber', 'theme-rose', 'theme-sand'];
+        allThemes.forEach(t => body.classList.remove(t));
+        body.classList.remove('season-winter', 'season-spring', 'season-summer', 'season-autumn');
+        
+        // Apply the new theme
+        if (theme !== 'light') {
+            body.classList.add('theme-' + theme);
+        }
+        
+        // Save to localStorage so it remembers the theme
+        try { localStorage.setItem('th-theme', theme); } catch(err) {}
+        
+        // Update button active states
+        document.querySelectorAll('.theme-btn').forEach(b => {
+            b.setAttribute('aria-pressed', b.dataset.theme === theme);
+        });
+        
+        // Clear seasonal background if not light theme
+        const seasonalBg = document.getElementById('seasonal-bg');
+        if (seasonalBg && theme !== 'light') {
+            seasonalBg.innerHTML = '';
+        }
+        
+    }, true); // 'true' makes this run BEFORE app.js, guaranteeing it works!
+</script>
 </head>
 <body>
 
@@ -120,14 +193,18 @@
                     </div>
                 </div>
                 <div class="a11y-group">
-                    <label class="a11y-label font-medium text-sm mb-2 block">Theme Mode</label>
-                    <div class="a11y-themes" style="grid-template-columns: repeat(5, 1fr);">
-                        <button class="menu-btn theme-btn" data-theme="light" aria-pressed="true"><span>Light</span></button>
-                        <button class="menu-btn theme-btn" data-theme="dark" aria-pressed="false"><span>Dark</span></button>
-                        <button class="menu-btn theme-btn" data-theme="warm" aria-pressed="false"><span>Warm</span></button>
-                        <button class="menu-btn theme-btn" data-theme="soft" aria-pressed="false"><span>Soft</span></button>
-                        <button class="menu-btn theme-btn" data-theme="high-contrast" aria-pressed="false"><span>Contrast</span></button>
-                    </div>
+                    <div class="a11y-themes">
+    <button class="menu-btn theme-btn" data-theme="Seasonal" aria-pressed="true"><span>Light</span></button>
+    <button class="menu-btn theme-btn" data-theme="dark" aria-pressed="false"><span>Dark</span></button>
+    <button class="menu-btn theme-btn" data-theme="warm" aria-pressed="false"><span>Warm</span></button>
+    <button class="menu-btn theme-btn" data-theme="soft" aria-pressed="false"><span>Soft</span></button>
+    <button class="menu-btn theme-btn" data-theme="high-contrast" aria-pressed="false"><span>Contrast</span></button>
+    <button class="menu-btn theme-btn" data-theme="ocean" aria-pressed="false"><span>Ocean</span></button>
+    <button class="menu-btn theme-btn" data-theme="ember" aria-pressed="false"><span>Ember</span></button>
+    <button class="menu-btn theme-btn" data-theme="cyber" aria-pressed="false"><span>Cyber</span></button>
+    <button class="menu-btn theme-btn" data-theme="rose" aria-pressed="false"><span>Rose</span></button>
+    <button class="menu-btn theme-btn" data-theme="sand" aria-pressed="false"><span>Sand</span></button>
+</div>
                 </div>
             </div>
         </div>
@@ -190,9 +267,10 @@
 <div id="menuBackdrop" class="menu-backdrop"></div>
 
 <div id="hamburgerMenu" class="menu-panel">
-<button id="a11yToggle" style="display: none;" aria-expanded="true" aria-controls="a11yContent"></button>
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    <button id="menuCloseBtn" class="menu-close-btn" aria-label="Close menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
+
 
     <div class="menu-section">
         <h4 class="menu-heading">Navigation</h4>
@@ -214,7 +292,7 @@
                 <div class="a11y-group"><label class="a11y-label">Color Palette</label><div class="a11y-btn-group"><button class="menu-btn palette-btn" data-palette="nature" aria-pressed="true">Nature</button><button class="menu-btn palette-btn" data-palette="ocean" aria-pressed="false">Ocean</button><button class="menu-btn palette-btn" data-palette="sunset" aria-pressed="false">Sunset</button><button class="menu-btn palette-btn" data-palette="berry" aria-pressed="false">Berry</button></div></div>
                 <div class="a11y-group"><label class="a11y-label">Readable Fonts</label><div class="a11y-btn-group"><button class="menu-btn dyslexia-btn" data-dyslexia="off" aria-pressed="true">Standard</button><button class="menu-btn dyslexia-btn" data-dyslexia="on" aria-pressed="false">Dyslexia</button></div></div>
                 <div class="a11y-group mt-4"><label class="a11y-label">Reading Mode</label><div class="a11y-btn-group"><button class="menu-btn bionic-btn" data-bionic="off" aria-pressed="true">Standard</button><button class="menu-btn bionic-btn" data-bionic="on" aria-pressed="false">Bionic</button></div></div>
-                <div class="a11y-group"><label class="a11y-label">Theme Mode</label><div class="a11y-themes"><button class="menu-btn theme-btn" data-theme="light" aria-pressed="true"><span>Light</span></button><button class="menu-btn theme-btn" data-theme="dark" aria-pressed="false"><span>Dark</span></button><button class="menu-btn theme-btn" data-theme="warm" aria-pressed="false"><span>Warm</span></button><button class="menu-btn theme-btn" data-theme="soft" aria-pressed="false"><span>Soft</span></button><button class="menu-btn theme-btn" data-theme="high-contrast" aria-pressed="false"><span>Contrast</span></button></div></div>
+                <div class="a11y-group"><label class="a11y-label">Theme Mode</label><div class="a11y-themes"><button class="menu-btn theme-btn" data-theme="light" aria-pressed="true"><span>Seasonal</span></button><button class="menu-btn theme-btn" data-theme="dark" aria-pressed="false"><span>Dark</span></button><button class="menu-btn theme-btn" data-theme="warm" aria-pressed="false"><span>Warm</span></button><button class="menu-btn theme-btn" data-theme="soft" aria-pressed="false"><span>Soft</span></button><button class="menu-btn theme-btn" data-theme="high-contrast" aria-pressed="false"><span>Contrast</span></button><button class="menu-btn theme-btn" data-theme="ocean" aria-pressed="false"><span>Ocean</span></button><button class="menu-btn theme-btn" data-theme="ember" aria-pressed="false"><span>Ember</span></button><button class="menu-btn theme-btn" data-theme="cyber" aria-pressed="false"><span>Cyber</span></button><button class="menu-btn theme-btn" data-theme="rose" aria-pressed="false"><span>Rose</span></button><button class="menu-btn theme-btn" data-theme="sand" aria-pressed="false"><span>Sand</span></button></div></div>
             </div>
         </div>
     </div>
