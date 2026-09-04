@@ -1389,7 +1389,7 @@ body, main, section {
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid var(--border);
-    display: none;
+    display: none; /* Hidden on desktop */
     justify-content: space-around;
     align-items: center;
     z-index: 50;
@@ -1417,10 +1417,12 @@ body, main, section {
 
 /* === Responsive Adjustments === */
 @media (max-width: 768px) {
-    .mobile-bottom-nav { display: flex; }
+    .mobile-bottom-nav { 
+        display: flex !important; /* Force it to show on mobile */
+    }
     /* Lift the Next Chapter pill above the bottom bar on mobile */
     .next-chapter-pill {
-        bottom: 88px;
+        bottom: 88px !important;
         font-size: 0.85rem;
         padding: 10px 20px;
     }
