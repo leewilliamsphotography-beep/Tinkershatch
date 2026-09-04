@@ -1,6 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- SEO Structured Data for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "additionalType": "NursingAndResidentialCareFacility",
+  "name": "Tinkers Hatch",
+  "description": "A warm and caring home for adults with learning disabilities.",
+  "image": "https://i.ibb.co/0j5q3X2/tinkers-hatch-logo.png",
+  "url": "https://leewilliamsphotography-beep.github.io/Tinkershatch.github.io/",
+  "telephone": "+441435863119",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "New Pond Hill",
+    "addressLocality": "East Sussex",
+    "postalCode": "TN21 0LX",
+    "addressCountry": "GB"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "09:00",
+    "closes": "17:00"
+  },
+  "sameAs": [
+    "https://www.instagram.com/friends_of_tinkers_hatch/"
+  ]
+}
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Tinkers Hatch | A Caring Home in East Sussex</title>
@@ -11,36 +41,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Tinkers Hatch">
 
-    <!-- SEO Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "LocalBusiness",
-      "additionalType": "NursingAndResidentialCareFacility",
-      "name": "Tinkers Hatch",
-      "description": "A warm and caring home for adults with learning disabilities.",
-      "image": "https://i.ibb.co/0j5q3X2/tinkers-hatch-logo.png",
-      "url": "https://leewilliamsphotography-beep.github.io/Tinkershatch.github.io/",
-      "telephone": "+441435863119",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "New Pond Hill",
-        "addressLocality": "East Sussex",
-        "postalCode": "TN21 0LX",
-        "addressCountry": "GB"
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        "opens": "09:00",
-        "closes": "17:00"
-      },
-      "sameAs": ["https://www.instagram.com/friends_of_tinkers_hatch/"]
-    }
-    </script>
-
-    <!-- Social Sharing -->
+    <!-- Social Sharing & SEO -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://leewilliamsphotography-beep.github.io/Tinkershatch.github.io/">
     <meta property="og:title" content="Tinkers Hatch | A Caring Home in East Sussex">
@@ -74,7 +75,7 @@
 <div id="celebrationBadge" style="display:none;"></div>
 <div id="confettiContainer" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;overflow:hidden;"></div>
 
-<!-- Splash Screen -->
+<!-- Refined Splash Screen -->
 <div id="splash-screen">
     <div class="splash-content">
         <h1 class="display font-extrabold tracking-tight" style="font-size:clamp(2rem, 5vw, 3.5rem); color:var(--bark); line-height:1.1;">Welcome to Tinkers Hatch</h1>
@@ -138,13 +139,10 @@
     </div>
 </div>
 
-<div id="version-tag">Version 1.0 (full release)</div>
+<div id="version-tag">Version 3.5.5</div>
 <div id="briefing-bar" style="position: fixed; top: 0; left: 0; right: 0; background: var(--teal); color: #fff; padding: 8px 0; text-align: center; font-size: 0.85rem; font-weight: 600; z-index: 51; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <span id="briefing-text">Loading today's briefing...</span>
 </div>
-
-<!-- Live Weather Effects Container -->
-<div id="weather-fx" class="weather-fx" aria-hidden="true"></div>
 
 <div id="time-date-bar">
     <div style="display:flex; align-items:center; gap: 10px;">
@@ -159,8 +157,12 @@
 
 <div id="progress-bar" class="progress-bar"></div>
 <div id="seasonal-bg" class="seasonal-bg" aria-hidden="true"></div>
+<!-- Live Weather Effects Container -->
+<div id="weather-fx" class="weather-fx" aria-hidden="true"></div>
 <div id="sensory-overlay"></div>
 <div id="toast-container" role="status" aria-live="polite"></div>
+<a href="#main" class="skip-link">Skip to main content</a>
+
 <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Photo gallery viewer">
     <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
     <button class="lightbox-nav-btn lightbox-prev" id="lightboxPrev" aria-label="Previous image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
@@ -168,7 +170,6 @@
     <button class="lightbox-nav-btn lightbox-next" id="lightboxNext" aria-label="Next image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
     <div id="lightboxCounter" class="lightbox-counter">1 / 29</div>
 </div>
-
 <!-- Sleek Header with Hamburger -->
 <header>
     <div class="header-inner">
@@ -187,9 +188,10 @@
 
 <!-- Slide-out Menu Panel -->
 <div id="menuBackdrop" class="menu-backdrop"></div>
+
 <div id="hamburgerMenu" class="menu-panel">
-    <button id="menuCloseBtn" class="menu-close-btn" aria-label="Close Menu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+<button id="a11yToggle" style="display: none;" aria-expanded="true" aria-controls="a11yContent"></button>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
     </button>
 
     <div class="menu-section">
@@ -204,10 +206,9 @@
 
     <div class="menu-section">
         <h4 class="menu-heading">Accessibility</h4>
+        <!-- We keep the existing IDs so app.js still works, but force them open in the panel -->
         <div class="a11y-dropdown" style="display: block;">
-            <div style="display: none;">
-                <button id="a11yToggle" aria-expanded="true" aria-controls="a11yContent"></button>
-            </div>
+            <button id="a11yToggle" style="display: none;" aria-expanded="true" aria-controls="a11yContent"></button>
             <div class="a11y-content show-on-panel" id="a11yContent">
                 <div class="a11y-group"><label class="a11y-label">Text Size</label><div class="a11y-btn-group"><button class="menu-btn font-btn" data-size="xs" aria-pressed="false">XS</button><button class="menu-btn font-btn" data-size="sm" aria-pressed="false">S</button><button class="menu-btn font-btn" data-size="md" aria-pressed="true">M</button><button class="menu-btn font-btn" data-size="lg" aria-pressed="false">L</button><button class="menu-btn font-btn" data-size="bold" aria-pressed="false">Bold</button></div></div>
                 <div class="a11y-group"><label class="a11y-label">Color Palette</label><div class="a11y-btn-group"><button class="menu-btn palette-btn" data-palette="nature" aria-pressed="true">Nature</button><button class="menu-btn palette-btn" data-palette="ocean" aria-pressed="false">Ocean</button><button class="menu-btn palette-btn" data-palette="sunset" aria-pressed="false">Sunset</button><button class="menu-btn palette-btn" data-palette="berry" aria-pressed="false">Berry</button></div></div>
@@ -233,15 +234,16 @@
         </div>
     </div>
 </div>
-
+<button id="backToTopBtn" class="back-to-top-btn" aria-label="Back to top of page" title="Back to top"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<button id="nextSectionBtn" class="next-section-btn" aria-label="Go to next section" style="display:none;"></button>
 <div class="ambient" aria-hidden="true" data-parallax="-0.25" data-pt="fixed"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div></div>
 
 <main id="main" style="padding-top: 120px; position: relative;">
     <div id="dynamic-content-container"></div>
     
-    <!-- Hero Section -->
-    <section class="relative pt-28 pb-24 sm:pt-32 sm:pb-32 overflow-hidden">
-                <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10 text-center">
+    <!-- Clean, Text-Focused Hero Section -->
+    <section class="relative pt-16 pb-24 sm:pt-24 sm:pb-32 overflow-hidden">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8 relative z-10 text-center">
             <span class="tag mb-6 inline-flex items-center gap-2 mx-auto"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 7.5H22l-6.2 4.5 2.4 7.5L12 17l-6.2 4.5 2.4-7.5L2 9.5h7.5z"/></svg>A place to grow, belong, and thrive</span>
             <h1 class="display font-extrabold leading-[1.1] mb-6 tracking-tight" style="font-size:clamp(2.5rem,6vw,4.5rem);color:var(--bark)">Welcome to<br><span style="color:var(--teal)">Tinkers Hatch</span></h1>
             <p class="text-lg sm:text-xl mb-10 max-w-2xl mx-auto" style="color:var(--bark-soft);line-height:1.7">A warm and caring home for adults with learning disabilities. Where every person is known by name, supported with dignity, and celebrated for who they are.</p>
@@ -266,7 +268,7 @@
         </div>
     </section>
 
-    <!-- About Section -->
+    <!-- Refined About Section (No Image, Clean Quote Box) -->
     <section id="about" class="py-24 relative">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="grid lg:grid-cols-12 gap-16 items-center">
@@ -290,7 +292,7 @@
                             <div><div class="font-bold mb-1" style="color:var(--bark)">A real home</div><div class="text-sm" style="color:var(--bark-soft)">Private rooms, personalised spaces, shared kitchens.</div></div>
                         </div>
                         <div class="flex items-start gap-4 p-4 rounded-xl" style="background: var(--cream);">
-                            <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream-deep)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656.126-1.283.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div>
+                            <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:var(--cream-deep)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg></div>
                             <div><div class="font-bold mb-1" style="color:var(--bark)">Small community</div><div class="text-sm" style="color:var(--bark-soft)">24 residents, dedicated keyworkers, real friendships.</div></div>
                         </div>
                         <div class="flex items-start gap-4 p-4 rounded-xl" style="background: var(--cream);">
@@ -307,7 +309,7 @@
         </div>
     </section>
 
-    <!-- Values Section -->
+    <!-- Refined Values Section -->
     <section id="values" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="max-w-3xl mb-16 reveal">
@@ -339,7 +341,7 @@
             </div>
         </div>
     </section>
-        <!-- Refined Activities Section -->
+         <!-- Refined Activities Section -->
     <section id="activities" class="py-24">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="max-w-3xl mb-16 reveal">
@@ -348,8 +350,6 @@
                 <p class="text-lg" style="color:var(--bark-soft); line-height: 1.7;">Our weekly programme is built around what residents enjoy and want to try. Some activities are calm, some are lively — all are optional, all are welcoming.</p>
             </div>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal">
-                
-                <!-- Gardening -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -366,7 +366,6 @@
                     </div>
                 </article>
 
-                <!-- Art -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -385,7 +384,6 @@
                     </div>
                 </article>
 
-                <!-- Cooking -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -403,7 +401,6 @@
                     </div>
                 </article>
 
-                <!-- Music -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -420,7 +417,6 @@
                     </div>
                 </article>
 
-                <!-- Reading -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -435,7 +431,6 @@
                     </div>
                 </article>
 
-                <!-- Outings -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -521,7 +516,7 @@
         </div>
     </section>
 
-    <!-- Day in the Life Section -->
+    <!-- Refined Day in the Life Section -->
     <section id="day" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-4xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-16 reveal">
@@ -572,8 +567,9 @@
             </div>
         </div>
     </section>
+  
 
-    <!-- Events Section -->
+    <!-- Refined Events Section -->
     <section id="events" class="py-24" style="background:var(--cream)">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -600,7 +596,7 @@
         </div>
     </section>
 
-    <!-- Film Night Section -->
+    <!-- Refined Film Night Section -->
     <section id="film-night" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-5xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -623,7 +619,7 @@
         </div>
     </section>
 
-    <!-- Celebrations Section -->
+    <!-- Refined Celebrations Section -->
     <section id="celebrations" class="py-24" style="background:var(--cream)">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -635,7 +631,7 @@
         </div>
     </section>
 
-    <!-- Community Section -->
+    <!-- Refined Community Section -->
     <section id="community" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -647,7 +643,7 @@
         </div>
     </section>
 
-    <!-- Wilf Section -->
+    <!-- Refined Wilf Section -->
     <section id="wilf" class="py-24" style="background:var(--cream)">
         <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
             <div class="reveal">
@@ -681,7 +677,7 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
+    <!-- Refined Gallery Section -->
     <section id="gallery" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-5xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -693,7 +689,7 @@
         </div>
     </section>
 
-    <!-- Social Section -->
+    <!-- Refined Social Section -->
     <section id="social" class="py-24" style="background:var(--cream)">
         <div class="max-w-5xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -703,14 +699,14 @@
             </div>
             <div class="text-center reveal">
                 <a href="https://www.instagram.com/friends_of_tinkers_hatch/" target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-flex items-center gap-2" style="background: var(--terracotta); box-shadow: 0 4px 14px -4px rgba(214,107,60,0.4);">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014,3.668.072,4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                     <span>Follow Us on Instagram</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Mood Section -->
+    <!-- Refined Mood Section -->
     <section id="mood" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-4xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -735,20 +731,7 @@
         </div>
     </section>
 
-    <!-- Menu Section -->
-    <section id="menu" class="py-24" style="background:var(--cream)">
-        <div class="max-w-5xl mx-auto px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
-                <span class="tag mb-4 inline-flex">Freshly Prepared</span>
-                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">What's Cooking?</h2>
-                <p class="text-lg" style="color:var(--bark-soft)">Our chef, Joe, prepares fresh, seasonal meals every day. Here's a look at what's on the menu this week.</p>
-                <div id="menuFreshnessBadge" class="freshness-badge" style="display:none;"></div>
-            </div>
-            <div id="menuContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
-        </div>
-    </section>
-
-    <!-- Whats New Section (Quiet Cove) -->
+    <!-- Refined Whats New Section (Quiet Cove) -->
     <section id="whats-new" class="py-24" style="background: linear-gradient(135deg, #1F2D3A, #2A4055);">
         <div class="summer-particles" id="summerParticles" aria-hidden="true"></div>
         <div class="max-w-6xl mx-auto px-6 lg:px-8 relative z-10 reveal">
@@ -793,7 +776,7 @@
         </div>
     </section>
 
-    <!-- FAQ Section -->
+    <!-- Refined FAQ Section -->
     <section id="faq" class="py-24" style="background:var(--cream)">
         <div class="max-w-3xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
@@ -842,7 +825,7 @@
         </div>
     </section>
 
-    <!-- Visit Section -->
+    <!-- Refined Visit Section -->
     <section id="visit" class="py-20" style="background:var(--cream-deep);position:relative;overflow:hidden;">
         <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-2xl mx-auto mb-10 reveal">
@@ -936,8 +919,20 @@
     </section>
 
 </main>
+  <!-- Refined Menu Section (Restored) -->
+    <section id="menu" class="py-24" style="background:var(--cream)">
+        <div class="max-w-5xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                <span class="tag mb-4 inline-flex">Freshly Prepared</span>
+                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">What's Cooking?</h2>
+                <p class="text-lg" style="color:var(--bark-soft)">Our chef, Joe, prepares fresh, seasonal meals every day. Here's a look at what's on the menu this week.</p>
+                <div id="menuFreshnessBadge" class="freshness-badge" style="display:none;"></div>
+            </div>
+            <div id="menuContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
+        </div>
+    </section>
 
-<!-- Footer -->
+<!-- Refined Footer -->
 <footer class="pt-16 pb-12" style="background:var(--bark);color:rgba(255,255,255,0.7)">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-12 mb-12">
@@ -962,151 +957,237 @@
             </div>
         </div>
         <div class="pt-8 border-t border-white/10 text-center text-xs">
-            <p>&copy; LRDWilliams All rights reserved.</p>
+            <p>&copy; Lee Williams. All rights reserved.</p>
         </div>
     </div>
 </footer>
-
-<!-- Next Chapter Floating Pill -->
-<button id="nextChapterBtn" class="next-chapter-pill" aria-label="Go to next section">
-    <span id="nextChapterText">Next</span>
-    <svg id="nextChapterArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-</button>
-
-<!-- Mobile Sticky Bottom Bar -->
-<div class="mobile-bottom-nav">
-    <button class="mbn-btn" id="mbnMenu">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
-        <span>Menu</span>
-    </button>
-    <button class="mbn-btn" id="mbnHome">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l-9 9h3v8h4v-6h4v6h4v-8h3l-9-9z"/></svg>
-        <span>Home</span>
-    </button>
-    <a href="tel:+441435863119" class="mbn-btn mbn-call">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.57c-2.53-1.29-4.61-3.37-5.9-5.9l1.57-1.57c.27-.27.36-.66.24-1.01-.36-1.11-.56-2.3-.56-3.53 0-.55-.45-1-1-1H4.02C3.47 3.22 3 3.67 3 4.22 3 13.39 10.61 21 19.78 21c.55 0 1-.45 1-1v-3.62c0-.55-.45-1-1-1z"/></svg>
-        <span>Call</span>
-    </a>
+<div id="maintenance-banner" style="display:none; position:fixed; bottom:0; left:0; right:0; background:#f59e0b; color:#152630; text-align:center; padding:12px; z-index:9999; font-weight:600; font-size:0.9rem; box-shadow:0 -4px 10px rgba(0,0,0,0.2);">
+    ⚠️ Maintenance Mode: We are currently performing updates. The site may behave unexpectedly for a few moments.
 </div>
 
-<!-- Hamburger Menu Logic -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const menuBtn = document.getElementById('menuToggle');
-    const closeBtn = document.getElementById('menuCloseBtn');
-    const panel = document.getElementById('hamburgerMenu');
-    const backdrop = document.getElementById('menuBackdrop');
-
-    if (!menuBtn || !panel) return;
-
-    function openMenu() {
-        panel.classList.add('open');
-        if(backdrop) backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeMenu() {
-        panel.classList.remove('open');
-        if(backdrop) backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-    }
-
-    menuBtn.addEventListener('click', openMenu);
-    if(closeBtn) closeBtn.addEventListener('click', closeMenu);
-    if(backdrop) backdrop.addEventListener('click', closeMenu);
+<!-- Admin / Staff Tester Menu -->
+<div id="testerMenu" style="display:none; position:fixed; top:20px; right:20px; width:380px; max-width:calc(100vw - 40px); max-height:80vh; overflow-y:auto; background:#fff; border-radius:16px; box-shadow:0 20px 50px -10px rgba(0,0,0,0.2); z-index:9999; padding:20px; border: 1px solid #eee;">
+    <button id="testerCloseBtn" style="position:absolute; top:15px; right:15px; background:#f3f4f6; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer; font-weight:bold; color:#374151;">✖️</button> 
+    <div class="tester-tabs flex flex-wrap gap-2 mb-6 border-b pb-4">
+        <button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none; padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">👥 Staff</button>
+        <button class="tester-tab-btn" data-tab="featured" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">📢 Featured</button>
+        <button class="tester-tab-btn active" data-tab="photos" style="padding: 6px 12px; border-radius: 8px; background: var(--teal); color: #fff; font-size: 0.85rem; font-weight: 600; cursor: pointer;">📷 Photos</button>
+        <button class="tester-tab-btn" data-tab="events" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">📅 Events</button>
+        <button class="tester-tab-btn" data-tab="menu" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">🍽️ Menu</button>
+        <button class="tester-tab-btn" data-tab="wilf" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">🐾 Wilf</button>
+        <button class="tester-tab-btn" data-tab="updates" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">📝 Updates</button>
+        <button class="tester-tab-btn" data-tab="films" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">🎬 Films</button>
+        <button class="tester-tab-btn" data-tab="community" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">🌟 Community</button>
+        <button class="tester-tab-btn" data-tab="celebrations" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">🎉 Celebrations</button>
+        <button class="tester-tab-btn" data-tab="enquiries" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">✉️ Enquiries</button>
+        <button class="tester-tab-btn" data-tab="briefing" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">📢 Briefing</button>
+        <button class="tester-tab-btn" data-tab="settings" style="padding: 6px 12px; border-radius: 8px; background: #f3f4f6; font-size: 0.85rem; font-weight: 600; cursor: pointer;">⚙️ Settings</button>
+    </div>
     
-    const menuLinks = panel.querySelectorAll('a');
-    menuLinks.forEach(function(link) {
-        link.addEventListener('click', closeMenu);
-    });
-});
-</script>
+    <div id="tab-photos" class="tester-tab-content active" style="margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Gallery Manager</h3>
+        <input type="file" id="photoUploadInput" accept="image/*" class="tester-input block w-full mb-3" style="padding:10px; font-size: .9rem;">
+        <input type="text" id="photoCaptionInput" class="tester-input block w-full mb-3" placeholder="Caption (e.g., Margaret's roses)" style="padding:10px; font-size: .9rem;">
+        <button id="uploadPhotoBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Upload Photo</button>
+        <div id="adminPhotoContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
 
-<!-- Next Chapter & Mobile Bar Logic -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const nextBtn = document.getElementById('nextChapterBtn');
-    const nextText = document.getElementById('nextChapterText');
-    const nextArrow = document.getElementById('nextChapterArrow');
-    const sections = document.querySelectorAll('main section[id]');
+    <div id="tab-events" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Events Manager</h3>
+        <input type="text" id="newEventTitle" class="tester-input block w-full mb-3" placeholder="Event Title (e.g., Coffee Morning)" style="padding:10px; font-size: .9rem;">
+        <input type="date" id="newEventDate" class="tester-input block w-full mb-3" style="padding:10px; font-size: .9rem;">
+        <textarea id="newEventDesc" class="film-review block w-full mb-3" placeholder="Short description..." style="padding:10px; font-size: .9rem; min-height:60px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+        <button id="addEventBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Add Event</button>
+        <div id="adminEventContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
 
-    function updateNextChapter() {
-        const winH = window.innerHeight;
-        const scrollY = window.scrollY;
+    <div id="tab-menu" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Weekly Menu Manager</h3>
+        <p style="font-size:.85rem; color:#6b7280; margin-bottom:12px;">Update the weekly dinners. Changes save instantly to the website.</p>
+        <div id="adminMenuContainer" class="space-y-3 mb-4 text-left p-2 bg-gray-50 rounded-lg"></div>
+        <button id="saveMenuBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Save Weekly Menu</button>
+    </div>
+
+    <div id="tab-wilf" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Wilf Status & Blog</h3>
+        <button id="wilfToggleBtn" class="tester-btn w-full mb-4" style="background:var(--terracotta); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Toggle Wilf Status</button>
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Wilf's Blog Manager</h3>
+        <input type="text" id="newWilfBlogTitle" class="tester-input block w-full mb-3" placeholder="Blog Title (e.g., A day in the garden)" style="padding:10px; font-size: .9rem;">
+        <textarea id="newWilfBlogContent" class="film-review block w-full mb-3" placeholder="Write Wilf's adventure here..." style="padding:10px; font-size: .9rem; min-height:80px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+        <input type="text" id="newWilfBlogImg" class="tester-input block w-full mb-3" placeholder="Optional Image URL (leave blank if none)" style="padding:10px; font-size: .9rem;">
+        <button id="addWilfBlogBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Post Blog</button>
+        <div id="adminWilfBlogContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
+
+    <div id="tab-updates" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">App Updates Manager</h3>
+        <input type="text" id="newUpdateTitle" class="tester-input block w-full mb-3" placeholder="Update title (e.g., New Photos)" style="padding:10px; font-size: .9rem;">
+        <textarea id="newUpdateContent" class="film-review block w-full mb-3" placeholder="What's the new update?" style="padding:10px; font-size: .9rem; min-height:60px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+        <button id="addUpdateBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Post Update</button>
+        <div id="adminUpdateContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
+
+    <div id="tab-films" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Film Night Admin</h3>
+        <div class="flex gap-2 mb-4">
+            <input type="text" id="newFilmTitle" class="tester-input flex-1" placeholder="Enter new film..." style="padding:10px; font-size: .9rem;">
+            <button id="addFilmBtn" class="tester-btn" style="background:var(--teal-deep); color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Add</button>
+        </div>
+        <div id="adminFilmContainer" class="space-y-3 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
+
+    <div id="tab-community" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Community Spotlight Manager</h3>
+        <input type="text" id="newCommunityTitle" class="tester-input block w-full mb-3" placeholder="Title (e.g., Baking together)" style="padding:10px; font-size: .9rem;">
+        <input type="text" id="newCommunityImg" class="tester-input block w-full mb-3" placeholder="Image URL (leave blank if none)" style="padding:10px; font-size: .9rem;">
+        <textarea id="newCommunityDesc" class="film-review block w-full mb-3" placeholder="Share a short story about the community..." style="padding:10px; font-size: .9rem; min-height:80px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+        <button id="addCommunityBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Post Spotlight</button>
+        <div id="adminCommunityContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
+
+    <div id="tab-celebrations" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Add Celebration</h3>
+        <input type="text" id="newCelebName" class="tester-input block w-full mb-3" placeholder="Name (e.g., Margaret)" style="padding:10px; font-size: .9rem;">
+        <select id="newCelebType" class="tester-input block w-full mb-3" style="padding:10px; font-size: .9rem; border: 1px solid #ddd; border-radius: 8px;">
+            <option value="Birthday">Birthday</option>
+            <option value="Anniversary">Anniversary</option>
+        </select>
+        <div class="flex gap-2 mb-3">
+            <select id="newCelebMonth" class="tester-input flex-1" style="padding:10px; font-size: .9rem; border: 1px solid #ddd; border-radius: 8px;">
+                <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option>
+                <option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option>
+                <option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+            </select>
+            <input type="number" id="newCelebDay" class="tester-input flex-1" min="1" max="31" placeholder="Day (1-31)" style="padding:10px; font-size: .9rem; border: 1px solid #ddd; border-radius: 8px;">
+        </div>
+        <button id="addCelebBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Add Celebration</button>
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Manage Celebrations</h3>
+        <div id="adminCelebContainer" class="space-y-3 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
+
+    <div id="tab-featured" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Featured Events Manager</h3>
+        <p style="font-size:.85rem; color:#6b7280; margin-bottom:12px;">Add "Save the Date" banners for family events, fêtes, and holidays. They appear on the live site instantly.</p>
+        <input type="text" id="newFeaturedTitle" class="tester-input block w-full mb-3" placeholder="Event Title (e.g., Summer Fete)" style="padding:10px; font-size: .9rem;">
+        <input type="text" id="newFeaturedDate" class="tester-input block w-full mb-3" placeholder="Date (e.g., August 28th)" style="padding:10px; font-size: .9rem;">
+        <textarea id="newFeaturedDesc" class="film-review block w-full mb-3" placeholder="Short description..." style="padding:10px; font-size: .9rem; min-height:60px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+        <div class="flex gap-2 mb-3">
+            <select id="newFeaturedIcon" class="tester-input flex-1" style="padding:10px; font-size: .9rem; border: 1px solid #ddd; border-radius: 8px;">
+                <option value="🎉">🎉 Party / Celebration</option>
+                <option value="☀️">☀️ Summer / Sun</option>
+                <option value="🍂">🍂 Autumn / Harvest</option>
+                <option value="❄️">❄️ Winter / Snow</option>
+                <option value="🌸">🌸 Spring / Flowers</option>
+                <option value="🎄">🎄 Christmas</option>
+                <option value="🎁">🎁 Gift / Fete</option>
+                <option value="❤️">❤️ Valentine's</option>
+                <option value="🐰">🐰 Easter</option>
+                <option value="🎯">🎯 Target / Games</option>
+                <option value="☕">☕ Coffee / Tea</option>
+                <option value="🍰">🍰 Cake / Baking</option>
+                <option value="🎵">🎵 Music</option>
+                <option value="🌟">🌟 Star</option>
+            </select>
+            <select id="newFeaturedColor" class="tester-input flex-1" style="padding:10px; font-size: .9rem; border: 1px solid #ddd; border-radius: 8px;">
+                <option value="linear-gradient(135deg, #A87816, #C25528)">Default (Warm)</option>
+                <option value="linear-gradient(135deg, #1AA37E, #14856A)">Teal (Calm)</option>
+                <option value="linear-gradient(135deg, #7CA890, #4E8A43)">Spring (Garden)</option>
+                <option value="linear-gradient(135deg, #F2C200, #D9A521)">Summer (Sunny)</option>
+                <option value="linear-gradient(135deg, #C25528, #A63A5A)">Autumn (Harvest)</option>
+                <option value="linear-gradient(135deg, #C0392B, #1F6E43)">Festive (Christmas)</option>
+                <option value="linear-gradient(135deg, #A63A5A, #E0526E)">Valentine's (Love)</option>
+                <option value="linear-gradient(135deg, #9B8BC4, #7CA890)">Easter (Pastel)</option>
+            </select>
+        </div>
+        <div class="flex gap-2 mb-4">
+            <button id="addFeaturedBtn" class="tester-btn flex-1" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Add Featured Event</button>
+            <button id="cancelEditFeaturedBtn" class="tester-btn" style="background:#6b7280; color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; display: none;">Cancel</button>
+        </div>
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        <div id="adminFeaturedContainer" class="space-y-3 mb-4 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        <button id="printFeaturedPostersBtn" class="tester-btn w-full" style="background:#6b7280; color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">🖨️ Print All as A4 Posters</button>
+    </div>
+
+    <div id="tab-staff" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Staff Creation Panel</h3>
+        <p style="font-size:.85rem; color:#6b7280; margin-bottom:12px;">Create a new account for a staff member. They will be able to log in immediately using the email and password you set.</p>
+        <input type="email" id="newStaffEmail" class="tester-input block w-full mb-3" placeholder="New staff email" style="padding:10px; font-size: .9rem;">
+        <input type="password" id="newStaffPass" class="tester-input block w-full mb-3" placeholder="Temporary password" style="padding:10px; font-size: .9rem;">
+        <select id="newStaffRole" class="tester-input block w-full mb-3" style="padding:10px; font-size: .9rem; border: 1px solid #ddd; border-radius: 8px;">
+            <option value="staff">Standard Staff</option>
+            <option value="chef">Chef (Menu access)</option>
+            <option value="admin">Admin (Full access)</option>
+        </select>
+        <button id="createStaffBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Create Account</button>
+    </div>
+
+    <div id="tab-enquiries" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Contact Form Enquiries</h3>
+        <p style="font-size:.85rem; color:#6b7280; margin-bottom:12px;">Messages submitted by visitors on the Visit page.</p>
+        <div id="adminEnquiriesContainer" class="space-y-3 max-h-60 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+    </div>
+
+    <div id="tab-briefing" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Daily Briefing</h3>
+        <p style="font-size:.85rem; color:#6b7280; margin-bottom:12px;">Update the message that appears at the very top of the website for families today. Leave blank to hide it.</p>
+        <input type="text" id="briefingInput" class="tester-input block w-full mb-3" placeholder="e.g., Sunny day! Don't forget the garden walk at 2pm." style="padding:10px; font-size: .9rem;">
+        <button id="saveBriefingBtn" class="tester-btn w-full" style="background:var(--teal-deep); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Save Briefing</button>
+    </div>
+
+    <div id="tab-settings" class="tester-tab-content" style="display:none; margin-bottom: 20px;">
+        <div id="adminOnlyThemes" style="display: none;">
+            <h3 class="display font-extrabold text-lg text-left mb-4">Seasonal Themes</h3>
+            <div class="tester-grid grid grid-cols-2 gap-2 mb-4">
+                <button class="tester-season-btn p-2 rounded-lg bg-gray-100 text-sm font-medium" data-season="winter">Winter</button>
+                <button class="tester-season-btn p-2 rounded-lg bg-gray-100 text-sm font-medium" data-season="spring">Spring</button>
+                <button class="tester-season-btn p-2 rounded-lg bg-gray-100 text-sm font-medium" data-season="summer">Summer</button>
+                <button class="tester-season-btn p-2 rounded-lg bg-gray-100 text-sm font-medium" data-season="autumn">Autumn</button>
+                <button class="tester-season-btn p-2 rounded-lg bg-gray-100 text-sm font-medium col-span-2" data-season="auto">Auto (Current Date)</button>
+            </div>
+            <hr class="tester-divider my-4 border-t border-gray-200">
+        </div>
+
+        <h3 class="display font-extrabold text-lg text-left mb-4">Layout Customizer</h3>
+        <div id="layoutContainer" class="space-y-2 mb-4 max-h-40 overflow-y-auto text-left p-2 bg-gray-50 rounded-lg"></div>
+        <button id="resetLayoutBtn" class="tester-btn w-full mb-4" style="background:#6b7280; color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Reset Layout</button>
         
-        if (scrollY < winH * 0.3) {
-            nextBtn.classList.remove('show');
-            return;
-        }
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        
+        <h3 class="display font-extrabold text-lg text-left mb-4">Live Broadcast</h3>
+        <input type="text" id="broadcastInput" class="tester-input block w-full mb-3" placeholder="Enter message..." style="padding:10px; font-size: .9rem;" aria-label="Broadcast Message">
+        <button id="broadcastBtn" class="tester-btn w-full mb-4" style="background:var(--terracotta); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Broadcast Message</button>
+        
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        
+        <h3 class="display font-extrabold text-lg text-left mb-4">Maintenance Mode</h3>
+        <p style="font-size:.85rem; color:#6b7280; margin-bottom:12px;">Display a banner on the live site letting visitors know updates are underway.</p>
+        <button id="toggleMaintenanceBtn" class="tester-btn w-full mb-4" style="background:var(--terracotta); color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Toggle Maintenance Banner</button>
 
-        let currentSectionIndex = -1;
-        sections.forEach((sec, index) => {
-            const rect = sec.getBoundingClientRect();
-            if (rect.top <= winH * 0.5) {
-                currentSectionIndex = index;
-            }
-        });
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        <h3 class="display font-extrabold text-lg text-left mb-4">Set The Vibe Today</h3>
+        <p style="font-size:.85rem; color:#6b7280; margin-bottom:12px;">Change the website's ambient background to match the atmosphere in the home right now.</p>
+        <div class="tester-grid grid grid-cols-3 gap-2 mb-4">
+            <button class="tester-btn vibe-btn p-2 rounded-lg bg-gray-100 text-sm font-medium" data-vibe="active">☀️ Active</button>
+            <button class="tester-btn vibe-btn p-2 rounded-lg bg-gray-100 text-sm font-medium" data-vibe="calm">🌿 Calm</button>
+            <button class="tester-btn vibe-btn p-2 rounded-lg bg-gray-100 text-sm font-medium" data-vibe="neutral">☕ Neutral</button>
+        </div>
 
-        if (currentSectionIndex === sections.length - 1) {
-            nextText.textContent = "Back to Top";
-            nextArrow.innerHTML = '<path d="M12 19V5M5 12l7-7 7 7"></path>';
-            nextBtn.classList.add('show');
-            return;
-        }
+        <hr class="tester-divider my-4 border-t border-gray-200">
+        <button id="testerLogoutBtn" class="tester-btn w-full" style="background:#ef4444; color: #fff; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;">Log Out</button>
+    </div>
+</div>
 
-        if (currentSectionIndex !== -1) {
-            const nextSection = sections[currentSectionIndex + 1];
-            let nextTitle = nextSection.querySelector('h2') ? nextSection.querySelector('h2').innerText : nextSection.id;
-            if (nextTitle.length > 25) nextTitle = nextTitle.substring(0, 22) + "...";
-            
-            nextText.textContent = "Next: " + nextTitle;
-            nextArrow.innerHTML = '<path d="M5 12h14M12 5l7 7-7 7"></path>';
-            nextBtn.classList.add('show');
-        } else {
-            nextBtn.classList.remove('show');
-        }
-    }
+<!-- Hidden container for printing the schedule -->
+<div id="printableSchedule" style="display: none;"></div>
 
-    window.addEventListener('scroll', updateNextChapter);
-    updateNextChapter();
+<!-- Hidden container for printing A4 Featured Posters -->
+<div id="featuredPrintArea" aria-hidden="true"></div>
 
-    nextBtn.addEventListener('click', function() {
-        if (nextText.textContent.includes("Back to Top")) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            let currentSectionIndex = -1;
-            const winH = window.innerHeight;
-            sections.forEach((sec, index) => {
-                const rect = sec.getBoundingClientRect();
-                if (rect.top <= winH * 0.5) {
-                    currentSectionIndex = index;
-                }
-            });
-            if (currentSectionIndex !== -1 && currentSectionIndex < sections.length - 1) {
-                sections[currentSectionIndex + 1].scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    });
-
-    const mbnMenu = document.getElementById('mbnMenu');
-    const mbnHome = document.getElementById('mbnHome');
-    const menuPanel = document.getElementById('hamburgerMenu');
-    const menuBackdrop = document.getElementById('menuBackdrop');
-
-    if (mbnMenu) {
-        mbnMenu.addEventListener('click', function() {
-            if(menuPanel) menuPanel.classList.add('open');
-            if(menuBackdrop) menuBackdrop.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        });
-    }
-    if (mbnHome) {
-        mbnHome.addEventListener('click', function() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-});
-</script>
+<!-- Code Splitting: JavaScript -->
+<script src="app.js" defer></script>
 
 <!-- Main Supabase & App Logic Script -->
 <script type="module">
@@ -1115,6 +1196,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const supabaseKey = 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
     
+    // Expose supabase to the global window so app.js can use it
     window.supabaseClient = supabase;
 
     // 2. USER GREETING FUNCTION
@@ -1184,6 +1266,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.remove('season-winter', 'season-spring', 'season-summer', 'season-autumn');
             
             if (season === 'auto') {
+            
                 const month = new Date().getMonth();
                 if (month === 11 || month === 0 || month === 1) document.body.classList.add('season-winter');
                 else if (month >= 2 && month <= 4) document.body.classList.add('season-spring');
@@ -1195,6 +1278,176 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 </script>
-<script src="app.js" defer></script>
+<script>
+    (function() {
+        // Wait until the DOM is fully loaded before trying to find elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.getElementById('menuToggle');
+            const closeBtn = document.getElementById('menuCloseBtn');
+            const panel = document.getElementById('hamburgerMenu');
+            const backdrop = document.getElementById('menuBackdrop');
+
+            // Only run if the menu actually exists on this page
+            if (!menuBtn || !panel) return;
+
+            function openMenu() {
+                panel.classList.add('open');
+                if(backdrop) backdrop.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMenu() {
+                panel.classList.remove('open');
+                if(backdrop) backdrop.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+
+            menuBtn.addEventListener('click', openMenu);
+            if(closeBtn) closeBtn.addEventListener('click', closeMenu);
+            if(backdrop) backdrop.addEventListener('click', closeMenu);
+            
+            // Close menu when a link inside it is clicked
+            const menuLinks = panel.querySelectorAll('a');
+            menuLinks.forEach(function(link) {
+                link.addEventListener('click', closeMenu);
+            });
+        });} 
+    )();
+</script>
+<script>
+    (function() {
+        // 0.9715 is -0.5 semitones, 1.029 is +0.5 semitones
+        function getRandomPitch() {
+            const min = 0.9715;
+            const max = 1.029;
+            return parseFloat((Math.random() * (max - min) + min).toFixed(4));
+        }
+
+        // Intercept the native play function
+        const originalPlay = window.HTMLMediaElement.prototype.play;
+        window.HTMLMediaElement.prototype.play = function() {
+            if (this.tagName === 'AUDIO') {
+                this.playbackRate = getRandomPitch();
+            }
+            return originalPlay.apply(this, arguments);
+        };
+
+        // Also listen for the 'playing' event to catch autoplay or loops
+        document.addEventListener('playing', function(e) {
+            if (e.target.tagName === 'AUDIO') {
+                e.target.playbackRate = getRandomPitch();
+            }
+        }, true);
+
+        console.log("Aggressive background audio pitch randomizer loaded.");
+    })();
+</script>
+<!-- Next Chapter Floating Pill -->
+<button id="nextChapterBtn" class="next-chapter-pill" aria-label="Go to next section">
+    <span id="nextChapterText">Next</span>
+    <svg id="nextChapterArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+</button>
+
+<!-- Mobile Sticky Bottom Bar -->
+<div class="mobile-bottom-nav">
+    <button class="mbn-btn" id="mbnMenu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <span>Menu</span>
+    </button>
+    <button class="mbn-btn" id="mbnHome">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+    </button>
+    <a href="tel:+441435863119" class="mbn-btn mbn-call">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Call</span>
+    </a>
+</div>
+<script>
+(function() {
+    // --- Next Chapter Logic ---
+    const nextBtn = document.getElementById('nextChapterBtn');
+    const nextText = document.getElementById('nextChapterText');
+    const nextArrow = document.getElementById('nextChapterArrow');
+    const sections = document.querySelectorAll('main section[id]');
+
+    function updateNextChapter() {
+        const scrollY = window.scrollY;
+        const winH = window.innerHeight;
+        
+        if (scrollY < 150) {
+            nextBtn.classList.remove('show');
+            return;
+        }
+
+        let currentSectionIndex = -1;
+        sections.forEach((sec, index) => {
+            const rect = sec.getBoundingClientRect();
+            if (rect.top <= winH * 0.3 && rect.bottom >= winH * 0.3) {
+                currentSectionIndex = index;
+            }
+        });
+
+        // If near the bottom of the page, switch to "Back to Top"
+        if (window.innerHeight + scrollY >= document.body.offsetHeight - 200) {
+            nextText.textContent = "Back to Top";
+            nextArrow.innerHTML = '<path d="M12 19V5M5 12l7-7 7 7"></path>';
+            nextBtn.classList.add('show');
+            return;
+        }
+
+        if (currentSectionIndex !== -1 && currentSectionIndex < sections.length - 1) {
+            const nextSection = sections[currentSectionIndex + 1];
+            let nextTitle = nextSection.querySelector('h2') ? nextSection.querySelector('h2').textContent : nextSection.id;
+            if (nextTitle.length > 22) nextTitle = nextTitle.substring(0, 20) + "...";
+            
+            nextText.textContent = "Next: " + nextTitle;
+            nextArrow.innerHTML = '<path d="M5 12h14M12 5l7 7-7 7"></path>';
+            nextBtn.classList.add('show');
+        } else {
+            nextBtn.classList.remove('show');
+        }
+    }
+
+    window.addEventListener('scroll', updateNextChapter);
+    
+    nextBtn.addEventListener('click', function() {
+        if (nextText.textContent.includes("Back to Top")) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            let currentSectionIndex = -1;
+            const winH = window.innerHeight;
+            sections.forEach((sec, index) => {
+                const rect = sec.getBoundingClientRect();
+                if (rect.top <= winH * 0.3 && rect.bottom >= winH * 0.3) {
+                    currentSectionIndex = index;
+                }
+            });
+            if (currentSectionIndex !== -1 && currentSectionIndex < sections.length - 1) {
+                sections[currentSectionIndex + 1].scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+
+    // --- Mobile Bottom Bar Logic ---
+    const mbnMenu = document.getElementById('mbnMenu');
+    const mbnHome = document.getElementById('mbnHome');
+    const menuPanel = document.getElementById('hamburgerMenu');
+    const menuBackdrop = document.getElementById('menuBackdrop');
+
+    if (mbnMenu) {
+        mbnMenu.addEventListener('click', function() {
+            if(menuPanel) menuPanel.classList.add('open');
+            if(menuBackdrop) menuBackdrop.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    if (mbnHome) {
+        mbnHome.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+})();
+</script>
 </body>
-</html>
+</html> 
