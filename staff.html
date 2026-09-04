@@ -68,16 +68,14 @@
     .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; }
     .tester-trigger, .ambient { display: none !important; }
 
-    /* === Login Screen (Fixed for Mobile Keyboard) === */
+    /* === Login Screen === */
     #testerLogin {
         position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
         display: flex; align-items: center; justify-content: center;
         background: radial-gradient(circle at 0% 0%, var(--accent-soft), transparent 40%), 
                     radial-gradient(circle at 100% 100%, var(--accent-soft), transparent 40%), 
                     var(--bg);
-        overflow-y: auto; 
-        padding: 20px 0;
-        box-sizing: border-box;
+        overflow-y: auto; padding: 20px 0; box-sizing: border-box;
     }
     .login-box {
         background: var(--surface); border: 1px solid var(--border); padding: 40px;
@@ -218,7 +216,7 @@
     #tab-haven.tester-tab-content { padding: 0 !important; background: var(--bg) !important; }
     #tab-haven iframe { width: 100%; height: 100%; border: none; }
 
-        /* === Mobile Navigation (App Drawer) === */
+    /* === Mobile Navigation (App Drawer) === */
     #mobileNavToggle {
         display: none; position: absolute; top: 16px; left: 16px; z-index: 200;
         background: var(--surface); border: 1px solid var(--border); color: var(--fg);
@@ -231,12 +229,10 @@
 
     @media (max-width: 768px) {
         #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
-            flex-direction: column !important; 
-            position: relative;
-            height: 100%;
-            width: 100%;
+            flex-direction: column !important; position: relative;
+            height: 100%; width: 100%;
         }
-        #mobileNavToggle { display: block; flex-shrink: 0; }
+        #mobileNavToggle { display: block; }
         
         .tester-tabs {
             position: fixed; top: 0; left: 0; 
@@ -255,36 +251,23 @@
         .tester-tab-btn { white-space: nowrap !important; padding: 12px 16px !important; font-size: 0.9rem !important; }
         
         .tester-tab-content { 
-            padding: 20px !important; 
+            padding: 70px 20px 20px 20px !important; 
             flex: 1; 
-            min-height: 0; /* Crucial for flexbox scrolling */
-            height: auto; 
+            min-height: 0;
+            height: 100%; 
             width: 100%;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
             box-sizing: border-box !important;
-            margin-top: 50px; /* Push content below the toggle button */
         }
 
         /* Fix inputs and cards so they don't overflow the screen */
-        .admin-card { 
-            padding: 16px; 
-            box-sizing: border-box; 
-        }
-        .tester-input { 
-            width: 100%; 
-            box-sizing: border-box; 
-        }
-        .flex.gap-2 { 
-            flex-wrap: wrap; 
-        }
-        .flex.gap-2 > * { 
-            flex: 1 1 100%; 
-            margin-bottom: 8px; 
-        }
+        .admin-card { padding: 16px; box-sizing: border-box; }
+        .tester-input { width: 100%; box-sizing: border-box; }
+        .flex.gap-2 { flex-wrap: wrap; }
+        .flex.gap-2 > * { flex: 1 1 100%; margin-bottom: 8px; }
 
-        #tab-haven.tester-tab-content { padding: 0 !important; margin-top: 0; }
-        #tab-haven iframe { height: 100%; width: 100%; border: none; }
+        #tab-haven.tester-tab-content { padding: 60px 0 0 0 !important; }
+        #tab-haven iframe { height: calc(100% - 60px); width: 100%; border: none; }
     }
 
     /* === Toast Notifications === */
@@ -450,10 +433,11 @@
             </div>
 
             <div id="tab-menu" class="tester-tab-content">
-                <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save automatically when you click away.</p></div>
+                <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save instantly to the website.</p></div>
                 <div class="admin-card">
                     <div id="adminMenuContainer" class="space-y-4 text-left"></div>
-                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 24px; display: none;">Save Weekly Menu</button>
+                    <!-- Restored visible Save Button so app.js can bind to it properly -->
+                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 24px;">Save Weekly Menu</button>
                 </div>
             </div>
 
@@ -654,7 +638,7 @@
 <div id="toast-container"></div>
 <div id="featuredPrintArea" aria-hidden="true"></div>
 
-<!-- FIX 1: DEFINE TOAST & BLOCK APP.JS MUSIC *BEFORE* APP.JS LOADS -->
+<!-- DEFINE TOAST & BLOCK APP.JS MUSIC *BEFORE* APP.JS LOADS -->
 <script>
     function showToast(message) {
         let container = document.getElementById('toast-container');
@@ -697,7 +681,7 @@
 </script>
 <script src="app.js"></script>
 
-<!-- FIX 2: BULLETPROOF LAYOUT & MOBILE MENU SCRIPT -->
+<!-- BULLETPROOF LAYOUT & MOBILE MENU SCRIPT -->
 <script>
     // 1. Take over tab switching so app.js doesn't break it
     document.addEventListener('click', function(e) {
@@ -952,19 +936,7 @@
     setupEmptyStateObserver('adminCommunityContainer', '🏘️ No community spotlights yet.');
     setupEmptyStateObserver('adminCelebContainer', '🎉 No upcoming celebrations.');
 
-    // 12. Auto-Save Weekly Menu on Blur
-    const menuContainer = document.getElementById('adminMenuContainer');
-    const saveMenuBtn = document.getElementById('saveMenuBtn');
-    if (menuContainer && saveMenuBtn) {
-        menuContainer.addEventListener('blur', (e) => {
-            if (e.target.matches('input, textarea')) {
-                showToast('Saving menu...');
-                saveMenuBtn.click();
-            }
-        }, true);
-    }
-
-    // 13. Background Music Toggle Logic
+    // 12. Background Music Toggle Logic
     const musicToggleBtn = document.getElementById('musicToggleBtn');
     const bgMusic = document.getElementById('havenAmbientAudio');
     const musicIconPlay = document.getElementById('musicIconPlay');
