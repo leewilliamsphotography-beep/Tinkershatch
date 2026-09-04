@@ -1539,7 +1539,7 @@ setTimeout(() => {
     const weatherFx = document.getElementById('weather-fx');
     let currentWeatherCondition = '';
 
-    function     function spawnWeatherEffect(type, count) {
+      function spawnWeatherEffect(type, count) {
         weatherFx.innerHTML = ''; // Clear old effects
         for (let i = 0; i < count; i++) {
             const el = document.createElement('div');
