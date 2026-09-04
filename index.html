@@ -1342,5 +1342,112 @@
         console.log("Aggressive background audio pitch randomizer loaded.");
     })();
 </script>
+<!-- Next Chapter Floating Pill -->
+<button id="nextChapterBtn" class="next-chapter-pill" aria-label="Go to next section">
+    <span id="nextChapterText">Next</span>
+    <svg id="nextChapterArrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+</button>
+
+<!-- Mobile Sticky Bottom Bar -->
+<div class="mobile-bottom-nav">
+    <button class="mbn-btn" id="mbnMenu">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <span>Menu</span>
+    </button>
+    <button class="mbn-btn" id="mbnHome">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+    </button>
+    <a href="tel:+441435863119" class="mbn-btn mbn-call">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Call</span>
+    </a>
+</div>
+<script>
+(function() {
+    // --- Next Chapter Logic ---
+    const nextBtn = document.getElementById('nextChapterBtn');
+    const nextText = document.getElementById('nextChapterText');
+    const nextArrow = document.getElementById('nextChapterArrow');
+    const sections = document.querySelectorAll('main section[id]');
+
+    function updateNextChapter() {
+        const scrollY = window.scrollY;
+        const winH = window.innerHeight;
+        
+        if (scrollY < 150) {
+            nextBtn.classList.remove('show');
+            return;
+        }
+
+        let currentSectionIndex = -1;
+        sections.forEach((sec, index) => {
+            const rect = sec.getBoundingClientRect();
+            if (rect.top <= winH * 0.3 && rect.bottom >= winH * 0.3) {
+                currentSectionIndex = index;
+            }
+        });
+
+        // If near the bottom of the page, switch to "Back to Top"
+        if (window.innerHeight + scrollY >= document.body.offsetHeight - 200) {
+            nextText.textContent = "Back to Top";
+            nextArrow.innerHTML = '<path d="M12 19V5M5 12l7-7 7 7"></path>';
+            nextBtn.classList.add('show');
+            return;
+        }
+
+        if (currentSectionIndex !== -1 && currentSectionIndex < sections.length - 1) {
+            const nextSection = sections[currentSectionIndex + 1];
+            let nextTitle = nextSection.querySelector('h2') ? nextSection.querySelector('h2').textContent : nextSection.id;
+            if (nextTitle.length > 22) nextTitle = nextTitle.substring(0, 20) + "...";
+            
+            nextText.textContent = "Next: " + nextTitle;
+            nextArrow.innerHTML = '<path d="M5 12h14M12 5l7 7-7 7"></path>';
+            nextBtn.classList.add('show');
+        } else {
+            nextBtn.classList.remove('show');
+        }
+    }
+
+    window.addEventListener('scroll', updateNextChapter);
+    
+    nextBtn.addEventListener('click', function() {
+        if (nextText.textContent.includes("Back to Top")) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            let currentSectionIndex = -1;
+            const winH = window.innerHeight;
+            sections.forEach((sec, index) => {
+                const rect = sec.getBoundingClientRect();
+                if (rect.top <= winH * 0.3 && rect.bottom >= winH * 0.3) {
+                    currentSectionIndex = index;
+                }
+            });
+            if (currentSectionIndex !== -1 && currentSectionIndex < sections.length - 1) {
+                sections[currentSectionIndex + 1].scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+
+    // --- Mobile Bottom Bar Logic ---
+    const mbnMenu = document.getElementById('mbnMenu');
+    const mbnHome = document.getElementById('mbnHome');
+    const menuPanel = document.getElementById('hamburgerMenu');
+    const menuBackdrop = document.getElementById('menuBackdrop');
+
+    if (mbnMenu) {
+        mbnMenu.addEventListener('click', function() {
+            if(menuPanel) menuPanel.classList.add('open');
+            if(menuBackdrop) menuBackdrop.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        });
+    }
+    if (mbnHome) {
+        mbnHome.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+})();
+</script>
 </body>
 </html> 
