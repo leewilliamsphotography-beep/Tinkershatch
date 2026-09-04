@@ -144,22 +144,6 @@
     <span id="briefing-text">Loading today's briefing...</span>
 </div>
 
-<nav id="side-nav" aria-label="Main section navigation">
-    <a href="#about" class="side-dot" title="About Us" style="--dot-color: #FF5252;"><span class="nav-label">About Us</span></a>
-    <a href="#values" class="side-dot" title="Our Values" style="--dot-color: #FF9800;"><span class="nav-label">Our Values</span></a>
-    <a href="#activities" class="side-dot" title="Activities" style="--dot-color: #F2C200;"><span class="nav-label">Activities</span></a>
-    <a href="#day" class="side-dot" title="A Day With Us" style="--dot-color: #9C27B0;"><span class="nav-label">A Day With Us</span></a>
-    <a href="#menu" class="side-dot" title="What's Cooking?" style="--dot-color: #FF9800;"><span class="nav-label">What's Cooking?</span></a>
-    <a href="#events" class="side-dot" title="Events" style="--dot-color: #3F51B5;"><span class="nav-label">Events</span></a>
-    <a href="#film-night" class="side-dot" title="Entertainment" style="--dot-color: #F2C200;"><span class="nav-label">Entertainment</span></a>
-    <a href="#celebrations" class="side-dot" title="Celebrations" style="--dot-color: #E91E63;"><span class="nav-label">Celebrations</span></a>
-    <a href="#community" class="side-dot" title="Community" style="--dot-color: #4CAF50;"><span class="nav-label">Community</span></a>
-    <a href="#wilf" class="side-dot" title="Wilf" style="--dot-color: #A87816;"><span class="nav-label">Wilf</span></a>
-    <a href="#gallery" class="side-dot" title="Photography" style="--dot-color: #2196F3;"><span class="nav-label">Photography</span></a>
-    <a href="#whats-new" class="side-dot" title="What's New" style="--dot-color: #3F51B5;"><span class="nav-label">What's New</span></a>
-    <a href="#faq" class="side-dot" title="FAQ" style="--dot-color: #00BCD4;"><span class="nav-label">FAQ</span></a>
-    <a href="#visit" class="side-dot" title="Visit" style="--dot-color: #E91E63;"><span class="nav-label">Visit</span></a>
-</nav>
 <div id="time-date-bar">
     <div style="display:flex; align-items:center; gap: 10px;">
         <span id="liveTimeDate">Loading current time...</span>
@@ -1356,54 +1340,6 @@
         }, true);
 
         console.log("Aggressive background audio pitch randomizer loaded.");
-    })();
-</script>
-<script>
-    (function() {
-        const sideDots = document.querySelectorAll('#side-nav .side-dot');
-        const sections = document.querySelectorAll('main section[id]');
-        
-        // 1. Clear any active states immediately on page load
-        sideDots.forEach(dot => dot.classList.remove('active'));
-
-        // 2. Override the scroll logic to only highlight when scrolled down
-        let ticking = false;
-
-        function spy() {
-            // If we are at the very top (Hero section), remove all active dots
-            if (window.scrollY < 250) {
-                sideDots.forEach(dot => dot.classList.remove('active'));
-                ticking = false;
-                return;
-            }
-
-            let currentId = '';
-            // Find the section currently in the middle of the screen
-            const triggerLine = window.scrollY + (window.innerHeight * 0.4);
-
-            sections.forEach(section => {
-                if (section.offsetTop <= triggerLine) {
-                    currentId = section.id;
-                }
-            });
-
-            sideDots.forEach(dot => {
-                if (dot.getAttribute('href') === `#${currentId}`) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            });
-            ticking = false;
-        }
-
-        // Listen for scrolling and run the spy smoothly using requestAnimationFrame
-        window.addEventListener('scroll', function() {
-            if (!ticking) {
-                window.requestAnimationFrame(spy);
-                ticking = true;
-            }
-        });
     })();
 </script>
 </body>
