@@ -115,7 +115,7 @@ const SplashModule = (function () {
       document.body.style.overflow = 'auto';
     } else {
       document.body.style.overflow = 'hidden';
-    } // <--- THIS WAS MISSING!
+    }
 
     enterBtn.addEventListener('click', closeSplash);
     document.querySelectorAll('.splash-shortcut').forEach(btn => {
@@ -129,7 +129,7 @@ const SplashModule = (function () {
     if (versionTag) versionTag.textContent = 'Version 3.5';
   }
   return { init };
-})(); // <--- THIS WAS MISSING!
+})();
 
 const LayoutModule=(function(){const defaultOrder=['about','values','activities','featured-events','film-night','wilf','gallery','social','day','whats-new','faq','visit','changelog'];const key='th-layout-order';let currentOrder=[];function getOrder(){try{const saved=JSON.parse(safeGet(key));if(Array.isArray(saved)&&saved.length===defaultOrder.length){return saved;}}catch(e){}return[...defaultOrder];}function saveOrder(order){safeSet(key,JSON.stringify(order));}function applyLayout(order){const main=document.getElementById('main');const nav=document.getElementById('side-nav');if(!main||!nav)return;order.forEach(id=>{const section=document.getElementById(id);if(section){main.appendChild(section);}});order.forEach(id=>{const dot=nav.querySelector(`a[href="#${id}"]`);if(dot){nav.appendChild(dot);}});}function renderAdminUI(){const container=document.getElementById('layoutContainer');if(!container)return;container.innerHTML='';currentOrder.forEach((id,index)=>{const item=document.createElement('div');item.className='admin-film-item flex justify-between items-center';item.style.padding='8px 12px';const title=id.replace(/-/g,' ').replace(/\b\w/g,l=>l.toUpperCase());item.innerHTML=`<span style="text-transform:capitalize;font-size:.9rem">${title}</span><div class="flex gap-2"><button class="tester-btn layout-up" data-index="${index}" style="width: auto; margin: 0; padding: 4px 10px; font-size: 0.8rem; background: var(--cream-deep); color: var(--bark); border: 1px solid var(--border); ${index === 0 ? 'opacity: 0.3; pointer-events: none;' : ''}">▲</button><button class="tester-btn layout-down" data-index="${index}" style="width: auto; margin: 0; padding: 4px 10px; font-size: 0.8rem; background: var(--cream-deep); color: var(--bark); border: 1px solid var(--border); ${index === currentOrder.length - 1 ? 'opacity: 0.3; pointer-events: none;' : ''}">▼</button></div>`;container.appendChild(item);});container.querySelectorAll('.layout-up').forEach(btn=>{btn.addEventListener('click',(e)=>{const idx=parseInt(e.target.dataset.index);if(idx>0){[currentOrder[idx-1],currentOrder[idx]]=[currentOrder[idx],currentOrder[idx-1]];saveOrder(currentOrder);applyLayout(currentOrder);renderAdminUI();}});});container.querySelectorAll('.layout-down').forEach(btn=>{btn.addEventListener('click',(e)=>{const idx=parseInt(e.target.dataset.index);if(idx<currentOrder.length-1){[currentOrder[idx+1],currentOrder[idx]]=[currentOrder[idx],currentOrder[idx+1]];saveOrder(currentOrder);applyLayout(currentOrder);renderAdminUI();}});});}function resetLayout(){currentOrder=[...defaultOrder];saveOrder(currentOrder);applyLayout(currentOrder);renderAdminUI();ToastModule.show("Layout reto default!");}function init(){currentOrder=getOrder();applyLayout(currentOrder);const resetBtn=document.getElementById('resetLayoutBtn');if(resetBtn){resetBtn.addEventListener('click',resetLayout);}}function onTesterOpen(){renderAdminUI();}return{init,onTesterOpen};})();
 const SideNavModule=(function(){function init(){const dots=document.querySelectorAll('.side-dot');if(!dots.length)return;const sections=Array.from(dots).map(dot=>{const id=dot.getAttribute('href').replace('#','');return document.getElementById(id);}).filter(Boolean);if(sections.length===0)return;function onScroll(){const scrollPos=window.scrollY+(window.innerHeight*0.4);let currentId=sections[0].id;for(let i=0;i<sections.length;i++){const section=sections[i];const offsetTop=section.getBoundingClientRect().top+window.scrollY;if(offsetTop<=scrollPos){currentId=section.id;}}dots.forEach(dot=>{if(dot.getAttribute('href')===`#${currentId}`){dot.classList.add('active');}else{dot.classList.remove('active');}});}let ticking=false;window.addEventListener('scroll',()=>{if(!ticking){window.requestAnimationFrame(()=>{onScroll();ticking=false;});ticking=true;}},{passive:true});onScroll();dots.forEach(dot=>dot.addEventListener('click',(e)=>{e.preventDefault();const target=document.querySelector(dot.getAttribute('href'));if(target)target.scrollIntoView({behavior:'smooth'});}));}return{init};})();
@@ -1212,6 +1212,7 @@ const TesterModule=(function(){
             loginBtn.textContent='Log In';
             loginBtn.disabled=false;
             
+            const { data: { session } } = await supabaseClient.auth.getSession();
             const user=session?.user;
             const userRole=user?.user_metadata?.role;
             
@@ -1265,16 +1266,19 @@ const TesterModule=(function(){
             if(typeof DatabaseModule!=='undefined') DatabaseModule.loadUpdates();
             if(typeof LightboxModule!=='undefined') LightboxModule.loadImages();
             if(typeof EventsModule!=='undefined') EventsModule.loadAdminEvents();
-            if(typeof WilfBlogModule!=='undefined') WilfBlogModule.loadAdminBlog();
             if(typeof EnquiriesModule!=='undefined') EnquiriesModule.loadAdminEnquiries();
             if(typeof BriefingModule!=='undefined') BriefingModule.loadBriefing();
             if(typeof CelebrationModule!=='undefined') CelebrationModule.loadAdminCelebrations();
+            if(typeof CommunityModule!=='undefined') CommunityModule.loadAdminCommunity();
+            if(typeof MenuModule!=='undefined' && (userRole==='chef'||userRole==='admin')) MenuModule.loadAdminMenu();
             
-            renderPhotoAdmin();
+            // Slight delay to ensure Supabase auth is fully propagated for storage permissions
+            setTimeout(() => {
+                renderPhotoAdmin();
+            }, 500);
             
         } catch(e) {
             console.error("Dashboard Load Error:", e);
-            // If it fails, reset the login button so it isn't stuck
             isMenuLoaded = false;
             loginBtn.textContent='Log In';
             loginBtn.disabled=false;
@@ -1356,7 +1360,17 @@ const TesterModule=(function(){
             if(!data||data.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No photos found.</p>';return;}
             const files=data.filter(file=>!file.name.startsWith('.'));
             if(files.length===0){ac.innerHTML='<p class="text-sm" style="color: var(--bark-soft);">No photos found.</p>';return;}
-            ac.innerHTML=files.map(file=>`<div class="admin-film-item" style="padding: 8px 12px;"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;"><span style="font-size:.8rem;font-weight:700;word-break:break-all;">${file.name}</span><button class="tester-btn del-photo-btn" data-path="${file.name}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button></div></div>`).join('');
+            
+            ac.innerHTML=files.map(file => {
+                const { data: urlData } = supabaseClient.storage.from('gallery').getPublicUrl(file.name);
+                const imgUrl = urlData.publicUrl;
+                return `<div class="admin-film-item" style="padding: 8px 12px; display: flex; align-items: center; gap: 12px;">
+                            <img src="${imgUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+                            <span style="font-size:.8rem;font-weight:700;word-break:break-all; flex: 1;">${file.name}</span>
+                            <button class="tester-btn del-photo-btn" data-path="${file.name}" style="width:auto;margin:0;padding:4px 8px;font-size:0.7rem;background:var(--terracotta);">Delete</button>
+                        </div>`;
+            }).join('');
+            
             ac.querySelectorAll('.del-photo-btn').forEach(btn=>btn.addEventListener('click',async(e)=>{
                 const path=e.target.dataset.path;
                 if(confirm('Are you sure you want to delete this photo?')){
@@ -1404,15 +1418,6 @@ const TesterModule=(function(){
         
         m.addEventListener('click',e=>{ if(e.target===m){ c(); } });
         
-        document.querySelectorAll('.tester-tab-btn').forEach(btn=>{
-            btn.addEventListener('click',(e)=>{
-                document.querySelectorAll('.tester-tab-btn').forEach(b=>b.classList.remove('active'));
-                document.querySelectorAll('.tester-tab-content').forEach(c=>c.classList.remove('active'));
-                e.target.classList.add('active');
-                document.getElementById('tab-'+e.target.dataset.tab).classList.add('active');
-            });
-        });
-        
         supabaseClient.auth.onAuthStateChange((event,session)=>{
             if(event==='SIGNED_IN'){ showMenu(); }
             else if(event==='SIGNED_OUT'){ showLogin(); }
@@ -1425,7 +1430,7 @@ const TesterModule=(function(){
 })();
 
 document.addEventListener('DOMContentLoaded', () =>{
-	MessagesModule.init();
+    MessagesModule.init();
     LayoutModule.init();SplashModule.init();SideNavModule.init();AccessibilityModule.init();QuickJumpModule.init();TimeModule.init();ToastModule.init();ReadAloudModule.init();AmbientAudioModule.init();SensoryModule.init();BackToTopModule.init();SeasonalModule.init();FaviconModule.init();ThemeModule.init();PaletteModule.init();FontSizeModule.init();DyslexiaModule.init();HapticModule.init();BionicModule.init();NextSectionModule.init();RevealModule.init();MoodModule.init();LightboxModule.init();FooterA11yModule.init();ProgressModule.init();SummerEffectsModule.init();AuthModule.init();TesterModule.init();DatabaseModule.init();FilmNightModule.init();ParallaxModule.init();EventsModule.init();WilfModule.init();MenuModule.init();CommunityModule.init();EnquiriesModule.init();BriefingModule.init();MaintenanceModule.init();WeatherModule.init();CelebrationModule.init();VibeModule.init();GoldenHourModule.init();FeaturedEventsModule.init();StaffModule.init();
     
     const PolishModule = (function () {
@@ -1565,7 +1570,7 @@ setTimeout(() => {
         }
     }
 
-      async function updateWeatherFX() {
+      async function updateWeatherFX() { 
         try {
             // Open-Meteo API for East Sussex (TN21 0LX approx: 50.96 lat, 0.21 lon)
             const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.96&longitude=0.21&current=weather_code');
