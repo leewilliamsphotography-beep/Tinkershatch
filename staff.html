@@ -77,12 +77,15 @@
         background: radial-gradient(circle at 0% 0%, var(--accent-soft), transparent 40%), 
                     radial-gradient(circle at 100% 100%, var(--accent-soft), transparent 40%), 
                     var(--bg);
-        position: relative; overflow: hidden;
+        position: relative; 
+        overflow-y: auto; /* FIX: Allows scrolling on mobile when keyboard pops up */
+        padding: 20px 0;
+        box-sizing: border-box;
     }
     .login-box {
-        background: var(--surface); border: 1px solid var(--border); padding: 48px;
-        border-radius: 24px; width: 100%; max-width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        position: relative; z-index: 10;
+        background: var(--surface); border: 1px solid var(--border); padding: 40px;
+        border-radius: 24px; width: 90%; max-width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        position: relative; z-index: 10; margin: auto; box-sizing: border-box;
     }
     .login-box h3 { margin: 0 0 8px 0; font-size: 1.85rem; font-weight: 700; color: var(--fg); }
     .login-box p { margin: 0 0 32px 0; color: var(--muted); font-size: 0.95rem; }
@@ -231,7 +234,7 @@
         #mobileNavToggle { display: block; }
         .tester-tabs {
             display: none; width: 100% !important; height: auto !important; flex-direction: column !important;
-            position: absolute; top: 0; left: 0; height: 100vh !important; z-index: 150;
+            position: absolute; top: 0; left: 0; height: 100% !important; z-index: 150;
             box-shadow: 4px 0 15px rgba(0,0,0,0.2); padding-top: 70px !important;
         }
         .tester-tabs.mobile-open { display: flex !important; }
@@ -317,7 +320,7 @@
                     Community
                 </button>
                 <button class="tester-tab-btn" data-tab="celebrations">
-                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06, 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     Celebrations
                 </button>
                 <button class="tester-tab-btn" data-tab="featured">
@@ -352,9 +355,7 @@
                 
                 <!-- Hidden Audio Element -->
                 <audio id="havenAmbientAudio" loop>
-                    <!-- MAKE SURE YOU HAVE A FILE NAMED ambient.mp3 IN YOUR FOLDER -->
-                                        <source src="ambient1.mp3" type="audio/mpeg">
-
+                    <source src="ambient1.mp3" type="audio/mpeg">
                 </audio>
 
                 <button id="themeQuickToggle" class="tester-tab-btn" style="border-radius: 0;">
@@ -608,22 +609,32 @@
 <div id="toast-container"></div>
 <div id="featuredPrintArea" aria-hidden="true"></div>
 
-<!-- BLOCK APP.JS FROM PLAYING SITE MUSIC -->
+<!-- FIX 1: DEFINE TOAST & BLOCK APP.JS MUSIC *BEFORE* APP.JS LOADS -->
 <script>
-    // We intercept the browser's play function BEFORE app.js loads
-    const originalPlay = HTMLMediaElement.prototype.play;
-    HTMLMediaElement.prototype.play = function() {
-        // If the audio element is our Haven ambient track, allow it
-        if (this.id === 'havenAmbientAudio') {
-            return originalPlay.apply(this, arguments);
+    // 1. Define Toast function FIRST so app.js can use it safely if it throws an error
+    function showToast(message) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.position = 'fixed';
+            container.style.bottom = '24px';
+            container.style.right = '24px';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
         }
-        // If it's any other audio element (from app.js), silently block it
-        return Promise.resolve();
-    };
-</script>
-<script src="app.js"></script>
-<script>
-    // 0. Override native alert() to use our sleek Toast system globally
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
+    // 2. Override native alert() to use our Toast system BEFORE app.js loads
     const nativeAlert = window.alert;
     window.alert = function(message) {
         if (typeof message === 'string' && message.length > 0) {
@@ -633,6 +644,19 @@
         }
     };
 
+    // 3. Block app.js from playing site music
+    const originalPlay = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function() {
+        if (this.id === 'havenAmbientAudio') {
+            return originalPlay.apply(this, arguments);
+        }
+        return Promise.resolve();
+    };
+</script>
+<script src="app.js"></script>
+
+<!-- FIX 2: BULLETPROOF LAYOUT & FUNCTION SCRIPT -->
+<script>
     // 1. Take over tab switching so app.js doesn't break it
     document.addEventListener('click', function(e) {
         const tabBtn = e.target.closest('.tester-tab-btn');
@@ -697,21 +721,7 @@
         }
     }, true);
 
-    // 4. Toast Notification Function
-    function showToast(message) {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.textContent = message;
-        container.appendChild(toast);
-        setTimeout(() => toast.classList.add('show'), 10);
-        setTimeout(() => {
-            toast.classList.remove('show');
-            setTimeout(() => toast.remove(), 300);
-        }, 3500);
-    }
-
-    // 5. Seasonal Themes save to Local Storage
+    // 4. Seasonal Themes save to Local Storage
     document.querySelectorAll('.tester-season-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const season = this.dataset.season;
@@ -720,7 +730,7 @@
         });
     });
 
-    // 6. Drag & Drop Photo Upload Logic with Thumbnail Preview
+    // 5. Drag & Drop Photo Upload Logic with Thumbnail Preview
     const dropZone = document.getElementById('photoDropZone');
     const fileInput = document.getElementById('photoUploadInput');
     
@@ -752,7 +762,7 @@
         });
     }
 
-    // 7. Enquiry Search Functionality
+    // 6. Enquiry Search Functionality
     document.addEventListener('input', function(e) {
         if (e.target.id === 'enquirySearchInput') {
             const searchTerm = e.target.value.toLowerCase();
@@ -764,7 +774,7 @@
         }
     });
 
-    // 8. Mobile Menu Toggle Logic
+    // 7. Mobile Menu Toggle Logic
     const mobileToggle = document.getElementById('mobileNavToggle');
     const tabsContainer = document.querySelector('.tester-tabs');
     if (mobileToggle && tabsContainer) {
@@ -774,23 +784,41 @@
         });
     }
 
-    // 9. Layout Enforcement
+    // 8. Layout Enforcement (Safe for Mobile & Desktop)
     function enforceFullScreenLayout() {
         const modal = document.getElementById('testerModal');
         const content = document.querySelector('.tester-content');
         const login = document.getElementById('testerLogin');
         const menu = document.getElementById('testerMenu');
-        if (modal) { modal.style.width = '100vw'; modal.style.height = '100vh'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
+        
+        // Use 100% instead of 100vh to prevent mobile browser UI bugs
+        if (modal) { modal.style.width = '100%'; modal.style.height = '100%'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
         if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
+        
+        // If login is visible, make sure menu is hidden
         if (login && (login.style.display === 'flex' || window.getComputedStyle(login).display === 'flex')) {
-            login.style.width = '100%'; login.style.height = '100vh'; if (menu) menu.style.display = 'none'; return; 
+            login.style.width = '100%'; 
+            login.style.height = '100%'; 
+            if (menu) menu.style.display = 'none';
+            return; 
         }
-        if (menu) { menu.style.display = 'flex'; menu.style.flexDirection = 'row'; menu.style.width = '100%'; menu.style.maxWidth = '100%'; menu.style.height = '100vh'; menu.style.maxHeight = '100vh'; }
+        
+        // If we are past login, force the menu to act like a dashboard row
+        if (menu) {
+            menu.style.display = 'flex';
+            menu.style.flexDirection = 'row';
+            menu.style.width = '100%';
+            menu.style.maxWidth = '100%';
+            menu.style.height = '100%';
+            menu.style.maxHeight = '100%';
+        }
     }
+    
     enforceFullScreenLayout();
+    setInterval(enforceFullScreenLayout, 500); // Keep interval to fight app.js overrides
     window.addEventListener('resize', enforceFullScreenLayout);
 
-    // 10. Haven Portal Theme Switcher (Observer Method + Quick Toggle)
+    // 9. Haven Portal Theme Switcher (Observer Method + Quick Toggle)
     function applyHavenTheme(themeName) {
         document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm');
         document.body.classList.add(themeName);
@@ -826,14 +854,14 @@
     const initialTheme = localStorage.getItem('haven_portal_theme') || 'staff-dark';
     applyHavenTheme(initialTheme);
 
-    // 11. Restore Last Opened Tab on Page Load
+    // 10. Restore Last Opened Tab on Page Load
     const lastTab = localStorage.getItem('haven_active_tab');
     if (lastTab) {
         const btn = document.querySelector(`.tester-tab-btn[data-tab="${lastTab}"]`);
         if (btn) btn.click(); // Simulate click to trigger tab switch logic
     }
 
-    // 12. Friendly Empty States Observer
+    // 11. Friendly Empty States Observer
     function setupEmptyStateObserver(containerId, message) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -865,7 +893,7 @@
     setupEmptyStateObserver('adminCommunityContainer', '🏘️ No community spotlights yet.');
     setupEmptyStateObserver('adminCelebContainer', '🎉 No upcoming celebrations.');
 
-    // 13. Auto-Save Weekly Menu on Blur
+    // 12. Auto-Save Weekly Menu on Blur
     const menuContainer = document.getElementById('adminMenuContainer');
     const saveMenuBtn = document.getElementById('saveMenuBtn');
     if (menuContainer && saveMenuBtn) {
@@ -877,9 +905,9 @@
         }, true);
     }
 
-    // 14. Background Music Toggle Logic
+    // 13. Background Music Toggle Logic
     const musicToggleBtn = document.getElementById('musicToggleBtn');
-    const bgMusic = document.getElementById('havenAmbientAudio'); // Ensure ID matches
+    const bgMusic = document.getElementById('havenAmbientAudio');
     const musicIconPlay = document.getElementById('musicIconPlay');
     const musicIconPause = document.getElementById('musicIconPause');
     const musicToggleText = document.getElementById('musicToggleText');
@@ -895,13 +923,13 @@
                     }
                 });
 
-                // Play our ambient track (this will bypass our block because of the ID check)
+                // Play our ambient track
                 bgMusic.play().then(() => {
                     musicIconPlay.style.display = 'none';
                     musicIconPause.style.display = 'block';
                     musicToggleText.textContent = 'Pause Ambient Music';
                 }).catch(err => {
-                    showToast('Could not play audio: Make sure ambient.mp3 exists in your folder.');
+                    showToast('Could not play audio: Make sure ambient1.mp3 exists in your folder.');
                 });
             } else {
                 bgMusic.pause();
