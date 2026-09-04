@@ -208,7 +208,7 @@
         border-color: var(--accent); color: var(--accent); background: var(--accent-soft);
     }
     .photo-preview-img { max-width: 100%; max-height: 150px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
-    /* === Photo List Thumbnails === */
+    /* ===     /* === Photo List Thumbnails (Safe Layout) === */
     #adminPhotoContainer > div {
         display: flex !important;
         align-items: center !important;
@@ -217,23 +217,41 @@
         background: var(--surface-2);
         border: 1px solid var(--border);
         border-radius: 8px;
+        margin-bottom: 12px !important;
     }
+    
+    /* Handle standard image tags */
     #adminPhotoContainer img {
         width: 50px !important;
         height: 50px !important;
         object-fit: cover !important;
         border-radius: 8px !important;
-        flex-shrink: 0;
-        background: var(--surface-3);
+        flex-shrink: 0 !important;
+        display: block !important;
     }
-    #adminPhotoContainer span, #adminPhotoContainer .caption {
+    
+    /* Handle background-image divs if app.js uses them */
+    #adminPhotoContainer div[style*="background-image"] {
+        width: 50px !important;
+        height: 50px !important;
+        background-size: cover !important;
+        background-position: center !important;
+        border-radius: 8px !important;
+        flex-shrink: 0 !important;
+    }
+    
+    /* Ensure text takes remaining space */
+    #adminPhotoContainer span, #adminPhotoContainer p, #adminPhotoContainer .caption {
         flex: 1;
         font-size: 0.9rem;
         color: var(--fg);
         word-break: break-all;
+        margin: 0 !important;
     }
+    
+    /* Keep buttons on the right */
     #adminPhotoContainer button {
-        flex-shrink: 0;
+        flex-shrink: 0 !important;
         margin: 0 !important;
     }
     /* === Empty States === */
