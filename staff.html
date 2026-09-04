@@ -606,22 +606,32 @@
 <div id="toast-container"></div>
 <div id="featuredPrintArea" aria-hidden="true"></div>
 
-<!-- BLOCK APP.JS FROM PLAYING SITE MUSIC -->
+<!-- DEFINE TOAST & BLOCK APP.JS MUSIC BEFORE APP.JS LOADS -->
 <script>
-    // We intercept the browser's play function BEFORE app.js loads
-    const originalPlay = HTMLMediaElement.prototype.play;
-    HTMLMediaElement.prototype.play = function() {
-        // If the audio element is our Haven ambient track, allow it
-        if (this.id === 'havenAmbientAudio') {
-            return originalPlay.apply(this, arguments);
+    // 1. Define Toast function FIRST so app.js can use it safely
+    function showToast(message) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.style.position = 'fixed';
+            container.style.bottom = '24px';
+            container.style.right = '24px';
+            container.style.zIndex = '9999';
+            document.body.appendChild(container);
         }
-        // If it's any other audio element (from app.js), silently block it
-        return Promise.resolve();
-    };
-</script>
-<script src="app.js"></script>
-<script>
-    // 0. Override native alert() to use our sleek Toast system globally
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 300);
+        }, 3500);
+    }
+
+    // 2. Override native alert() to use our Toast system
     const nativeAlert = window.alert;
     window.alert = function(message) {
         if (typeof message === 'string' && message.length > 0) {
@@ -630,6 +640,17 @@
             nativeAlert(message);
         }
     };
+
+    // 3. Block app.js from playing site music
+    const originalPlay = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function() {
+        if (this.id === 'havenAmbientAudio') {
+            return originalPlay.apply(this, arguments);
+        }
+        return Promise.resolve();
+    };
+</script>
+<script src="app.js"></script>
 
     // 1. Take over tab switching so app.js doesn't break it
     document.addEventListener('click', function(e) {
