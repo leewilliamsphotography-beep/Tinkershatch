@@ -1,6 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- SEO Structured Data for Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "additionalType": "NursingAndResidentialCareFacility",
+  "name": "Tinkers Hatch",
+  "description": "A warm and caring home for adults with learning disabilities.",
+  "image": "https://i.ibb.co/0j5q3X2/tinkers-hatch-logo.png",
+  "url": "https://leewilliamsphotography-beep.github.io/Tinkershatch.github.io/",
+  "telephone": "+441435863119",
+  "priceRange": "$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "New Pond Hill",
+    "addressLocality": "East Sussex",
+    "postalCode": "TN21 0LX",
+    "addressCountry": "GB"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "09:00",
+    "closes": "17:00"
+  },
+  "sameAs": [
+    "https://www.instagram.com/friends_of_tinkers_hatch/"
+  ]
+}
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Tinkers Hatch | A Caring Home in East Sussex</title>
@@ -118,10 +148,13 @@
     <a href="#about" class="side-dot" title="About Us" style="--dot-color: #FF5252;"><span class="nav-label">About Us</span></a>
     <a href="#values" class="side-dot" title="Our Values" style="--dot-color: #FF9800;"><span class="nav-label">Our Values</span></a>
     <a href="#activities" class="side-dot" title="Activities" style="--dot-color: #F2C200;"><span class="nav-label">Activities</span></a>
+    <a href="#day" class="side-dot" title="A Day With Us" style="--dot-color: #9C27B0;"><span class="nav-label">A Day With Us</span></a>
+    <a href="#events" class="side-dot" title="Events" style="--dot-color: #3F51B5;"><span class="nav-label">Events</span></a>
+    <a href="#film-night" class="side-dot" title="Entertainment" style="--dot-color: #F2C200;"><span class="nav-label">Entertainment</span></a>
     <a href="#celebrations" class="side-dot" title="Celebrations" style="--dot-color: #E91E63;"><span class="nav-label">Celebrations</span></a>
     <a href="#community" class="side-dot" title="Community" style="--dot-color: #4CAF50;"><span class="nav-label">Community</span></a>
+    <a href="#wilf" class="side-dot" title="Wilf" style="--dot-color: #A87816;"><span class="nav-label">Wilf</span></a>
     <a href="#gallery" class="side-dot" title="Photography" style="--dot-color: #2196F3;"><span class="nav-label">Photography</span></a>
-    <a href="#day" class="side-dot" title="A Day With Us" style="--dot-color: #9C27B0;"><span class="nav-label">A Day With Us</span></a>
     <a href="#whats-new" class="side-dot" title="What's New" style="--dot-color: #3F51B5;"><span class="nav-label">What's New</span></a>
     <a href="#faq" class="side-dot" title="FAQ" style="--dot-color: #00BCD4;"><span class="nav-label">FAQ</span></a>
     <a href="#visit" class="side-dot" title="Visit" style="--dot-color: #E91E63;"><span class="nav-label">Visit</span></a>
@@ -324,31 +357,7 @@
             </div>
         </div>
     </section>
-     <!-- Refined Celebrations Section -->
-    <section id="celebrations" class="py-24" style="background:var(--cream)">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
-                <span class="tag mb-4 inline-flex">Community Heart</span>
-                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">Celebrations Board</h2>
-                <p class="text-lg" style="color:var(--bark-soft)">Birthdays, anniversaries, and special moments. We believe every milestone is worth celebrating together.</p>
-            </div>
-            <div id="celebrationsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
-        </div>
-    </section>
-
-    <!-- Refined Community Section -->
-    <section id="community" class="py-24" style="background:var(--cream-deep)">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
-                <span class="tag mb-4 inline-flex">Life at Tinkers Hatch</span>
-                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">Community Spotlight</h2>
-                <p class="text-lg" style="color:var(--bark-soft)">It's the people who make Tinkers Hatch special. Here are some of the moments we've shared together recently.</p>
-            </div>
-            <div id="communityContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
-        </div>
-    </section>
-
-        <!-- Refined Activities Section (Better Minimalist SVGs) -->
+         <!-- Refined Activities Section -->
     <section id="activities" class="py-24">
         <div class="max-w-7xl mx-auto px-6 lg:px-8">
             <div class="max-w-3xl mb-16 reveal">
@@ -357,8 +366,6 @@
                 <p class="text-lg" style="color:var(--bark-soft); line-height: 1.7;">Our weekly programme is built around what residents enjoy and want to try. Some activities are calm, some are lively — all are optional, all are welcoming.</p>
             </div>
             <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal">
-                
-                <!-- Gardening -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -375,7 +382,6 @@
                     </div>
                 </article>
 
-                <!-- Art -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -394,7 +400,6 @@
                     </div>
                 </article>
 
-                <!-- Cooking -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -412,7 +417,6 @@
                     </div>
                 </article>
 
-                <!-- Music -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -429,7 +433,6 @@
                     </div>
                 </article>
 
-                <!-- Reading -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -444,7 +447,6 @@
                     </div>
                 </article>
 
-                <!-- Outings -->
                 <article class="activity-card overflow-hidden rounded-2xl shadow-md bg-white" style="border-radius: 20px; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap h-40 flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="100" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -460,14 +462,12 @@
                     </div>
                 </article>
 
-                <!-- Film Night Feature Card -->
                 <a href="#film-night" class="activity-card feature-card lg:col-span-3 overflow-hidden rounded-2xl shadow-md bg-white flex flex-col sm:flex-row" style="border-radius: 20px; text-decoration:none;color:inherit; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap sm:w-1/4 h-40 sm:h-auto flex items-center justify-center" style="background: var(--cream-deep);">
                         <svg width="100" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <rect x="10" y="20" width="44" height="32" rx="4" stroke="var(--bark)" stroke-width="2"/>
                             <path d="M10 28H54" stroke="var(--bark)" stroke-width="2"/>
                             <path d="M16 20L14 24M22 20L20 24M28 20L26 24M34 20L32 24M40 20L38 24M46 20L44 24" stroke="var(--bark)" stroke-width="2"/>
-                            <path d="M16 24L14 20M22 24L20 20M28 24L26 20M34 24L32 20M40 24L38 20M46 24L44 20" stroke="var(--bark)" stroke-width="2"/>
                             <path d="M30 34L38 38L30 42V34Z" fill="var(--terracotta)"/>
                         </svg>
                     </div>
@@ -478,7 +478,6 @@
                     </div>
                 </a>
 
-                <!-- Bingo Game Card -->
                 <a href="bingo/" class="activity-card feature-card lg:col-span-3 overflow-hidden rounded-2xl shadow-md bg-white flex flex-col sm:flex-row" style="border-radius: 20px; text-decoration:none;color:inherit; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap sm:w-1/4 h-40 sm:h-auto flex items-center justify-center" style="background: linear-gradient(135deg, var(--teal), var(--teal-deep));">
                         <svg width="150" height="90" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -506,7 +505,6 @@
                     </div>
                 </a>
 
-                <!-- Word Search Game Card -->
                 <a href="wordsearch.html" class="activity-card feature-card lg:col-span-3 overflow-hidden rounded-2xl shadow-md bg-white flex flex-col sm:flex-row" style="border-radius: 20px; text-decoration:none;color:inherit; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05);">
                     <div class="img-wrap sm:w-1/4 h-40 sm:h-auto flex items-center justify-center" style="background: linear-gradient(135deg, var(--honey), var(--terracotta));">
                         <svg width="150" height="90" viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Illustration of a word search grid">
@@ -530,7 +528,58 @@
                         <p class="text-sm" style="color:var(--bark-soft); line-height: 1.7;">A gentle brain workout. Find the hidden words in our interactive word search. <strong style="color:var(--teal); display:block; margin-top:12px;">Tap here to start playing! 🧩</strong></p>
                     </div>
                 </a>
+            </div>
+        </div>
+    </section>
 
+    <!-- Refined Day in the Life Section -->
+    <section id="day" class="py-24" style="background:var(--cream-deep)">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16 reveal">
+                <span class="tag mb-4 inline-flex">A Day at Tinkers Hatch</span>
+                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">A gentle rhythm, not a rigid schedule.</h2>
+                <p class="text-lg" style="color:var(--bark-soft); line-height: 1.7;">Here's a sense of how a typical day flows. Each person chooses what to join — and there's always room for a quiet moment.</p>
+            </div>
+            <div class="space-y-12">
+                <div class="timeline-item reveal flex gap-6">
+                    <div class="flex flex-col items-center">
+                        <div class="timeline-dot"></div>
+                        <div class="w-px h-full bg-gray-300"></div>
+                    </div>
+                    <div class="pb-8">
+                        <div class="display font-extrabold text-xl mb-2" style="color:var(--terracotta)">Morning</div>
+                        <p style="color:var(--bark-soft); line-height: 1.7;">Slow starts with breakfast cooked to order. Some head to the garden, others prefer a quiet cuppa in the cozy lounge. We come together for a 10am circle to share plans for the day.</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal flex gap-6">
+                    <div class="flex flex-col items-center">
+                        <div class="timeline-dot" style="border-color:var(--sage)"></div>
+                        <div class="w-px h-full bg-gray-300"></div>
+                    </div>
+                    <div class="pb-8">
+                        <div class="display font-extrabold text-xl mb-2" style="color:var(--teal)">Midday</div>
+                        <p style="color:var(--bark-soft); line-height: 1.7;">Activities in full swing — baking in the kitchen, or a walk down to the village. Lunch is shared around big tables, with fresh food prepared lovingly by our chef Joe.</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal flex gap-6">
+                    <div class="flex flex-col items-center">
+                        <div class="timeline-dot" style="border-color:var(--rose)"></div>
+                        <div class="w-px h-full bg-gray-300"></div>
+                    </div>
+                    <div class="pb-8">
+                        <div class="display font-extrabold text-xl mb-2" style="color:var(--terracotta)">Afternoon</div>
+                        <p style="color:var(--bark-soft); line-height: 1.7;">A slower pace. Reading, music, visits from family, or time spent in a favourite chair. Tea and cake at 3.30 — everyone's welcome.</p>
+                    </div>
+                </div>
+                <div class="timeline-item reveal flex gap-6">
+                    <div class="flex flex-col items-center">
+                        <div class="timeline-dot" style="border-color:var(--honey)"></div>
+                    </div>
+                    <div>
+                        <div class="display font-extrabold text-xl mb-2" style="color:var(--teal)">Evening</div>
+                        <p style="color:var(--bark-soft); line-height: 1.7;">Supper together, then a film, a board game, or simply winding down. Bedtimes are flexible — this is home, and home runs on your own clock.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -585,7 +634,31 @@
         </div>
     </section>
 
-    <!-- Refined Wilf Section (No Image) -->
+    <!-- Refined Celebrations Section -->
+    <section id="celebrations" class="py-24" style="background:var(--cream)">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                <span class="tag mb-4 inline-flex">Community Heart</span>
+                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">Celebrations Board</h2>
+                <p class="text-lg" style="color:var(--bark-soft)">Birthdays, anniversaries, and special moments. We believe every milestone is worth celebrating together.</p>
+            </div>
+            <div id="celebrationsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
+        </div>
+    </section>
+
+    <!-- Refined Community Section -->
+    <section id="community" class="py-24" style="background:var(--cream-deep)">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+                <span class="tag mb-4 inline-flex">Life at Tinkers Hatch</span>
+                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">Community Spotlight</h2>
+                <p class="text-lg" style="color:var(--bark-soft)">It's the people who make Tinkers Hatch special. Here are some of the moments we've shared together recently.</p>
+            </div>
+            <div id="communityContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
+        </div>
+    </section>
+
+    <!-- Refined Wilf Section -->
     <section id="wilf" class="py-24" style="background:var(--cream)">
         <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
             <div class="reveal">
@@ -619,8 +692,8 @@
         </div>
     </section>
 
-    <!-- Refined Gallery Section (KEPT AS REQUESTED) -->
-    <section id="gallery" class="py-24" style="background:var(--cream)">
+    <!-- Refined Gallery Section -->
+    <section id="gallery" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-5xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="tag mb-4 inline-flex">Photography Group</span>
@@ -632,7 +705,7 @@
     </section>
 
     <!-- Refined Social Section -->
-    <section id="social" class="py-24" style="background:var(--cream-deep)">
+    <section id="social" class="py-24" style="background:var(--cream)">
         <div class="max-w-5xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="tag mb-4 inline-flex">Social</span>
@@ -649,7 +722,7 @@
     </section>
 
     <!-- Refined Mood Section -->
-    <section id="mood" class="py-24">
+    <section id="mood" class="py-24" style="background:var(--cream-deep)">
         <div class="max-w-4xl mx-auto px-6 lg:px-8">
             <div class="text-center max-w-2xl mx-auto mb-12 reveal">
                 <span class="tag mb-4 inline-flex">A Little Hello</span>
@@ -669,71 +742,6 @@
                     <p style="color:var(--bark-soft)">There are no wrong answers here.</p>
                 </div>
                 <div id="moodMessage" hidden></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Refined Menu Section -->
-    <section id="menu" class="py-24" style="background:var(--cream)">
-        <div class="max-w-5xl mx-auto px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-12 reveal">
-                <span class="tag mb-4 inline-flex">Freshly Prepared</span>
-                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">What's Cooking?</h2>
-                <p class="text-lg" style="color:var(--bark-soft)">Our chef, Joe, prepares fresh, seasonal meals every day. Here's a look at what's on the menu this week.</p>
-                <div id="menuFreshnessBadge" class="freshness-badge" style="display:none;"></div>
-            </div>
-            <div id="menuContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 reveal"></div>
-        </div>
-    </section>
-
-    <!-- Refined Day in the Life Section -->
-    <section id="day" class="py-24" style="background:var(--cream-deep)">
-        <div class="max-w-4xl mx-auto px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16 reveal">
-                <span class="tag mb-4 inline-flex">A Day at Tinkers Hatch</span>
-                <h2 class="display font-extrabold mb-4 tracking-tight" style="font-size:clamp(2rem,4vw,3rem);color:var(--bark)">A gentle rhythm, not a rigid schedule.</h2>
-                <p class="text-lg" style="color:var(--bark-soft); line-height: 1.7;">Here's a sense of how a typical day flows. Each person chooses what to join — and there's always room for a quiet moment.</p>
-            </div>
-            <div class="space-y-12">
-                <div class="timeline-item reveal flex gap-6">
-                    <div class="flex flex-col items-center">
-                        <div class="timeline-dot"></div>
-                        <div class="w-px h-full bg-gray-300"></div>
-                    </div>
-                    <div class="pb-8">
-                        <div class="display font-extrabold text-xl mb-2" style="color:var(--terracotta)">Morning</div>
-                        <p style="color:var(--bark-soft); line-height: 1.7;">Slow starts with breakfast cooked to order. Some head to the garden, others prefer a quiet cuppa in the cozy lounge. We come together for a 10am circle to share plans for the day.</p>
-                    </div>
-                </div>
-                <div class="timeline-item reveal flex gap-6">
-                    <div class="flex flex-col items-center">
-                        <div class="timeline-dot" style="border-color:var(--sage)"></div>
-                        <div class="w-px h-full bg-gray-300"></div>
-                    </div>
-                    <div class="pb-8">
-                        <div class="display font-extrabold text-xl mb-2" style="color:var(--teal)">Midday</div>
-                        <p style="color:var(--bark-soft); line-height: 1.7;">Activities in full swing — baking in the kitchen, or a walk down to the village. Lunch is shared around big tables, with fresh food prepared lovingly by our chef Joe.</p>
-                    </div>
-                </div>
-                <div class="timeline-item reveal flex gap-6">
-                    <div class="flex flex-col items-center">
-                        <div class="timeline-dot" style="border-color:var(--rose)"></div>
-                        <div class="w-px h-full bg-gray-300"></div>
-                    </div>
-                    <div class="pb-8">
-                        <div class="display font-extrabold text-xl mb-2" style="color:var(--terracotta)">Afternoon</div>
-                        <p style="color:var(--bark-soft); line-height: 1.7;">A slower pace. Reading, music, visits from family, or time spent in a favourite chair. Tea and cake at 3.30 — everyone's welcome.</p>
-                    </div>
-                </div>
-                <div class="timeline-item reveal flex gap-6">
-                    <div class="flex flex-col items-center">
-                        <div class="timeline-dot" style="border-color:var(--honey)"></div>
-                    </div>
-                    <div>
-                        <div class="display font-extrabold text-xl mb-2" style="color:var(--teal)">Evening</div>
-                        <p style="color:var(--bark-soft); line-height: 1.7;">Supper together, then a film, a board game, or simply winding down. Bedtimes are flexible — this is home, and home runs on your own clock.</p>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -952,7 +960,7 @@
             </div>
         </div>
         <div class="pt-8 border-t border-white/10 text-center text-xs">
-            <p>&copy; 2026 Lee Williams. All rights reserved.</p>
+            <p>&copy; 2024 Tinkers Hatch. All rights reserved.</p>
         </div>
     </div>
 </footer>
