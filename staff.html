@@ -314,7 +314,37 @@
         #tab-haven.tester-tab-content { padding: 60px 0 0 0 !important; }
         #tab-haven iframe { height: calc(100% - 60px); width: 100%; border: none; }
     }
+    /* === Subtle Seasonal FX (Professional) === */
+    #staff-seasonal-fx {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    /* Ensure dashboard elements sit above the FX */
+    .tester-content > *:not(#staff-seasonal-fx) {
+        position: relative;
+        z-index: 1;
+    }
 
+    .fx-particle {
+        position: absolute; top: -10vh;
+        will-change: transform;
+        animation: fx-fall linear infinite;
+    }
+    @keyframes fx-fall {
+        0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(120vh) translateX(20px) rotate(360deg); opacity: 0; }
+    }
+
+    /* Winter: Soft White Snow */
+    .fx-winter { background: #ffffff; border-radius: 50%; filter: blur(1px); box-shadow: 0 0 4px rgba(255,255,255,0.8); }
+    /* Spring: Soft Pink/White Petals */
+    .fx-spring { background: #ffc0cb; border-radius: 50% 0 50% 50%; opacity: 0.7; }
+    /* Summer: Soft Golden Sunbeams */
+    .fx-summer { background: radial-gradient(circle, rgba(255,215,0,0.5), transparent); border-radius: 50%; filter: blur(2px); }
+    /* Autumn: Soft Muted Orange Leaves */
+    .fx-autumn { background: #d27d2d; border-radius: 0 50% 0 50%; opacity: 0.6; }
     /* === Toast Notifications === */
     #toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 99999; display: flex; flex-direction: column; gap: 12px; }
     .toast {
@@ -329,6 +359,18 @@
 <body class="staff-dark">
 <div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Haven Portal">
     <div class="tester-content">
+        <div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Haven Portal">
+    <div class="tester-content">
+        <!-- ADD THIS LINE RIGHT HERE -->
+        <div id="staff-seasonal-fx"></div>
+        
+        <a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </a>
+        <!-- ... rest of login and menu ... -->
 <a href="index.html" id="testerCloseBtn" class="tester-close" aria-label="Back to Site">
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -1043,6 +1085,50 @@
             }
         });
     }
+        // 12.5 Subtle Seasonal FX Generator (Syncs with Settings tab)
+    function initStaffSeasonFX() {
+        const fxContainer = document.getElementById('staff-seasonal-fx');
+        if (!fxContainer) return;
+
+        // Determine season (checks local storage first, falls back to current month)
+        let season = localStorage.getItem('tinkers_season');
+        if (!season || season === 'auto') {
+            const m = new Date().getMonth() + 1;
+            if ([12, 1, 2].includes(m)) season = 'winter';
+            else if ([3, 4, 5].includes(m)) season = 'spring';
+            else if ([6, 7, 8].includes(m)) season = 'summer';
+            else if ([9, 10, 11].includes(m)) season = 'autumn';
+            else season = 'spring'; // fallback
+        }
+
+        // Clear old particles
+        fxContainer.innerHTML = '';
+
+        // Low count (12) for a professional, non-distracting vibe
+        const count = 12; 
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div');
+            p.className = `fx-particle fx-${season}`;
+            
+            const size = Math.random() * 4 + 4; // 4px to 8px
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = (Math.random() * 10 + 15) + 's'; // 15s to 25s (slow)
+            p.style.animationDelay = (Math.random() * 15) + 's';
+            p.style.opacity = Math.random() * 0.3 + 0.1; // Very low opacity (0.1 - 0.4)
+            
+            fxContainer.appendChild(p);
+        }
+    }
+
+    // Run on load
+    initStaffSeasonFX();
+
+    // Update FX instantly if the staff member changes the season in the Settings tab
+    document.querySelectorAll('.tester-season-btn').forEach(btn => {
+        btn.addEventListener('click', initStaffSeasonFX);
+    });
 </script>
 </body>
 </html>
