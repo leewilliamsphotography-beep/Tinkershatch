@@ -1565,7 +1565,7 @@ setTimeout(() => {
         }
     }
 
-    async function     async function updateWeatherFX() {
+      async function updateWeatherFX() {
         try {
             // Open-Meteo API for East Sussex (TN21 0LX approx: 50.96 lat, 0.21 lon)
             const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.96&longitude=0.21&current=weather_code');
@@ -1587,7 +1587,6 @@ setTimeout(() => {
                 console.log("Weather updated to:", newCondition);
                 
                 // Dynamically calculate particle count based on screen width
-                // For every 1000px of width, add X amount of particles
                 const screenWidth = window.innerWidth;
                 const widthFactor = Math.max(1, screenWidth / 1000);
 
@@ -1605,7 +1604,7 @@ setTimeout(() => {
                     count = Math.floor(8 * widthFactor);  // 8 per 1000px
                 } else if (newCondition === 'clear') {
                     type = 'sunbeam';
-                    count = Math.floor(8 * widthFactor);   // 8 per 1000px
+                    count = Math.floor(8 * widthFactor);  // 8 per 1000px
                 } else if (newCondition === 'cloudy') {
                     type = 'fog';
                     count = Math.floor(4 * widthFactor);  // 4 per 1000px
