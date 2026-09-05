@@ -67,7 +67,7 @@
     <noscript><style>.reveal{opacity:1!important;transform:none!important}#splash-screen{display:none!important}</style></noscript>
 
     <!-- CSS -->
-<link rel="stylesheet" href="style.css?v=1.0">
+<link rel="stylesheet" href="style.css?v=3.2">
     <!-- NEW THEMES (CSS & JS) -->
 <style>
     /* === BULLETPROOF THEME VARIABLES === */
@@ -217,7 +217,8 @@
     </div>
 </div>
 
-<div id="version-tag">Version 1.0</div>
+<div id="version-tag">Version 3.2
+</div>
 <div id="briefing-bar" style="position: fixed; top: 0; left: 0; right: 0; background: var(--teal); color: #fff; padding: 8px 0; text-align: center; font-size: 0.85rem; font-weight: 600; z-index: 51; display: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
     <span id="briefing-text">Loading today's briefing...</span>
 </div>
@@ -251,10 +252,33 @@
 <!-- Sleek Header with Hamburger -->
 <header>
     <div class="header-inner">
-        <a href="#main" class="brand-logo">
-            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="brand-icon">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                <a href="#main" class="brand-logo">
+            <svg viewBox="0 0 500 400" width="38" height="38" class="brand-icon" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="th-roof-h" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#F4A261"/>
+                  <stop offset="100%" stop-color="#E76F51"/>
+                </linearGradient>
+                <linearGradient id="th-body-h" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#2A9D8F"/>
+                  <stop offset="100%" stop-color="#1F7268"/>
+                </linearGradient>
+                <filter id="th-shadow-h" x="-10%" y="-10%" width="120%" height="120%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#264653" flood-opacity="0.2"/>
+                </filter>
+                <style>
+                  .th-heart-h { transform-origin: center; transform-box: fill-box; animation: th-breathe 4s ease-in-out infinite; }
+                  @keyframes th-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+                </style>
+              </defs>
+              <g filter="url(#th-shadow-h)">
+                <path d="M150 160 L250 80 L350 160 L330 160 L250 100 L170 160 Z" fill="url(#th-roof-h)"/>
+                <path d="M170 160 L330 160 L330 250 Q330 260 320 260 L180 260 Q170 260 170 250 Z" fill="url(#th-body-h)"/>
+                <g class="th-heart-h">
+                  <path d="M250 135 C 230 115, 200 135, 250 185 C 300 135, 270 115, 250 135 Z" fill="#E9F5F2" opacity="0.95"/>
+                  <path d="M250 145 C 240 130, 220 145, 250 175 C 280 145, 260 130, 250 145 Z" fill="#F4A261" opacity="0.8"/>
+                </g>
+              </g>
             </svg>
             <span class="brand-name">Tinkers Hatch</span>
         </a>
@@ -1270,12 +1294,36 @@
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="grid md:grid-cols-2 gap-12 mb-12">
             <div>
-                <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="display:flex;align-items:center;gap:16px;text-decoration:none;margin-bottom:24px;">
-                    <svg viewBox="0 0 600 500" width="120" height="100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="color: #fff;">
-                        <circle cx="300" cy="250" r="240" fill="none" stroke="currentColor" stroke-width="3"/>
-                        <text x="300" y="260" font-family="Outfit, sans-serif" font-size="42" font-weight="bold" fill="currentColor" text-anchor="middle" letter-spacing="1.5">Tinkers Hatch</text>
-                        <circle cx="280" cy="290" r="3" fill="currentColor" /><circle cx="300" cy="290" r="4" fill="currentColor" /><circle cx="320" cy="290" r="3" fill="currentColor" />
-                        <text x="300" y="320" font-family="Plus Jakarta Sans, sans-serif" font-size="16" font-weight="normal" fill="currentColor" text-anchor="middle" letter-spacing="4">CARING SINCE 1984</text>
+                                <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;" style="display:flex;align-items:center;gap:16px;text-decoration:none;margin-bottom:24px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="140" height="112" class="footer-logo-svg">
+                      <defs>
+                        <linearGradient id="th-roof-f" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#F4A261"/>
+                          <stop offset="100%" stop-color="#E76F51"/>
+                        </linearGradient>
+                        <linearGradient id="th-body-f" x1="0%" y1="0%" x2="0%" y2="100%">
+                          <stop offset="0%" stop-color="#2A9D8F"/>
+                          <stop offset="100%" stop-color="#1F7268"/>
+                        </linearGradient>
+                        <filter id="th-shadow-f" x="-10%" y="-10%" width="120%" height="120%">
+                          <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#000" flood-opacity="0.3"/>
+                        </filter>
+                        <style>
+                          .th-heart-f { transform-origin: center; transform-box: fill-box; animation: th-breathe 4s ease-in-out infinite; }
+                          @keyframes th-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+                          @media (prefers-reduced-motion: reduce) { .th-heart-f { animation: none; } }
+                        </style>
+                      </defs>
+                      <g filter="url(#th-shadow-f)">
+                        <path d="M150 160 L250 80 L350 160 L330 160 L250 100 L170 160 Z" fill="url(#th-roof-f)"/>
+                        <path d="M170 160 L330 160 L330 250 Q330 260 320 260 L180 260 Q170 260 170 250 Z" fill="url(#th-body-f)"/>
+                        <g class="th-heart-f">
+                          <path d="M250 135 C 230 115, 200 135, 250 185 C 300 135, 270 115, 250 135 Z" fill="#E9F5F2" opacity="0.95"/>
+                          <path d="M250 145 C 240 130, 220 145, 250 175 C 280 145, 260 130, 250 145 Z" fill="#F4A261" opacity="0.8"/>
+                        </g>
+                      </g>
+                      <text x="250" y="305" font-family="'Fredoka', Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="2">TINKERS HATCH</text>
+                      <text x="250" y="330" font-family="'Lexend', Arial, sans-serif" font-size="13" font-weight="500" fill="#F4A261" text-anchor="middle" letter-spacing="6">CARE HOME</text>
                     </svg>
                 </a>
                 <p class="text-sm max-w-md">A caring home for adults with learning disabilities. Registered with the Care Quality Commission.</p>
@@ -1520,7 +1568,7 @@
 <div id="featuredPrintArea" aria-hidden="true"></div>
 
 <!-- Code Splitting: JavaScript -->
-<script src="app.js?v=1.0"></script>
+<script src="app.js?v=3.2"></script>
 <!-- Main Supabase & App Logic Script -->
 <script type="module">
     // 1. INITIALIZATION
