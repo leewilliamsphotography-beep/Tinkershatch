@@ -965,124 +965,114 @@ header {
     border-color: var(--teal-deep);
 }
 
-/* === SLEEK HEADER & SLIDE-OUT MENU === */
-header {
+/* === Panel Backdrop === */
+.menu-backdrop {
     position: fixed;
-    top: 30px;
-    left: 0;
-    right: 0;
-    z-index: 50;
-    padding: 0 !important;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
     pointer-events: none;
-    background: color-mix(in srgb, var(--cream) 85%, transparent);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+    transition: opacity 0.3s ease;
 }
-
-.header-inner {
-    max-width: 100%;
-    margin: 0;
-    padding: 16px 32px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.menu-backdrop.open {
+    opacity: 1;
     pointer-events: auto;
 }
 
-.brand-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: var(--bark);
-}
-.brand-icon { transition: transform 0.3s ease; }
-.brand-logo:hover .brand-icon { transform: scale(1.1) rotate(-5deg); }
-.brand-name {
-    font-family: 'Fredoka', sans-serif;
-    font-weight: 700;
-    font-size: 1.6rem;
-    letter-spacing: 0.5px;
-}
-
-.top-nav-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: transparent;
-    border: 1px solid transparent;
-    color: var(--bark-soft);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s cubic-bezier(.34,1.56,.64,1);
-}
-.top-nav-btn:hover {
-    background: color-mix(in srgb, var(--card) 80%, transparent);
-    color: var(--teal);
-    border-color: var(--border);
-    transform: translateY(-2px);
-}
-.top-nav-btn.active {
-    background: var(--teal);
-    color: #fff;
-    border-color: var(--teal-deep);
-}
-
-/* Slide-out Panel Backdrop */
-.menu-backdrop {
-    position: fixed; 
-    inset: 0; 
-    background: rgba(0,0,0,0.4); 
-    backdrop-filter: blur(4px); 
-    z-index: 999; 
-    opacity: 0; 
-    pointer-events: none; 
-    transition: opacity 0.3s ease;
-}
-.menu-backdrop.open { 
-    opacity: 1; 
-    pointer-events: auto; 
-}
-
-/* Slide-out Panel */
+/* === Slide-Out Panel === */
 .menu-panel {
-    position: fixed; 
-    top: 0; 
-    right: 0; 
-    bottom: 0; 
-    width: 380px; 
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 380px;
     max-width: 85vw;
-    background: color-mix(in srgb, var(--cream) 92%, transparent); 
-    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-    box-shadow: -10px 0 40px rgba(0,0,0,0.1); 
-    z-index: 1000; 
-    transform: translateX(100%); 
+    background: color-mix(in srgb, var(--cream) 92%, transparent);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.1);
+    z-index: 100;
+    transform: translateX(100%);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow-y: auto; 
-    padding: 80px 32px 32px; 
-    display: flex; 
-    flex-direction: column; 
+    overflow-y: auto;
+    padding: 80px 32px 32px;
+    display: flex;
+    flex-direction: column;
     gap: 32px;
 }
-.menu-panel.open { 
-    transform: translateX(0); 
+.menu-panel.open {
+    transform: translateX(0);
 }
 
-.menu-close-btn { position: absolute; top: 24px; right: 24px; background: transparent; border: none; color: var(--bark-soft); cursor: pointer; padding: 8px; border-radius: 8px; transition: background 0.2s; }
+.menu-close-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: transparent;
+    border: none;
+    color: var(--bark-soft);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
 .menu-close-btn:hover { background: var(--cream-deep); color: var(--terracotta); }
 
-.menu-heading { font-family: 'Outfit', sans-serif; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--bark-soft); font-weight: 700; margin-bottom: 16px; }
+.menu-heading {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--bark-soft);
+    font-weight: 700;
+    margin-bottom: 16px;
+}
 
-.menu-panel .quick-jump-link { display: block; padding: 14px 16px; margin-bottom: 8px; border-radius: 10px; background: var(--cream-deep); color: var(--bark); font-weight: 600; text-decoration: none; transition: all 0.2s ease; }
-.menu-panel .quick-jump-link:hover { background: var(--teal); color: #fff; transform: translateX(-4px); }
+/* Quick Jump Links in Panel */
+.menu-panel .quick-jump-link {
+    display: block;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    background: var(--cream-deep);
+    color: var(--bark);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.menu-panel .quick-jump-link:hover {
+    background: var(--teal);
+    color: #fff;
+    transform: translateX(-4px);
+}
 
-.menu-panel .a11y-content { position: static !important; display: flex !important; opacity: 1 !important; transform: none !important; box-shadow: none !important; background: transparent !important; border: none !important; padding: 0 !important; width: 100% !important; gap: 16px !important; }
+/* Force Accessibility Settings to be static inside the panel */
+.menu-panel .a11y-content {
+    position: static !important;
+    display: flex !important;
+    opacity: 1 !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    width: 100% !important;
+    gap: 16px !important;
+}
 
-.menu-actions { display: flex; gap: 12px; }
-.menu-actions .top-nav-btn { flex: 1; height: 52px; background: var(--cream-deep); border: 1px solid var(--border); }
+/* Action Buttons in Panel */
+.menu-actions {
+    display: flex;
+    gap: 12px;
+}
+.menu-actions .top-nav-btn {
+    flex: 1;
+    height: 52px;
+    background: var(--cream-deep);
+    border: 1px solid var(--border);
+}
 
 /* Mobile Adjustments */
 @media (max-width: 640px) {
@@ -1189,32 +1179,20 @@ header {
     80% { opacity: 0.6; }
     100% { transform: translateY(-20vh) scale(1.2); opacity: 0; }
 }
-/* === RESPONSIVE FIXES === */
-@media (max-width: 768px) {
-    .mobile-bottom-nav { display: flex !important; }
-    body { padding-bottom: 80px !important; }
-    .back-to-top-btn, #backToTopBtn, #topBtn { display: none !important; }
-    .next-chapter-pill { bottom: 88px !important; font-size: 0.85rem; padding: 10px 20px; }
-    
-    #time-date-bar { padding: 0 10px !important; justify-content: center !important; height: 32px !important; }
-    #liveTimeDate { font-size: 0.72rem !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 95vw !important; text-align: center !important; }
-    .time-date-contact { display: none !important; }
-    
-    .menu-panel { width: 320px; max-width: 90vw; padding: 80px 24px 100px; -webkit-overflow-scrolling: touch; }
-    .menu-panel .a11y-content { width: 100% !important; }
-    .menu-panel .a11y-btn-group { flex-wrap: wrap; }
-    .menu-panel .a11y-btn-group .menu-btn { flex: 1 1 30%; min-width: 0; padding: 10px 2px; font-size: 0.75rem; }
-    
-    .activity-card.feature-card { flex-direction: column !important; }
-    .activity-card.feature-card .img-wrap { width: 100% !important; min-height: 160px !important; height: 160px !important; }
-    
-    .map-container { min-height: 350px !important; height: 350px !important; }
-    .map-container iframe { min-height: 350px !important; }
-}
+/* === UNIVERSAL RESPONSIVE FIXES === */
 
-@media (max-width: 400px) {
-    .menu-panel { max-width: 100vw; width: 100vw; }
-    .brand-name { display: none; }
+/* 1. Fix Header on very small phones (under 380px) */
+@media (max-width: 380px) {
+    .brand-name {
+        font-size: 1.1rem;
+    }
+    .header-inner {
+        padding: 12px 16px;
+    }
+    .top-nav-btn {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 /* 2. Fix Slide-Out Menu on landscape phones & small tablets */
@@ -1325,11 +1303,10 @@ body, main, section {
 }
 /* === FIX: Hamburger Menu Mobile Scaling === */
 @media (max-width: 768px) {
-    .menu-panel { 
+    .menu-panel {
         width: 320px; 
-        max-width: 90vw; 
-        padding: 80px 24px 100px; /* 100px bottom padding clears the mobile bar */
-        -webkit-overflow-scrolling: touch; 
+        max-width: 90vw; /* Forces it to shrink on small phones */
+        padding: 80px 24px 32px;
     }
     .header-inner {
         padding: 12px 16px;
@@ -1358,8 +1335,13 @@ body, main, section {
 
 /* Fix for very tiny phones (iPhone SE etc) */
 @media (max-width: 400px) {
-    .menu-panel { max-width: 100vw; width: 100vw; }
-    .brand-name { display: none; }
+    .menu-panel {
+        max-width: 100vw; /* Take up full screen width if needed */
+        width: 100vw;
+    }
+    .brand-name {
+        display: none; /* Hide text logo, just show icon */
+    }
 }
 /* === Next Chapter Floating Pill === */
 .next-chapter-pill {
