@@ -1,12 +1,15 @@
 'use strict';if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }window.addEventListener('load', function() { window.scrollTo(0, 0); });
+
+// Use the Supabase client initialized securely in index.html
+const supabaseClient = window.supabaseClient;
+
 // Only register Service Worker on the main site, NOT on staff.html or bingo
 if ('serviceWorker' in navigator && !window.location.pathname.endsWith('staff.html') && !window.location.pathname.includes('bingo')) { 
     window.addEventListener('load', () => { 
         navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed: ', err)); 
     }); 
 }
-// Do this once in app.js
-const supabaseClient = window.supabase.createClient('https://bsbwrvqevtoujfvcvvju.supabase.co', 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx');
+
 function safeGet(k){try{return localStorage.getItem(k)}catch(e){return null}}function safeSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}function generateSeasonalBackground(s){const bg=document.getElementById('seasonal-bg');if(!bg)return;bg.innerHTML='';if(!s)return;const c=window.innerWidth<768?15:20;for(let i=0;i<c;i++){const el=document.createElement('div');el.className='season-el '+s;el.style.left=Math.random()*100+'vw';el.style.animationDuration=(Math.random()*10+10)+'s';el.style.animationDelay=(Math.random()*15)+'s';const size=Math.random()*12+8;el.style.width=size+'px';el.style.height=size+'px';if(s==='winter')el.classList.add('snow');else if(s==='spring')el.classList.add('petal');else if(s==='summer')el.classList.add('sunbeam');else if(s==='autumn')el.classList.add('leaf');else return;bg.appendChild(el)}}
 
 function timeAgo(date) {
@@ -126,7 +129,7 @@ const SplashModule = (function () {
       });
     });
     const versionTag = document.getElementById('version-tag');
-    if (versionTag) versionTag.textContent = 'Version 1.0 (full release)';
+    if (versionTag) versionTag.textContent = 'Version 3.3';
   }
   return { init };
 })();
@@ -702,7 +705,7 @@ const StaffModule=(function(){
         if(pass.length<6){ ToastModule.show('Password must be at least 6 characters.'); return; }
         ToastModule.show('Creating account...');
         try {
-            const { error } = await tempClient.auth.signUp({
+            const { error } = await supabaseClient.auth.signUp({
                 email: email, password: pass,
                 options: { data: { role: role } }
             });
@@ -730,15 +733,10 @@ const MessagesModule=(function(){
         // Check if we're on main site or staff portal
         isMainSite = document.getElementById('staff-messaging') !== null;
         
-        console.log('MessagesModule init - isMainSite:', isMainSite);
-        
+        if(!supabaseClient) return;
         const { data: { user } } = await supabaseClient.auth.getUser();
-        if(!user) {
-            console.log('No authenticated user found');
-            return;
-        }
+        if(!user) return;
         currentUserId = user.id;
-        console.log('Current user ID:', currentUserId);
 
         // Show user greeting and messaging button on main site
         if(isMainSite){
@@ -766,7 +764,6 @@ const MessagesModule=(function(){
             }
         } 
 
-      
         // Load staff members for name display
         await loadStaffMembers();
 
@@ -780,33 +777,13 @@ const MessagesModule=(function(){
                 if(payload.new.conversation_id === activeConversationId){
                     appendMessage(payload.new);
                 }
-                loadConversations(); // Update sidebar preview
+                loadConversations(); 
             })
             .subscribe();
 
-        // Setup UI listeners based on which site we're on
         setupUIListeners();
-        
-        console.log('MessagesModule initialized successfully');
     }
     
-    function UserGreeting(user){
-        const userGreeting = document.getElementById('userGreeting');
-        const userName = document.getElementById('userName');
-        
-        if(userGreeting && userName){
-            if(user){
-                userGreeting.style.display = 'flex';
-                const displayName = user.user_metadata?.full_name || 
-                                   user.user_metadata?.name || 
-                                   user.email?.split('@')[0] || 
-                                   'User';
-                userName.textContent = `Hello, ${displayName}`;
-            } else {
-                userGreeting.style.display = 'none';
-            }
-        }
-    }
     function setupUIListeners(){
         const prefix = isMainSite ? 'main-' : '';
         
@@ -823,7 +800,6 @@ const MessagesModule=(function(){
             });
         }
         
-        // Toggle manual input
         if(toggleBtn){
             toggleBtn.addEventListener('click', () => {
                 const manualBox = document.getElementById(prefix + 'manual-chat-box');
@@ -834,25 +810,20 @@ const MessagesModule=(function(){
 
     async function loadStaffMembers(){
         try {
-            // Try to get staff from staff table
             const { data: staffData, error: staffError } = await supabaseClient
                 .from('staff')
                 .select('id, email, name')
                 .eq('is_active', true);
             
             if(!staffError && staffData && staffData.length > 0){
-                console.log('Loaded staff members from staff table:', staffData);
                 staffMembers = staffData;
                 populateStaffDropdown();
             } else {
-                console.log('No staff table or no data, error:', staffError);
-                // Try to get all users from the profiles table (if it exists)
                 const { data: profilesData, error: profilesError } = await supabaseClient
                     .from('profiles')
                     .select('id, email, full_name');
                 
                 if(!profilesError && profilesData && profilesData.length > 0){
-                    console.log('Loaded profiles:', profilesData);
                     staffMembers = profilesData.map(p => ({
                         id: p.id,
                         email: p.email,
@@ -860,8 +831,6 @@ const MessagesModule=(function(){
                     }));
                     populateStaffDropdown();
                 } else {
-                    console.log('No profiles table either, error:', profilesError);
-                    // As a fallback, add the current user so they can at least see themselves
                     if(currentUserId){
                         staffMembers = [{
                             id: currentUserId,
@@ -875,7 +844,6 @@ const MessagesModule=(function(){
                 }
             }
         } catch(e){
-            console.error('Error loading staff members:', e);
             staffMembers = [];
             populateStaffDropdown();
         }
@@ -884,19 +852,12 @@ const MessagesModule=(function(){
     function populateStaffDropdown(){
         const prefix = isMainSite ? 'main-' : '';
         const select = document.getElementById(prefix + 'chat-recipient-select');
-        if(!select) {
-            console.log('Dropdown element not found with prefix:', prefix);
-            return;
-        }
-        
-        console.log('Populating dropdown with staff members:', staffMembers.length);
-        console.log('Current user ID:', currentUserId);
+        if(!select) return;
         
         select.innerHTML = '<option value="">Select staff member...</option>';
         
         let addedCount = 0;
         staffMembers.forEach(staff => {
-            console.log('Checking staff member:', staff);
             if(staff.id !== currentUserId){
                 const option = document.createElement('option');
                 option.value = staff.email;
@@ -906,9 +867,6 @@ const MessagesModule=(function(){
             }
         });
         
-        console.log('Added', addedCount, 'staff members to dropdown');
-        
-        // If no staff members available, show message
         if(addedCount === 0){
             const option = document.createElement('option');
             option.value = "";
@@ -957,7 +915,6 @@ const MessagesModule=(function(){
             let displayName = conv.group_name || "Private Chat";
             
             if(!conv.is_group){
-                // Find the OTHER participant
                 const { data: otherParts } = await supabaseClient
                     .from('conversation_participants')
                     .select('user_id')
@@ -974,7 +931,6 @@ const MessagesModule=(function(){
                 }
             }
 
-            // Get last message for preview
             const { data: lastMsg } = await supabaseClient
                 .from('messages')
                 .select('content, created_at')
@@ -1000,14 +956,12 @@ const MessagesModule=(function(){
         let email = select.value;
         let displayName = email;
         
-        // If dropdown is empty, try manual input
         if(!email && manualInput){
             email = manualInput.value.trim();
         }
         
         if(!email) return;
 
-        // Check if it's a staff member from our list
         let targetUserId = null;
         const staff = staffMembers.find(s => s.email === email);
         
@@ -1015,7 +969,6 @@ const MessagesModule=(function(){
             targetUserId = staff.id;
             displayName = staff.name || staff.full_name || staff.email;
         } else {
-            // Fallback to email lookup via RPC
             const { data: userIdData, error } = await supabaseClient.rpc('get_user_id', { email_input: email });
             if(!error && userIdData){
                 targetUserId = userIdData;
@@ -1033,7 +986,6 @@ const MessagesModule=(function(){
             return;
         }
 
-        // Check if 1-on-1 conversation already exists
         const { data: existingConvos } = await supabaseClient.rpc('find_private_conversation', { user1: currentUserId, user2: targetUserId });
         
         if(existingConvos){
@@ -1086,7 +1038,7 @@ const MessagesModule=(function(){
 
         msgsEl.innerHTML = '';
         messages.forEach(msg => appendMessage(msg));
-        await loadConversations(); // Update active state in sidebar
+        await loadConversations(); 
     }
 
     function appendMessage(msg){
@@ -1120,7 +1072,7 @@ const MessagesModule=(function(){
 
         if(error){
             ToastModule.show('Failed to send message.');
-            input.value = content; // Restore text
+            input.value = content; 
         }
     }
   return { init }; 
@@ -1129,7 +1081,7 @@ const MessagesModule=(function(){
 
 const AuthModule=(function(){
     function init(){
-        // Listen for auth state changes to update user greeting on main site
+        if(!supabaseClient) return;
         supabaseClient.auth.onAuthStateChange((event, session) => {
             if(event === 'SIGNED_IN' && session?.user){
                 const userGreeting = document.getElementById('userGreeting');
@@ -1206,7 +1158,7 @@ const TesterModule=(function(){
         
         try {
             la.style.display='none';
-            ma.style.display='flex'; // Use flex for the sidebar layout
+            ma.style.display='flex'; 
             if(gearBtn) gearBtn.classList.add('show');
             if(footerLogin) footerLogin.style.display='none';
             loginBtn.textContent='Log In';
@@ -1231,11 +1183,9 @@ const TesterModule=(function(){
             const maintBtn=document.getElementById('toggleMaintenanceBtn');
             if(maintBtn) maintBtn.style.display=(userRole==='admin')?'block':'none';
             
-            // Hide Staff Creation panel if not admin
             const staffTabBtn=document.getElementById('staffTabBtn');
             if(staffTabBtn) staffTabBtn.style.display=(userRole==='admin')?'flex':'none';
             
-            // === USER-SPECIFIC DASHBOARD THEME ===
             const userId = user ? user.id : 'default';
             const staffThemeKey = `th-staff-theme-${userId}`;
             const savedTheme = safeGet(staffThemeKey) || 'staff-dark';
@@ -1259,7 +1209,6 @@ const TesterModule=(function(){
                 };
             });
 
-            // Load all admin data safely
             if(typeof FeaturedEventsModule!=='undefined') FeaturedEventsModule.loadAdminFeatured();
             if(typeof FilmNightModule!=='undefined') FilmNightModule.loadFilms();
             if(typeof LayoutModule!=='undefined') LayoutModule.onTesterOpen();
@@ -1272,13 +1221,11 @@ const TesterModule=(function(){
             if(typeof CommunityModule!=='undefined') CommunityModule.loadAdminCommunity();
             if(typeof MenuModule!=='undefined' && (userRole==='chef'||userRole==='admin')) MenuModule.loadAdminMenu();
             
-            // Slight delay to ensure Supabase auth is fully propagated for storage permissions
             setTimeout(() => {
                 renderPhotoAdmin();
             }, 500);
             
         } catch(e) {
-            console.error("Dashboard Load Error:", e);
             isMenuLoaded = false;
             loginBtn.textContent='Log In';
             loginBtn.disabled=false;
@@ -1287,7 +1234,7 @@ const TesterModule=(function(){
     }
     function showLogin(){
         isMenuLoaded = false;
-        la.style.display='flex'; // Use flex to center the login box
+        la.style.display='flex'; 
         ma.style.display='none';
         if(gearBtn) gearBtn.classList.remove('show');
         if(footerLogin) footerLogin.style.display='block';
@@ -1459,114 +1406,116 @@ document.addEventListener('DOMContentLoaded', () =>{
       return { init };
     })();
 
-// === TINKERSHATCH CUSTOM FEATURES ===
-setTimeout(() => {
-    // --- 1. INVISIBLE SEASONAL BACKGROUND MUSIC ---
-    const regularTracks = [
-        { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
-        { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
-        { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
-        { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
-        { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
-    ];
-    const seasonalTracks = [
-        // --- CHRISTMAS SONGS (Play in December) ---
-        { name: "Cozy Christmas Jazz", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
-        { name: "Silent Night Piano", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
-        
-        // --- AUTUMN SONGS (Play in October & November) ---
-        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 },
-        { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 10, endMonth: 10 },
-    ];
+    // === TINKERSHATCH CUSTOM FEATURES ===
+    // 1. AMBIENT MUSIC TOGGLE
+    (function() {
+        const musicBtn = document.getElementById('musicToggleBtn');
+        if (!musicBtn) return;
 
-    const currentMonth = new Date().getMonth();
-    let playlist = [...regularTracks]; 
-    seasonalTracks.forEach(track => {
-        if (currentMonth >= track.startMonth && currentMonth <= track.endMonth) {
-            playlist.push(track); 
-        }
-    });
-    let currentTrack = Math.floor(Math.random() * playlist.length);
-    
-    const music = document.createElement('audio');
-    music.style.display = 'none';
-    music.volume = 0.4; 
-    music.setAttribute('playsinline', ''); 
-    document.body.appendChild(music);
+        const regularTracks = [
+            { name: "Whispers of evening", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/background-music.mp3" },
+            { name: "Let your spirit float", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song2.mp3" },
+            { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song3.mp3" },
+            { name: "The shift of time", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song4.mp3" },
+            { name: "Echoes of twilight", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/song5.mp3" }
+        ];
+        const seasonalTracks = [
+            { name: "Cozy Christmas Jazz", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong1.mp3", startMonth: 11, endMonth: 11 },
+            { name: "Silent Night Piano", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/christmassong2.mp3", startMonth: 11, endMonth: 11 },
+            { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/autumn1.mp3", startMonth: 9, endMonth: 10 },
+            { name: "Autumn Ambience", url: "https://leewilliamsphotography-beep.github.io/Tinkershatch/halloween1.mp3", startMonth: 10, endMonth: 10 },
+        ];
 
-    // --- PITCH & SPEED RANDOMIZER ---
-    // 0.9715 is exactly -0.5 semitones, 1.0293 is exactly +0.5 semitones
-    function applyRandomPitch() {
-        const minPitch = 0.9715;
-        const maxPitch = 1.0293;
-        music.playbackRate = (Math.random() * (maxPitch - minPitch) + minPitch);
-        console.log("Music playing at relative pitch: " + music.playbackRate);
-    }
-
-    function loadTrack(index) {
-        currentTrack = (index + playlist.length) % playlist.length; 
-        music.src = playlist[currentTrack].url;
-        music.load();
-    }
-
-    music.addEventListener('ended', () => {
-        loadTrack(currentTrack + 1);
-        applyRandomPitch(); // Apply new pitch before playing next track
-        music.play().catch(e => console.log("Auto-advance blocked:", e));
-    });
-
-    let hasStarted = false;
-    function startMusic() {
-        if (hasStarted) return;
-        hasStarted = true;
-        loadTrack(currentTrack); 
-        applyRandomPitch(); // Apply pitch on the very first play
-        music.play().then(() => {
-            window.removeEventListener('click', startMusic);
-            window.removeEventListener('touchstart', startMusic);
-            window.removeEventListener('touchend', startMusic);
-            window.removeEventListener('keydown', startMusic);
-        }).catch(e => {
-            hasStarted = false;
+        const currentMonth = new Date().getMonth();
+        let playlist = [...regularTracks]; 
+        seasonalTracks.forEach(track => {
+            if (currentMonth >= track.startMonth && currentMonth <= track.endMonth) {
+                playlist.push(track); 
+            }
         });
-    }
-    window.addEventListener('click', startMusic);
-    window.addEventListener('touchstart', startMusic);
-    window.addEventListener('touchend', startMusic);
-    window.addEventListener('keydown', startMusic)
-}, 1500);
-    // --- 4. LIVE WEATHER EFFECTS ---
+        
+        let currentTrack = Math.floor(Math.random() * playlist.length);
+        const music = document.createElement('audio');
+        music.style.display = 'none';
+        music.volume = 0.4; 
+        music.setAttribute('playsinline', ''); 
+        document.body.appendChild(music);
+
+        let isPlaying = false;
+
+        function applyRandomPitch() {
+            const minPitch = 0.9715;
+            const maxPitch = 1.0293;
+            music.playbackRate = (Math.random() * (maxPitch - minPitch) + minPitch);
+        }
+
+        function loadTrack(index) {
+            currentTrack = (index + playlist.length) % playlist.length; 
+            music.src = playlist[currentTrack].url;
+            music.load();
+        }
+
+        music.addEventListener('ended', () => {
+            loadTrack(currentTrack + 1);
+            applyRandomPitch(); 
+            music.play().catch(e => console.log("Auto-advance blocked:", e));
+        });
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                isPlaying = false;
+                musicBtn.classList.remove('active');
+                musicBtn.setAttribute('aria-pressed', 'false');
+            } else {
+                if (!music.src) {
+                    loadTrack(currentTrack); 
+                }
+                applyRandomPitch(); 
+                music.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.classList.add('active');
+                    musicBtn.setAttribute('aria-pressed', 'true');
+                }).catch(e => {
+                    console.log("Playback failed:", e);
+                });
+            }
+        }
+
+        musicBtn.addEventListener('click', toggleMusic);
+    })();
+
+    // --- 2. LIVE WEATHER EFFECTS ---
     const weatherFx = document.getElementById('weather-fx');
     let currentWeatherCondition = '';
 
       function spawnWeatherEffect(type, count) {
-        weatherFx.innerHTML = ''; // Clear old effects
+        weatherFx.innerHTML = ''; 
         for (let i = 0; i < count; i++) {
             const el = document.createElement('div');
             el.className = `weather-el ${type}`;
             
-            // Randomize positions and speeds for a natural, subtle look
             if (type === 'rain') {
                 el.style.left = Math.random() * 100 + 'vw';
-                el.style.animationDuration = (Math.random() * 0.5 + 0.8) + 's'; // Slowed down slightly
-                el.style.opacity = Math.random() * 0.2 + 0.1; // Much lower opacity (0.1 to 0.3)
+                el.style.animationDuration = (Math.random() * 0.5 + 0.8) + 's'; 
+                el.style.opacity = Math.random() * 0.2 + 0.1; 
             } else if (type === 'snow') {
                 el.style.left = Math.random() * 100 + 'vw';
-                el.style.animationDuration = (Math.random() * 5 + 8) + 's'; // Slower fall (8s to 13s)
-                el.style.opacity = Math.random() * 0.4 + 0.2; // Lower opacity (0.2 to 0.6)
-                const size = Math.random() * 3 + 1; // Smaller flakes (1px to 4px)
+                el.style.animationDuration = (Math.random() * 5 + 8) + 's'; 
+                el.style.opacity = Math.random() * 0.4 + 0.2; 
+                const size = Math.random() * 3 + 1; 
                 el.style.width = size + 'px';
                 el.style.height = size + 'px';
             } else if (type === 'fog') {
                 el.style.top = Math.random() * 100 + 'vh';
                 el.style.animationDuration = (Math.random() * 20 + 20) + 's';
                 el.style.animationDelay = Math.random() * -20 + 's';
-                el.style.opacity = Math.random() * 0.2 + 0.1; // Added subtle opacity for fog
+                el.style.opacity = Math.random() * 0.2 + 0.1; 
             } else if (type === 'sunbeam') {
                 el.style.left = Math.random() * 100 + 'vw';
                 el.style.animationDuration = (Math.random() * 8 + 8) + 's';
                 el.style.animationDelay = Math.random() * -8 + 's';
-                el.style.opacity = Math.random() * 0.2 + 0.1; // Added subtle opacity for sunbeams
+                el.style.opacity = Math.random() * 0.2 + 0.1; 
             }
             weatherFx.appendChild(el);
         }
@@ -1574,7 +1523,6 @@ setTimeout(() => {
 
       async function updateWeatherFX() { 
         try {
-            // Open-Meteo API for East Sussex (TN21 0LX approx: 50.96 lat, 0.21 lon)
             const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=50.96&longitude=0.21&current=weather_code');
             const data = await res.json();
             const code = data.current.weather_code;
@@ -1588,12 +1536,9 @@ setTimeout(() => {
             else if (code >= 80 && code <= 82) newCondition = 'rain';
             else if (code >= 85 && code <= 86) newCondition = 'snow';
             
-            // Only update the DOM if the weather actually changed
             if (newCondition !== currentWeatherCondition) {
                 currentWeatherCondition = newCondition;
-                console.log("Weather updated to:", newCondition);
                 
-                // Dynamically calculate particle count based on screen width
                 const screenWidth = window.innerWidth;
                 const widthFactor = Math.max(1, screenWidth / 1000);
 
@@ -1602,22 +1547,21 @@ setTimeout(() => {
                 
                 if (newCondition === 'rain') {
                     type = 'rain';
-                    count = Math.floor(15 * widthFactor); // Reduced from 40 to 15 per 1000px
+                    count = Math.floor(15 * widthFactor); 
                 } else if (newCondition === 'snow') {
                     type = 'snow';
-                    count = Math.floor(10 * widthFactor); // Reduced from 25 to 10 per 1000px
+                    count = Math.floor(10 * widthFactor); 
                 } else if (newCondition === 'fog') {
                     type = 'fog';
-                    count = Math.floor(4 * widthFactor);  // Reduced from 8 to 4 per 1000px
+                    count = Math.floor(4 * widthFactor);  
                 } else if (newCondition === 'clear') {
                     type = 'sunbeam';
-                    count = Math.floor(4 * widthFactor);  // Reduced from 8 to 4 per 1000px
+                    count = Math.floor(4 * widthFactor);  
                 } else if (newCondition === 'cloudy') {
                     type = 'fog';
-                    count = Math.floor(2 * widthFactor);  // Reduced from 4 to 2 per 1000px
+                    count = Math.floor(2 * widthFactor);  
                 }
 
-                // Cap at 100 particles so it stays subtle and performant
                 count = Math.min(count, 100);
 
                 spawnWeatherEffect(type, count);
@@ -1626,10 +1570,9 @@ setTimeout(() => {
             console.log("Weather FX offline or blocked.");
         }
     }
-    // Run immediately, then check every 30 minutes
     updateWeatherFX();
     setInterval(updateWeatherFX, 1800000);
 // === END CUSTOM FEATURES ===
     
-        PolishModule.init();
-    });
+    PolishModule.init();
+});
