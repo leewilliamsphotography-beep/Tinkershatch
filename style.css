@@ -1304,22 +1304,29 @@ body, main, section {
     pointer-events: none !important; /* Ensures you can still click through the particles */
 }
 
-/* === FIX: Mobile Clock Fit === */
-@media (max-width: 768px) {
-    #time-date-bar {
-        padding: 0 10px !important; /* Reduce padding to give the text more room */
-        justify-content: center !important;
-        height: 32px !important; /* Slightly taller to prevent text clipping */
+    /* Mobile Top Bar Fix */
+    #time-date-bar { 
+        height: 40px !important; /* Taller for better breathing room */
+        padding: 0 16px !important; 
+        justify-content: space-between !important; 
     }
-    #liveTimeDate {
-        font-size: 0.72rem !important; /* Smaller font size for small screens */
-        white-space: nowrap !important; /* Forces the time/date to stay on one single line */
-        overflow: hidden !important;
-        text-overflow: ellipsis !important; /* Adds ... if it ever gets too long */
-        max-width: 95vw !important;
-        text-align: center !important;
+    #liveTimeDate { 
+        font-size: 0.8rem !important; 
+        white-space: nowrap !important; 
     }
-}
+    /* Show only the icons on the right, hide the long text */
+    .time-date-contact { 
+        display: flex !important; 
+        gap: 16px !important; 
+        font-size: 0 !important; /* Hides the text */
+    }
+    .time-date-contact a {
+        gap: 0 !important;
+    }
+    .time-date-contact svg {
+        width: 14px !important;
+        height: 14px !important;
+    }
 /* === FIX: Hamburger Menu Mobile Scaling === */
 @media (max-width: 768px) {
     .menu-panel {
