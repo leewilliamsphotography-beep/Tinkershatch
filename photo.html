@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Lexend:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="style.css?v=3.9">
-<style>
-        body { background: var(--cream); }
+    <link rel="stylesheet" href="style.css?v=4.0">
+    <style>
+        body { background: var(--cream); transition: background-color 0.4s ease, color 0.4s ease; }
         
         /* Sticky Header */
         .photo-header { 
@@ -27,37 +27,27 @@
         .gallery-masonry { 
             column-count: 1; 
             column-gap: 24px; 
-            max-width: 600px; /* Prevents photos from getting too blurry on large monitors */
+            max-width: 600px; 
             margin: 40px auto; 
             padding: 0 16px; 
         }
         
         /* Accessible Photo Buttons */
         .photo-item { 
-            position: relative; 
-            width: 100%; 
-            display: block; 
-            margin-bottom: 24px; 
-            break-inside: avoid; /* Masonry fix */
-            border: none; 
-            padding: 0; 
-            background: none; 
-            cursor: pointer; 
-            border-radius: 16px; 
-            overflow: hidden; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            position: relative; width: 100%; display: block; margin-bottom: 24px; 
+            break-inside: avoid; border: none; padding: 0; background: none; cursor: pointer; 
+            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .photo-item img { width: 100%; display: block; transition: transform 0.4s ease; }
+        .photo-item img { width: 100%; display: block; transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0; }
+        .photo-item img.loaded { opacity: 1; }
         .photo-item:focus { outline: 3px solid var(--teal); outline-offset: 3px; }
         .photo-item:hover img { transform: scale(1.03); }
         
         /* Hover Overlay */
         .photo-overlay {
-            position: absolute; inset: 0;
-            background: rgba(0,0,0,0.5);
+            position: absolute; inset: 0; background: rgba(0,0,0,0.5);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 8px; padding: 16px; text-align: center;
-            opacity: 0; transition: opacity 0.3s ease;
+            gap: 8px; padding: 16px; text-align: center; opacity: 0; transition: opacity 0.3s ease;
         }
         .photo-item:hover .photo-overlay, .photo-item:focus-visible .photo-overlay { opacity: 1; }
         .photo-overlay svg { color: #fff; width: 36px; height: 36px; }
@@ -67,53 +57,45 @@
         .skeleton-box { width: 100%; border-radius: 16px; margin-bottom: 24px; background: var(--cream-deep); height: 450px; animation: skeleton-pulse 1.5s infinite ease-in-out; break-inside: avoid; }
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
         
-        /* Lightbox Caption */
+        /* Lightbox QoL Additions */
         .lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 1rem; font-weight: 600; background: rgba(0,0,0,0.6); padding: 12px 24px; border-radius: 20px; backdrop-filter: blur(8px); text-align: center; max-width: 80%; }
+        .lightbox-download { position: absolute; top: 24px; left: 24px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); cursor: pointer; z-index: 2002; transition: all .3s ease; text-decoration: none; }
+        .lightbox-download:hover { background: var(--teal); border-color: var(--teal); transform: scale(1.1); }
+        .lightbox-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; opacity: 0; transition: opacity 0.2s ease; }
+        .lightbox-spinner.show { opacity: 1; }
+        @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
         
         /* Floating Back to Top */
         .back-to-top { position: fixed; bottom: 24px; right: 24px; width: 48px; height: 48px; border-radius: 12px; background: var(--bark); color: #fff; border: none; display: none; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: all 0.3s ease; z-index: 90; }
         .back-to-top.show { display: flex; }
         .back-to-top:hover { background: var(--teal); transform: translateY(-3px); }
     </style>
-    <!-- Theme Loader Script (Matches main site settings) -->
+</head>
+<body>
+
+<!-- Bulletproof Theme Loader Script -->
 <script>
     (function() {
         try {
             const html = document.documentElement;
-            // Create the body element if it doesn't exist yet so we can style it instantly
-            const body = document.body || document.createElement('body');
-            
+            const body = document.body;
             const theme = localStorage.getItem('th-theme');
             const palette = localStorage.getItem('th-palette');
             const fontsize = localStorage.getItem('th-fontsize');
             const dyslexia = localStorage.getItem('th-dyslexia');
-            const season = localStorage.getItem('th-season');
 
-            // 1. Apply Theme (Dark, Warm, High Contrast)
             if (theme && theme !== 'light') body.classList.add('theme-' + theme);
-            
-            // 2. Apply Palette (Ocean, Sunset, Berry)
             if (palette && palette !== 'nature') body.classList.add('palette-' + palette);
-            
-            // 3. Apply Font Size (applied to HTML tag like the main site)
             if (fontsize) {
                 html.classList.add('th-text-' + fontsize);
                 if (fontsize === 'bold') body.classList.add('th-text-bold');
             }
-            
-            // 4. Apply Dyslexia Mode
             if (dyslexia === 'on') body.classList.add('dyslexia-mode');
-            
-            // 5. Apply Seasonal Theme if it's set
-            if (season && season !== 'auto') body.classList.add('season-' + season);
-
         } catch (e) {
             console.log('Theme could not be loaded.');
         }
     })();
 </script>
-</head>
-<body>
 
     <header class="photo-header">
         <a href="index.html" class="back-btn">
@@ -121,12 +103,11 @@
             Back to Site
         </a>
         <h1 class="display font-extrabold text-xl" style="color: var(--bark);">Tinkers Moments</h1>
-        <div style="width: 110px;"></div> <!-- Spacer to center title -->
+        <div style="width: 110px;"></div>
     </header>
 
     <main style="padding-top: 20px; padding-bottom: 60px;">
         <div id="photoGrid" class="gallery-masonry">
-            <!-- Skeleton Loaders -->
             <div class="skeleton-box" style="height: 450px;"></div>
             <div class="skeleton-box" style="height: 500px;"></div>
             <div class="skeleton-box" style="height: 400px;"></div>
@@ -134,7 +115,6 @@
         </div>
     </main>
 
-    <!-- Floating Back to Top -->
     <button class="back-to-top" id="backToTopBtn" aria-label="Scroll back to top">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
     </button>
@@ -142,8 +122,18 @@
     <!-- Lightbox -->
     <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Photo gallery viewer">
         <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+        
+        <!-- QoL: Download Button -->
+        <a href="#" class="lightbox-download" id="lightboxDownload" aria-label="Download photo" download>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        </a>
+
         <button class="lightbox-nav-btn lightbox-prev" id="lightboxPrev" aria-label="Previous image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        
+        <!-- QoL: Loading Spinner -->
+        <div class="lightbox-spinner" id="lightboxSpinner"></div>
         <img id="lightboxImg" class="lightbox-img" src="" alt="Expanded photo view">
+        
         <button class="lightbox-nav-btn lightbox-next" id="lightboxNext" aria-label="Next image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
         <div id="lightboxCounter" class="lightbox-counter">1 / 1</div>
         <div id="lightboxCaption" class="lightbox-caption"></div>
@@ -167,6 +157,8 @@
             const lbNext = document.getElementById('lightboxNext');
             const lbCounter = document.getElementById('lightboxCounter');
             const lbCaption = document.getElementById('lightboxCaption');
+            const lbSpinner = document.getElementById('lightboxSpinner');
+            const lbDownload = document.getElementById('lightboxDownload');
 
             async function loadPhotos() {
                 try {
@@ -195,20 +187,19 @@
             }
 
             function renderGrid() {
-                grid.innerHTML = ''; // Clear skeletons
+                grid.innerHTML = ''; 
                 photos.forEach((photo, idx) => {
-                    // 1. Create Accessible Button Wrapper
                     const btn = document.createElement('button');
                     btn.className = 'photo-item';
                     btn.setAttribute('aria-label', `Open photo: ${photo.alt}`);
                     
-                    // 2. Create Image
                     const img = document.createElement('img');
                     img.src = photo.src;
                     img.alt = photo.alt;
                     img.loading = 'lazy';
+                    // QoL: Fade in image when loaded
+                    img.addEventListener('load', () => img.classList.add('loaded'));
                     
-                    // 3. Create Hover Overlay
                     const overlay = document.createElement('div');
                     overlay.className = 'photo-overlay';
                     overlay.innerHTML = `
@@ -228,18 +219,23 @@
                 currentIndex = index;
                 updateLightbox();
                 lb.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Lock background scroll
+                document.body.style.overflow = 'hidden'; 
+                lbClose.focus(); // QoL: Focus trap for screen readers
             }
 
             function closeLightbox() {
                 lb.classList.remove('active');
-                document.body.style.overflow = ''; // Unlock background scroll
+                document.body.style.overflow = ''; 
             }
 
             function updateLightbox() {
+                lbSpinner.classList.add('show');
+                lbImg.style.opacity = '0';
+                
                 lbImg.src = photos[currentIndex].src;
                 lbImg.alt = photos[currentIndex].alt;
                 lbCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
+                lbDownload.href = photos[currentIndex].src; // QoL: Update download link
                 
                 if (photos[currentIndex].alt && photos[currentIndex].alt !== 'Gallery Photo') {
                     lbCaption.textContent = photos[currentIndex].alt;
@@ -248,6 +244,13 @@
                     lbCaption.style.display = 'none';
                 }
             }
+
+            // QoL: Hide spinner when image finishes loading
+            lbImg.addEventListener('load', () => {
+                lbSpinner.classList.remove('show');
+                lbImg.style.opacity = '1';
+                lbImg.style.transition = 'opacity 0.3s ease';
+            });
 
             function nextPhoto() { currentIndex = (currentIndex + 1) % photos.length; updateLightbox(); }
             function prevPhoto() { currentIndex = (currentIndex - 1 + photos.length) % photos.length; updateLightbox(); }
@@ -264,7 +267,7 @@
                 if (e.key === 'ArrowLeft') prevPhoto();
             });
 
-            // Touch Swipe Listeners for Mobile
+            // Touch Swipe Listeners
             let touchStartX = 0;
             lb.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
             lb.addEventListener('touchend', e => {
