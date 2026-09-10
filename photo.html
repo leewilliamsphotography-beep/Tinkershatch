@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Lexend:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css?v=3.8">
-    <style>
+<link rel="stylesheet" href="style.css?v=3.9">
+<style>
         body { background: var(--cream); }
         
         /* Sticky Header */
@@ -75,31 +75,46 @@
         .back-to-top.show { display: flex; }
         .back-to-top:hover { background: var(--teal); transform: translateY(-3px); }
     </style>
-</head>
-<body>
-
-<!-- Theme Loader Script (Matches main site settings) -->
+    <!-- Theme Loader Script (Matches main site settings) -->
 <script>
     (function() {
         try {
-            const body = document.body;
+            const html = document.documentElement;
+            // Create the body element if it doesn't exist yet so we can style it instantly
+            const body = document.body || document.createElement('body');
+            
             const theme = localStorage.getItem('th-theme');
             const palette = localStorage.getItem('th-palette');
             const fontsize = localStorage.getItem('th-fontsize');
             const dyslexia = localStorage.getItem('th-dyslexia');
+            const season = localStorage.getItem('th-season');
 
+            // 1. Apply Theme (Dark, Warm, High Contrast)
             if (theme && theme !== 'light') body.classList.add('theme-' + theme);
+            
+            // 2. Apply Palette (Ocean, Sunset, Berry)
             if (palette && palette !== 'nature') body.classList.add('palette-' + palette);
+            
+            // 3. Apply Font Size (applied to HTML tag like the main site)
             if (fontsize) {
-                body.classList.add('th-text-' + fontsize);
+                html.classList.add('th-text-' + fontsize);
                 if (fontsize === 'bold') body.classList.add('th-text-bold');
             }
+            
+            // 4. Apply Dyslexia Mode
             if (dyslexia === 'on') body.classList.add('dyslexia-mode');
+            
+            // 5. Apply Seasonal Theme if it's set
+            if (season && season !== 'auto') body.classList.add('season-' + season);
+
         } catch (e) {
             console.log('Theme could not be loaded.');
         }
     })();
 </script>
+</head>
+<body>
+
     <header class="photo-header">
         <a href="index.html" class="back-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
