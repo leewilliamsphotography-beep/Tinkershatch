@@ -8,20 +8,39 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Lexend:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css?v=3.5">
+    <link rel="stylesheet" href="style.css?v=3.6">
     <style>
         body { background: var(--cream); }
-        .photo-header { position: sticky; top: 0; background: color-mix(in srgb, var(--cream) 85%, transparent); backdrop-filter: blur(16px); padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); z-index: 100; }
+        
+        /* Sticky Header */
+        .photo-header { 
+            position: sticky; top: 0; 
+            background: color-mix(in srgb, var(--cream) 85%, transparent); 
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid var(--border); z-index: 100; 
+        }
         .back-btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--bark); font-weight: 700; background: var(--cream-deep); padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border); transition: all 0.2s; }
         .back-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
-        .gallery-grid-full { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-width: 1000px; margin: 40px auto; padding: 0 24px; }
-        @media (min-width: 640px) { .gallery-grid-full { grid-template-columns: repeat(3, 1fr); gap: 20px; } }
-        @media (min-width: 1024px) { .gallery-grid-full { grid-template-columns: repeat(4, 1fr); } }
+        
+        /* Masonry Layout */
+        .gallery-masonry { column-count: 2; column-gap: 16px; max-width: 1200px; margin: 40px auto; padding: 0 16px; }
+        @media (min-width: 640px) { .gallery-masonry { column-count: 3; column-gap: 20px; } }
+        @media (min-width: 1024px) { .gallery-masonry { column-count: 4; } }
+        .gallery-masonry img { width: 100%; display: block; border-radius: 12px; margin-bottom: 16px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        @media (min-width: 640px) { .gallery-masonry img { margin-bottom: 20px; } }
+        .gallery-masonry img:hover { transform: scale(1.02); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
+        /* Skeleton Loading */
+        .skeleton-box { width: 100%; border-radius: 12px; margin-bottom: 16px; background: var(--cream-deep); height: 250px; animation: skeleton-pulse 1.5s infinite ease-in-out; }
+        @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        
+        /* Lightbox Caption */
+        .lightbox-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 0.95rem; font-weight: 600; background: rgba(0,0,0,0.6); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(8px); text-align: center; max-width: 80%; }
     </style>
 </head>
 <body>
 
-    <!-- Sticky Header -->
     <header class="photo-header">
         <a href="index.html" class="back-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -31,10 +50,15 @@
         <div style="width: 110px;"></div> <!-- Spacer to center title -->
     </header>
 
-    <!-- Photo Grid -->
-    <main style="padding-top: 40px; padding-bottom: 60px;">
-        <div id="photoGrid" class="gallery-grid-full">
-            <p style="color: var(--bark-soft); text-align: center; grid-column: 1/-1;">Loading photos...</p>
+    <main style="padding-top: 20px; padding-bottom: 60px;">
+        <div id="photoGrid" class="gallery-masonry">
+            <!-- Skeleton Loaders -->
+            <div class="skeleton-box" style="height: 200px;"></div>
+            <div class="skeleton-box" style="height: 300px;"></div>
+            <div class="skeleton-box" style="height: 250px;"></div>
+            <div class="skeleton-box" style="height: 350px;"></div>
+            <div class="skeleton-box" style="height: 200px;"></div>
+            <div class="skeleton-box" style="height: 300px;"></div>
         </div>
     </main>
 
@@ -45,6 +69,7 @@
         <img id="lightboxImg" class="lightbox-img" src="" alt="Expanded photo view">
         <button class="lightbox-nav-btn lightbox-next" id="lightboxNext" aria-label="Next image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
         <div id="lightboxCounter" class="lightbox-counter">1 / 1</div>
+        <div id="lightboxCaption" class="lightbox-caption"></div>
     </div>
 
     <script>
@@ -64,6 +89,7 @@
             const lbPrev = document.getElementById('lightboxPrev');
             const lbNext = document.getElementById('lightboxNext');
             const lbCounter = document.getElementById('lightboxCounter');
+            const lbCaption = document.getElementById('lightboxCaption');
 
             async function loadPhotos() {
                 try {
@@ -71,40 +97,34 @@
                     if (error) throw error;
 
                     if (!data || data.length === 0) {
-                        grid.innerHTML = '<p style="color: var(--bark-soft); text-align: center;">No photos yet. Check back soon!</p>';
+                        grid.innerHTML = '<p style="color: var(--bark-soft); text-align: center; padding: 40px;">No photos yet. Check back soon!</p>';
                         return;
                     }
 
                     photos = data.filter(f => !f.name.startsWith('.')).map(file => {
                         const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(file.name);
                         let alt = 'Gallery Photo';
+                        // Extract caption from filename (e.g., photo123_caption_margarets-roses.jpg)
                         if (file.name.includes('_caption_')) {
-                            const match = file.name.match(/_caption_([^_]+)/);
-                            if (match && match[1]) alt = match[1].replace(/-/g, ' ');
+                            const match = file.name.split('_caption_')[1];
+                            if (match) alt = match.replace(/\.jpg|\.png|\.jpeg/gi, '').replace(/-/g, ' ');
                         }
                         return { src: urlData.publicUrl, alt: alt };
                     });
 
                     renderGrid();
                 } catch (e) {
-                    grid.innerHTML = '<p style="color: var(--terracotta); text-align: center;">Could not load photos.</p>';
+                    grid.innerHTML = '<p style="color: var(--terracotta); text-align: center; padding: 40px;">Could not load photos.</p>';
                 }
             }
 
             function renderGrid() {
-                grid.innerHTML = '';
+                grid.innerHTML = ''; // Clear skeletons
                 photos.forEach((photo, idx) => {
                     const img = document.createElement('img');
                     img.src = photo.src;
                     img.alt = photo.alt;
-                    img.className = 'gallery-thumb blur-load';
                     img.loading = 'lazy';
-                    img.style.borderRadius = '12px';
-                    img.style.width = '100%';
-                    img.style.height = '100%';
-                    img.style.objectFit = 'cover';
-                    img.style.aspectRatio = '1';
-                    img.addEventListener('load', () => img.classList.add('loaded'));
                     img.addEventListener('click', () => openLightbox(idx));
                     grid.appendChild(img);
                 });
@@ -116,27 +136,26 @@
                 lb.classList.add('active');
             }
 
-            function closeLightbox() {
-                lb.classList.remove('active');
-            }
+            function closeLightbox() { lb.classList.remove('active'); }
 
             function updateLightbox() {
                 lbImg.src = photos[currentIndex].src;
                 lbImg.alt = photos[currentIndex].alt;
                 lbCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
+                
+                // Show or hide caption
+                if (photos[currentIndex].alt && photos[currentIndex].alt !== 'Gallery Photo') {
+                    lbCaption.textContent = photos[currentIndex].alt;
+                    lbCaption.style.display = 'block';
+                } else {
+                    lbCaption.style.display = 'none';
+                }
             }
 
-            function nextPhoto() {
-                currentIndex = (currentIndex + 1) % photos.length;
-                updateLightbox();
-            }
+            function nextPhoto() { currentIndex = (currentIndex + 1) % photos.length; updateLightbox(); }
+            function prevPhoto() { currentIndex = (currentIndex - 1 + photos.length) % photos.length; updateLightbox(); }
 
-            function prevPhoto() {
-                currentIndex = (currentIndex - 1 + photos.length) % photos.length;
-                updateLightbox();
-            }
-
-            // Lightbox Listeners
+            // Listeners
             lbClose.addEventListener('click', closeLightbox);
             lbNext.addEventListener('click', e => { e.stopPropagation(); nextPhoto(); });
             lbPrev.addEventListener('click', e => { e.stopPropagation(); prevPhoto(); });
@@ -147,6 +166,18 @@
                 if (e.key === 'ArrowRight') nextPhoto();
                 if (e.key === 'ArrowLeft') prevPhoto();
             });
+
+            // Touch Swipe Listeners for Mobile
+            let touchStartX = 0;
+            lb.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
+            lb.addEventListener('touchend', e => {
+                if (!lb.classList.contains('active')) return;
+                const touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) { // Swipe threshold
+                    if (diff > 0) nextPhoto(); else prevPhoto();
+                }
+            }, {passive: true});
 
             // Initialize
             loadPhotos();
