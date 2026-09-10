@@ -8,9 +8,79 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Lexend:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css?v=4.0">
+    <link rel="stylesheet" href="style.css?v=4.1">
+
+    <!-- Bulletproof Theme Loader Script (Runs in Head) -->
+    <script>
+        (function() {
+            try {
+                const html = document.documentElement;
+                const theme = localStorage.getItem('th-theme');
+                const palette = localStorage.getItem('th-palette');
+                const fontsize = localStorage.getItem('th-fontsize');
+                const dyslexia = localStorage.getItem('th-dyslexia');
+
+                if (theme && theme !== 'light') html.classList.add('theme-' + theme);
+                if (palette && palette !== 'nature') html.classList.add('palette-' + palette);
+                if (fontsize) {
+                    html.classList.add('th-text-' + fontsize);
+                    if (fontsize === 'bold') html.classList.add('th-text-bold');
+                }
+                if (dyslexia === 'on') html.classList.add('dyslexia-mode');
+            } catch (e) {
+                console.log('Theme could not be loaded.');
+            }
+        })();
+    </script>
+
     <style>
-        body { background: var(--cream); transition: background-color 0.4s ease, color 0.4s ease; }
+        /* Hardcoded Base Variables */
+        :root {
+            --cream:#FAFAF8; --cream-deep:#F0EDE8; --bark:#1A2C38; --bark-soft:#5A6B75;
+            --teal:#0E8C6C; --teal-deep:#097156; --terracotta:#C5632E; --honey:#B8862A;
+            --rose:#A8455C; --sage:#8CB59F; --sky:#EFF2F4; --sky-deep:#DCE2E5;
+            --card:#FFFFFF; --border:#E5E2DD;
+            --shadow:0 10px 40px -10px rgba(26, 44, 56, 0.06);
+            --shadow-hover:0 20px 50px -15px rgba(26, 44, 56, 0.12);
+        }
+
+        /* Hardcoded Theme Overrides (Applied to HTML tag) */
+        html.theme-dark {
+            --cream:#111418; --cream-deep:#1B2026; --bark:#E0E6EA; --bark-soft:#94A3B8;
+            --sky:#1B2026; --sky-deep:#111418; --card:#1B2026; --border:#2D333B;
+            --shadow:0 4px 20px -4px rgba(0,0,0,.2); --shadow-hover:0 12px 30px -8px rgba(0,0,0,.4);
+        }
+        html.theme-warm {
+            --cream:#FAF5EB; --cream-deep:#EDE3CC; --bark:#3B2E25; --bark-soft:#6B5544;
+            --sky:#EFE5D2; --sky-deep:#E5D8BD; --card:#FFFAF0; --border:#E0D2B6;
+            --shadow:0 4px 20px -4px rgba(59,46,37,.08); --shadow-hover:0 12px 30px -8px rgba(59,46,37,.12);
+        }
+        html.theme-soft {
+            --cream:#F8FAFC; --cream-deep:#E2E8F0; --bark:#1E293B; --bark-soft:#475569;
+            --sky:#EFF6FF; --sky-deep:#DBEAFE; --card:#FFF; --border:#CBD5E1;
+            --shadow:0 4px 20px -4px rgba(30,41,59,.05); --shadow-hover:0 12px 30px -8px rgba(30,41,59,.1);
+        }
+        html.theme-high-contrast {
+            --cream:#000; --cream-deep:#000; --bark:#FFF; --bark-soft:#FFF; --sky:#000; --sky-deep:#000;
+            --card:#000; --border:#FFF; --shadow:none; --shadow-hover:none;
+            --teal:#FFFF00; --teal-deep:#FFFF00; --terracotta:#00FF00; --honey:#FFFF00; --rose:#FF00FF; --sage:#00FFFF;
+        }
+
+        /* Hardcoded Palette Overrides */
+        html.palette-ocean { --teal:#0E7490; --teal-deep:#155E75; --terracotta:#C2410C; --honey:#CA8A04; --rose:#BE185D; --sage:#059669; }
+        html.palette-sunset { --teal:#EA580C; --teal-deep:#C2410C; --terracotta:#D6B85C; --honey:#F59E0B; --rose:#E11D48; --sage:#F59E0B; }
+        html.palette-berry { --teal:#9333EA; --teal-deep:#6B21A8; --terracotta:#DB2777; --honey:#FACC15; --rose:#F43F5E; --sage:#A855F7; }
+
+        /* Font Size Overrides */
+        html.th-text-xs { font-size: 14px !important; }
+        html.th-text-sm { font-size: 15px !important; }
+        html.th-text-md { font-size: 17px !important; }
+        html.th-text-lg { font-size: 20px !important; }
+        html.th-text-bold { font-size: 22px !important; }
+        html.th-text-bold p, html.th-text-bold h1, html.th-text-bold h2, html.th-text-bold span, html.th-text-bold div { font-weight: 700 !important; }
+
+        body { background: var(--cream); transition: background-color 0.4s ease, color 0.4s ease; font-family: 'Lexend', system-ui, sans-serif; color: var(--bark); }
+        html.dyslexia-mode body, html.dyslexia-mode .display { font-family: 'Open-Dyslexic', sans-serif !important; letter-spacing: 0.02em !important; }
         
         /* Sticky Header */
         .photo-header { 
@@ -25,18 +95,14 @@
         
         /* Large Single-Column Layout */
         .gallery-masonry { 
-            column-count: 1; 
-            column-gap: 24px; 
-            max-width: 600px; 
-            margin: 40px auto; 
-            padding: 0 16px; 
+            column-count: 1; column-gap: 24px; max-width: 600px; margin: 40px auto; padding: 0 16px; 
         }
         
         /* Accessible Photo Buttons */
         .photo-item { 
             position: relative; width: 100%; display: block; margin-bottom: 24px; 
             break-inside: avoid; border: none; padding: 0; background: none; cursor: pointer; 
-            border-radius: 16px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);
         }
         .photo-item img { width: 100%; display: block; transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0; }
         .photo-item img.loaded { opacity: 1; }
@@ -69,33 +135,23 @@
         .back-to-top { position: fixed; bottom: 24px; right: 24px; width: 48px; height: 48px; border-radius: 12px; background: var(--bark); color: #fff; border: none; display: none; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: all 0.3s ease; z-index: 90; }
         .back-to-top.show { display: flex; }
         .back-to-top:hover { background: var(--teal); transform: translateY(-3px); }
+
+        /* Basic Lightbox CSS Fallback */
+        .lightbox-overlay { position: fixed; inset: 0; background: rgba(10,12,15,.98); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease; perspective: 1500px; }
+        .lightbox-overlay.active { opacity: 1; visibility: visible; }
+        .lightbox-img { max-width: 90vw; max-height: 80vh; object-fit: contain; border-radius: 4px; box-shadow: 0 25px 50px -12px rgba(0,0,0,.6); cursor: pointer; backface-visibility: hidden; transform-origin: center center; }
+        .lightbox-close, .lightbox-nav-btn { position: absolute; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); transition: background-color .3s ease, border-color .3s ease, transform .3s ease; cursor: pointer; z-index: 2002; }
+        .lightbox-close { top: 24px; right: 24px; }
+        .lightbox-nav-btn { top: 50%; transform: translateY(-50%); z-index: 2001; }
+        .lightbox-prev { left: 24px; }
+        .lightbox-next { right: 24px; }
+        .lightbox-close:hover, .lightbox-nav-btn:hover { background: var(--teal); border-color: var(--teal); transform: scale(1.1) translateY(-50%); }
+        .lightbox-close:hover { transform: scale(1.1); }
+        .lightbox-counter { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 12px; font-weight: 600; letter-spacing: 1px; background: rgba(0,0,0,.6); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(4px); }
+        .display { font-family: 'Poppins', system-ui, sans-serif; letter-spacing: -0.02em; }
     </style>
 </head>
 <body>
-
-<!-- Bulletproof Theme Loader Script -->
-<script>
-    (function() {
-        try {
-            const html = document.documentElement;
-            const body = document.body;
-            const theme = localStorage.getItem('th-theme');
-            const palette = localStorage.getItem('th-palette');
-            const fontsize = localStorage.getItem('th-fontsize');
-            const dyslexia = localStorage.getItem('th-dyslexia');
-
-            if (theme && theme !== 'light') body.classList.add('theme-' + theme);
-            if (palette && palette !== 'nature') body.classList.add('palette-' + palette);
-            if (fontsize) {
-                html.classList.add('th-text-' + fontsize);
-                if (fontsize === 'bold') body.classList.add('th-text-bold');
-            }
-            if (dyslexia === 'on') body.classList.add('dyslexia-mode');
-        } catch (e) {
-            console.log('Theme could not be loaded.');
-        }
-    })();
-</script>
 
     <header class="photo-header">
         <a href="index.html" class="back-btn">
@@ -123,14 +179,12 @@
     <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Photo gallery viewer">
         <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
         
-        <!-- QoL: Download Button -->
         <a href="#" class="lightbox-download" id="lightboxDownload" aria-label="Download photo" download>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
         </a>
 
         <button class="lightbox-nav-btn lightbox-prev" id="lightboxPrev" aria-label="Previous image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
         
-        <!-- QoL: Loading Spinner -->
         <div class="lightbox-spinner" id="lightboxSpinner"></div>
         <img id="lightboxImg" class="lightbox-img" src="" alt="Expanded photo view">
         
@@ -197,7 +251,6 @@
                     img.src = photo.src;
                     img.alt = photo.alt;
                     img.loading = 'lazy';
-                    // QoL: Fade in image when loaded
                     img.addEventListener('load', () => img.classList.add('loaded'));
                     
                     const overlay = document.createElement('div');
@@ -220,7 +273,7 @@
                 updateLightbox();
                 lb.classList.add('active');
                 document.body.style.overflow = 'hidden'; 
-                lbClose.focus(); // QoL: Focus trap for screen readers
+                lbClose.focus(); 
             }
 
             function closeLightbox() {
@@ -235,7 +288,7 @@
                 lbImg.src = photos[currentIndex].src;
                 lbImg.alt = photos[currentIndex].alt;
                 lbCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
-                lbDownload.href = photos[currentIndex].src; // QoL: Update download link
+                lbDownload.href = photos[currentIndex].src; 
                 
                 if (photos[currentIndex].alt && photos[currentIndex].alt !== 'Gallery Photo') {
                     lbCaption.textContent = photos[currentIndex].alt;
@@ -245,7 +298,6 @@
                 }
             }
 
-            // QoL: Hide spinner when image finishes loading
             lbImg.addEventListener('load', () => {
                 lbSpinner.classList.remove('show');
                 lbImg.style.opacity = '1';
@@ -255,7 +307,6 @@
             function nextPhoto() { currentIndex = (currentIndex + 1) % photos.length; updateLightbox(); }
             function prevPhoto() { currentIndex = (currentIndex - 1 + photos.length) % photos.length; updateLightbox(); }
 
-            // Listeners
             lbClose.addEventListener('click', closeLightbox);
             lbNext.addEventListener('click', e => { e.stopPropagation(); nextPhoto(); });
             lbPrev.addEventListener('click', e => { e.stopPropagation(); prevPhoto(); });
@@ -267,7 +318,6 @@
                 if (e.key === 'ArrowLeft') prevPhoto();
             });
 
-            // Touch Swipe Listeners
             let touchStartX = 0;
             lb.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
             lb.addEventListener('touchend', e => {
@@ -279,7 +329,6 @@
                 }
             }, {passive: true});
 
-            // --- Back to Top Logic ---
             const backToTopBtn = document.getElementById('backToTopBtn');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 400) backToTopBtn.classList.add('show');
@@ -287,7 +336,6 @@
             });
             backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-            // Initialize
             loadPhotos();
         })();
     </script>
