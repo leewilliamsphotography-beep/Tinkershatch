@@ -8,42 +8,33 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Lexend:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css?v=4.5">
+    <link rel="stylesheet" href="style.css?v=4.6">
 
     <style>
-        /* Pleasing, static color palette for the gallery */
-        :root {
-            --gallery-bg: #F7F5F2; /* Soft, warm off-white */
-            --gallery-text: #1A2C38; /* Dark slate */
-            --gallery-text-soft: #5A6B75; /* Muted slate */
-            --gallery-border: #E5E2DD;
-            --gallery-card: #FFFFFF;
-            --gallery-shadow: 0 10px 30px -10px rgba(26, 44, 56, 0.08);
-            --accent: #0E8C6C; /* Teal */
-        }
-
-        body { 
-            background: var(--gallery-bg); 
-            color: var(--gallery-text); 
+        /* Force background onto both HTML and Body to ensure seasonal colors show */
+        html, body { 
+            background: var(--cream); 
+            color: var(--bark); 
             font-family: 'Lexend', system-ui, sans-serif; 
             margin: 0; 
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
         
         /* Sticky Header */
         .photo-header { 
             position: sticky; top: 0; 
-            background: rgba(247, 245, 242, 0.85); 
+            background: color-mix(in srgb, var(--cream) 85%, transparent); 
             backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid var(--gallery-border); z-index: 100; 
+            border-bottom: 1px solid var(--border); z-index: 100; 
         }
         .back-btn { 
             display: inline-flex; align-items: center; gap: 8px; text-decoration: none; 
-            color: var(--gallery-text); font-weight: 700; background: var(--gallery-card); 
-            padding: 10px 16px; border-radius: 12px; border: 1px solid var(--gallery-border); 
+            color: var(--bark); font-weight: 700; background: var(--cream-deep); 
+            padding: 10px 16px; border-radius: 12px; border: 1px solid var(--border); 
             transition: all 0.2s; 
         }
-        .back-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .back-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
         
         /* Large Single-Column Layout */
         .gallery-masonry { 
@@ -54,11 +45,11 @@
         .photo-item { 
             position: relative; width: 100%; display: block; margin-bottom: 24px; 
             break-inside: avoid; border: none; padding: 0; background: none; cursor: pointer; 
-            border-radius: 16px; overflow: hidden; box-shadow: var(--gallery-shadow);
+            border-radius: 16px; overflow: hidden; box-shadow: var(--shadow);
         }
         .photo-item img { width: 100%; display: block; transition: transform 0.4s ease, opacity 0.4s ease; opacity: 0; }
         .photo-item img.loaded { opacity: 1; }
-        .photo-item:focus { outline: 3px solid var(--accent); outline-offset: 3px; }
+        .photo-item:focus { outline: 3px solid var(--teal); outline-offset: 3px; }
         .photo-item:hover img { transform: scale(1.03); }
         
         /* Hover Overlay */
@@ -72,7 +63,7 @@
         .photo-overlay span { color: #fff; font-size: 0.95rem; font-weight: 600; }
         
         /* Skeleton Loading */
-        .skeleton-box { width: 100%; border-radius: 16px; margin-bottom: 24px; background: #EDECE9; height: 450px; animation: skeleton-pulse 1.5s infinite ease-in-out; break-inside: avoid; }
+        .skeleton-box { width: 100%; border-radius: 16px; margin-bottom: 24px; background: var(--cream-deep); height: 450px; animation: skeleton-pulse 1.5s infinite ease-in-out; break-inside: avoid; }
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
         
         /* Lightbox */
@@ -84,33 +75,53 @@
         .lightbox-nav-btn { top: 50%; transform: translateY(-50%); z-index: 2001; }
         .lightbox-prev { left: 24px; }
         .lightbox-next { right: 24px; }
-        .lightbox-close:hover, .lightbox-nav-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1) translateY(-50%); }
+        .lightbox-close:hover, .lightbox-nav-btn:hover { background: var(--teal); border-color: var(--teal); transform: scale(1.1) translateY(-50%); }
         .lightbox-close:hover { transform: scale(1.1); }
         .lightbox-counter { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 12px; font-weight: 600; background: rgba(0,0,0,.6); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(4px); }
         .lightbox-caption { position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 1rem; font-weight: 600; background: rgba(0,0,0,0.6); padding: 12px 24px; border-radius: 20px; backdrop-filter: blur(8px); text-align: center; max-width: 80%; }
         .lightbox-download { position: absolute; top: 24px; left: 24px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); color: #fff; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px); cursor: pointer; z-index: 2002; transition: all .3s ease; text-decoration: none; }
-        .lightbox-download:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+        .lightbox-download:hover { background: var(--teal); border-color: var(--teal); transform: scale(1.1); }
         .lightbox-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; opacity: 0; transition: opacity 0.2s ease; }
         .lightbox-spinner.show { opacity: 1; }
         @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
         
         /* Floating Back to Top */
-        .back-to-top { position: fixed; bottom: 24px; right: 24px; width: 48px; height: 48px; border-radius: 12px; background: var(--gallery-text); color: #fff; border: none; display: none; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: all 0.3s ease; z-index: 90; }
+        .back-to-top { position: fixed; bottom: 24px; right: 24px; width: 48px; height: 48px; border-radius: 12px; background: var(--bark); color: #fff; border: none; display: none; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); transition: all 0.3s ease; z-index: 90; }
         .back-to-top.show { display: flex; }
-        .back-to-top:hover { background: var(--accent); transform: translateY(-3px); }
+        .back-to-top:hover { background: var(--teal); transform: translateY(-3px); }
 
         .display { font-family: 'Poppins', system-ui, sans-serif; letter-spacing: -0.02em; }
     </style>
 </head>
 <body>
 
+    <!-- Seasonal Theme Loader Script (Calculates month directly, bypasses localStorage) -->
+    <script>
+        (function() {
+            try {
+                const m = new Date().getMonth() + 1;
+                let season = 'summer';
+                if ([12, 1, 2].includes(m)) season = 'winter';
+                else if ([3, 4, 5].includes(m)) season = 'spring';
+                else if ([6, 7, 8].includes(m)) season = 'summer';
+                else if ([9, 10, 11].includes(m)) season = 'autumn';
+                
+                // Apply to BOTH html and body to ensure background colors change
+                document.documentElement.classList.add('season-' + season);
+                document.body.classList.add('season-' + season);
+            } catch(e) {
+                console.log('Season could not be loaded.');
+            }
+        })();
+    </script>
+
     <header class="photo-header">
         <a href="index.html" class="back-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Back to Site
         </a>
-        <h1 class="display font-extrabold text-xl" style="color: var(--gallery-text);">Tinkers Moments</h1>
-        <div style="width: 110px;"></div> <!-- Spacer to center title -->
+        <h1 class="display font-extrabold text-xl" style="color: var(--bark);">Tinkers Moments</h1>
+        <div style="width: 110px;"></div>
     </header>
 
     <main style="padding-top: 20px; padding-bottom: 60px;">
@@ -171,7 +182,7 @@
                     if (error) throw error;
 
                     if (!data || data.length === 0) {
-                        grid.innerHTML = '<p style="color: var(--gallery-text-soft); text-align: center; padding: 40px;">No photos yet. Check back soon!</p>';
+                        grid.innerHTML = '<p style="color: var(--bark-soft); text-align: center; padding: 40px;">No photos yet. Check back soon!</p>';
                         return;
                     }
 
@@ -187,7 +198,7 @@
 
                     renderGrid();
                 } catch (e) {
-                    grid.innerHTML = '<p style="color: #C5632E; text-align: center; padding: 40px;">Could not load photos.</p>';
+                    grid.innerHTML = '<p style="color: var(--terracotta); text-align: center; padding: 40px;">Could not load photos.</p>';
                 }
             }
 
