@@ -118,6 +118,14 @@
         .back-to-top:hover { background: var(--teal); transform: translateY(-2px); }
 
         .display { font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.01em; font-weight: 600; }
+                /* === QUIET HOURS AUTO-DIMMING === */
+        html.quiet-hours, body.quiet-hours {
+            filter: brightness(0.92) contrast(0.95); 
+            transition: filter 0.5s ease;
+        }
+        body.quiet-hours .back-to-top {
+            opacity: 0.85 !important; 
+        }
     </style>
 </head>
 <body>
@@ -134,6 +142,18 @@
                 else if ([9, 10, 11].includes(m)) season = 'autumn';
                 document.documentElement.classList.add('season-' + season);
                 document.body.classList.add('season-' + season);
+            } catch(e) {}
+        })();
+    </script>
+        <!-- Quiet Hours Loader -->
+    <script>
+        (function() {
+            try {
+                const currentHour = new Date().getHours();
+                const forceQuiet = true; // Set to false when done testing
+                if (forceQuiet || currentHour >= 20 || currentHour < 8) {
+                    document.body.classList.add('quiet-hours');
+                }
             } catch(e) {}
         })();
     </script>
@@ -387,6 +407,7 @@
 
             loadPhotos();
         })();
+        
     </script>
 </body>
 </html>
