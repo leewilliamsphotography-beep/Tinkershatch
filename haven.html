@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Haven Portal | Tinkers Hatch</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    /* ================= HAVEN PORTAL DESIGN SYSTEM ================= */
+    :root {
+        --bg: #0B0E14;
+        --surface: #141821;
+        --surface-2: #1C212C;
+        --surface-3: #242B38;
+        --border: #2A303C;
+        --border-soft: #20242E;
+        --fg: #E6EAF0;
+        --muted: #94A3B8;
+        --muted-2: #64748B;
+        --accent: #3DDDC8;
+        --accent-hover: #2BBFA8;
+        --accent-soft: rgba(61, 221, 200, 0.1);
+        --danger: #EF4444;
+        --shadow: 0 10px 20px -5px rgba(0,0,0,0.4), 0 4px 8px -2px rgba(0,0,0,0.2);
+        --radius: 14px;
+        --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        --safe-top: env(safe-area-inset-top, 0px);
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
+        --safe-left: env(safe-area-inset-left, 0px);
+        --safe-right: env(safe-area-inset-right, 0px);
+    }
+
+    body.staff-light {
+        --bg: #F4F7FA; --surface: #FFFFFF; --surface-2: #EDF1F6; --surface-3: #E2E8F0;
+        --border: #DCE3EA; --border-soft: #EFF2F6; --fg: #0F172A; --muted: #64748B; --muted-2: #94A3B8;
+        --accent: #0E8C7A; --accent-hover: #0A6B5D; --accent-soft: rgba(14, 140, 122, 0.08);
+        --danger: #EF4444; --shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.06), 0 4px 8px -2px rgba(15, 23, 42, 0.03);
+    }
+    body.staff-warm {
+        --bg: #FBF7F0; --surface: #FFFFFF; --surface-2: #F5EFE3; --surface-3: #EBE0CD;
+        --border: #E5DCC9; --border-soft: #F0E9DA; --fg: #3B2A1E; --muted: #7A6452; --muted-2: #998877;
+        --accent: #C2683C; --accent-hover: #A0522F; --accent-soft: rgba(194, 104, 60, 0.1);
+        --danger: #EF4444; --shadow: 0 10px 20px -5px rgba(59, 42, 30, 0.06), 0 4px 8px -2px rgba(59, 42, 30, 0.03);
+    }
+    body.staff-ocean {
+        --bg: #0B132B; --surface: #1C2541; --surface-2: #293D5C; --surface-3: #3A506B;
+        --border: #293D5C; --border-soft: #1C2541; --fg: #E0FBFC; --muted: #8FBFBF; --muted-2: #6A8A8A;
+        --accent: #5BC0BE; --accent-hover: #3AA8A6; --accent-soft: rgba(91, 192, 190, 0.1);
+        --danger: #EF4444; --shadow: 0 10px 20px -5px rgba(0,0,0,0.4);
+    }
+    body.staff-forest {
+        --bg: #1A2421; --surface: #2B3A34; --surface-2: #3D5147; --surface-3: #4F665A;
+        --border: #3D5147; --border-soft: #2B3A34; --fg: #E8F0E6; --muted: #A0B4A8; --muted-2: #7A8E82;
+        --accent: #88B04B; --accent-hover: #6E9536; --accent-soft: rgba(136, 176, 75, 0.1);
+        --danger: #EF4444; --shadow: 0 10px 20px -5px rgba(0,0,0,0.4);
+    }
+    body.staff-sunset {
+        --bg: #2D1B2D; --surface: #3E2731; --surface-2: #51314A; --surface-3: #6B3F5C;
+        --border: #51314A; --border-soft: #3E2731; --fg: #FCE4D6; --muted: #C0A0A0; --muted-2: #907070;
+        --accent: #E8743B; --accent-hover: #C85A25; --accent-soft: rgba(232, 116, 59, 0.1);
+        --danger: #EF4444; --shadow: 0 10px 20px -5px rgba(0,0,0,0.4);
+    }
+
+    html, body { height: 100%; margin: 0; padding: 0; overflow: hidden; overscroll-behavior: none; }
+    body { 
+        background: var(--bg); color: var(--fg); font-family: 'Plus Jakarta Sans', sans-serif; 
+        transition: background 0.3s, color 0.3s;
+        -webkit-user-select: none; -webkit-touch-callout: none; 
+        -webkit-tap-highlight-color: transparent; -webkit-overflow-scrolling: touch; 
+    }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+
+    .tester-modal { position: fixed !important; inset: 0 !important; width: 100vw !important; height: 100vh !important; max-width: 100% !important; max-height: 100% !important; display: flex !important; z-index: 10; }
+    .tester-trigger, .ambient { display: none !important; }
+
+    #testerLogin {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+        display: flex; align-items: center; justify-content: center;
+        background: radial-gradient(circle at 0% 0%, var(--accent-soft), transparent 40%), 
+                    radial-gradient(circle at 100% 100%, var(--accent-soft), transparent 40%), 
+                    var(--bg);
+        overflow-y: auto; padding: 20px 0; box-sizing: border-box;
+    }
+    .login-box {
+        background: var(--surface); border: 1px solid var(--border); padding: 40px;
+        border-radius: 24px; width: 90%; max-width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        position: relative; z-index: 10; margin: auto; box-sizing: border-box;
+    }
+    .login-box h3 { margin: 0 0 8px 0; font-size: 1.85rem; font-weight: 700; color: var(--fg); }
+    .login-box p { margin: 0 0 32px 0; color: var(--muted); font-size: 0.95rem; }
+    .tester-error { color: var(--danger); font-size: 0.85rem; text-align: center; margin-top: 12px; min-height: 1.2rem; font-weight: 600; }
+
+    #testerCloseBtn {
+        position: fixed; top: calc(24px + var(--safe-top)); right: calc(24px + var(--safe-right)); z-index: 100; width: 44px; height: 44px;
+        background: var(--surface); border: 1px solid var(--border); border-radius: 50%; color: var(--fg);
+        display: flex; align-items: center; justify-content: center; text-decoration: none;
+        font-size: 1.5rem; box-shadow: var(--shadow); transition: var(--transition);
+        padding: 0; line-height: 1; cursor: pointer; 
+    }
+    #testerCloseBtn svg { display: block; width: 20px; height: 20px; }
+
+    #testerMenu { width: 100%; height: 100%; display: none; background: var(--bg); }
+    #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] {
+        display: flex !important; flex-direction: row !important;
+    }
+
+    .tester-tabs {
+        width: 260px; height: 100%; background: var(--surface); border-right: 1px solid var(--border);
+        display: flex !important; flex-direction: column !important; padding: 24px 16px !important;
+        gap: 4px !important; box-sizing: border-box !important; flex-shrink: 0 !important; overflow-y: auto !important;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 24px 8px; margin-bottom: 8px; border-bottom: 1px solid var(--border-soft); }
+    .brand-logo { width: 36px; height: 36px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px var(--accent-soft); }
+    .brand-logo svg { width: 20px; height: 20px; stroke: #fff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .brand-name { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
+    .brand-sub { font-size: 0.7rem; color: var(--muted-2); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
+    .sidebar-spacer { flex-grow: 1; }
+
+    .tester-tab-btn {
+        background: transparent !important; border: 1px solid transparent !important;
+        text-align: left !important; display: flex; align-items: center; gap: 12px;
+        padding: 14px 16px !important; border-radius: var(--radius) !important;
+        color: var(--muted) !important; font-family: inherit !important; font-size: 0.95rem !important;
+        font-weight: 500 !important; cursor: pointer; transition: var(--transition) !important; white-space: nowrap;
+    }
+    .tester-tab-btn:hover { background: var(--surface-2) !important; color: var(--fg) !important; }
+    .tester-tab-btn.active { background: var(--accent-soft) !important; color: var(--accent) !important; font-weight: 600 !important; }
+    .tester-tab-btn svg { width: 22px; height: 22px; stroke: currentColor; flex-shrink: 0; }
+
+    .tester-content { flex: 1; height: 100%; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); position: relative; z-index: 5; }
+    .tester-tab-content {
+        display: none; flex: 1; height: 100%; overflow-y: auto; padding: 40px !important;
+        box-sizing: border-box !important; animation: none !important; border: none !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    .tester-tab-content.active { display: block; }
+    
+    .admin-header { margin-bottom: 32px; }
+    .admin-header h3 { margin: 0 0 4px 0; font-size: 1.5rem; font-weight: 700; color: var(--fg); border: none !important; padding: 0 !important; }
+    .admin-header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+    .admin-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; box-shadow: var(--shadow); }
+    .admin-card h4 { margin: 0 0 16px 0; font-size: 1rem; font-weight: 600; color: var(--fg); display: flex; align-items: center; gap: 8px; }
+
+    .tester-input {
+        background: var(--surface-2) !important; border: 1px solid var(--border) !important; color: var(--fg) !important;
+        border-radius: 10px !important; padding: 14px 16px !important; font-size: 16px !important;
+        font-family: inherit !important; transition: var(--transition) !important; width: 100%; box-sizing: border-box !important;
+    }
+    .tester-input:focus { outline: none; border-color: var(--accent) !important; box-shadow: 0 0 0 3px var(--accent-soft) !important; }
+    select.tester-input { cursor: pointer; }
+    textarea.tester-input { resize: vertical; min-height: 80px; }
+    label.admin-label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .tester-btn {
+        background: var(--surface-2); color: var(--fg); border: 1px solid var(--border);
+        padding: 12px 18px; border-radius: 10px; font-family: inherit; font-size: 0.95rem; font-weight: 600;
+        cursor: pointer; transition: var(--transition); display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .tester-divider { margin: 32px 0 !important; border: none; border-top: 1px solid var(--border-soft); height: 0; }
+    .space-y-3 > * + * { margin-top: 12px; }
+    .flex { display: flex; } .gap-2 { gap: 8px; }
+    .mt-4 { margin-top: 16px; } .mt-6 { margin-top: 24px; } .mb-8 { margin-bottom: 32px; } .mb-3 { margin-bottom: 12px; }
+    .max-h-60 { max-height: 240px; } .overflow-y-auto { overflow-y: auto; }
+    .text-left { text-align: left; } .w-full { width: 100%; }
+
+    .theme-card { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 12px; border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: var(--transition); background: var(--surface-2); }
+    .theme-card.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .theme-swatch { width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .theme-card span { font-size: 0.8rem; font-weight: 600; }
+
+    .tester-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; }
+    .tester-season-btn { background: var(--surface-2); border: 1px solid var(--border); color: var(--fg); padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: var(--transition); }
+
+    .photo-drop-zone { border: 2px dashed var(--border); padding: 32px; text-align: center; border-radius: var(--radius); cursor: pointer; transition: var(--transition); margin-bottom: 16px; color: var(--muted); background: var(--surface-2); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .photo-preview-img { max-width: 100%; max-height: 150px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
+    #adminPhotoContainer > div { display: flex !important; align-items: center !important; gap: 12px !important; padding: 8px !important; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px !important; }
+    #adminPhotoContainer img { width: 50px !important; height: 50px !important; object-fit: cover !important; border-radius: 8px !important; flex-shrink: 0 !important; display: block !important; pointer-events: none; }
+
+    #tab-haven.tester-tab-content { padding: 0 !important; background: var(--bg) !important; }
+    #tab-haven iframe { width: 100%; height: 100%; border: none; }
+
+    #mobileNavToggle {
+        display: none; position: absolute; top: calc(16px + var(--safe-top)); left: calc(16px + var(--safe-left)); z-index: 200;
+        background: var(--surface); border: 1px solid var(--border); color: var(--fg);
+        padding: 10px 14px; border-radius: 8px; cursor: pointer; font-weight: 600;
+    }
+    #mobileBackdrop { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9998; backdrop-filter: blur(2px); }
+
+    @media (max-width: 768px) {
+        #testerLogin { position: absolute; top: 0; left: 0; right: 0; bottom: 0; height: auto; min-height: 100%; align-items: flex-start; padding-top: calc(15vh + var(--safe-top)); overflow-y: auto; }
+        .login-box { margin-bottom: calc(40px + var(--safe-bottom)); }
+        #testerMenu[style*="display: flex"], #testerMenu[style*="display:flex"], #testerMenu[style*="display: block"], #testerMenu[style*="display:block"] { flex-direction: column !important; position: relative; height: 100%; width: 100%; }
+        #mobileNavToggle { display: block; }
+        .tester-tabs { position: fixed; top: 0; left: 0; width: 85%; max-width: 300px; height: 100% !important; transform: translateX(-100%); transition: transform 0.3s ease; z-index: 9999; box-shadow: 4px 0 15px rgba(0,0,0,0.5); padding-top: calc(24px + var(--safe-top)) !important; padding-bottom: var(--safe-bottom) !important; display: flex !important; }
+        .tester-tabs.mobile-open { transform: translateX(0); }
+        .tester-tab-content { padding: calc(70px + var(--safe-top)) 20px calc(20px + var(--safe-bottom)) 20px !important; flex: 1; min-height: 0; height: 100%; width: 100%; overflow-y: auto; box-sizing: border-box !important; }
+        .admin-card { padding: 16px; box-sizing: border-box; }
+        .tester-input { width: 100%; box-sizing: border-box; }
+        .flex.gap-2 { flex-wrap: wrap; }
+        .flex.gap-2 > * { flex: 1 1 100%; margin-bottom: 8px; }
+        #tab-haven.tester-tab-content { padding: calc(60px + var(--safe-top)) 0 var(--safe-bottom) 0 !important; }
+        #tab-haven iframe { height: calc(100% - 60px - var(--safe-top) - var(--safe-bottom)); width: 100%; border: none; }
+        
+        /* Fix Seasonal Grid & Theme Cards on Mobile */
+        .tester-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+        .tester-season-btn { padding: 10px 5px !important; font-size: 0.8rem !important; }
+        .theme-card { flex: 1 1 45% !important; padding: 12px 8px !important; }
+    }
+    
+    #staff-seasonal-fx { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+    .fx-particle { position: absolute; top: -10vh; will-change: transform; animation: fx-fall linear infinite; }
+    @keyframes fx-fall { 0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(120vh) translateX(20px) rotate(360deg); opacity: 0; } }
+    .fx-winter { background: #ffffff; border-radius: 50%; filter: blur(1px); box-shadow: 0 0 4px rgba(255,255,255,0.8); }
+    .fx-spring { background: #ffc0cb; border-radius: 50% 0 50% 50%; opacity: 0.7; }
+    .fx-summer { background: radial-gradient(circle, rgba(255,215,0,0.5), transparent); border-radius: 50%; filter: blur(2px); }
+    .fx-autumn { background: #d27d2d; border-radius: 0 50% 0 50%; opacity: 0.6; }
+    
+    #toast-container { position: fixed; bottom: calc(24px + var(--safe-bottom)); right: calc(24px + var(--safe-right)); z-index: 99999; display: flex; flex-direction: column; gap: 12px; }
+    .toast { background: var(--surface); color: var(--fg); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 16px 24px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); opacity: 0; transform: translateX(100%); transition: all 0.3s ease; min-width: 250px; font-size: 0.9rem; font-weight: 500; }
+    .toast.show { opacity: 1; transform: translateX(0); }
+</style>
+</head>
+<body class="staff-dark">
+<div id="testerModal" class="tester-modal active" role="dialog" aria-modal="true" aria-label="Haven Portal">
+    <div id="staff-seasonal-fx"></div>
+    <div class="tester-content">
+<a href="https://leewilliamsphotography-beep.github.io/Tinkershatch/" id="testerCloseBtn" class="tester-close" aria-label="Back to Site"></a>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </a>
+        
+        <div id="testerLogin">
+            <div class="login-box">
+               <div style="width: 150px; margin: 0 auto 30px auto;">
+ <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="haven-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="var(--accent)"/>
+      <stop offset="100%" stop-color="var(--accent-hover)"/>
+    </linearGradient>
+    <linearGradient id="haven-grad-2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="var(--surface-3)"/>
+      <stop offset="100%" stop-color="var(--accent)"/>
+    </linearGradient>
+    <style>
+      .haven-node { transform-origin: center; transform-box: fill-box; animation: haven-sync 2.5s ease-in-out infinite; }
+      .haven-pulse { transform-origin: center; transform-box: fill-box; animation: haven-ripple 2.5s linear infinite; }
+      @keyframes haven-sync { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(0.9); } }
+      @keyframes haven-ripple { 0% { transform: scale(0.5); opacity: 0.4; } 100% { transform: scale(2.5); opacity: 0; } }
+      @media (prefers-reduced-motion: reduce) { .haven-node, .haven-pulse { animation: none; } }
+    </style>
+  </defs>
+
+  <!-- Secure Portal Ring -->
+  <circle cx="250" cy="150" r="90" fill="var(--surface-2)" opacity="0.05"/>
+  <circle cx="250" cy="150" r="85" fill="none" stroke="var(--border)" stroke-width="2" opacity="0.1"/>
+  
+  <!-- Left Pillar -->
+  <path d="M195 100 L215 100 L215 200 L195 200 Z" fill="url(#haven-grad-1)"/>
+  <!-- Right Pillar -->
+  <path d="M285 100 L305 100 L305 200 L285 200 Z" fill="url(#haven-grad-2)"/>
+  
+  <!-- Connecting Bridge (Abstract H & Portal) -->
+  <path d="M215 140 Q 250 110 285 140 L 285 160 Q 250 130 215 160 Z" fill="var(--accent-hover)"/>
+  
+  <!-- Pulsing Ring (Animated) -->
+  <circle class="haven-pulse" cx="250" cy="135" r="6" fill="none" stroke="var(--accent)" stroke-width="2"/>
+  
+  <!-- Central Node (Animated) -->
+  <circle class="haven-node" cx="250" cy="135" r="6" fill="var(--accent)"/>
+  <circle class="haven-node" cx="250" cy="135" r="12" fill="var(--accent)" opacity="0.2"/>
+
+  <!-- Typography -->
+  <text x="250" y="255" font-family="'Plus Jakarta Sans', sans-serif" font-size="36" font-weight="800" fill="var(--fg)" text-anchor="middle" letter-spacing="8">HAVEN</text>
+  <line x1="200" y1="270" x2="300" y2="270" stroke="var(--accent)" stroke-width="2"/>
+  <text x="250" y="290" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="700" fill="var(--muted)" text-anchor="middle" letter-spacing="4">STAFF PORTAL</text>
+</svg>
+</div>
+<p style="text-align: center; margin: 0 0 32px 0; color: var(--muted); font-size: 0.95rem;">Enter your credentials to access the dashboard.</p>
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <input type="email" id="testerEmail" class="tester-input" placeholder="Email address" aria-label="Email">
+                    <input type="password" id="testerPass" class="tester-input" placeholder="Password" aria-label="Password">
+                    <button id="testerLoginBtn" type="button" class="tester-btn" style="background: var(--accent); color: #0B0E14; padding: 14px; margin-top: 8px;">Log In</button>
+                    <div id="testerError" class="tester-error"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="testerMenu" style="display:none;">
+            <button id="mobileNavToggle">☰ Menu</button>
+            <div id="mobileBackdrop"></div>
+            <div class="tester-tabs">
+                <div class="brand">
+                    <div class="brand-logo"><svg viewBox="0 0 24 24"><path d="M7 4v16M17 4v16M7 12h10"/></svg></div>
+                    <div><div class="brand-name">Haven Portal</div><div class="brand-sub">Staff Dashboard</div></div>
+                </div>
+
+                <button class="tester-tab-btn" data-tab="haven"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Haven Messaging</button>
+                <button class="tester-tab-btn active" data-tab="photos"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Photos</button>
+                <button class="tester-tab-btn" data-tab="events"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Events</button>
+                <button class="tester-tab-btn" data-tab="menu"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Menu</button>
+                <button class="tester-tab-btn" data-tab="wilf"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="20" cy="16" r="2"/><path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.32 4.46 16.84A3.5 3.5 0 0 1 2 13.5V13a3 3 0 0 1 3-3z"/></svg>Wilf</button>
+                <button class="tester-tab-btn" data-tab="updates"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Updates</button>
+                <button class="tester-tab-btn" data-tab="films"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>Films</button>
+                <button class="tester-tab-btn" data-tab="community"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>Community</button>
+                <button class="tester-tab-btn" data-tab="celebrations"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>Celebrations</button>
+                <button class="tester-tab-btn" data-tab="featured"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Featured</button>
+                <button class="tester-tab-btn" data-tab="enquiries"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Enquiries</button>
+                <button class="tester-tab-btn" data-tab="briefing"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Briefing</button>
+                <button class="tester-tab-btn" id="staffTabBtn" data-tab="staff" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>Staff</button>
+                <button class="tester-tab-btn" data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+
+                <div class="sidebar-spacer"></div>
+                
+               <button id="musicToggleBtn" class="tester-tab-btn" style="border-top: 1px solid var(--border-soft); border-radius: 0; margin-bottom: 8px;">
+    <svg id="musicIconPlay" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+    <svg id="musicIconPause" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+    <span id="musicToggleText">Play Ambient Music</span>
+</button>
+
+<!-- MAKE SURE THIS IS HERE -->
+<audio id="havenAmbientAudio" loop>
+    <source src="ambient1.mp3" type="audio/mpeg">
+</audio>
+                
+                <button id="themeQuickToggle" class="tester-tab-btn" style="border-radius: 0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    Toggle Theme
+                </button>
+            </div> 
+            
+            <div id="tab-haven" class="tester-tab-content" style="display: none;">
+                <!-- Seamless iframe integration for your separate haven.html file -->
+                <iframe src="haven.html" title="Haven Staff Messaging"></iframe>
+            </div>
+
+            <div id="tab-photos" class="tester-tab-content active">
+                <div class="admin-header"><h3>Gallery Manager</h3><p>Upload new photos for the website gallery.</p></div>
+                <div class="admin-card">
+                    <h4>📤 Upload New Photo</h4>
+                    <div id="photoDropZone" class="photo-drop-zone"><span id="photoDropText">Drag & drop photo here<br>or click to select</span></div>
+                    <input type="file" id="photoUploadInput" accept="image/*" class="tester-input" style="display: none; margin-bottom: 16px;">
+                    <label class="admin-label">Caption</label>
+                    <input type="text" id="photoCaptionInput" class="tester-input" placeholder="e.g., Margaret's roses" style="margin-bottom: 16px;">
+                    <button id="uploadPhotoBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Upload Photo</button>
+                </div>
+                <div class="admin-card"><h4>Manage Existing</h4><div id="adminPhotoContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div></div>
+            </div>
+
+            <div id="tab-events" class="tester-tab-content">
+                <div class="admin-header"><h3>Events Manager</h3><p>Add upcoming events to the calendar.</p></div>
+                <div class="admin-card">
+                    <h4>➕ Add New Event</h4>
+                    <label class="admin-label">Event Title</label><input type="text" id="newEventTitle" class="tester-input" placeholder="Coffee Morning" style="margin-bottom: 16px;">
+                    <label class="admin-label">Date</label><input type="date" id="newEventDate" class="tester-input" style="margin-bottom: 16px;">
+                    <label class="admin-label">Description</label><textarea id="newEventDesc" class="tester-input" placeholder="Short description..."></textarea>
+                    <button id="addEventBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Add Event</button>
+                </div>
+                <div class="admin-card"><h4>Manage Events</h4><div id="adminEventContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div></div>
+            </div>
+
+            <div id="tab-menu" class="tester-tab-content">
+                <div class="admin-header"><h3>Weekly Menu Manager</h3><p>Update the weekly dinners. Changes save instantly to the website.</p></div>
+                <div class="admin-card">
+                    <div id="adminMenuContainer" class="space-y-4 text-left"></div>
+                    <button id="saveMenuBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 24px;">Save Weekly Menu</button>
+                </div>
+            </div>
+
+            <div id="tab-wilf" class="tester-tab-content">
+                <div class="admin-header"><h3>Wilf Status & Blog</h3><p>Update Wilf's status and post blog entries.</p></div>
+                <div class="admin-card"><h4>Status</h4><button id="wilfToggleBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Toggle Wilf Status</button></div>
+                <div class="admin-card">
+                    <h4>📝 New Blog Post</h4>
+                    <input type="text" id="newWilfBlogTitle" class="tester-input" placeholder="Blog Title" style="margin-bottom: 16px;">
+                    <textarea id="newWilfBlogContent" class="tester-input" placeholder="Write Wilf's adventure here..." style="min-height: 120px; margin-bottom: 16px;"></textarea>
+                    <input type="text" id="newWilfBlogImg" class="tester-input" placeholder="Optional Image URL" style="margin-bottom: 16px;">
+                    <button id="addWilfBlogBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Post Blog</button>
+                </div>
+                <div class="admin-card"><h4>Manage Blogs</h4><div id="adminWilfBlogContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div></div>
+            </div>
+
+            <div id="tab-updates" class="tester-tab-content">
+                <div class="admin-header"><h3>App Updates Manager</h3><p>Post updates to keep staff informed.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newUpdateTitle" class="tester-input" placeholder="Update title" style="margin-bottom: 16px;">
+                    <textarea id="newUpdateContent" class="tester-input" placeholder="What's the new update?"></textarea>
+                    <button id="addUpdateBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Post Update</button>
+                </div>
+                <div class="admin-card"><div id="adminUpdateContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div></div>
+            </div>
+
+            <div id="tab-films" class="tester-tab-content">
+                <div class="admin-header"><h3>Film Night Admin</h3><p>Add films to the voting list.</p></div>
+                <div class="admin-card">
+                    <div class="flex gap-2" style="align-items: center;">
+                        <input type="text" id="newFilmTitle" class="tester-input" style="flex:1;" placeholder="Enter new film...">
+                        <button id="addFilmBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Add</button>
+                    </div>
+                </div>
+                <div class="admin-card"><div id="adminFilmContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div></div>
+            </div>
+
+            <div id="tab-community" class="tester-tab-content">
+                <div class="admin-header"><h3>Community Spotlight Manager</h3><p>Share short stories about the community.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newCommunityTitle" class="tester-input" placeholder="Title" style="margin-bottom: 16px;">
+                    <input type="text" id="newCommunityImg" class="tester-input" placeholder="Image URL (optional)" style="margin-bottom: 16px;">
+                    <textarea id="newCommunityDesc" class="tester-input" placeholder="Share a short story..."></textarea>
+                    <button id="addCommunityBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Post Spotlight</button>
+                </div>
+                <div class="admin-card"><div id="adminCommunityContainer" class="space-y-3 mt-6 max-h-60 overflow-y-auto text-left"></div></div>
+            </div>
+
+            <div id="tab-celebrations" class="tester-tab-content">
+                <div class="admin-header"><h3>Add Celebration</h3><p>Add birthdays and anniversaries.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newCelebName" class="tester-input" placeholder="Name" style="margin-bottom: 16px;">
+                    <select id="newCelebType" class="tester-input" style="margin-bottom: 16px;"><option value="Birthday">Birthday</option><option value="Anniversary">Anniversary</option></select>
+                    <div class="flex gap-2" style="margin-bottom: 16px;">
+                        <select id="newCelebMonth" class="tester-input" style="flex:1;"><option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option></select>
+                        <input type="number" id="newCelebDay" class="tester-input" min="1" max="31" placeholder="Day" style="flex:1;">
+                    </div>
+                    <button id="addCelebBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Add Celebration</button>
+                </div>
+                <div class="admin-card"><h4>Manage Celebrations</h4><div id="adminCelebContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div></div>
+            </div>
+
+            <div id="tab-featured" class="tester-tab-content">
+                <div class="admin-header"><h3>Featured Events Manager</h3><p>Add "Save the Date" banners for family events.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="newFeaturedTitle" class="tester-input" placeholder="Event Title" style="margin-bottom: 16px;">
+                    <input type="text" id="newFeaturedDate" class="tester-input" placeholder="Date (e.g., August 28th)" style="margin-bottom: 16px;">
+                    <textarea id="newFeaturedDesc" class="tester-input" placeholder="Short description..."></textarea>
+                    <div class="flex gap-2" style="margin-top: 16px; margin-bottom: 16px;">
+                        <select id="newFeaturedIcon" class="tester-input" style="flex:1;"><option value="🎉">🎉 Party</option><option value="☀️">☀️ Summer</option><option value="🍂">🍂 Autumn</option><option value="❄️">❄️ Winter</option><option value="🌸">🌸 Spring</option><option value="🎄">🎄 Christmas</option></select>
+                        <select id="newFeaturedColor" class="tester-input" style="flex:1;"><option value="linear-gradient(135deg, #A87816, #C25528)">Default</option><option value="linear-gradient(135deg, #1AA37E, #14856A)">Teal</option><option value="linear-gradient(135deg, #C0392B, #1F6E43)">Festive</option></select>
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="addFeaturedBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; flex: 1;">Add Event</button>
+                        <button id="cancelEditFeaturedBtn" class="tester-btn" style="display: none;">Cancel</button>
+                    </div>
+                </div>
+                <div class="admin-card">
+                    <button id="printFeaturedPostersBtn" class="tester-btn w-full" style="margin-bottom: 16px;">🖨️ Print All as A4 Posters</button>
+                    <div id="adminFeaturedContainer" class="space-y-3 mt-4 max-h-60 overflow-y-auto text-left"></div>
+                </div>
+            </div>
+
+            <div id="tab-enquiries" class="tester-tab-content">
+                <div class="admin-header"><h3>Contact Form Enquiries</h3><p>Messages submitted by visitors.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="enquirySearchInput" class="tester-input" placeholder="Search enquiries by name or message..." style="margin-bottom: 24px;">
+                    <div id="adminEnquiriesContainer" class="space-y-4 text-left"></div>
+                </div>
+            </div>
+
+            <div id="tab-briefing" class="tester-tab-content">
+                <div class="admin-header"><h3>Daily Briefing</h3><p>Update the message at the top of the website.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="briefingInput" class="tester-input" placeholder="e.g., Sunny day! Don't forget the garden walk.">
+                    <button id="saveBriefingBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14; margin-top: 16px;">Save Briefing</button>
+                </div>
+            </div>
+
+            <div id="tab-staff" class="tester-tab-content">
+                <div class="admin-header"><h3>Staff Creation Panel</h3><p>Create a new account for a staff member.</p></div>
+                <div class="admin-card">
+                    <input type="email" id="newStaffEmail" class="tester-input" placeholder="New staff email" style="margin-bottom: 16px;">
+                    <input type="password" id="newStaffPass" class="tester-input" placeholder="Temporary password" style="margin-bottom: 16px;">
+                    <select id="newStaffRole" class="tester-input" style="margin-bottom: 16px;"><option value="staff">Standard Staff</option><option value="chef">Chef (Menu access)</option><option value="admin">Admin (Full access)</option></select>
+                    <button id="createStaffBtn" class="tester-btn" style="background: var(--accent); color: #0B0E14;">Create Account</button>
+                </div>
+            </div>
+
+            <div id="tab-settings" class="tester-tab-content">
+                <div class="admin-header"><h3>Haven Portal Appearance</h3><p>Choose a theme for your staff dashboard.</p></div>
+                <div class="admin-card">
+                    <div class="flex gap-2 mb-8" style="flex-wrap: wrap;">
+                        <div class="theme-card staff-theme-btn" data-theme="staff-dark" style="flex: 1 1 30%;"><div class="theme-swatch" style="background: #141821; border-color: #3DDDC8;"></div><span>Haven Midnight</span></div>
+                        <div class="theme-card staff-theme-btn" data-theme="staff-light" style="flex: 1 1 30%;"><div class="theme-swatch" style="background: #FFFFFF; border-color: #0E8C7A;"></div><span>Haven Daylight</span></div>
+                        <div class="theme-card staff-theme-btn" data-theme="staff-warm" style="flex: 1 1 30%;"><div class="theme-swatch" style="background: #FBF7F0; border-color: #C2683C;"></div><span>Haven Hearth</span></div>
+                        <div class="theme-card staff-theme-btn" data-theme="staff-ocean" style="flex: 1 1 30%;"><div class="theme-swatch" style="background: #1C2541; border-color: #5BC0BE;"></div><span>Deep Ocean</span></div>
+                        <div class="theme-card staff-theme-btn" data-theme="staff-forest" style="flex: 1 1 30%;"><div class="theme-swatch" style="background: #2B3A34; border-color: #88B04B;"></div><span>Forest</span></div>
+                        <div class="theme-card staff-theme-btn" data-theme="staff-sunset" style="flex: 1 1 30%;"><div class="theme-swatch" style="background: #3E2731; border-color: #E8743B;"></div><span>Sunset</span></div>
+                    </div>
+                </div>
+                <div class="admin-header" style="margin-top: 32px;"><h3>Seasonal Themes (Live Site)</h3><p>Change the season on the main website.</p></div>
+                <div class="admin-card" id="adminOnlyThemes">
+                    <div class="tester-grid">
+                        <button class="tester-season-btn" data-season="winter">Winter</button>
+                        <button class="tester-season-btn" data-season="spring">Spring</button>
+                        <button class="tester-season-btn" data-season="summer">Summer</button>
+                        <button class="tester-season-btn" data-season="autumn">Autumn</button>
+                        <button class="tester-season-btn" data-season="auto" style="grid-column:1/-1;">Auto (Current Date)</button>
+                    </div>
+                </div>
+                <div class="admin-header" style="margin-top: 32px;"><h3>Layout Customizer</h3><p>Drag to reorder the website sections.</p></div>
+                <div class="admin-card">
+                    <div id="layoutContainer" class="space-y-2 mt-4 max-h-40 overflow-y-auto text-left"></div>
+                    <button id="resetLayoutBtn" class="tester-btn" style="margin-top:16px;">Reset Layout</button>
+                </div>
+                <div class="admin-header" style="margin-top: 32px;"><h3>Live Broadcast</h3><p>Send a push notification to all app users.</p></div>
+                <div class="admin-card">
+                    <input type="text" id="broadcastInput" class="tester-input" placeholder="Enter message...">
+                    <button id="broadcastBtn" class="tester-btn" style="background: #EF4444; color: #fff; margin-top: 16px;">Broadcast Message</button>
+                </div>
+                <div class="admin-header" style="margin-top: 32px;"><h3>Maintenance Mode</h3><p>Display a banner on the live site.</p></div>
+                <div class="admin-card"><button id="toggleMaintenanceBtn" class="tester-btn" style="background: #EF4444; color: #fff;">Toggle Maintenance Banner</button></div>
+                <hr class="tester-divider">
+                <button id="testerLogoutBtn" class="tester-btn w-full" style="background: #EF4444; color: #fff;">Log Out</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast-container"></div>
+<div id="featuredPrintArea" aria-hidden="true"></div>
+
+<script>
+    function showToast(message) {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div'); container.id = 'toast-container';
+            container.style.position = 'fixed'; container.style.bottom = '24px'; container.style.right = '24px'; container.style.zIndex = '99999';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div'); toast.className = 'toast'; toast.textContent = message; container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3500);
+    }
+    const nativeAlert = window.alert;
+    window.alert = function(message) { if (typeof message === 'string' && message.length > 0) { showToast(message); } else { nativeAlert(message); } };
+    window.addEventListener('error', function(e) {
+        console.error('WebView Error:', e.message);
+        if (e.message.toLowerCase().includes('network') || e.message.toLowerCase().includes('supabase')) { showToast('App Error: Check network connection.'); }
+    });
+    const originalPlay = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function() { if (this.id === 'havenAmbientAudio') { return originalPlay.apply(this, arguments); } return Promise.resolve(); };
+</script>
+<script src="app.js"></script>
+
+<script>
+    // 1. Tab Switching
+    document.addEventListener('click', function(e) {
+        const tabBtn = e.target.closest('.tester-tab-btn');
+        if (tabBtn && tabBtn.dataset.tab) {
+            e.stopPropagation(); e.preventDefault(); const tabName = tabBtn.dataset.tab;
+            document.querySelectorAll('.tester-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tester-tab-content').forEach(tab => { tab.classList.remove('active'); tab.style.display = 'none'; });
+            tabBtn.classList.add('active');
+            const activeTab = document.getElementById(`tab-${tabName}`);
+            if (activeTab) { activeTab.classList.add('active'); activeTab.style.display = 'block'; }
+            const tabs = document.querySelector('.tester-tabs'); const backdrop = document.getElementById('mobileBackdrop');
+            if (tabs) tabs.classList.remove('mobile-open'); if (backdrop) backdrop.style.display = 'none';
+            localStorage.setItem('haven_active_tab', tabName);
+        }
+    }, true);
+
+    // 2. Logout Button
+    document.addEventListener('click', async function(e) {
+        const logoutBtn = e.target.closest('#testerLogoutBtn');
+        if (logoutBtn) {
+            e.preventDefault(); e.stopPropagation();
+            try { Object.keys(localStorage).forEach(key => { if (key.startsWith('sb-') && key.endsWith('-auth-token')) { localStorage.removeItem(key); } }); } catch (err) {}
+            const menu = document.getElementById('testerMenu'); const login = document.getElementById('testerLogin');
+            if (menu) menu.style.display = 'none';
+            if (login) { login.style.display = 'flex'; login.style.opacity = '1'; login.style.visibility = 'visible'; }
+        }
+    }, true);
+
+    // 3. Delete Confirmation
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('button');
+        if (target && (target.innerText.toLowerCase().includes('delete') || (target.getAttribute('onclick') && target.getAttribute('onclick').toLowerCase().includes('delete')))) {
+            if (!confirm('Are you sure you want to delete this item? This action cannot be undone.')) { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation(); }
+        }
+    }, true);
+
+    // 4. Seasonal Themes
+    document.querySelectorAll('.tester-season-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const season = this.dataset.season; localStorage.setItem('tinkers_season', season);
+            showToast(`Seasonal theme set to ${season}. The live site will update on refresh.`);
+        });
+    });
+
+    // 5. Drag & Drop Photo Upload
+    const dropZone = document.getElementById('photoDropZone'); const fileInput = document.getElementById('photoUploadInput');
+    function handleFile(file) {
+        if (!file) return; const reader = new FileReader();
+        reader.onload = function(e) { dropZone.innerHTML = `<img src="${e.target.result}" class="photo-preview-img"><span style="font-size: 0.8rem; color: var(--muted);">Click to change</span>`; };
+        reader.readAsDataURL(file);
+    }
+    if (dropZone && fileInput) {
+        dropZone.addEventListener('click', () => fileInput.click());
+        ['dragenter', 'dragover'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.add('dragover'); }); });
+        ['dragleave', 'drop'].forEach(eventName => { dropZone.addEventListener(eventName, (e) => { e.preventDefault(); e.stopPropagation(); dropZone.classList.remove('dragover'); }); });
+        dropZone.addEventListener('drop', (e) => { if (e.dataTransfer.files.length) { fileInput.files = e.dataTransfer.files; handleFile(e.dataTransfer.files[0]); } });
+        fileInput.addEventListener('change', () => { if (fileInput.files.length) handleFile(fileInput.files[0]); });
+    }
+
+    // 6. Enquiry Search
+    document.addEventListener('input', function(e) {
+        if (e.target.id === 'enquirySearchInput') {
+            const searchTerm = e.target.value.toLowerCase();
+            const enquiries = document.querySelectorAll('#adminEnquiriesContainer > div:not(.empty-state-msg)');
+            enquiries.forEach(item => { const text = item.textContent ? item.textContent.toLowerCase() : ''; item.style.display = text.includes(searchTerm) ? 'block' : 'none'; });
+        }
+    });
+
+    // 7. Mobile Menu Toggle
+    const mobileToggle = document.getElementById('mobileNavToggle'); const tabsContainer = document.querySelector('.tester-tabs'); const mobileBackdrop = document.getElementById('mobileBackdrop');
+    function closeMobileMenu() { if (tabsContainer) tabsContainer.classList.remove('mobile-open'); if (mobileBackdrop) mobileBackdrop.style.display = 'none'; }
+    function openMobileMenu() { if (tabsContainer) tabsContainer.classList.add('mobile-open'); if (mobileBackdrop) mobileBackdrop.style.display = 'block'; }
+    if (mobileToggle && tabsContainer) {
+        mobileToggle.addEventListener('click', function(e) { e.stopPropagation(); if (tabsContainer.classList.contains('mobile-open')) { closeMobileMenu(); } else { openMobileMenu(); } });
+        if (mobileBackdrop) { mobileBackdrop.addEventListener('click', closeMobileMenu); }
+    }
+
+    // 8. Layout Enforcement
+    function enforceFullScreenLayout() {
+        const modal = document.getElementById('testerModal'); const content = document.querySelector('.tester-content'); const login = document.getElementById('testerLogin'); const menu = document.getElementById('testerMenu');
+        if (modal) { modal.style.width = '100%'; modal.style.height = '100%'; modal.style.maxWidth = '100%'; modal.style.maxHeight = '100%'; }
+        if (content) { content.style.width = '100%'; content.style.height = '100%'; content.style.maxWidth = '100%'; content.style.maxHeight = '100%'; }
+        if (login && (login.style.display === 'flex' || window.getComputedStyle(login).display === 'flex')) { login.style.width = '100%'; login.style.height = '100%'; if (menu) menu.style.display = 'none'; return; }
+        if (menu) { menu.style.display = 'flex'; menu.style.flexDirection = 'row'; menu.style.width = '100%'; menu.style.maxWidth = '100%'; menu.style.height = '100%'; menu.style.maxHeight = '100%'; }
+    }
+    enforceFullScreenLayout(); window.addEventListener('resize', enforceFullScreenLayout); window.addEventListener('orientationchange', enforceFullScreenLayout);
+
+        // 9. Theme Switcher
+    function applyHavenTheme(themeName) {
+        document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm', 'staff-ocean', 'staff-forest', 'staff-sunset');
+        document.body.classList.add(themeName); localStorage.setItem('haven_portal_theme', themeName);
+        document.querySelectorAll('.theme-card').forEach(card => { if (card.dataset.theme === themeName) card.classList.add('active'); else card.classList.remove('active'); });
+        
+        // Sync to Messenger iframe
+        const messengerThemes = {
+            'staff-dark': 'midnight',
+            'staff-light': 'light',
+            'staff-warm': 'sand',
+            'staff-ocean': 'ocean',
+            'staff-forest': 'cyber',
+            'staff-sunset': 'ember'
+        };
+        const messengerTheme = messengerThemes[themeName] || 'midnight';
+        const iframe = document.querySelector('#tab-haven iframe');
+        if (iframe && iframe.contentWindow) {
+            try { iframe.contentWindow.postMessage({ type: 'set_messenger_theme', theme: messengerTheme }, '*'); } catch(e) {}
+        }
+    }
+    document.querySelectorAll('.theme-card').forEach(card => { card.addEventListener('click', function() { applyHavenTheme(this.dataset.theme); }); });
+    document.getElementById('themeQuickToggle').addEventListener('click', function() { const isDark = document.body.classList.contains('staff-dark'); applyHavenTheme(isDark ? 'staff-light' : 'staff-dark'); });
+    const bodyObserver = new MutationObserver(() => {
+        const savedTheme = localStorage.getItem('haven_portal_theme') || 'staff-dark';
+        if (!document.body.classList.contains(savedTheme)) { document.body.classList.remove('staff-light', 'staff-dark', 'staff-warm', 'staff-ocean', 'staff-forest', 'staff-sunset'); document.body.classList.add(savedTheme); }
+    });
+    bodyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    const initialTheme = localStorage.getItem('haven_portal_theme') || 'staff-dark'; applyHavenTheme(initialTheme);
+
+    // Listen for theme changes from Messenger iframe
+    window.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'set_portal_theme') {
+            const newTheme = e.data.theme;
+            if (!document.body.classList.contains(newTheme)) {
+                document.body.classList.remove('staff-dark', 'staff-light', 'staff-warm', 'staff-ocean', 'staff-forest', 'staff-sunset');
+                document.body.classList.add(newTheme);
+                localStorage.setItem('haven_portal_theme', newTheme);
+                document.querySelectorAll('.theme-card').forEach(card => { if (card.dataset.theme === newTheme) card.classList.add('active'); else card.classList.remove('active'); });
+            }
+        }
+    });
+
+    // Sync theme when iframe first loads
+    const havenIframe = document.querySelector('#tab-haven iframe');
+    if (havenIframe) {
+        havenIframe.addEventListener('load', () => {
+            const currentTheme = localStorage.getItem('haven_portal_theme') || 'staff-dark';
+            applyHavenTheme(currentTheme);
+        });
+    }
+
+    // 10. Restore Last Tab
+    const lastTab = localStorage.getItem('haven_active_tab');
+    if (lastTab) { const btn = document.querySelector(`.tester-tab-btn[data-tab="${lastTab}"]`); if (btn) btn.click(); }
+
+    // 11. Empty States
+    function setupEmptyStateObserver(containerId, message) {
+        const container = document.getElementById(containerId); if (!container) return;
+        const observer = new MutationObserver(() => {
+            const realChildren = Array.from(container.children).filter(c => !c.classList.contains('empty-state-msg'));
+            let emptyMsg = container.querySelector('.empty-state-msg');
+            if (realChildren.length === 0) { if (!emptyMsg) { emptyMsg = document.createElement('div'); emptyMsg.className = 'empty-state-msg'; emptyMsg.innerHTML = message; container.appendChild(emptyMsg); } } else { if (emptyMsg) emptyMsg.remove(); }
+        }); observer.observe(container, { childList: true });
+    }
+    setupEmptyStateObserver('adminEnquiriesContainer', '📭 No new enquiries! Time for a cup of tea. ☕');
+    setupEmptyStateObserver('adminEventContainer', '📅 No upcoming events scheduled.');
+    setupEmptyStateObserver('adminPhotoContainer', '🖼️ No photos uploaded yet.');
+    setupEmptyStateObserver('adminWilfBlogContainer', '📝 No blog posts yet.');
+    setupEmptyStateObserver('adminUpdateContainer', '🔔 No updates posted.');
+    setupEmptyStateObserver('adminFilmContainer', '🎬 No films in the voting list.');
+    setupEmptyStateObserver('adminCommunityContainer', '🏘️ No community spotlights yet.');
+    setupEmptyStateObserver('adminCelebContainer', '🎉 No upcoming celebrations.');
+
+       // 12. Music Toggle (Using ambient1.mp3)
+    const musicToggleBtn = document.getElementById('musicToggleBtn'); 
+    const bgMusic = document.getElementById('havenAmbientAudio'); 
+    const musicIconPlay = document.getElementById('musicIconPlay'); 
+    const musicIconPause = document.getElementById('musicIconPause'); 
+    const musicToggleText = document.getElementById('musicToggleText');
+
+    if (musicToggleBtn && bgMusic) {
+        musicToggleBtn.addEventListener('click', function() {
+            if (bgMusic.paused) {
+                // Attempt to play the audio file
+                bgMusic.play().then(() => {
+                    musicIconPlay.style.display = 'none';
+                    musicIconPause.style.display = 'block';
+                    musicToggleText.textContent = 'Pause Ambient Music';
+                }).catch(err => {
+                    showToast('Could not play audio. Ensure ambient1.mp3 is uploaded next to index.html.');
+                    console.error('Audio playback failed:', err);
+                });
+            } else { 
+                bgMusic.pause(); 
+                musicIconPlay.style.display = 'block'; 
+                musicIconPause.style.display = 'none'; 
+                musicToggleText.textContent = 'Play Ambient Music'; 
+            }
+        });
+    }
+
+    // 13. Seasonal FX
+    function initStaffSeasonFX() {
+        const fxContainer = document.getElementById('staff-seasonal-fx'); if (!fxContainer) return;
+        let season = localStorage.getItem('tinkers_season');
+        if (!season || season === 'auto') {
+            const m = new Date().getMonth() + 1;
+            if ([12, 1, 2].includes(m)) season = 'winter'; else if ([3, 4, 5].includes(m)) season = 'spring'; else if ([6, 7, 8].includes(m)) season = 'summer'; else if ([9, 10, 11].includes(m)) season = 'autumn'; else season = 'spring';
+        }
+        fxContainer.innerHTML = ''; const count = 12; 
+        for (let i = 0; i < count; i++) {
+            const p = document.createElement('div'); p.className = `fx-particle fx-${season}`;
+            const size = Math.random() * 4 + 4; p.style.width = size + 'px'; p.style.height = size + 'px';
+            p.style.left = Math.random() * 100 + 'vw'; p.style.animationDuration = (Math.random() * 10 + 15) + 's';
+            p.style.animationDelay = (Math.random() * 15) + 's'; p.style.opacity = Math.random() * 0.3 + 0.1; 
+            fxContainer.appendChild(p);
+        }
+    }
+    initStaffSeasonFX();
+    document.querySelectorAll('.tester-season-btn').forEach(btn => { btn.addEventListener('click', initStaffSeasonFX); });
+        // === FORCE REFRESH ADMIN LISTS AFTER DELETE (Mobile Fix) ===
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('button');
+        if (btn && (btn.classList.contains('del-event-btn') || btn.classList.contains('del-celeb-btn') || btn.classList.contains('del-update-btn') || btn.classList.contains('del-photo-btn') || btn.classList.contains('del-film-btn') || btn.classList.contains('del-community-btn') || btn.classList.contains('del-enq-btn') || btn.classList.contains('del-featured-btn'))) {
+            
+            // Wait 500ms for the database delete to finish, then force refresh the lists
+            setTimeout(() => {
+                if (typeof EventsModule !== 'undefined') EventsModule.loadAdminEvents();
+                if (typeof CelebrationModule !== 'undefined') CelebrationModule.loadAdminCelebrations();
+                if (typeof DatabaseModule !== 'undefined') DatabaseModule.loadUpdates();
+                if (typeof FilmNightModule !== 'undefined') FilmNightModule.loadFilms();
+                if (typeof CommunityModule !== 'undefined') CommunityModule.loadAdminCommunity();
+                if (typeof EnquiriesModule !== 'undefined') EnquiriesModule.loadAdminEnquiries();
+                if (typeof FeaturedEventsModule !== 'undefined') FeaturedEventsModule.loadAdminFeatured();
+                if (typeof TesterModule !== 'undefined' && typeof TesterModule.renderPhotoAdmin === 'function') TesterModule.renderPhotoAdmin();
+            }, 500);
+        }
+    }, true);
+    // === FORCE REFRESH ADMIN LISTS AFTER ADD/SAVE (Mobile Fix) ===
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+
+        // Wait 1.5 seconds for the database insert to finish, then refresh the lists
+        if (btn.id === 'addEventBtn') {
+            setTimeout(() => { if (typeof EventsModule !== 'undefined') { EventsModule.loadAdminEvents(); EventsModule.loadEvents(); } }, 1500);
+        } 
+        else if (btn.id === 'saveMenuBtn') {
+            setTimeout(() => { if (typeof MenuModule !== 'undefined') MenuModule.loadAdminMenu(); }, 1500);
+        }
+        else if (btn.id === 'addWilfBlogBtn') {
+            // Assuming you have a WilfBlogModule load function, if not, this is safe.
+            setTimeout(() => { if (typeof WilfModule !== 'undefined' && WilfModule.loadStatus) WilfModule.loadStatus(); }, 1500);
+        }
+        else if (btn.id === 'addUpdateBtn') {
+            setTimeout(() => { if (typeof DatabaseModule !== 'undefined') DatabaseModule.loadUpdates(); }, 1500);
+        }
+        else if (btn.id === 'addFilmBtn') {
+            setTimeout(() => { if (typeof FilmNightModule !== 'undefined') FilmNightModule.loadFilms(); }, 1500);
+        }
+        else if (btn.id === 'addCommunityBtn') {
+            setTimeout(() => { if (typeof CommunityModule !== 'undefined') { CommunityModule.loadAdminCommunity(); CommunityModule.loadCommunity(); } }, 1500);
+        }
+        else if (btn.id === 'addCelebBtn') {
+            setTimeout(() => { if (typeof CelebrationModule !== 'undefined') { CelebrationModule.loadAdminCelebrations(); CelebrationModule.loadCelebrations(); } }, 1500);
+        }
+        else if (btn.id === 'addFeaturedBtn') {
+            setTimeout(() => { if (typeof FeaturedEventsModule !== 'undefined') { FeaturedEventsModule.loadAdminFeatured(); FeaturedEventsModule.loadFeatured(); } }, 1500);
+        }
+        else if (btn.id === 'saveBriefingBtn') {
+            setTimeout(() => { if (typeof BriefingModule !== 'undefined') BriefingModule.loadBriefing(); }, 1500);
+        }
+    }, true);
+</script>
+</body>
+</html>
