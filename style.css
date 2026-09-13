@@ -1642,18 +1642,12 @@ body.theme-high-contrast .glow-text {
     animation: none !important;
 }
 /* === QUIET HOURS AUTO-DIMMING === */
-/* Adds a soft, dark twilight overlay over the whole site */
-body.quiet-hours::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: rgba(26, 44, 56, 0.25); /* 25% dark slate overlay */
-    pointer-events: none; /* Lets clicks pass through to the buttons */
-    z-index: 40; /* Sits above content, but below header/modals */
-    transition: background 0.5s ease;
+/* Gently reduces the brightness of the whole site for evening viewing */
+body.quiet-hours {
+    filter: brightness(0.92) contrast(0.95); 
 }
 
-/* Heavily dim the floating background blobs */
+/* Heavily dim the floating background blobs so they aren't distracting */
 body.quiet-hours .ambient .blob {
     opacity: 0.02 !important; 
 }
@@ -1662,5 +1656,5 @@ body.quiet-hours .ambient .blob {
 body.quiet-hours .next-chapter-pill,
 body.quiet-hours .back-to-top,
 body.quiet-hours .mobile-bottom-nav {
-    opacity: 0.8 !important; 
+    opacity: 0.85 !important; 
 }
