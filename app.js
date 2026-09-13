@@ -1586,4 +1586,4 @@ document.addEventListener('DOMContentLoaded', () =>{
 // === END CUSTOM FEATURES ===
     
     PolishModule.init();
-});
+    
