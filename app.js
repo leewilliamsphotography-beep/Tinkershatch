@@ -1484,7 +1484,18 @@ document.addEventListener('DOMContentLoaded', () =>{
 
         musicBtn.addEventListener('click', toggleMusic);
     })();
-
+        // --- 5. QUIET HOURS AUTO-DIMMING ---
+    const currentHour = new Date().getHours();
+    const forceQuiet = true; // TEMPORARY: Set to false when you are done testing
+    
+    if (forceQuiet || currentHour >= 20 || currentHour < 8) {
+        document.body.classList.add('quiet-hours');
+        console.log('Quiet Hours active: Dimming site...');
+        music.volume = 0.15; 
+    } else {
+        music.volume = 0.4;
+    }
+})();
     // --- 2. LIVE WEATHER EFFECTS ---
     const weatherFx = document.getElementById('weather-fx');
     let currentWeatherCondition = '';
@@ -1576,14 +1587,3 @@ document.addEventListener('DOMContentLoaded', () =>{
     
     PolishModule.init();
 });
-        // --- 5. QUIET HOURS AUTO-DIMMING ---
-    const currentHour = new Date().getHours();
-    const forceQuiet = true; // TEMPORARY: Set to false when you are done testing
-    
-    if (forceQuiet || currentHour >= 20 || currentHour < 8) {
-        document.body.classList.add('quiet-hours');
-        console.log('Quiet Hours active: Dimming site...');
-        music.volume = 0.15; 
-    } else {
-        music.volume = 0.4;
-    }
