@@ -1658,3 +1658,37 @@ body.quiet-hours .back-to-top,
 body.quiet-hours .mobile-bottom-nav {
     opacity: 0.85 !important; 
 }
+/* === LIVE NOW ACTIVITY RADAR === */
+.activity-radar {
+    position: fixed; bottom: 24px; left: 24px;
+    background: var(--bark); color: #fff;
+    padding: 10px 18px; border-radius: 30px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.85rem; font-weight: 600;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    z-index: 90; opacity: 0; visibility: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.activity-radar.show { opacity: 0.95; visibility: visible; }
+.activity-radar:hover { opacity: 1; transform: translateY(-2px); }
+
+.radar-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #10B981; /* Green for active */
+    animation: radar-pulse 2s infinite;
+}
+@keyframes radar-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Change dot to amber during quiet hours */
+body.quiet-hours .radar-dot { background: #F59E0B; animation: none; }
+
+/* Lift above mobile bottom bar */
+@media (max-width: 768px) {
+    .activity-radar { bottom: 90px; left: 16px; font-size: 0.8rem; padding: 8px 14px; }
+}

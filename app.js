@@ -1583,7 +1583,46 @@ document.addEventListener('DOMContentLoaded', () =>{
     }
     updateWeatherFX();
     setInterval(updateWeatherFX, 1800000);
+        // --- 6. LIVE NOW ACTIVITY RADAR ---
+    const radar = document.getElementById('activityRadar');
+    const radarText = document.getElementById('radarText');
+
+    function updateActivityRadar() {
+        if (!radar || !radarText) return;
+        
+        const date = new Date();
+        const hour = date.getHours();
+        const day = date.getDay(); // 0 = Sunday, 6 = Saturday
+        
+        let activity = "Quiet Hours (Resting)";
+        
+        // Weekday Schedule
+        if (day >= 1 && day <= 5) {
+            if (hour >= 7 && hour < 10) activity = "Breakfast & Morning Circle";
+            else if (hour >= 10 && hour < 12) activity = "Morning Activities";
+            else if (hour >= 12 && hour < 14) activity = "Lunch in the Dining Room";
+            else if (hour >= 14 && hour < 16) activity = "Afternoon Tea & Visits";
+            else if (hour >= 16 && hour < 18) activity = "Family Visiting Time";
+            else if (hour >= 18 && hour < 20) activity = "Supper & Evening Film";
+        } 
+        // Weekend Schedule
+        else {
+            if (hour >= 8 && hour < 10) activity = "Slow Weekend Breakfast";
+            else if (hour >= 10 && hour < 12) activity = "Weekend Café Trip";
+            else if (hour >= 12 && hour < 14) activity = "Sunday Lunch";
+            else if (hour >= 14 && hour < 16) activity = "Garden Walks & Visits";
+            else if (hour >= 16 && hour < 18) activity = "Afternoon Rest";
+            else if (hour >= 18 && hour < 20) activity = "Light Supper";
+        }
+        
+        radarText.textContent = `Live Now: ${activity}`;
+        radar.classList.add('show');
+    }
+    
+    // Run immediately, then update every 5 minutes
+    updateActivityRadar();
+    setInterval(updateActivityRadar, 300000);
 // === END CUSTOM FEATURES ===
     
     PolishModule.init();
-    
+
