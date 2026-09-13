@@ -27,14 +27,19 @@
         }
         @media (max-width: 768px) { .photo-header { padding: 14px 20px; } }
         
-        .back-btn { 
-            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--bark-soft); 
-            font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease;
+                .back-btn { 
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; 
+            color: var(--bark); font-weight: 600; font-size: 0.9rem; 
+            background: var(--cream-deep); padding: 10px 18px; 
+            border-radius: 30px; border: 1px solid var(--border);
+            transition: all 0.2s ease; white-space: nowrap;
         }
-        .back-btn:hover { color: var(--teal); }
+        .back-btn:hover { 
+            background: var(--bark); color: #fff; border-color: var(--bark); 
+            transform: translateX(-3px); 
+        }
         .back-btn svg { transition: transform 0.2s ease; }
-        .back-btn:hover svg { transform: translateX(-3px); }
-        @media (max-width: 480px) { .back-btn span { display: none; } }
+        @media (max-width: 480px) { .back-btn span { display: none; } .back-btn { padding: 12px; } }
         
         .header-title { 
             text-align: center; color: var(--bark); margin: 0; 

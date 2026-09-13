@@ -1576,3 +1576,14 @@ document.addEventListener('DOMContentLoaded', () =>{
     
     PolishModule.init();
 });
+    // --- 5. QUIET HOURS AUTO-DIMMING ---
+    const currentHour = new Date().getHours();
+    // Active from 8 PM (20) to 8 AM (8)
+    if (currentHour >= 20 || currentHour < 8) {
+        document.body.classList.add('quiet-hours');
+        console.log('Quiet Hours active: Dimming site...');
+        // Lower music volume if it's playing
+        music.volume = 0.15; 
+    } else {
+        music.volume = 0.4;
+    }

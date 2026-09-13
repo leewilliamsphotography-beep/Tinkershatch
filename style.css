@@ -1641,3 +1641,18 @@ body.theme-high-contrast .glow-text {
 .hero-title {
     animation: none !important;
 }
+/* === QUIET HOURS AUTO-DIMMING === */
+body.quiet-hours .ambient .blob {
+    opacity: 0.05 !important; /* Heavily dim the floating background blobs */
+    filter: blur(120px) !important;
+}
+body.quiet-hours .next-chapter-pill {
+    opacity: 0.6 !important; /* Soften the floating pill */
+}
+body.quiet-hours .back-to-top {
+    opacity: 0.6 !important; /* Soften the back to top button */
+}
+body.quiet-hours .mobile-bottom-nav {
+    box-shadow: none !important; /* Remove heavy shadows from mobile bar */
+    border-top: 1px solid var(--border) !important;
+}
