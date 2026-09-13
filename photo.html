@@ -188,7 +188,7 @@
         <div id="lightboxCaption" class="lightbox-caption"></div>
     </div>
 
-        <script>
+    <script>
         (async function() {
             const supabaseUrl = 'https://bsbwrvqevtoujfvcvvju.supabase.co';
             const supabaseKey = 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx';
@@ -213,41 +213,30 @@
 
             let slideShowInterval = null;
 
-            // Hardcoded images provided by user
-            const hardcodedPhotos = [
-                { src: 'https://i.ibb.co/rRgrygYS/THP1.jpg', alt: 'Tinkers Hatch Photo 1' },
-                { src: 'https://i.ibb.co/yc51LhVz/THP2.jpg', alt: 'Tinkers Hatch Photo 2' },
-                { src: 'https://i.ibb.co/nNxbtbQd/THP3.jpg', alt: 'Tinkers Hatch Photo 3' },
-                { src: 'https://i.ibb.co/Zzh8bqKb/THP4.jpg', alt: 'Tinkers Hatch Photo 4' },
-                { src: 'https://i.ibb.co/8n6c2GHy/THP5.jpg', alt: 'Tinkers Hatch Photo 5' }
-            ];
-
             async function loadPhotos() {
-                // Start with the hardcoded photos
-                photos = [...hardcodedPhotos];
-                
                 try {
-                    // Attempt to fetch additional photos from Supabase
                     const { data, error } = await supabase.storage.from('gallery').list('', { limit: 100, offset: 0, sortBy: { column: 'created_at', order: 'desc' } });
-                    
-                    if (!error && data && data.length > 0) {
-                        const supabasePhotos = data.filter(f => !f.name.startsWith('.')).map(file => {
-                            const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(file.name);
-                            let alt = 'Gallery Photo';
-                            if (file.name.includes('_caption_')) {
-                                const match = file.name.split('_caption_')[1];
-                                if (match) alt = match.replace(/\.jpg|\.png|\.jpeg/gi, '').replace(/-/g, ' ');
-                            }
-                            return { src: urlData.publicUrl, alt: alt };
-                        });
-                        // Add Supabase photos to the end of the array
-                        photos = photos.concat(supabasePhotos);
+                    if (error) throw error;
+
+                    if (!data || data.length === 0) {
+                        grid.innerHTML = '<p style="color: var(--bark-soft); text-align: center; padding: 40px;">No photos yet. Check back soon!</p>';
+                        return;
                     }
+
+                    photos = data.filter(f => !f.name.startsWith('.')).map(file => {
+                        const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(file.name);
+                        let alt = 'Gallery Photo';
+                        if (file.name.includes('_caption_')) {
+                            const match = file.name.split('_caption_')[1];
+                            if (match) alt = match.replace(/\.jpg|\.png|\.jpeg/gi, '').replace(/-/g, ' ');
+                        }
+                        return { src: urlData.publicUrl, alt: alt };
+                    });
+
+                    renderGrid();
                 } catch (e) {
-                    console.log('Supabase fetch failed, showing hardcoded photos only.');
+                    grid.innerHTML = '<p style="color: var(--terracotta); text-align: center; padding: 40px;">Could not load photos.</p>';
                 }
-                
-                renderGrid();
             }
 
             function renderGrid() {
