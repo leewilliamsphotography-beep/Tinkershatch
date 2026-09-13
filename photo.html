@@ -16,31 +16,34 @@
             margin: 0; transition: background-color 0.4s ease, color 0.4s ease;
         }
         
-                /* Sticky Header - Increased side padding to offset from edges */
+                /* Floating Header Wrapper */
         .photo-header { 
-            position: sticky; top: 0; background: color-mix(in srgb, var(--cream) 85%, transparent); 
-            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            padding: 16px 6vw; /* 6% of screen width padding on the sides */
-            display: grid; 
-            grid-template-columns: 1fr auto 1fr; /* Left | Center | Right */
-            align-items: center; border-bottom: 1px solid var(--border); z-index: 100; gap: 12px;
+            position: fixed; top: 0; left: 0; right: 0; 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px; pointer-events: none; z-index: 100; 
+            gap: 12px;
         }
-        @media (max-width: 480px) { .photo-header { padding: 14px 16px; } }
         
+        /* Floating Pills */
         .back-btn { 
-            justify-self: start; /* Pushes to left edge of its grid column */
-            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--bark); 
-            font-weight: 600; background: var(--cream-deep); padding: 10px 16px; border-radius: 12px; 
-            border: 1px solid var(--border); transition: all 0.2s; white-space: nowrap; font-size: 0.9rem;
+            pointer-events: auto;
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; 
+            color: #fff; font-weight: 600; background: rgba(26, 44, 56, 0.6); 
+            padding: 10px 18px; border-radius: 30px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.2s; white-space: nowrap; font-size: 0.9rem;
         }
         .back-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
-        @media (max-width: 480px) { .back-btn span { display: none; } .back-btn { padding: 10px 12px; } }
+        @media (max-width: 480px) { .back-btn span { display: none; } .back-btn { padding: 12px; } }
         
         .header-title { 
-            justify-self: center; /* Forces exact center */
-            text-align: center; color: var(--bark); margin: 0; font-size: 1.1rem;
+            pointer-events: auto;
+            text-align: center; color: #fff; margin: 0; font-size: 1rem;
+            background: rgba(26, 44, 56, 0.6); padding: 10px 20px; 
+            border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
         }
-        
         /* View Toggle */
         .view-toggle { 
             justify-self: end; /* Pushes to right edge of its grid column */
