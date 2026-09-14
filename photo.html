@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="style.css?v=5.4">
+    <link rel="stylesheet" href="style.css?v=5.7">
 
     <style>
         html, body { 
@@ -24,50 +24,53 @@
             padding: 16px 24px; 
             display: flex; justify-content: space-between; align-items: center; 
             gap: 16px;
+            transition: background-color 0.4s ease, border-color 0.4s ease;
         }
         @media (max-width: 768px) { .photo-header { padding: 14px 20px; } }
         
-                .back-btn { 
-            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; 
-            color: var(--bark); font-weight: 600; font-size: 0.9rem; 
-            background: var(--cream-deep); padding: 10px 18px; 
-            border-radius: 30px; border: 1px solid var(--border);
-            transition: all 0.2s ease; white-space: nowrap;
+        .back-btn { 
+            display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: var(--bark-soft); 
+            font-weight: 500; font-size: 0.9rem; transition: color 0.2s ease;
         }
-        .back-btn:hover { 
-            background: var(--bark); color: #fff; border-color: var(--bark); 
-            transform: translateX(-3px); 
-        }
+        .back-btn:hover { color: var(--teal); }
         .back-btn svg { transition: transform 0.2s ease; }
-        @media (max-width: 480px) { .back-btn span { display: none; } .back-btn { padding: 12px; } }
+        .back-btn:hover svg { transform: translateX(-3px); }
+        @media (max-width: 480px) { .back-btn span { display: none; } }
         
         .header-title { 
             text-align: center; color: var(--bark); margin: 0; 
             font-size: 1.1rem; font-weight: 600; letter-spacing: -0.01em;
+            transition: color 0.4s ease;
         }
-        .header-spacer { width: 100px; } 
         
-        /* Premium Masonry Layout (No Cropping) */
+        /* Viewing Mode Button */
+        .view-btn { 
+            display: inline-flex; align-items: center; gap: 8px; 
+            background: var(--cream-deep); color: var(--bark); 
+            border: 1px solid var(--border); border-radius: 30px;
+            padding: 10px 18px; font-weight: 600; font-size: 0.9rem; 
+            cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+        .view-btn:hover { background: var(--bark); color: #fff; border-color: var(--bark); }
+        .view-btn.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+        .view-btn svg { transition: transform 0.2s ease; }
+        .view-btn:hover svg { transform: scale(1.1); }
+        
+        /* Premium Masonry Layout */
         .gallery-masonry {
-            column-count: 2; /* 2 columns on mobile/tablet */
-            column-gap: 16px;
-            max-width: 900px;
-            margin: 48px auto;
-            padding: 0 20px;
+            position: relative; z-index: 20; /* Keeps photos above the dim overlay */
+            column-count: 2; column-gap: 16px;
+            max-width: 900px; margin: 48px auto; padding: 0 20px;
         }
         @media (min-width: 768px) {
-            .gallery-masonry {
-                column-count: 3; /* 3 columns on desktop */
-                column-gap: 24px;
-                max-width: 1100px;
-            }
+            .gallery-masonry { column-count: 3; column-gap: 24px; max-width: 1100px; }
         }
         
-              /* Photo Items */
+        /* Photo Items */
         .photo-item { 
             position: relative; display: block; width: 100%; 
-            border: 1px solid var(--border); /* Adds the clean border */
-            padding: 0; margin-bottom: 16px; 
+            border: 1px solid var(--border); padding: 0; margin-bottom: 16px; 
             background: var(--cream-deep); cursor: pointer; 
             border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
@@ -77,45 +80,41 @@
         
         .photo-item:hover { 
             box-shadow: 0 12px 24px rgba(0,0,0,0.12); 
-            transform: translateY(-2px); 
-            border-color: var(--teal); /* Border turns teal when you hover! */
+            transform: translateY(-2px); border-color: var(--teal); 
         }
-        
-        /* height: auto ensures photos are NEVER cropped */
         .photo-item img { width: 100%; height: auto; display: block; transition: opacity 0.4s ease, transform 0.6s ease; opacity: 0; }
         .photo-item img.loaded { opacity: 1; }
         .photo-item:focus { outline: 2px solid var(--teal); outline-offset: 2px; }
-        .photo-item:hover img { transform: scale(1.03); }
         
         /* Skeleton Loading */
         .skeleton-box { width: 100%; height: 250px; border-radius: 12px; background: var(--cream-deep); margin-bottom: 16px; animation: skeleton-pulse 1.5s infinite ease-in-out; break-inside: avoid; }
         @media (min-width: 768px) { .skeleton-box { height: 350px; margin-bottom: 24px; } }
         @keyframes skeleton-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
         
-        /* Lightbox UI (Pure Black) */
-        .lightbox-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s ease; }
-        .lightbox-overlay.active { opacity: 1; visibility: visible; }
-        .lightbox-img { max-width: 90vw; max-height: 85vh; object-fit: contain; border-radius: 2px; box-shadow: 0 10px 40px rgba(0,0,0,.5); cursor: pointer; }
-        
-        .lightbox-close, .lightbox-nav-btn, .lightbox-play, .lightbox-share { position: absolute; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); cursor: pointer; z-index: 2002; transition: all .2s ease; }
-        .lightbox-close { top: 24px; right: 24px; }
-        .lightbox-nav-btn { top: 50%; transform: translateY(-50%); z-index: 2001; background: transparent; border: none; }
-        .lightbox-prev { left: 24px; }
-        .lightbox-next { right: 24px; }
-        .lightbox-play { top: 24px; left: 50%; transform: translateX(-50%); }
-        .lightbox-share { top: 24px; left: 80px; } 
-        
-        .lightbox-close:hover, .lightbox-play:hover, .lightbox-share:hover { background: rgba(255,255,255,0.2); }
-        .lightbox-nav-btn:hover { transform: translateY(-50%) scale(1.1); }
-        .lightbox-play:hover, .lightbox-close:hover, .lightbox-share:hover { transform: scale(1.1); }
-        
-        .lightbox-counter { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 12px; font-weight: 500; background: rgba(255,255,255,.1); padding: 8px 16px; border-radius: 20px; backdrop-filter: blur(10px); }
-        .lightbox-caption { position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 0.95rem; font-weight: 500; background: rgba(0,0,0,0.5); padding: 10px 20px; border-radius: 20px; backdrop-filter: blur(10px); text-align: center; max-width: 80%; }
-        .lightbox-download { position: absolute; top: 24px; left: 24px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); color: #fff; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); cursor: pointer; z-index: 2002; transition: all .2s ease; text-decoration: none; }
-        .lightbox-download:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
-        .lightbox-spinner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 1s linear infinite; opacity: 0; transition: opacity 0.2s ease; }
-        .lightbox-spinner.show { opacity: 1; }
-        @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+        /* Viewing Mode Dimming Overlay */
+        body.viewing-mode::before {
+            content: ''; position: fixed; inset: 0;
+            background: rgba(10, 12, 15, 0.92); /* Darkens the whole screen */
+            z-index: 10; pointer-events: none;
+            transition: background 0.5s ease;
+        }
+        /* Make photos glow in viewing mode */
+        body.viewing-mode .photo-item {
+            border-color: rgba(255,255,255,0.2);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        body.viewing-mode .photo-item:hover {
+            border-color: var(--teal);
+            box-shadow: 0 0 25px rgba(14, 140, 108, 0.4);
+        }
+        /* Adjust Header text for dark mode */
+        body.viewing-mode .photo-header {
+            background: rgba(10, 12, 15, 0.8);
+            border-color: rgba(255,255,255,0.1);
+        }
+        body.viewing-mode .back-btn, body.viewing-mode .header-title {
+            color: #fff;
+        }
         
         /* Floating Back to Top */
         .back-to-top { position: fixed; bottom: 24px; right: 24px; width: 44px; height: 44px; border-radius: 50%; background: var(--bark); color: #fff; border: none; display: none; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: all 0.2s ease; z-index: 90; }
@@ -123,14 +122,6 @@
         .back-to-top:hover { background: var(--teal); transform: translateY(-2px); }
 
         .display { font-family: 'Inter', system-ui, sans-serif; letter-spacing: -0.01em; font-weight: 600; }
-                /* === QUIET HOURS AUTO-DIMMING === */
-        html.quiet-hours, body.quiet-hours {
-            filter: brightness(0.92) contrast(0.95); 
-            transition: filter 0.5s ease;
-        }
-        body.quiet-hours .back-to-top {
-            opacity: 0.85 !important; 
-        }
     </style>
 </head>
 <body>
@@ -150,18 +141,6 @@
             } catch(e) {}
         })();
     </script>
-        <!-- Quiet Hours Loader -->
-    <script>
-        (function() {
-            try {
-                const currentHour = new Date().getHours();
-                const forceQuiet = false; // Set to false when done testing
-                if (forceQuiet || currentHour >= 20 || currentHour < 8) {
-                    document.body.classList.add('quiet-hours');
-                }
-            } catch(e) {}
-        })();
-    </script>
 
     <header class="photo-header">
         <a href="index.html" class="back-btn">
@@ -169,7 +148,12 @@
             <span>Back to Site</span>
         </a>
         <h1 class="display header-title">Tinkers Moments</h1>
-        <div class="header-spacer"></div>
+        
+        <!-- Viewing Mode Toggle Button -->
+        <button id="viewingModeBtn" class="view-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span>Viewing Mode</span>
+        </button>
     </header>
 
     <main style="padding-top: 20px; padding-bottom: 60px;">
@@ -185,33 +169,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
     </button>
 
-    <!-- Lightbox -->
-    <div id="lightbox" class="lightbox-overlay" role="dialog" aria-modal="true" aria-label="Photo gallery viewer">
-        <button class="lightbox-close" id="lightboxClose" aria-label="Close image viewer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-        
-        <a href="#" class="lightbox-download" id="lightboxDownload" aria-label="Download photo" download>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-        </a>
-
-        <button class="lightbox-share" id="lightboxShare" aria-label="Share photo">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        </button>
-
-        <button class="lightbox-play" id="lightboxPlay" aria-label="Start slideshow">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-
-        <button class="lightbox-nav-btn lightbox-prev" id="lightboxPrev" aria-label="Previous image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-        
-        <div class="lightbox-spinner" id="lightboxSpinner"></div>
-        <img id="lightboxImg" class="lightbox-img" src="" alt="Expanded photo view">
-        
-        <button class="lightbox-nav-btn lightbox-next" id="lightboxNext" aria-label="Next image"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
-        <div id="lightboxCounter" class="lightbox-counter">1 / 1</div>
-        <div id="lightboxCaption" class="lightbox-caption"></div>
-    </div>
-
-        <script>
+    <script>
         (async function() {
             const supabaseUrl = 'https://bsbwrvqevtoujfvcvvju.supabase.co';
             const supabaseKey = 'sb_publishable_c6IrevCpSel1njeKV0PhEA_Rbw2UdAx';
@@ -219,87 +177,6 @@
             
             const grid = document.getElementById('photoGrid');
             let photos = [];
-            let currentIndex = 0;
-
-            // Lightbox Elements
-            const lb = document.getElementById('lightbox');
-            const lbImg = document.getElementById('lightboxImg');
-            const lbClose = document.getElementById('lightboxClose');
-            const lbPrev = document.getElementById('lightboxPrev');
-            const lbNext = document.getElementById('lightboxNext');
-            const lbCounter = document.getElementById('lightboxCounter');
-            const lbCaption = document.getElementById('lightboxCaption');
-            const lbSpinner = document.getElementById('lightboxSpinner');
-            const lbDownload = document.getElementById('lightboxDownload');
-            const lbShare = document.getElementById('lightboxShare');
-            const lbPlay = document.getElementById('lightboxPlay');
-
-            let slideShowInterval = null;
-            
-            // --- Web Audio API for Slideshow Ambient Music ---
-            let audioCtx = null;
-            let masterGain = null;
-            let musicTimeout = null;
-
-            function initAudio() {
-                if (!audioCtx) {
-                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    masterGain = audioCtx.createGain();
-                    masterGain.gain.value = 0;
-                    masterGain.connect(audioCtx.destination);
-                }
-                if (audioCtx.state === 'suspended') {
-                    audioCtx.resume();
-                }
-            }
-
-            function playAmbientNote() {
-                if (!slideShowInterval) return; // Stop if slideshow is off
-
-                // Play a random note from a gentle pentatonic scale (C, D, E, G, A)
-                const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
-                const freq = notes[Math.floor(Math.random() * notes.length)];
-                
-                const osc = audioCtx.createOscillator();
-                const noteGain = audioCtx.createGain();
-                
-                osc.type = 'sine'; // Smooth, flute-like tone
-                osc.frequency.value = freq;
-                
-                // Fade in and out smoothly
-                noteGain.gain.setValueAtTime(0, audioCtx.currentTime);
-                noteGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.5);
-                noteGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3.5);
-                
-                osc.connect(noteGain);
-                noteGain.connect(masterGain);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + 4);
-                
-                // Schedule the next note randomly between 2 and 4 seconds
-                musicTimeout = setTimeout(playAmbientNote, Math.random() * 2000 + 2000);
-            }
-
-            function startSlideshowMusic() {
-                initAudio();
-                // Fade up the master volume
-                masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-                masterGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 1);
-                playAmbientNote();
-            }
-
-            function stopSlideshowMusic() {
-                if (audioCtx && masterGain) {
-                    // Fade down
-                    masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
-                    masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
-                }
-                if (musicTimeout) {
-                    clearTimeout(musicTimeout);
-                    musicTimeout = null;
-                }
-            }
 
             // Hardcoded images provided by user
             const hardcodedPhotos = [
@@ -339,7 +216,7 @@
                 photos.forEach((photo, idx) => {
                     const btn = document.createElement('button');
                     btn.className = 'photo-item';
-                    btn.setAttribute('aria-label', `Open photo: ${photo.alt}`);
+                    btn.setAttribute('aria-label', `Photo: ${photo.alt}`);
                     
                     const img = document.createElement('img');
                     img.alt = photo.alt;
@@ -349,133 +226,97 @@
                     img.src = photo.src;
                     
                     btn.appendChild(img);
-                    btn.addEventListener('click', () => openLightbox(idx));
+                    // Clicking a photo now just toggles viewing mode too!
+                    btn.addEventListener('click', toggleViewingMode);
                     grid.appendChild(btn);
                 });
             }
 
-                        // --- Lightbox Logic ---
-            function openLightbox(index) {
-                currentIndex = index;
-                updateLightbox();
-                lb.classList.add('active');
-                document.body.style.overflow = 'hidden'; 
-                lbClose.focus(); 
+            // --- Viewing Mode & Ambient Music Logic ---
+            const viewingBtn = document.getElementById('viewingModeBtn');
+            let isViewing = false;
+            let audioCtx = null;
+            let masterGain = null;
+            let musicTimeout = null;
+
+            function initAudio() {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    masterGain = audioCtx.createGain();
+                    masterGain.gain.value = 0;
+                    masterGain.connect(audioCtx.destination);
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
             }
 
-            function closeLightbox() {
-                lb.classList.remove('active');
-                document.body.style.overflow = ''; 
-                stopSlideshow(); 
+            function playAmbientNote() {
+                if (!isViewing) return; // Stop if viewing mode is off
+
+                // Play a random note from a gentle pentatonic scale
+                const notes = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25];
+                const freq = notes[Math.floor(Math.random() * notes.length)];
+                
+                const osc = audioCtx.createOscillator();
+                const noteGain = audioCtx.createGain();
+                
+                osc.type = 'sine'; // Smooth, flute-like tone
+                osc.frequency.value = freq;
+                
+                // Fade in and out smoothly
+                noteGain.gain.setValueAtTime(0, audioCtx.currentTime);
+                noteGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.5);
+                noteGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3.5);
+                
+                osc.connect(noteGain);
+                noteGain.connect(masterGain);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + 4);
+                
+                // Schedule the next note randomly between 2 and 4 seconds
+                musicTimeout = setTimeout(playAmbientNote, Math.random() * 2000 + 2000);
             }
 
-            function updateLightbox() {
-                lbSpinner.classList.add('show');
-                lbImg.style.opacity = '0';
-                lbImg.style.transition = 'none';
-                
-                // Use a new Image object to preload and guarantee the load event fires
-                const preloadImg = new Image();
-                preloadImg.onload = function() {
-                    lbSpinner.classList.remove('show');
-                    lbImg.src = this.src;
-                    lbImg.style.transition = 'opacity 0.4s ease';
-                    // Slight delay to ensure DOM registers the transition
-                    setTimeout(() => { lbImg.style.opacity = '1'; }, 50);
-                };
-                preloadImg.src = photos[currentIndex].src;
-                
-                lbImg.alt = photos[currentIndex].alt;
-                lbCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
-                lbDownload.href = photos[currentIndex].src; 
-                
-                if (photos[currentIndex].alt && photos[currentIndex].alt !== 'Gallery Photo') {
-                    lbCaption.textContent = photos[currentIndex].alt;
-                    lbCaption.style.display = 'block';
+            function startMusic() {
+                initAudio();
+                // Fade up the master volume
+                masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+                masterGain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 1);
+                playAmbientNote();
+            }
+
+            function stopMusic() {
+                if (audioCtx && masterGain) {
+                    // Fade down
+                    masterGain.gain.cancelScheduledValues(audioCtx.currentTime);
+                    masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+                }
+                if (musicTimeout) {
+                    clearTimeout(musicTimeout);
+                    musicTimeout = null;
+                }
+            }
+
+            function toggleViewingMode() {
+                isViewing = !isViewing;
+                if (isViewing) {
+                    document.body.classList.add('viewing-mode');
+                    viewingBtn.classList.add('active');
+                    viewingBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg><span>Exit Mode</span>';
+                    startMusic();
                 } else {
-                    lbCaption.style.display = 'none';
+                    document.body.classList.remove('viewing-mode');
+                    viewingBtn.classList.remove('active');
+                    viewingBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span>Viewing Mode</span>';
+                    stopMusic();
                 }
             }
 
-            function nextPhoto() { stopSlideshow(); currentIndex = (currentIndex + 1) % photos.length; updateLightbox(); }
-            function prevPhoto() { stopSlideshow(); currentIndex = (currentIndex - 1 + photos.length) % photos.length; updateLightbox(); }
-            // --- Slideshow Logic ---
-            function startSlideshow() {
-                if (slideShowInterval) return;
-                slideShowInterval = setInterval(() => {
-                    currentIndex = (currentIndex + 1) % photos.length;
-                    updateLightbox();
-                }, 5000); 
-                lbPlay.classList.add('playing');
-                lbPlay.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'; 
-                
-                startSlideshowMusic(); // Start ambient music
-            }
+            viewingBtn.addEventListener('click', toggleViewingMode);
 
-            function stopSlideshow() {
-                if (slideShowInterval) {
-                    clearInterval(slideShowInterval);
-                    slideShowInterval = null;
-                    lbPlay.classList.remove('playing');
-                    lbPlay.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'; 
-                    
-                    stopSlideshowMusic(); // Stop ambient music
-                }
-            }
-
-            lbPlay.addEventListener('click', () => {
-                if (slideShowInterval) stopSlideshow(); else startSlideshow();
-            });
-
-            // --- Share Logic ---
-            lbShare.addEventListener('click', async () => {
-                const url = photos[currentIndex].src;
-                const title = 'Tinkers Moments';
-                const text = 'A moment from Tinkers Hatch.';
-                
-                try {
-                    if (navigator.share) {
-                        const response = await fetch(url);
-                        const blob = await response.blob();
-                        const file = new File([blob], 'tinkers-moment.jpg', { type: blob.type });
-                        
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                            await navigator.share({ files: [file], title, text });
-                        } else {
-                            await navigator.share({ title, text, url });
-                        }
-                    } else {
-                        navigator.clipboard.writeText(url);
-                        alert('Link copied to clipboard!');
-                    }
-                } catch (e) {
-                    console.log('Share failed', e);
-                }
-            });
-
-            // --- Listeners ---
-            lbClose.addEventListener('click', closeLightbox);
-            lbNext.addEventListener('click', e => { e.stopPropagation(); nextPhoto(); });
-            lbPrev.addEventListener('click', e => { e.stopPropagation(); prevPhoto(); });
-            lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
-            document.addEventListener('keydown', e => {
-                if (!lb.classList.contains('active')) return;
-                if (e.key === 'Escape') closeLightbox();
-                if (e.key === 'ArrowRight') nextPhoto();
-                if (e.key === 'ArrowLeft') prevPhoto();
-            });
-
-            let touchStartX = 0;
-            lb.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-            lb.addEventListener('touchend', e => {
-                if (!lb.classList.contains('active')) return;
-                const touchEndX = e.changedTouches[0].screenX;
-                const diff = touchStartX - touchEndX;
-                if (Math.abs(diff) > 50) { 
-                    if (diff > 0) nextPhoto(); else prevPhoto();
-                }
-            }, {passive: true});
-
+            // --- Back to Top Logic ---
             const backToTopBtn = document.getElementById('backToTopBtn');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 400) backToTopBtn.classList.add('show');
