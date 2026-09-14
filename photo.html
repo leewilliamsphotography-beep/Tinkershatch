@@ -354,7 +354,7 @@
                 });
             }
 
-            // --- Lightbox Logic ---
+                        // --- Lightbox Logic ---
             function openLightbox(index) {
                 currentIndex = index;
                 updateLightbox();
@@ -372,8 +372,19 @@
             function updateLightbox() {
                 lbSpinner.classList.add('show');
                 lbImg.style.opacity = '0';
+                lbImg.style.transition = 'none';
                 
-                lbImg.src = photos[currentIndex].src;
+                // Use a new Image object to preload and guarantee the load event fires
+                const preloadImg = new Image();
+                preloadImg.onload = function() {
+                    lbSpinner.classList.remove('show');
+                    lbImg.src = this.src;
+                    lbImg.style.transition = 'opacity 0.4s ease';
+                    // Slight delay to ensure DOM registers the transition
+                    setTimeout(() => { lbImg.style.opacity = '1'; }, 50);
+                };
+                preloadImg.src = photos[currentIndex].src;
+                
                 lbImg.alt = photos[currentIndex].alt;
                 lbCounter.textContent = `${currentIndex + 1} / ${photos.length}`;
                 lbDownload.href = photos[currentIndex].src; 
@@ -386,15 +397,8 @@
                 }
             }
 
-            lbImg.addEventListener('load', () => {
-                lbSpinner.classList.remove('show');
-                lbImg.style.transition = 'opacity 0.4s ease';
-                lbImg.style.opacity = '1';
-            });
-
             function nextPhoto() { stopSlideshow(); currentIndex = (currentIndex + 1) % photos.length; updateLightbox(); }
             function prevPhoto() { stopSlideshow(); currentIndex = (currentIndex - 1 + photos.length) % photos.length; updateLightbox(); }
-
             // --- Slideshow Logic ---
             function startSlideshow() {
                 if (slideShowInterval) return;
