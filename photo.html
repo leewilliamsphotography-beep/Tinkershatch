@@ -63,18 +63,23 @@
             }
         }
         
-        /* Photo Items */
+              /* Photo Items */
         .photo-item { 
             position: relative; display: block; width: 100%; 
-            border: none; padding: 0; margin-bottom: 16px; /* Matches column gap */
+            border: 1px solid var(--border); /* Adds the clean border */
+            padding: 0; margin-bottom: 16px; 
             background: var(--cream-deep); cursor: pointer; 
             border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-            break-inside: avoid; /* Crucial for Masonry */
+            transition: box-shadow 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+            break-inside: avoid; 
         }
         @media (min-width: 768px) { .photo-item { margin-bottom: 24px; } }
         
-        .photo-item:hover { box-shadow: 0 12px 24px rgba(0,0,0,0.12); transform: translateY(-2px); }
+        .photo-item:hover { 
+            box-shadow: 0 12px 24px rgba(0,0,0,0.12); 
+            transform: translateY(-2px); 
+            border-color: var(--teal); /* Border turns teal when you hover! */
+        }
         
         /* height: auto ensures photos are NEVER cropped */
         .photo-item img { width: 100%; height: auto; display: block; transition: opacity 0.4s ease, transform 0.6s ease; opacity: 0; }
@@ -150,7 +155,7 @@
         (function() {
             try {
                 const currentHour = new Date().getHours();
-                const forceQuiet = true; // Set to false when done testing
+                const forceQuiet = false; // Set to false when done testing
                 if (forceQuiet || currentHour >= 20 || currentHour < 8) {
                     document.body.classList.add('quiet-hours');
                 }
